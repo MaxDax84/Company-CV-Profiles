@@ -48,12 +48,12 @@ export default function PricingSection() {
         </div>
 
         {/* 3 main plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch mb-8">
           {t.plans.map((plan, i) => (
             <div
               key={plan.name}
               className={cn(
-                'relative rounded-2xl border p-8 transition-all duration-700',
+                'relative rounded-2xl border p-8 flex flex-col transition-all duration-700',
                 plan.highlighted
                   ? 'border-primary/60 bg-primary/6 shadow-xl shadow-primary/15 scale-[1.02]'
                   : 'border-border/50 bg-card/60 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8',
@@ -88,7 +88,7 @@ export default function PricingSection() {
               <hr className="border-border/40 mb-6" />
 
               {/* Features */}
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 text-sm">
                     <Check
