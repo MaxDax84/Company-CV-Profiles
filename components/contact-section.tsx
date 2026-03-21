@@ -82,7 +82,7 @@ export default function ContactSection() {
   }
 
   const inputClass =
-    'w-full px-4 py-3 rounded-xl bg-secondary/60 border border-border/60 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/50 focus:bg-secondary/80 transition-all duration-200'
+    'w-full px-4 py-3 rounded-xl bg-background border border-border text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/60 transition-all duration-200'
 
   return (
     <section id="contact" ref={ref} className="relative py-12 md:py-16 overflow-hidden">
@@ -144,7 +144,7 @@ export default function ContactSection() {
             )}
             style={{ transitionDelay: '150ms' }}
           >
-            <div className="rounded-2xl border border-border/50 bg-card/60 p-8">
+            <div className="rounded-2xl border border-border/80 bg-secondary p-8">
               {status === 'success' ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center gap-4">
                   <CheckCircle2 className="w-12 h-12 text-primary" />
