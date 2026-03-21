@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Send, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Send, CheckCircle2, AlertCircle, Paperclip, X } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export default function ContactSection() {
   const [visible, setVisible] = useState(false)
@@ -18,7 +20,10 @@ export default function ContactSection() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
+  const [fileError, setFileError] = useState('')
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,22 +34,45 @@ export default function ContactSection() {
     return () => observer.disconnect()
   }, [])
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = e.target.files?.[0] ?? null
+    setFileError('')
+    if (selected) {
+      if (selected.size > MAX_FILE_SIZE) {
+        setFileError(f.fileTooLarge)
+        e.target.value = ''
+        return
+      }
+    }
+    setFile(selected)
+  }
+
+  function removeFile() {
+    setFile(null)
+    setFileError('')
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!privacyAccepted) return
     setStatus('sending')
 
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('email', email)
+    formData.append('message', message)
+    if (file) formData.append('attachment', file)
+
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
-      })
+      const res = await fetch('/api/contact', { method: 'POST', body: formData })
 
       if (res.ok) {
         setStatus('success')
         setName('')
         setEmail('')
         setMessage('')
+        setFile(null)
+        setPrivacyAccepted(false)
       } else {
         setStatus('error')
       }
@@ -57,7 +85,7 @@ export default function ContactSection() {
     'w-full px-4 py-3 rounded-xl bg-secondary/60 border border-border/60 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/50 focus:bg-secondary/80 transition-all duration-200'
 
   return (
-    <section id="contact" ref={ref} className="relative py-28 md:py-36 overflow-hidden">
+    <section id="contact" ref={ref} className="relative py-20 md:py-28 overflow-hidden">
       {/* Orb */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -84,7 +112,7 @@ export default function ContactSection() {
                 {
                   icon: '⚡',
                   label: lang === 'en' ? 'Fast turnaround' : 'Consegna rapida',
-                  desc: lang === 'en' ? '5 business days for delivery' : '5 giorni lavorativi per la consegna',
+                  desc: lang === 'en' ? '2 business days for delivery' : '2 giorni lavorativi per la consegna',
                 },
                 {
                   icon: '🎨',
@@ -124,6 +152,7 @@ export default function ContactSection() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Name */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                       {f.name}
@@ -139,6 +168,7 @@ export default function ContactSection() {
                     />
                   </div>
 
+                  {/* Email */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                       {f.email}
@@ -153,6 +183,7 @@ export default function ContactSection() {
                     />
                   </div>
 
+                  {/* Message */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                       {f.message}
@@ -160,12 +191,60 @@ export default function ContactSection() {
                     <textarea
                       required
                       minLength={10}
-                      rows={5}
+                      rows={4}
                       placeholder={f.messagePlaceholder}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       className={cn(inputClass, 'resize-none')}
                     />
+                  </div>
+
+                  {/* File attachment */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      {f.attachment}
+                    </label>
+                    {file ? (
+                      <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary/60 border border-primary/30 text-sm">
+                        <Paperclip className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate text-foreground flex-1">{file.name}</span>
+                        <button type="button" onClick={removeFile} className="text-muted-foreground hover:text-foreground transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary/60 border border-border/60 border-dashed text-sm text-muted-foreground hover:border-primary/50 hover:text-primary cursor-pointer transition-all duration-200">
+                        <Paperclip className="w-4 h-4 shrink-0" />
+                        <span>{f.attachmentHint}</span>
+                        <input
+                          type="file"
+                          accept=".pdf,application/pdf"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                    {fileError && (
+                      <p className="text-xs text-destructive mt-1.5">{fileError}</p>
+                    )}
+                  </div>
+
+                  {/* Privacy consent */}
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="privacy"
+                      required
+                      checked={privacyAccepted}
+                      onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded accent-primary cursor-pointer shrink-0"
+                    />
+                    <label htmlFor="privacy" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                      {f.privacy}{' '}
+                      <a href="/privacy" target="_blank" className="text-primary hover:underline">
+                        {f.privacyLink}
+                      </a>
+                    </label>
                   </div>
 
                   {status === 'error' && (
@@ -177,8 +256,8 @@ export default function ContactSection() {
 
                   <button
                     type="submit"
-                    disabled={status === 'sending'}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={status === 'sending' || !privacyAccepted}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === 'sending' ? (
                       <span className="flex items-center gap-2">

@@ -25,7 +25,7 @@ export default function PricingSection() {
     <section
       id="pricing"
       ref={ref}
-      className="relative py-28 md:py-36 overflow-hidden"
+      className="relative py-20 md:py-28 overflow-hidden"
     >
       <div className="absolute inset-0 bg-secondary/20" />
       <div className="absolute inset-0 grid-overlay" />
