@@ -27,7 +27,7 @@ export default function ServicesSection() {
     <section
       id="services"
       ref={ref}
-      className="relative py-20 md:py-28 overflow-hidden"
+      className="relative py-12 md:py-16 overflow-hidden"
     >
       {/* Subtle background */}
       <div className="absolute inset-0 bg-secondary/20" />

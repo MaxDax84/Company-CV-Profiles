@@ -84,7 +84,7 @@ export default function HeroSection() {
           style={{ animationDelay: '0.48s' }}
         >
           {[
-            { value: '2+', label: lang === 'en' ? 'Projects Delivered' : 'Progetti Consegnati' },
+            { value: '200+', label: lang === 'en' ? 'Projects Delivered' : 'Progetti Consegnati' },
             { value: '100%', label: lang === 'en' ? 'Custom Design' : 'Design Personalizzato' },
             { value: '5★', label: lang === 'en' ? 'Client Satisfaction' : 'Soddisfazione Clienti' },
           ].map((stat) => (

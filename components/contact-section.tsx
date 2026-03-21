@@ -85,7 +85,7 @@ export default function ContactSection() {
     'w-full px-4 py-3 rounded-xl bg-secondary/60 border border-border/60 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/50 focus:bg-secondary/80 transition-all duration-200'
 
   return (
-    <section id="contact" ref={ref} className="relative py-20 md:py-28 overflow-hidden">
+    <section id="contact" ref={ref} className="relative py-12 md:py-16 overflow-hidden">
       {/* Orb */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
