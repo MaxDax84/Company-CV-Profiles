@@ -1,0 +1,51 @@
+Creazione company website GoOnWeb
+
+ciao. ho creato due progetti finiti e uno in progress nella cartella CV che ti passo:                        C:\Users\Massimo\Documents\Projects\CV siccome mi sto divertendo, vorrei che queste creazioni di pagine web    basate sul curriculum diventino il mio business personale. per fare ciò, credo di dover avere io stesso una    pagina di presentazione in cui si dice la mission e tutte le caratteristiche che posso portare come valore per  i miei clienti che vogliono una presenza online. Insomma, hai capito piu o meno a cosa mi riferisco? se no,   fammi delle domande. Mi immagino (ma aiutami tu a capire meglio cosa fare) che io debba avere un sito
+aziendale dove propongo questo progetto ai miei potenziali clienti, dove presento alcuni siti già fatti senza  
+i nomi propri o alcuna informazione sensibile, dove presento i prezzi per l'attività e dove magari c'è un form 
+ di contatto per chi capita sul sito e vuole scrivermi. Chiedimi tutto cioè che ti serve per procedere. Vorrei 
+ creare un repository su github a questo indirizzo: https://github.com/MaxDax84/Company-CV-Profiles.git        
+
+● Ciao! Ho capito benissimo l'idea — vuoi trasformare la tua attività di creazione di siti CV/profilo in un    
+  vero business, con una landing page professionale che attiri clienti.
+                                                                                                                 Prima di procedere, lasciami dare un'occhiata ai progetti esistenti per capire lo stile e la qualità di ciò
+  che hai già fatto.                                                                                           
+  
+  Read 2 files (ctrl+o to expand)    
+
+● Bene, vedo tre progetti Next.js. Ora ho abbastanza contesto. Prima di costruire qualsiasi cosa, ho bisogno di
+   alcune informazioni fondamentali:                                                                           
+
+  ---                                                                                                          
+  Su di te e il tuo brand:
+                                                                                                                 1. Nome del tuo business — hai già un nome in mente? (es. "MaxDax Studio", "Profili Online", qualcosa di       personale o qualcosa di più neutro?)                                                                         
+  2. Il tuo nome — vuoi apparire con nome e cognome sul sito, o preferisci restare più anonimo dietro un brand?  3. Lingue — il sito solo in italiano, solo in inglese, o entrambe?                                                                                                                                                            Sul servizio:                                                                                                                                                                                                               
+  4. Cosa offri esattamente? Solo siti CV/profilo personale, o anche altri tipi di siti? Hai pacchetti diversi
+  in mente?
+  5. Hai già una fascia di prezzo in mente? (es. pacchetto base, standard, premium?)
+  6. Hai già dei clienti reali (Alessandro e Eleonora sono clienti paganti o prove?) — questo influenza come   
+  presenti i "lavori realizzati"
+
+  Sul design:
+
+  7. Stile visivo — hai preferenze? (es. minimalista/elegante come i siti CV che hai fatto, più colorato,      
+  tech/moderno, ecc.)
+  8. Hai un logo o partiamo da zero?
+
+  Sul contatto:
+
+  9. Form di contatto — dove devono arrivare i messaggi? Via email? Hai già un'email dedicata al business?     
+  10. Vuoi anche link social (LinkedIn, Instagram, ecc.)?
+
+  Sul repository:
+
+  11. Il repository https://github.com/MaxDax84/Company-CV-Profiles.git — lo creo io via gh CLI, o lo hai già  
+  creato tu su GitHub e devo solo collegarlo?
+
+✻ Churned for 43s
+
+❯ 1. GoOnWeb 2.per ora meglio rimanere anonimo 3.inglese di default, con possibilità di switch all'italiano    4.per ora offro solo la creazione del proprio cv su pagina web (come fatto per quelli esistenti), ovviamente   personalizzabili come grafica e layout, non sono rigido ma lascio scelta di colori, font, stile, etc. 5. solo  sito senza dominio 35€, con anche dominio 50€, con dominio e manutenzione mensile di alcune attività di        aggiornamento 50€ + 25€/mese e 3 modifiche 6. sono clienti reali, vorrei che non venissero visualizzati i loro  dati sensibili per favore 7. stile elegante e professionale, futuristico se possibile 8. non ho ancora un     
+logo, magari lo farò in futuro 9. i messaggi devono arrivare sulla mia email personale per ora
+massimo.dassano@gmail.com e al momento i campi necessari per il contatto sono quelli standard, poi dovremo     
+aggiungere dei campi mandatory qualora qualcuno decidesse di comprare il dominio (step successivo, da
+ricordare) 10. nessun link social per ora. 11. già creato, solo da collegare (lo vedi vero?)
