@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, Zap } from 'lucide-react'
+import { Check, Zap, RefreshCw } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -47,8 +47,8 @@ export default function PricingSection() {
           </p>
         </div>
 
-        {/* Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        {/* 3 main plans */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-8">
           {t.plans.map((plan, i) => (
             <div
               key={plan.name}
@@ -75,22 +75,9 @@ export default function PricingSection() {
               </p>
 
               {/* Price */}
-              <div className="mb-1">
-                {'priceMonthly' in plan && plan.priceMonthly ? (
-                  <div className="flex items-end gap-1 flex-wrap">
-                    <span className="text-4xl font-bold">€{plan.price}</span>
-                    <div className="flex items-end gap-0.5 mb-1">
-                      <span className="text-muted-foreground text-sm font-medium">{t.plus}</span>
-                      <span className="text-2xl font-bold text-primary ml-1">€{plan.priceMonthly}</span>
-                      <span className="text-muted-foreground text-sm ml-0.5">{t.monthly}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">€{plan.price}</span>
-                    <span className="text-muted-foreground text-sm ml-1">{t.oneTime}</span>
-                  </div>
-                )}
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-bold">€{plan.price}</span>
+                <span className="text-muted-foreground text-sm ml-1">{t.oneTime}</span>
               </div>
 
               {/* Description */}
@@ -131,6 +118,63 @@ export default function PricingSection() {
               </a>
             </div>
           ))}
+        </div>
+
+        {/* Maintenance card — full width below */}
+        <div
+          className={cn(
+            'relative rounded-2xl border border-primary/25 bg-card/60 p-8 transition-all duration-700 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/8',
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10',
+          )}
+          style={{ transitionDelay: '550ms' }}
+        >
+          {/* Subtle glow */}
+          <div className="absolute inset-0 rounded-2xl bg-primary/3 pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8">
+            {/* Icon + text */}
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                  <RefreshCw className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                  {t.maintenance.name}
+                </p>
+              </div>
+
+              <div className="flex items-baseline gap-1 mb-3">
+                <span className="text-sm text-muted-foreground">{t.maintenance.startingFrom}</span>
+                <span className="text-3xl font-bold ml-2">€{t.maintenance.price}</span>
+                <span className="text-muted-foreground text-sm">{t.maintenance.monthly}</span>
+              </div>
+
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
+                {t.maintenance.description}
+              </p>
+
+              <p className="text-xs text-primary/70 mt-2 font-medium">{t.maintenance.note}</p>
+            </div>
+
+            {/* Features + CTA */}
+            <div className="lg:w-80 shrink-0">
+              <ul className="space-y-2.5 mb-6">
+                {t.maintenance.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm">
+                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
+                    <span className="text-muted-foreground">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="#contact"
+                className="block w-full text-center py-3 rounded-xl font-semibold text-sm border border-primary/40 hover:border-primary/70 hover:bg-primary/8 text-primary transition-all duration-200"
+              >
+                {t.maintenance.cta}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
