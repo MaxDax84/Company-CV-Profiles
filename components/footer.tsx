@@ -11,8 +11,12 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-border/50 bg-secondary/20">
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        {/* Tagline — centered above the ribbon */}
+        <p className="text-sm text-muted-foreground text-center mb-8">{t.tagline}</p>
+
+        {/* Ribbon: logo + nav + copyright */}
+        <div className="border-t border-border/40 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
@@ -22,9 +26,6 @@ export default function Footer() {
               Go<span className="text-primary">On</span>Web
             </span>
           </div>
-
-          {/* Tagline */}
-          <p className="text-sm text-muted-foreground text-center max-w-xs">{t.tagline}</p>
 
           {/* Nav links */}
           <div className="flex items-center gap-6">
@@ -43,9 +44,8 @@ export default function Footer() {
               </a>
             ))}
           </div>
-        </div>
 
-        <div className="mt-8 pt-6 border-t border-border/30 text-center">
+          {/* Copyright */}
           <p className="text-xs text-muted-foreground">{t.rights}</p>
         </div>
       </div>
