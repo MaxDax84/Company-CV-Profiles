@@ -182,7 +182,7 @@ export const translations = {
         },
         {
           icon: '</>',
-          title: 'Your source code (Advanced)',
+          title: 'Your source code',
           description: 'The Advanced plan includes full source code delivery. Modify it, deploy it yourself, or hand it to any developer. Zero lock-in.',
         },
         {
@@ -381,7 +381,7 @@ export const translations = {
         },
         {
           icon: '</>',
-          title: 'Il tuo codice sorgente (Advanced)',
+          title: 'Il tuo codice sorgente',
           description: 'Il piano Advanced include la consegna del codice sorgente completo. Modificalo, deployalo da solo o passalo a qualsiasi developer. Zero vincoli.',
         },
         {

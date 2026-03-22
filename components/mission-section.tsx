@@ -86,7 +86,7 @@ export default function MissionSection() {
         {/* Bottom note */}
         <div
           className={cn(
-            'flex items-start gap-3 max-w-2xl mx-auto px-6 py-4 rounded-xl transition-all duration-700',
+            'max-w-2xl mx-auto px-6 py-4 rounded-xl text-center transition-all duration-700',
             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
           )}
           style={{
@@ -95,7 +95,6 @@ export default function MissionSection() {
             transitionDelay: '500ms',
           }}
         >
-          <span className="text-primary mt-0.5 text-base shrink-0">ℹ</span>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {t.note}{' '}
             <strong className="text-foreground">{t.noteBold}</strong>
