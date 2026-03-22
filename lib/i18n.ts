@@ -173,7 +173,7 @@ export const translations = {
         {
           icon: '💳',
           title: 'Pay once, yours forever',
-          description: 'No monthly fees, no platform subscriptions. Pay for the build — the site is yours, live, forever. We\'re a studio, not a SaaS.',
+          description: 'No monthly fees, no platform subscriptions. Pay for the build — the site is yours for as long as you choose to keep the domain active. You own the domain, you decide. We\'re a studio, not a SaaS.',
         },
         {
           icon: '🌐',
@@ -372,7 +372,7 @@ export const translations = {
         {
           icon: '💳',
           title: 'Paghi una volta, è tuo per sempre',
-          description: 'Nessun canone mensile, nessuna piattaforma. Paghi il lavoro — il sito è tuo, online, per sempre. Siamo uno studio, non un software.',
+          description: 'Nessun canone mensile, nessuna piattaforma. Paghi il lavoro — il sito è tuo finché decidi di tenere il dominio attivo. Tu sei il proprietario del dominio, tu decidi. Siamo uno studio, non un software.',
         },
         {
           icon: '🌐',
