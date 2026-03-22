@@ -47,10 +47,18 @@ export const translations = {
         'Every project is handcrafted for the individual. Here are some examples of what we have delivered.',
       projects: [
         {
+          label: 'Project Delta',
+          role: 'Product & Growth Leader',
+          description:
+            'A dark, minimal web CV inspired by modern SaaS design — violet accent on near-black background, transparent navbar, timeline experience layout, and clean section headers with gradient dividers.',
+          tags: ['Product', 'Growth', 'Dark Theme', 'SaaS'],
+          href: '/portfolio/delta',
+        },
+        {
           label: 'Project Alpha',
           role: 'Finance & Management Professional',
           description:
-            'A dark, sophisticated web CV with a violet accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
+            'A dark, sophisticated web CV with a gold accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
           href: '/portfolio/alpha',
         },
@@ -58,7 +66,7 @@ export const translations = {
           label: 'Project Beta',
           role: 'Business Consulting Executive',
           description:
-            'A teal-accented executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
+            'An editorial executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingual'],
           href: '/portfolio/beta',
         },
@@ -246,10 +254,18 @@ export const translations = {
         'Ogni progetto è realizzato su misura per la persona. Ecco alcuni esempi di ciò che abbiamo consegnato.',
       projects: [
         {
+          label: 'Progetto Delta',
+          role: 'Product & Growth Leader',
+          description:
+            'Un CV web scuro e minimalista ispirato al design SaaS moderno — accento viola su sfondo quasi-nero, navbar trasparente, layout a timeline e intestazioni di sezione con divisori a gradiente.',
+          tags: ['Product', 'Growth', 'Dark Theme', 'SaaS'],
+          href: '/portfolio/delta',
+        },
+        {
           label: 'Progetto Alpha',
           role: 'Professionista Finance & Management',
           description:
-            'Un CV web sofisticato con palette viola — timeline completa della carriera, griglia di competenze e dashboard di statistiche professionali.',
+            'Un CV web sofisticato con palette oro su sfondo scuro — timeline completa della carriera, griglia di competenze e dashboard di statistiche professionali.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
           href: '/portfolio/alpha',
         },
@@ -257,7 +273,7 @@ export const translations = {
           label: 'Progetto Beta',
           role: 'Executive Business Consulting',
           description:
-            'Profilo executive con accento teal, sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
+            'Profilo executive editoriale con sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingua'],
           href: '/portfolio/beta',
         },

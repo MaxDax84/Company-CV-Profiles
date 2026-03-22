@@ -5,7 +5,11 @@
       "Bash(npm run:*)",
       "Bash(gh repo:*)",
       "Bash(gh api:*)",
-      "Bash(grep -r \"favicon\\\\|icon\\\\|logo\" '/c/Users/Massimo/Documents/Projects/CV/Company website' --include=*.tsx --include=*.ts --include=*.jsx --include=*.js --include=*.json)"
+      "Bash(grep -r \"favicon\\\\|icon\\\\|logo\" '/c/Users/Massimo/Documents/Projects/CV/Company website' --include=*.tsx --include=*.ts --include=*.jsx --include=*.js --include=*.json)",
+      "WebFetch(domain:www.alessandromarcello.it)",
+      "Bash(grep -E \"\\\\.\\(ts|js|json\\)$\")",
+      "Bash(grep -r tailwind /c/Users/Massimo/Documents/Projects/CV/CV_Alessandro_Marcello --include=*.json --include=*.ts --include=*.tsx --include=*.mjs)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
