@@ -52,7 +52,7 @@ export const translations = {
           description:
             'A dark, sophisticated web CV with a violet accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
-          href: '',
+          href: '/portfolio/alpha',
         },
         {
           label: 'Project Beta',
@@ -60,7 +60,7 @@ export const translations = {
           description:
             'A teal-accented executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingual'],
-          href: '',
+          href: '/portfolio/beta',
         },
         {
           label: 'Project Gamma',
@@ -251,7 +251,7 @@ export const translations = {
           description:
             'Un CV web sofisticato con palette viola — timeline completa della carriera, griglia di competenze e dashboard di statistiche professionali.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
-          href: '',
+          href: '/portfolio/alpha',
         },
         {
           label: 'Progetto Beta',
@@ -259,7 +259,7 @@ export const translations = {
           description:
             'Profilo executive con accento teal, sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingua'],
-          href: '',
+          href: '/portfolio/beta',
         },
         {
           label: 'Progetto Gamma',
