@@ -52,6 +52,7 @@ export const translations = {
           description:
             'A dark, sophisticated web CV with a violet accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
+          href: '',
         },
         {
           label: 'Project Beta',
@@ -59,6 +60,7 @@ export const translations = {
           description:
             'A teal-accented executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingual'],
+          href: '',
         },
         {
           label: 'Project Gamma',
@@ -66,6 +68,7 @@ export const translations = {
           description:
             'A warm, minimal web CV for an HR professional who grew from Coordinator to Head of People across three companies — featuring a career timeline, soft-skills grid, and a values-led narrative.',
           tags: ['HR', 'People Ops', 'Career Growth', 'Warm Palette'],
+          href: '/portfolio/gamma',
         },
       ],
     },
@@ -218,6 +221,7 @@ export const translations = {
           description:
             'Un CV web sofisticato con palette viola — timeline completa della carriera, griglia di competenze e dashboard di statistiche professionali.',
           tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
+          href: '',
         },
         {
           label: 'Progetto Beta',
@@ -225,6 +229,7 @@ export const translations = {
           description:
             'Profilo executive con accento teal, sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingua'],
+          href: '',
         },
         {
           label: 'Progetto Gamma',
@@ -232,6 +237,7 @@ export const translations = {
           description:
             'CV web caldo e minimalista per una professionista HR cresciuta da Coordinator a Head of People in tre aziende — con timeline di carriera, griglia soft-skills e narrativa orientata ai valori.',
           tags: ['HR', 'People Ops', 'Crescita Professionale', 'Palette Calda'],
+          href: '/portfolio/gamma',
         },
       ],
     },

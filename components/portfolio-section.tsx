@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { showcaseCount } from '@/lib/showcase-items'
@@ -327,7 +328,7 @@ export default function PortfolioSection() {
                     {project.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
@@ -337,6 +338,15 @@ export default function PortfolioSection() {
                       </span>
                     ))}
                   </div>
+
+                  {project.href && (
+                    <Link
+                      href={project.href}
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                    >
+                      View full page →
+                    </Link>
+                  )}
                 </div>
               </div>
             )
