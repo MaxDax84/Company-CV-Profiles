@@ -17,7 +17,8 @@ export default function ContactSection() {
   const t = translations[lang].contact
   const f = t.form
 
-  const [name, setName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -58,7 +59,7 @@ export default function ContactSection() {
     setStatus('sending')
 
     const formData = new FormData()
-    formData.append('name', name)
+    formData.append('name', `${firstName} ${lastName}`.trim())
     formData.append('email', email)
     formData.append('message', message)
     if (file) formData.append('attachment', file)
@@ -68,7 +69,8 @@ export default function ContactSection() {
 
       if (res.ok) {
         setStatus('success')
-        setName('')
+        setFirstName('')
+        setLastName('')
         setEmail('')
         setMessage('')
         setFile(null)
@@ -153,19 +155,35 @@ export default function ContactSection() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Name */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                      {f.name}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      minLength={2}
-                      placeholder={f.namePlaceholder}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className={inputClass}
-                    />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                        {f.firstName}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        minLength={2}
+                        placeholder={f.firstNamePlaceholder}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                        {f.lastName}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        minLength={2}
+                        placeholder={f.lastNamePlaceholder}
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
                   </div>
 
                   {/* Email */}

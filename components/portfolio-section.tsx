@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
+import { showcaseCount } from '@/lib/showcase-items'
 import { cn } from '@/lib/utils'
 
 // CSS mockup for Project Alpha (violet theme)
@@ -153,7 +154,90 @@ function BetaMockup() {
   )
 }
 
-const MOCKUPS = [AlphaMockup, BetaMockup]
+// CSS mockup for Project Gamma (amber/warm theme)
+function GammaMockup() {
+  const amber = 'oklch(0.75 0.15 70)'
+  const bg = 'oklch(0.18 0.005 70)'
+  const card = 'oklch(0.24 0.007 70)'
+  const border = 'oklch(0.32 0.007 70)'
+
+  return (
+    <div className="rounded-xl overflow-hidden border border-border/50 select-none">
+      {/* Browser chrome */}
+      <div className="flex items-center gap-1.5 px-3 py-2.5 bg-secondary border-b border-border/60">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+        <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+        <div className="flex-1 mx-3 h-4 rounded-full bg-border/40" />
+      </div>
+
+      {/* Site preview */}
+      <div
+        className="relative overflow-hidden p-5"
+        style={{ background: bg, height: '220px' }}
+      >
+        {/* Nav */}
+        <div className="flex items-center justify-between mb-5">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold"
+            style={{ background: `${amber}22`, border: `1px solid ${amber}55`, color: amber }}
+          >
+            G
+          </div>
+          <div className="flex gap-3">
+            {[48, 40, 52, 44].map((w, i) => (
+              <div key={i} className="h-1.5 rounded-full" style={{ width: w, background: border }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Name + title */}
+        <div className="mb-4 space-y-1.5">
+          <div className="h-3 w-32 rounded-full" style={{ background: 'oklch(0.85 0.01 70 / 0.28)' }} />
+          <div className="h-1.5 w-24 rounded-full" style={{ background: amber + '66' }} />
+        </div>
+
+        {/* Career timeline */}
+        <div className="flex items-start gap-2 mb-4">
+          <div className="flex flex-col items-center pt-1">
+            <div className="w-2 h-2 rounded-full" style={{ background: amber }} />
+            <div className="w-px" style={{ background: amber + '44', height: 36 }} />
+            <div className="w-2 h-2 rounded-full" style={{ background: amber + '88' }} />
+          </div>
+          <div className="flex-1 space-y-2">
+            <div className="rounded p-1.5" style={{ background: card, border: `1px solid ${amber}20` }}>
+              <div className="h-1.5 w-28 rounded-full mb-1" style={{ background: 'oklch(0.85 0.01 70 / 0.2)' }} />
+              <div className="h-1 w-20 rounded-full" style={{ background: 'oklch(0.85 0.01 70 / 0.12)' }} />
+            </div>
+            <div className="rounded p-1.5" style={{ background: card, border: `1px solid ${amber}20` }}>
+              <div className="h-1.5 w-32 rounded-full mb-1" style={{ background: 'oklch(0.85 0.01 70 / 0.2)' }} />
+              <div className="h-1 w-24 rounded-full" style={{ background: 'oklch(0.85 0.01 70 / 0.12)' }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex gap-1.5 flex-wrap">
+          {[32, 40, 28, 36].map((w, i) => (
+            <div
+              key={i}
+              className="h-3.5 rounded-full"
+              style={{ width: w, background: amber + '22', border: `1px solid ${amber}33` }}
+            />
+          ))}
+        </div>
+
+        {/* Glow */}
+        <div
+          className="absolute -top-4 left-0 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+          style={{ background: amber + '12' }}
+        />
+      </div>
+    </div>
+  )
+}
+
+const MOCKUPS = [AlphaMockup, BetaMockup, GammaMockup]
 
 export default function PortfolioSection() {
   const [visible, setVisible] = useState(false)
@@ -205,7 +289,7 @@ export default function PortfolioSection() {
             className="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-primary/40 bg-primary/8 text-primary font-semibold text-sm hover:bg-primary/15 hover:border-primary/60 transition-all duration-200"
           >
             <span>✦</span>
-            <span>View Style Showcase — 10 iconic CV designs</span>
+            <span>View Style Showcase — {showcaseCount} iconic CV designs</span>
             <span>→</span>
           </a>
         </div>

@@ -1,23 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-
-const professionalItems = [
-  { slug: 'elon-musk', name: 'Elon Musk', role: 'CEO & Entrepreneur', style: 'Futuristic Sections', bg: '#040810', accent: '#3b82f6', emoji: '🚀' },
-  { slug: 'audrey-hepburn', name: 'Audrey Hepburn', role: 'Actress & Humanitarian', style: 'Vintage Elegance', bg: '#0a0907', accent: '#c9a84c', emoji: '🎭' },
-  { slug: 'tony-stark', name: 'Tony Stark', role: 'CEO, Stark Industries', style: 'Futuristic HUD', bg: '#030608', accent: '#ef4444', emoji: '🤖' },
-]
+import { professionalItems, boldItems, showcaseCount } from '@/lib/showcase-items'
 
 // Hidden from grid — not deleted, under evaluation:
 // leonardo-dicaprio, sherlock-holmes, cristiano-ronaldo, coco-chanel, marie-curie
-
-const boldItems = [
-  { slug: 'darth-vader', name: 'Darth Vader', role: 'Dark Lord of the Sith', style: 'Imperial Minimal', bg: '#000000', accent: '#dc2626', emoji: '⚫' },
-  { slug: 'homer-simpson', name: 'Homer Simpson', role: 'Safety Inspector, Sector 7-G', style: 'Fun & Colorful', bg: '#fbbf24', accent: '#1d4ed8', emoji: '🍩' },
-  { slug: 'hermione-granger', name: 'Hermione Granger', role: 'Witch & Minister for Magic', style: 'Magical Academic', bg: '#3b0a14', accent: '#c9993f', emoji: '⚡' },
-]
-
-// Hidden from grid — not deleted, under evaluation:
 // sailor-moon, walter-white, son-goku, forrest-gump
 
 function ShowcaseCard({ item }: { item: typeof professionalItems[0] }) {
@@ -128,7 +115,7 @@ export default function ShowcasePage() {
             Every Story Has Its Own Style
           </h1>
           <p style={{ fontSize: 18, color: '#9ca3af', maxWidth: 600, margin: '0 auto', lineHeight: 1.65 }}>
-            6 designs across two worlds — from polished professional CVs
+            {showcaseCount} designs across two worlds — from polished professional CVs
             to bold creative statements. All built from scratch by BeOnWeb.
           </p>
         </div>

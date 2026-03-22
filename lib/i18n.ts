@@ -60,6 +60,13 @@ export const translations = {
             'A teal-accented executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingual'],
         },
+        {
+          label: 'Project Gamma',
+          role: 'HR & People Operations Leader',
+          description:
+            'A warm, minimal web CV for an HR professional who grew from Coordinator to Head of People across three companies — featuring a career timeline, soft-skills grid, and a values-led narrative.',
+          tags: ['HR', 'People Ops', 'Career Growth', 'Warm Palette'],
+        },
       ],
     },
     pricing: {
@@ -70,8 +77,8 @@ export const translations = {
       oneTime: 'one-time',
       plans: [
         {
-          name: 'Starter',
-          price: '20',
+          name: 'Basic',
+          price: '25',
           description: 'A first look at your web CV on a temporary domain.',
           features: [
             'Custom design (colors, fonts, layout)',
@@ -84,8 +91,8 @@ export const translations = {
           highlighted: false,
         },
         {
-          name: 'Basic',
-          price: '40',
+          name: 'Professional',
+          price: '55',
           description: 'Your web CV live on a custom domain, chosen together.',
           features: [
             'Custom design (colors, fonts, layout)',
@@ -100,11 +107,11 @@ export const translations = {
           highlighted: true,
         },
         {
-          name: 'Standard',
-          price: '50',
-          description: 'Everything in Basic, plus your source code and one free revision.',
+          name: 'Advanced',
+          price: '75',
+          description: 'Everything in Professional, plus your source code and one free revision.',
           features: [
-            'Everything in Basic',
+            'Everything in Professional',
             'Full source code delivered',
             '1 free change within 1 month of payment',
             'Free change can include a full site redesign',
@@ -135,8 +142,10 @@ export const translations = {
       subtitle:
         'Have a question or ready to get started? Drop us a message and we will get back to you shortly.',
       form: {
-        name: 'Your Name',
-        namePlaceholder: 'John Doe',
+        firstName: 'First Name',
+        firstNamePlaceholder: 'John',
+        lastName: 'Last Name',
+        lastNamePlaceholder: 'Doe',
         email: 'Email Address',
         emailPlaceholder: 'john@example.com',
         message: 'Message',
@@ -217,6 +226,13 @@ export const translations = {
             'Profilo executive con accento teal, sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
           tags: ['Consulting', 'Strategy', 'Executive', 'Multilingua'],
         },
+        {
+          label: 'Progetto Gamma',
+          role: 'HR & People Operations Leader',
+          description:
+            'CV web caldo e minimalista per una professionista HR cresciuta da Coordinator a Head of People in tre aziende — con timeline di carriera, griglia soft-skills e narrativa orientata ai valori.',
+          tags: ['HR', 'People Ops', 'Crescita Professionale', 'Palette Calda'],
+        },
       ],
     },
     pricing: {
@@ -227,8 +243,8 @@ export const translations = {
       oneTime: 'una tantum',
       plans: [
         {
-          name: 'Starter',
-          price: '20',
+          name: 'Basic',
+          price: '25',
           description: 'Una prima versione del tuo CV web su un dominio temporaneo.',
           features: [
             'Design personalizzato (colori, font, layout)',
@@ -241,8 +257,8 @@ export const translations = {
           highlighted: false,
         },
         {
-          name: 'Basic',
-          price: '40',
+          name: 'Professional',
+          price: '55',
           description: 'Il tuo CV web live su un dominio personalizzato, scelto insieme.',
           features: [
             'Design personalizzato (colori, font, layout)',
@@ -257,11 +273,11 @@ export const translations = {
           highlighted: true,
         },
         {
-          name: 'Standard',
-          price: '50',
-          description: 'Tutto incluso in Basic, più il codice sorgente e una modifica gratuita.',
+          name: 'Advanced',
+          price: '75',
+          description: 'Tutto incluso in Professional, più il codice sorgente e una modifica gratuita.',
           features: [
-            'Tutto incluso in Basic',
+            'Tutto incluso in Professional',
             'Codice sorgente consegnato',
             '1 modifica gratuita entro 1 mese dal pagamento',
             'La modifica può includere un redesign completo del sito',
@@ -292,8 +308,10 @@ export const translations = {
       subtitle:
         'Hai domande o vuoi iniziare? Scrivici un messaggio e ti risponderemo al più presto.',
       form: {
-        name: 'Il Tuo Nome',
-        namePlaceholder: 'Mario Rossi',
+        firstName: 'Nome',
+        firstNamePlaceholder: 'Mario',
+        lastName: 'Cognome',
+        lastNamePlaceholder: 'Rossi',
         email: 'Indirizzo Email',
         emailPlaceholder: 'mario@esempio.com',
         message: 'Messaggio',
