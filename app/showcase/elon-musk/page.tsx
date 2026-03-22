@@ -94,7 +94,7 @@ export default function ElonMuskPage() {
         {/* Overview */}
         <section id="overview" style={{ padding: '72px 64px 60px', borderBottom: `1px solid ${border}`, background: `radial-gradient(ellipse at 80% 30%, rgba(59,130,246,0.06), transparent 55%)` }}>
           <p className={dmMono.className} style={{ fontSize: 10, color: blue, letterSpacing: '0.3em', margin: '0 0 28px' }}>// OVERVIEW</p>
-          <h1 className={grotesk.className} style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 700, lineHeight: 1.05, margin: '0 0 28px', letterSpacing: '-0.03em', maxWidth: 700 }}>
+          <h1 className={grotesk.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.05, margin: '0 0 28px', letterSpacing: '-0.03em', maxWidth: 700 }}>
             Born in Pretoria.<br />
             <span style={{ color: blue }}>Raised by curiosity.</span>
           </h1>

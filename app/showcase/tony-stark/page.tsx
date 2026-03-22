@@ -79,7 +79,7 @@ export default function TonyStarkPage() {
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: red, display: 'inline-block' }} />
             <span className={orbitron.className} style={{ fontSize: 10, color: red, letterSpacing: '0.25em' }}>STARK INDUSTRIES // PERSONNEL FILE</span>
           </div>
-          <h1 className={orbitron.className} style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)', fontWeight: 900, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
+          <h1 className={orbitron.className} style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 900, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
             ANTHONY E.<br />
             <span style={{ color: red }}>STARK</span>
           </h1>

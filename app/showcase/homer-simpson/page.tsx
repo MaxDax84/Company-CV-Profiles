@@ -74,7 +74,7 @@ export default function HomerSimpsonPage() {
             <div style={{ fontSize: 64, lineHeight: 1 }}>🍩</div>
             <div>
               <p style={{ fontSize: 10, fontWeight: 800, color: blue, letterSpacing: '0.25em', margin: '0 0 4px' }}>SPRINGFIELD NUCLEAR POWER PLANT · EMPLOYEE PROFILE</p>
-              <h1 className={lilita.className} style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', color: blue, margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
+              <h1 className={lilita.className} style={{ fontSize: 'clamp(1.6rem, 4vw, 2.8rem)', color: blue, margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
                 HOMER J. SIMPSON
               </h1>
               <p style={{ fontWeight: 800, color: '#92400e', margin: '4px 0 0', fontSize: 15 }}>Nuclear Safety Inspector · Sector 7-G · Springfield, USA</p>

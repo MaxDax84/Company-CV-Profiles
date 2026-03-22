@@ -49,10 +49,10 @@ export default function AudreyHepburnPage() {
         <p className={cormorant.className} style={{ fontSize: 12, letterSpacing: '0.6em', color: gold, textTransform: 'uppercase', margin: '0 0 32px' }}>
           Actress · Humanitarian · Style Icon
         </p>
-        <h1 className={playfair.className} style={{ fontSize: 'clamp(5rem, 16vw, 13rem)', fontWeight: 900, lineHeight: 0.85, margin: '0 0 0', color: '#ffffff', letterSpacing: '-0.03em' }}>
+        <h1 className={playfair.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 0.9, margin: '0 0 0', color: '#ffffff', letterSpacing: '-0.02em' }}>
           Audrey
         </h1>
-        <h1 className={playfair.className} style={{ fontSize: 'clamp(5rem, 16vw, 13rem)', fontWeight: 400, fontStyle: 'italic', lineHeight: 0.85, color: gold, letterSpacing: '-0.02em', margin: '0 0 48px' }}>
+        <h1 className={playfair.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, fontStyle: 'italic', lineHeight: 0.9, color: gold, letterSpacing: '-0.01em', margin: '0 0 48px' }}>
           Hepburn
         </h1>
         <div style={{ width: 1, height: 80, background: `linear-gradient(to bottom, ${gold}, transparent)`, margin: '0 auto' }} />

@@ -55,7 +55,7 @@ export default function HermioneGrangerPage() {
         <div className="page-bg" style={{ padding: '64px 56px', marginBottom: 48, textAlign: 'center' }}>
           <p className={cinzel.className} style={{ fontSize: 10, color: burgundy, letterSpacing: '0.5em', margin: '0 0 24px' }}>HOGWARTS · MINISTRY OF MAGIC · GRYFFINDOR</p>
           <div style={{ fontSize: 40, marginBottom: 16 }}>⚡</div>
-          <h1 className={cinzel.className} style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 900, lineHeight: 1, color: ink, margin: '0 0 16px' }}>
+          <h1 className={cinzel.className} style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, lineHeight: 1, color: ink, margin: '0 0 16px' }}>
             Hermione<br />
             <span style={{ color: burgundy }}>Granger</span>
           </h1>

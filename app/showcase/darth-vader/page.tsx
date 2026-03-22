@@ -42,7 +42,7 @@ export default function DarthVaderPage() {
 
         {/* Title */}
         <div style={{ marginBottom: 56, textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 5rem)', fontWeight: 700, color: '#ffffff', letterSpacing: '0.1em', lineHeight: 1, margin: '0 0 12px' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, color: '#ffffff', letterSpacing: '0.1em', lineHeight: 1, margin: '0 0 12px' }}>
             DARTH VADER
           </h1>
           <p style={{ fontSize: 11, color: red, letterSpacing: '0.3em', margin: 0 }}>
