@@ -93,7 +93,7 @@ export default function HomerSimpsonPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', borderBottom: panelBorder }}>
 
           {/* Bio panel */}
-          <div className="panel" style={{ background: 'white', padding: '36px 40px', borderRight: panelBorder, borderRadius: 0, border: 'none', borderRight: panelBorder }}>
+          <div className="panel" style={{ background: 'white', padding: '36px 40px', borderRadius: 0, border: 'none', borderRight: panelBorder }}>
             <span className="panel-num">02</span>
             <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 16, marginTop: 8 }}>The Springfield Story</h2>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 16 }}>
