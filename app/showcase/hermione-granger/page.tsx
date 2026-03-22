@@ -7,289 +7,209 @@ const garamond = EB_Garamond({ subsets: ['latin'], weight: ['400', '500', '700',
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '600', '900'] })
 
 const gold = '#c9993f'
-const burgundy = '#9b1c1c'
-const darkBg = '#1a0508'
-const midBg = '#220810'
+const burgundy = '#7f1d1d'
 const parchment = '#fdf6e3'
 const ink = '#2c1810'
-const border = 'rgba(201,153,63,0.2)'
-const borderGold = 'rgba(201,153,63,0.5)'
-
-const years = [
-  {
-    year: '1991 – 1992',
-    title: 'First Year',
-    subtitle: 'Arrival at Hogwarts',
-    color: gold,
-    desc: 'Arrived knowing more spells than most third-years. Immediately the top student in every class. Made two friends by helping defeat a mountain troll. The pattern was set.',
-  },
-  {
-    year: '1992 – 1993',
-    title: 'Second Year',
-    subtitle: 'The Chamber of Secrets',
-    color: gold,
-    desc: 'Correctly identified the Basilisk from library research alone — while Petrified. Left the cure in her hand for others to find. Solved the mystery from inside the hospital wing.',
-  },
-  {
-    year: '1993 – 1994',
-    title: 'Third Year',
-    subtitle: 'Time & Justice',
-    color: gold,
-    desc: 'Carried a Time-Turner to attend extra classes. Used it to save two innocent lives in one night. Achieved 11 O.W.L.s — the highest in her year, possibly in Hogwarts history.',
-  },
-  {
-    year: '1994 – 1995',
-    title: 'Fourth Year',
-    subtitle: 'S.P.E.W. & The Triwizard',
-    color: gold,
-    desc: 'Founded S.P.E.W. — Society for the Promotion of Elfish Welfare. Single-handedly raised awareness of magical creature rights. Became Viktor Krum\'s date at the Yule Ball. Refused to apologise for either.',
-  },
-  {
-    year: '1995 – 1998',
-    title: 'Fifth → Seventh Year',
-    subtitle: 'The War',
-    color: burgundy,
-    desc: 'Co-founded Dumbledore\'s Army. Tortured by Bellatrix Lestrange — did not break. Obliviated her parents to protect them. Hunted Horcruxes across Britain. Helped end Voldemort\'s reign. Age 18.',
-  },
-]
-
-const career = [
-  {
-    period: '1998 – 2000',
-    title: 'Magical Law Enforcement',
-    org: 'Ministry of Magic · Department of Magical Law Enforcement',
-    color: gold,
-    points: [
-      'Returned to Hogwarts to complete N.E.W.T.s post-war — 7 Outstanding, 3 Exceeds Expectations',
-      'Joined the Ministry as junior counsel; helped rebuild wizarding legal framework shattered by Voldemort\'s regime',
-    ],
-  },
-  {
-    period: '2000 – 2007',
-    title: 'Dept. for Regulation of Magical Creatures',
-    org: 'Ministry of Magic · Senior Counsel → Head of Division',
-    color: gold,
-    points: [
-      'Drafted and passed historic House-Elf Rights Legislation — the first of its kind in wizarding Britain',
-      'Promoted three times in seven years; overhauled creature welfare policy across all 11 wizarding departments',
-    ],
-  },
-  {
-    period: '2007 – 2019',
-    title: 'Deputy Minister for Magic',
-    org: 'Ministry of Magic · Office of the Minister',
-    color: burgundy,
-    points: [
-      'Youngest Deputy Minister in Ministry history — appointed at 28',
-      'Spearheaded Wizengamot reform, the Muggle Relations Act, and cross-ministry transparency initiatives',
-    ],
-  },
-  {
-    period: '2019 → Present',
-    title: 'Minister for Magic',
-    org: 'Ministry of Magic · London',
-    color: '#d97706',
-    points: [
-      'Historic appointment: youngest ever, and first Muggle-born Minister for Magic in British wizarding history',
-      'Ongoing work on international wizarding cooperation, magical education reform, and creature rights expansion',
-    ],
-  },
-]
+const darkBg = '#1a0508'
 
 export default function HermioneGrangerPage() {
   return (
-    <div className={garamond.className} style={{ background: darkBg, color: parchment, overflowX: 'hidden' }}>
-      <style>{`html { scroll-behavior: smooth; }`}</style>
+    <div style={{ background: darkBg, minHeight: '100vh' }}>
+      <style>{`
+        html { scroll-behavior: smooth; }
+        .page-bg {
+          background: ${parchment};
+          color: ${ink};
+          box-shadow: 0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,153,63,0.2);
+        }
+        .margin-note {
+          position: absolute;
+          right: -200px;
+          width: 170px;
+          font-style: italic;
+          font-size: 12px;
+          color: rgba(127,29,29,0.7);
+          line-height: 1.65;
+          border-left: 2px solid rgba(201,153,63,0.3);
+          padding-left: 12px;
+        }
+        @media (max-width: 1100px) {
+          .margin-note { display: none; }
+        }
+      `}</style>
 
       {/* Top stripe */}
       <div style={{ height: 4, background: `linear-gradient(90deg, ${burgundy}, ${gold}, ${burgundy})` }} />
 
-      {/* NAVBAR */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(26,5,8,0.95)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${borderGold}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.2em', fontWeight: 600 }}>H·G</span>
-          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
-            {[['#story', 'The Story'], ['#hogwarts', 'Hogwarts'], ['#ministry', 'Ministry'], ['#legacy', 'Legacy']].map(([href, label]) => (
-              <a key={href} href={href} className={cinzel.className} style={{ fontSize: 11, color: 'rgba(201,153,63,0.5)', textDecoration: 'none', letterSpacing: '0.15em' }}
-                onMouseEnter={e => (e.currentTarget.style.color = gold)}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(201,153,63,0.5)')}
-              >{label}</a>
-            ))}
-            <Link href="/showcase" className={cinzel.className} style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', textDecoration: 'none', letterSpacing: '0.1em' }}>← SHOWCASE</Link>
-          </div>
-        </div>
-      </nav>
+      {/* Running header */}
+      <div style={{ padding: '14px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/showcase" className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.4)', textDecoration: 'none', letterSpacing: '0.2em' }}>← SHOWCASE</Link>
+        <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.3em', margin: 0 }}>THE LIFE OF HERMIONE JEAN GRANGER</p>
+        <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.15em', margin: 0 }}>BeOnWeb · Style Showcase</p>
+      </div>
 
-      {/* HERO */}
-      <section style={{ minHeight: '90vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden', background: `radial-gradient(ellipse at 60% 30%, rgba(201,153,63,0.08), transparent 55%), ${darkBg}` }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `linear-gradient(rgba(201,153,63,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201,153,63,0.03) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
-        <div style={{ position: 'relative', maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '5px 16px', background: 'rgba(201,153,63,0.08)', border: `1px solid ${borderGold}`, borderRadius: 99, marginBottom: 32 }}>
-            <span>⚡</span>
-            <span className={cinzel.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em' }}>HOGWARTS · MINISTRY OF MAGIC · GRYFFINDOR</span>
-          </div>
+      {/* Content: centered book column */}
+      <div style={{ maxWidth: 700, margin: '0 auto', padding: '24px 40px 100px', position: 'relative' }}>
 
-          <h1 className={cinzel.className} style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)', fontWeight: 900, lineHeight: 0.9, margin: '0 0 28px', letterSpacing: '0.03em' }}>
-            HERMIONE<br />
-            <span style={{ color: gold }}>GRANGER</span>
+        {/* ── FRONTISPIECE ── */}
+        <div className="page-bg" style={{ padding: '64px 56px', marginBottom: 48, textAlign: 'center' }}>
+          <p className={cinzel.className} style={{ fontSize: 10, color: burgundy, letterSpacing: '0.5em', margin: '0 0 24px' }}>HOGWARTS · MINISTRY OF MAGIC · GRYFFINDOR</p>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>⚡</div>
+          <h1 className={cinzel.className} style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 900, lineHeight: 1, color: ink, margin: '0 0 16px' }}>
+            Hermione<br />
+            <span style={{ color: burgundy }}>Granger</span>
           </h1>
-
-          <p className={garamond.className} style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'rgba(253,246,227,0.6)', maxWidth: 520, lineHeight: 1.85, marginBottom: 48, fontStyle: 'italic', fontWeight: 400 }}>
-            Muggle-born. Head Girl. War hero. Minister for Magic.
-            The brightest witch of her age — a title she earned not by birthright,
-            but by an unrelenting refusal to stop learning.
+          <div style={{ width: 80, height: 2, background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: '20px auto' }} />
+          <p className={garamond.className} style={{ fontSize: 16, color: '#6b4226', fontStyle: 'italic', margin: '0 0 40px' }}>
+            Witch · Scholar · Minister for Magic
           </p>
-
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            {[['O.W.L.s', '11', gold], ['N.E.W.T.s', '10', gold], ['BOOKS READ', '∞', burgundy], ['MINISTER', '2019→', '#d97706']].map(([k, v, c]) => (
-              <div key={k} style={{ padding: '14px 20px', background: 'rgba(201,153,63,0.06)', border: `1px solid ${border}`, borderRadius: 8, minWidth: 110 }}>
-                <p className={cinzel.className} style={{ fontSize: 20, fontWeight: 900, color: c as string, margin: 0, lineHeight: 1 }}>{v}</p>
-                <p className={cinzel.className} style={{ fontSize: 9, color: 'rgba(201,153,63,0.4)', margin: '4px 0 0', letterSpacing: '0.2em' }}>{k}</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap' }}>
+            {[['Born', '19 September 1979'], ['House', 'Gryffindor'], ['O.W.L.s', '11 Outstanding'], ['Position', 'Minister for Magic']].map(([k, v]) => (
+              <div key={k} style={{ textAlign: 'center' }}>
+                <p className={cinzel.className} style={{ fontSize: 9, color: gold, letterSpacing: '0.2em', margin: '0 0 3px' }}>{k}</p>
+                <p className={garamond.className} style={{ fontSize: 14, color: ink, margin: 0, fontWeight: 700 }}>{v}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* THE STORY */}
-      <section id="story" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
-          <p className={cinzel.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.4em', marginBottom: 20 }}>// 01 THE STORY</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
-            <div>
-              <h2 className={cinzel.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 32px' }}>
-                BORN MUGGLE.<br />
-                <span style={{ color: gold }}>BECAME LEGEND.</span>
-              </h2>
-              <blockquote style={{ borderLeft: `3px solid ${gold}`, paddingLeft: 24 }}>
-                <p className={garamond.className} style={{ fontSize: 18, color: parchment, fontStyle: 'italic', margin: 0, lineHeight: 1.75, fontWeight: 400 }}>
-                  &ldquo;Books! And cleverness! There are more important things — friendship and bravery.&rdquo;
-                </p>
-                <p className={cinzel.className} style={{ fontSize: 11, color: gold, marginTop: 14, letterSpacing: '0.1em' }}>— Hermione Granger, 1997</p>
-              </blockquote>
-            </div>
-            <div>
-              <p className={garamond.className} style={{ fontSize: 16, color: 'rgba(253,246,227,0.7)', lineHeight: 1.9, marginBottom: 20, fontWeight: 400 }}>
-                Born 19 September 1979 to Jean and Robert Granger, two perfectly ordinary Muggle dentists.
-                She received her Hogwarts letter at eleven — and nothing was ordinary again.
-                She arrived at school having memorised every textbook, spoken to no one,
-                and convinced the entire train carriage she was insufferable.
+        {/* ── CHAPTER I ── */}
+        <div style={{ position: 'relative', marginBottom: 48 }}>
+          <div style={{ marginBottom: 32, textAlign: 'center' }}>
+            <p className={cinzel.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', color: 'rgba(201,153,63,0.15)', lineHeight: 1, margin: '0 0 -12px', fontWeight: 900 }}>I</p>
+            <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>THE MUGGLE-BORN PRODIGY</p>
+          </div>
+
+          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+            <span className="margin-note">She arrived knowing more than most third-years. The teachers noticed on day one.</span>
+
+            {/* Drop cap */}
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 20 }}>
+              <span className={cinzel.className} style={{ float: 'left', fontSize: '4.2em', lineHeight: 0.75, paddingRight: 10, paddingTop: 8, color: burgundy, fontWeight: 900 }}>B</span>
+              orn on 19 September 1979 to Jean and Robert Granger — two perfectly ordinary Muggle dentists from Hampstead — Hermione Jean Granger received her Hogwarts letter at the age of eleven. She had already read every book on the list twice.
+            </p>
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 20 }}>
+              She arrived at Hogwarts knowing more spells than most third-years, having memorised <em>Magical Theory</em> by Adalbert Waffling, <em>A History of Magic</em> by Bathilda Bagshot, and <em>Hogwarts: A History</em> in its entirety. Her first words to Harry Potter and Ron Weasley were a correction.
+            </p>
+
+            <blockquote style={{ borderLeft: `3px solid ${gold}`, paddingLeft: 24, margin: '28px 0' }}>
+              <p className={garamond.className} style={{ fontSize: 20, fontStyle: 'italic', color: ink, margin: 0, lineHeight: 1.75 }}>
+                &ldquo;Books! And cleverness! There are more important things — friendship and bravery.&rdquo;
               </p>
-              <p className={garamond.className} style={{ fontSize: 16, color: 'rgba(253,246,227,0.7)', lineHeight: 1.9, fontWeight: 400 }}>
-                She was also, without question, the best student Hogwarts had seen in a generation.
-                She would go on to risk her life for the wizarding world that had not been hers by birth —
-                then spend her career making sure that world was more just than she found it.
-              </p>
-            </div>
+              <p className={cinzel.className} style={{ fontSize: 11, color: gold, marginTop: 12, letterSpacing: '0.1em' }}>— Hermione Granger, 1997</p>
+            </blockquote>
+
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 0 }}>
+              She made two friends that first year by helping them survive a mountain troll. The pattern was set: extraordinary competence deployed in service of people she cared about, at considerable personal risk.
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* HOGWARTS YEARS */}
-      <section id="hogwarts" style={{ background: darkBg }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
-          <p className={cinzel.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.4em', marginBottom: 20 }}>// 02 SEVEN YEARS AT HOGWARTS</p>
-          <h2 className={cinzel.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 56px' }}>
-            Seven years.<br />
-            <span style={{ color: gold }}>One war at the end of it.</span>
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {years.map((y) => (
-              <div key={y.year}
-                style={{ background: 'rgba(201,153,63,0.04)', border: `1px solid ${border}`, borderRadius: 8, padding: '24px 28px', display: 'grid', gridTemplateColumns: '200px 1fr', gap: 32, transition: 'all 0.3s ease', cursor: 'default' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = borderGold; el.style.background = 'rgba(201,153,63,0.08)'; el.style.transform = 'translateX(4px)' }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = border; el.style.background = 'rgba(201,153,63,0.04)'; el.style.transform = 'translateX(0)' }}
-              >
-                <div>
-                  <p className={cinzel.className} style={{ fontSize: 10, color: gold, margin: '0 0 4px', letterSpacing: '0.12em' }}>{y.year}</p>
-                  <p className={cinzel.className} style={{ fontSize: 14, fontWeight: 900, color: parchment, margin: '0 0 4px' }}>{y.title}</p>
-                  <p className={garamond.className} style={{ fontSize: 13, color: 'rgba(201,153,63,0.6)', margin: 0, fontStyle: 'italic' }}>{y.subtitle}</p>
+        {/* Ornamental divider */}
+        <div style={{ textAlign: 'center', margin: '40px 0' }}>
+          <p className={cinzel.className} style={{ color: 'rgba(201,153,63,0.4)', letterSpacing: '0.5em', fontSize: 14 }}>✦ ✦ ✦</p>
+        </div>
+
+        {/* ── CHAPTER II ── */}
+        <div style={{ position: 'relative', marginBottom: 48 }}>
+          <div style={{ marginBottom: 32, textAlign: 'center' }}>
+            <p className={cinzel.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', color: 'rgba(201,153,63,0.15)', lineHeight: 1, margin: '0 0 -12px', fontWeight: 900 }}>II</p>
+            <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>SEVEN YEARS AT HOGWARTS</p>
+          </div>
+
+          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+            <span className="margin-note" style={{ top: 80 }}>She achieved 11 O.W.L.s — the highest marks in Hogwarts history for her year.</span>
+
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 28 }}>
+              Over seven years, Hermione Granger accumulated a record that Hogwarts had not seen in a generation: 11 O.W.L.s Outstanding, 10 N.E.W.T.s, Prefect and Head Girl, founder of S.P.E.W. (the Society for the Promotion of Elfish Welfare), and the only student known to have used a Time-Turner to attend classes — not to bend time, but to read more books.
+            </p>
+
+            {/* Academic record — inline table style */}
+            <div style={{ marginBottom: 28, borderTop: `1px solid rgba(127,29,29,0.2)`, borderBottom: `1px solid rgba(127,29,29,0.2)` }}>
+              {[
+                ['O.W.L.s Achieved', '11 Outstanding'],
+                ['N.E.W.T.s Achieved', '7 Outstanding · 3 Exceeds Expectations'],
+                ['House', 'Gryffindor'],
+                ['Positions Held', 'Prefect · Head Girl'],
+                ['Distinctions', 'Time-Turner usage approved, Ministry of Magic · 1993'],
+              ].map(([k, v], i) => (
+                <div key={k} style={{ display: 'grid', gridTemplateColumns: '220px 1fr', padding: '10px 0', borderBottom: i < 4 ? `1px solid rgba(127,29,29,0.1)` : 'none' }}>
+                  <p className={cinzel.className} style={{ fontSize: 11, color: burgundy, margin: 0, letterSpacing: '0.1em' }}>{k}</p>
+                  <p className={garamond.className} style={{ fontSize: 16, color: ink, margin: 0 }}>{v}</p>
                 </div>
-                <p className={garamond.className} style={{ fontSize: 15, color: 'rgba(253,246,227,0.65)', margin: 0, lineHeight: 1.8 }}>{y.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 0 }}>
+              In her fifth year she co-founded Dumbledore&apos;s Army — an illegal student defence group operating beneath Dolores Umbridge&apos;s nose. In her seventh year she was tortured by Bellatrix Lestrange, did not break, and helped destroy Voldemort&apos;s soul fragments across Britain while camping in a tent and keeping everyone fed. She was eighteen years old.
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* MINISTRY CAREER */}
-      <section id="ministry" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
-          <p className={cinzel.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.4em', marginBottom: 20 }}>// 03 MINISTRY OF MAGIC</p>
-          <h2 className={cinzel.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 56px' }}>
-            Youngest Minister.<br />
-            <span style={{ color: gold }}>Not by accident.</span>
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {career.map((c) => (
-              <div key={c.title}
-                style={{ background: 'rgba(201,153,63,0.04)', border: `1px solid ${border}`, borderRadius: 8, padding: '28px 32px', transition: 'all 0.3s ease', cursor: 'default' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = borderGold; el.style.background = 'rgba(201,153,63,0.08)'; el.style.transform = 'translateX(4px)' }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = border; el.style.background = 'rgba(201,153,63,0.04)'; el.style.transform = 'translateX(0)' }}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 32 }}>
+        {/* Ornamental divider */}
+        <div style={{ textAlign: 'center', margin: '40px 0' }}>
+          <p className={cinzel.className} style={{ color: 'rgba(201,153,63,0.4)', letterSpacing: '0.5em', fontSize: 14 }}>✦ ✦ ✦</p>
+        </div>
+
+        {/* ── CHAPTER III ── */}
+        <div style={{ position: 'relative', marginBottom: 48 }}>
+          <div style={{ marginBottom: 32, textAlign: 'center' }}>
+            <p className={cinzel.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', color: 'rgba(201,153,63,0.15)', lineHeight: 1, margin: '0 0 -12px', fontWeight: 900 }}>III</p>
+            <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>THE MINISTRY OF MAGIC</p>
+          </div>
+
+          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+            <span className="margin-note" style={{ top: 48 }}>Youngest Minister for Magic in recorded history. First Muggle-born to hold the office.</span>
+
+            <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 28 }}>
+              After the war, Hermione returned to Hogwarts to sit her N.E.W.T.s. Nobody was surprised by the results. She joined the Ministry of Magic as a junior counsel in 1998 — and began dismantling, piece by piece, every piece of discriminatory legislation she had found unconscionable since the age of thirteen.
+            </p>
+
+            {/* Career entries */}
+            <div style={{ marginBottom: 28 }}>
+              {[
+                { period: '1998–2000', role: 'Junior Counsel', dept: 'Department for Magical Law Enforcement', note: 'Helped rebuild wizarding legal framework shattered by Voldemort\'s regime.' },
+                { period: '2000–2007', role: 'Senior Counsel → Head of Division', dept: 'Department for Regulation of Magical Creatures', note: 'Drafted and passed historic House-Elf Rights Legislation. Promoted three times.' },
+                { period: '2007–2019', role: 'Deputy Minister for Magic', dept: 'Office of the Minister', note: 'Youngest Deputy in history. Wizengamot reform, Muggle Relations Act, Ministry transparency.' },
+                { period: '2019→', role: 'Minister for Magic', dept: 'Ministry of Magic, London', note: 'Youngest ever. First Muggle-born. Still in office. Still reading every brief.' },
+              ].map((c, i) => (
+                <div key={c.role} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 24, paddingBottom: 20, marginBottom: 20, borderBottom: i < 3 ? `1px solid rgba(127,29,29,0.15)` : 'none' }}>
+                  <p className={cinzel.className} style={{ fontSize: 11, color: gold, margin: 0, fontWeight: 600 }}>{c.period}</p>
                   <div>
-                    <p className={cinzel.className} style={{ fontSize: 10, color: c.color, margin: '0 0 6px', letterSpacing: '0.12em' }}>{c.period}</p>
-                    <p className={cinzel.className} style={{ fontSize: 14, fontWeight: 900, color: parchment, margin: '0 0 4px' }}>{c.title}</p>
-                    <p className={garamond.className} style={{ fontSize: 12, color: 'rgba(253,246,227,0.35)', margin: 0, fontStyle: 'italic' }}>{c.org}</p>
+                    <p className={cinzel.className} style={{ fontSize: 13, color: ink, margin: '0 0 2px', fontWeight: 900 }}>{c.role}</p>
+                    <p className={garamond.className} style={{ fontSize: 14, color: burgundy, margin: '0 0 6px', fontStyle: 'italic' }}>{c.dept}</p>
+                    <p className={garamond.className} style={{ fontSize: 17, color: '#5a3020', margin: 0, lineHeight: 1.65 }}>{c.note}</p>
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {c.points.map(pt => (
-                      <li key={pt} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                        <span style={{ color: gold, fontSize: 12, marginTop: 3, flexShrink: 0 }}>✦</span>
-                        <span className={garamond.className} style={{ fontSize: 15, color: 'rgba(253,246,227,0.65)', lineHeight: 1.75 }}>{pt}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LEGACY */}
-      <section id="legacy" style={{ background: darkBg }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
-          <p className={cinzel.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.4em', marginBottom: 20 }}>// 04 LEGACY</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
-            <div>
-              {/* Parchment card */}
-              <div style={{ background: parchment, borderRadius: 4, padding: '36px 32px', color: ink, border: `2px solid rgba(201,153,63,0.4)`, boxShadow: `0 16px 48px rgba(0,0,0,0.6), inset 0 0 60px rgba(201,153,63,0.06)` }}>
-                <p className={cinzel.className} style={{ fontSize: 11, color: burgundy, letterSpacing: '0.2em', marginBottom: 16 }}>FROM THE OFFICE OF THE MINISTER</p>
-                <p className={garamond.className} style={{ fontSize: 17, color: ink, lineHeight: 1.85, margin: '0 0 20px', fontStyle: 'italic' }}>
-                  &ldquo;Brightest witch of her age. Bravest person I know.
-                  If I had to face Voldemort again, she&apos;d be the one I&apos;d want beside me.&rdquo;
-                </p>
-                <p className={cinzel.className} style={{ fontSize: 11, color: burgundy, margin: 0, letterSpacing: '0.1em' }}>— Harry Potter, 2024</p>
-              </div>
-            </div>
-            <div>
-              <p className={garamond.className} style={{ fontSize: 16, color: 'rgba(253,246,227,0.65)', lineHeight: 1.9, marginBottom: 20 }}>
-                Hermione Granger did not inherit the wizarding world. She earned her place in it
-                with 11 O.W.L.s, a Time-Turner, and more moral courage than anyone around her.
-                She fought in a war she didn&apos;t have to fight, for a world that had once called her &ldquo;Mudblood.&rdquo;
-              </p>
-              <p className={garamond.className} style={{ fontSize: 16, color: 'rgba(253,246,227,0.65)', lineHeight: 1.9 }}>
-                As Minister for Magic, she continues doing what she always has:
-                reading every brief, questioning every assumption, and refusing to let
-                the word &ldquo;impossible&rdquo; end a conversation.
-              </p>
+              ))}
             </div>
           </div>
         </div>
-      </section>
 
-      <div style={{ height: 4, background: `linear-gradient(90deg, ${burgundy}, ${gold}, ${burgundy})` }} />
+        {/* Ornamental divider */}
+        <div style={{ textAlign: 'center', margin: '40px 0' }}>
+          <p className={cinzel.className} style={{ color: 'rgba(201,153,63,0.4)', letterSpacing: '0.5em', fontSize: 14 }}>✦ ✦ ✦</p>
+        </div>
 
-      <footer style={{ background: midBg, padding: '24px 32px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.2)', letterSpacing: '0.2em' }}>MINISTRY OF MAGIC · OFFICIAL RECORD</span>
-          <p className={garamond.className} style={{ fontSize: 12, color: 'rgba(253,246,227,0.25)', margin: 0, fontStyle: 'italic' }}>
+        {/* ── CLOSING — author's note style ── */}
+        <div className="page-bg" style={{ padding: '48px 56px', marginBottom: 48, textAlign: 'center' }}>
+          <p className={cinzel.className} style={{ fontSize: 10, color: burgundy, letterSpacing: '0.4em', margin: '0 0 24px' }}>A NOTE ON THE SUBJECT</p>
+          <p className={garamond.className} style={{ fontSize: 20, lineHeight: 1.9, color: '#3d1f14', fontStyle: 'italic', marginBottom: 20 }}>
+            &ldquo;The brightest witch of her age did not inherit the wizarding world. She earned every inch of it — and spent the rest of her life making it more just than she found it.&rdquo;
+          </p>
+          <div style={{ width: 60, height: 1, background: gold, margin: '24px auto' }} />
+          <p className={cinzel.className} style={{ fontSize: 11, color: gold, letterSpacing: '0.2em', margin: 0 }}>HARRY POTTER · 2024</p>
+        </div>
+
+        {/* Bottom stripe + footer */}
+        <div style={{ height: 3, background: `linear-gradient(90deg, ${burgundy}, ${gold}, ${burgundy})`, marginBottom: 24 }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', margin: 0, letterSpacing: '0.2em' }}>MINISTRY OF MAGIC · OFFICIAL RECORD</p>
+          <p className={garamond.className} style={{ fontSize: 13, color: 'rgba(201,153,63,0.4)', margin: 0, fontStyle: 'italic' }}>
             Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
           </p>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }

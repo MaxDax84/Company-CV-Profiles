@@ -9,213 +9,220 @@ const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800']
 const yellow = '#fbbf24'
 const blue = '#1d4ed8'
 const orange = '#f97316'
-const darkBlue = '#1e3a8a'
-
-const adventures = [
-  {
-    emoji: '☢️',
-    title: 'Nuclear Safety Inspector',
-    org: 'Springfield Nuclear Power Plant · 1989 → Now',
-    color: orange,
-    desc: 'Sector 7-G. Responsible for preventing meltdown. Has caused 3 near-meltdowns. Fired 27 times. Rehired 27 times. Mr. Burns gave up.',
-  },
-  {
-    emoji: '🚀',
-    title: 'NASA Astronaut',
-    org: 'Kennedy Space Center · 1994',
-    color: blue,
-    desc: 'Selected as the average American for a space mission. Caused chaos in zero gravity. Ate all the food. Still counts it on his resume.',
-  },
-  {
-    emoji: '🎤',
-    title: 'Country Music Singer',
-    org: 'Capitol Records · "Homer in the House"',
-    color: yellow,
-    desc: 'Brief but passionate music career. One hit single. Briefly famous. Immediately forgotten. No regrets.',
-  },
-  {
-    emoji: '🥊',
-    title: 'Professional Boxer',
-    org: 'Springfield Boxing Commission · 1997',
-    color: orange,
-    desc: 'Managed by Moe Szyslak. Won by sheer ability to absorb punishment. Faced Drederick Tatum. Did not win. Did not quit.',
-  },
-  {
-    emoji: '🎮',
-    title: 'Food Critic & Various',
-    org: 'Springfield Shopper / Multiple Employers',
-    color: blue,
-    desc: 'Positive reviews only. Grease recycling entrepreneur. Snowplow operator. Mayor\'s aide. The list goes on. It always goes on.',
-  },
-]
+const red = '#dc2626'
+const panelBorder = '3px solid #111827'
+const panelRadius = 0
 
 export default function HomerSimpsonPage() {
   return (
-    <div className={nunito.className} style={{ background: '#fffbeb', color: '#1e293b', overflowX: 'hidden' }}>
-      <style>{`html { scroll-behavior: smooth; }`}</style>
+    <div className={nunito.className} style={{ background: '#f8fafc', color: '#111827', minHeight: '100vh' }}>
+      <style>{`
+        html { scroll-behavior: smooth; }
+        .panel {
+          border: ${panelBorder};
+          border-radius: ${panelRadius}px;
+          overflow: hidden;
+          position: relative;
+        }
+        .panel-num {
+          position: absolute;
+          top: 8px;
+          left: 10px;
+          font-size: 10px;
+          font-weight: 800;
+          color: rgba(0,0,0,0.25);
+          letter-spacing: 0.1em;
+          font-family: sans-serif;
+        }
+        .speech {
+          display: inline-block;
+          background: white;
+          border: 2.5px solid #111827;
+          border-radius: 16px;
+          padding: 10px 16px;
+          position: relative;
+          font-weight: 700;
+        }
+        .speech::after {
+          content: '';
+          position: absolute;
+          bottom: -12px;
+          left: 20px;
+          width: 0; height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-top: 12px solid #111827;
+        }
+        .speech::before {
+          content: '';
+          position: absolute;
+          bottom: -9px;
+          left: 21px;
+          width: 0; height: 0;
+          border-left: 7px solid transparent;
+          border-right: 7px solid transparent;
+          border-top: 11px solid white;
+          z-index: 1;
+        }
+      `}</style>
 
-      {/* NAVBAR */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: yellow, borderBottom: `3px solid ${blue}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span className={lilita.className} style={{ fontSize: 18, color: blue, letterSpacing: '0.05em' }}>HJ</span>
-          <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
-            {[['#story', 'The Story'], ['#adventures', 'Adventures'], ['#family', 'Family'], ['#passions', 'Passions']].map(([href, label]) => (
-              <a key={href} href={href} style={{ fontSize: 13, color: darkBlue, textDecoration: 'none', fontWeight: 700 }}
-                onMouseEnter={e => (e.currentTarget.style.color = blue)}
-                onMouseLeave={e => (e.currentTarget.style.color = darkBlue)}
-              >{label}</a>
-            ))}
-            <Link href="/showcase" style={{ fontSize: 13, color: '#92400e', textDecoration: 'none', fontWeight: 700 }}>← Showcase</Link>
+      {/* ── PANEL 01: TITLE BANNER ── */}
+      <div className="panel" style={{ background: yellow, borderBottom: panelBorder }}>
+        <span className="panel-num">01</span>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '28px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <div style={{ fontSize: 64, lineHeight: 1 }}>🍩</div>
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 800, color: blue, letterSpacing: '0.25em', margin: '0 0 4px' }}>SPRINGFIELD NUCLEAR POWER PLANT · EMPLOYEE PROFILE</p>
+              <h1 className={lilita.className} style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', color: blue, margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
+                HOMER J. SIMPSON
+              </h1>
+              <p style={{ fontWeight: 800, color: '#92400e', margin: '4px 0 0', fontSize: 15 }}>Nuclear Safety Inspector · Sector 7-G · Springfield, USA</p>
+            </div>
+          </div>
+          <Link href="/showcase" style={{ fontSize: 13, color: blue, fontWeight: 800, textDecoration: 'none', border: `2px solid ${blue}`, padding: '8px 16px', background: 'white' }}>
+            ← Back
+          </Link>
+        </div>
+      </div>
+
+      {/* ── MAIN COMIC GRID ── */}
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+
+        {/* ROW 1: Bio (2/3) + Stats (1/3) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', borderBottom: panelBorder }}>
+
+          {/* Bio panel */}
+          <div className="panel" style={{ background: 'white', padding: '36px 40px', borderRight: panelBorder, borderRadius: 0, border: 'none', borderRight: panelBorder }}>
+            <span className="panel-num">02</span>
+            <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 16, marginTop: 8 }}>The Springfield Story</h2>
+            <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 16 }}>
+              Born <strong>May 12, 1956</strong> in Springfield — a city in a state nobody can identify. Son of Abe and Mona Simpson. Attended Springfield High School and graduated, somewhat miraculously, despite losing significant brain function to a crayon lodged in his nasal cavity.
+            </p>
+            <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 24 }}>
+              Met Marge Bouvier at a detention in 1974. Has been inseparable from her — and never fully understood why she chose him — ever since. They have three children, a dog, a cat, and a car that shouldn't still be running.
+            </p>
+            <div style={{ marginTop: 8 }}>
+              <div className="speech" style={{ fontSize: 20, marginBottom: 16 }}>
+                &ldquo;D&apos;oh!&rdquo;
+              </div>
+              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 20, fontWeight: 700 }}>— Homer, approximately 4,000× per season</p>
+            </div>
+          </div>
+
+          {/* Stats panel */}
+          <div className="panel" style={{ background: yellow, padding: '36px 28px', border: 'none' }}>
+            <span className="panel-num">03</span>
+            <h2 className={lilita.className} style={{ fontSize: 22, color: blue, marginBottom: 20, marginTop: 8 }}>By the Numbers</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                ['🍩', '∞', 'Donuts consumed'],
+                ['🍺', '∞', 'Duff beers'],
+                ['💥', '17', 'Near-meltdowns'],
+                ['😴', '3/day', 'Naps at work'],
+                ['🚀', '1', 'Space missions'],
+                ['❤️', '3', 'Children'],
+                ['🏆', '1', 'Employee of the Month'],
+              ].map(([icon, val, label]) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'white', border: `2px solid ${blue}`, padding: '8px 12px' }}>
+                  <span style={{ fontSize: 18 }}>{icon}</span>
+                  <span className={lilita.className} style={{ fontSize: 20, color: blue, minWidth: 36 }}>{val}</span>
+                  <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 700 }}>{label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </nav>
 
-      {/* HERO */}
-      <section style={{ background: yellow, minHeight: '80vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden', borderBottom: `4px solid ${blue}` }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle at 80% 50%, rgba(29,78,216,0.08), transparent 50%)` }} />
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px', position: 'relative' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', background: 'rgba(29,78,216,0.1)', border: `2px solid ${blue}`, borderRadius: 99, marginBottom: 28 }}>
-            <span>🍩</span>
-            <span style={{ fontSize: 11, fontWeight: 800, color: blue, letterSpacing: '0.2em' }}>SPRINGFIELD NUCLEAR POWER PLANT · EMPLOYEE OF THE MONTH (ONCE)</span>
-          </div>
-          <h1 className={lilita.className} style={{ fontSize: 'clamp(4rem, 12vw, 9rem)', color: blue, lineHeight: 0.88, margin: '0 0 24px', letterSpacing: '-0.01em' }}>
-            HOMER J.<br />SIMPSON
-          </h1>
-          <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)', color: darkBlue, maxWidth: 540, lineHeight: 1.75, marginBottom: 48, fontWeight: 600 }}>
-            Nuclear safety inspector. Amateur astronaut. Part-time genius.
-            Full-time husband and father. Springfield&apos;s most loveable disaster —
-            and the heart of the best family on television.
+        {/* ROW 2: Adventures (full width, 3 cols) */}
+        <div className="panel" style={{ border: 'none', borderBottom: panelBorder, background: '#fff7ed', padding: '36px 40px' }}>
+          <span className="panel-num">04</span>
+          <h2 className={lilita.className} style={{ fontSize: 26, color: orange, marginBottom: 28, marginTop: 8 }}>Adventures & Side Jobs</h2>
+          <p style={{ fontSize: 13, fontWeight: 800, color: '#9a3412', letterSpacing: '0.1em', marginBottom: 20 }}>
+            HOMER HAS DONE IT ALL. USUALLY BY ACCIDENT.
           </p>
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            {[['🍩', 'DONUTS TODAY', '∞'], ['🍺', 'DUFF BEERS', '∞'], ['💥', 'NEAR MELTDOWNS', '17'], ['❤️', 'KIDS', '3']].map(([icon, k, v]) => (
-              <div key={k} style={{ padding: '14px 20px', background: 'white', border: `3px solid ${blue}`, borderRadius: 16, boxShadow: `4px 4px 0 ${blue}`, minWidth: 110, textAlign: 'center' }}>
-                <div style={{ fontSize: 20, marginBottom: 4 }}>{icon}</div>
-                <p className={lilita.className} style={{ fontSize: 22, color: blue, margin: 0, lineHeight: 1 }}>{v}</p>
-                <p style={{ fontSize: 9, color: '#94a3b8', margin: '4px 0 0', fontWeight: 800, letterSpacing: '0.12em' }}>{k}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
+            {[
+              { emoji: '☢️', title: 'Nuclear Safety Inspector', org: 'Springfield Nuclear Power Plant · 1989→Now', desc: 'Sector 7-G. Responsible for preventing meltdown. Has caused 3. Fired 27 times. Still employed.' },
+              { emoji: '🚀', title: 'NASA Astronaut', org: 'Kennedy Space Center · 1994', desc: 'Selected as the average American for a mission. Ate all the food in zero gravity. Counts it on his resume.' },
+              { emoji: '🥊', title: 'Professional Boxer', org: 'Springfield Boxing Commission · 1997', desc: 'Managed by Moe Szyslak. Won by sheer ability to absorb punishment. Did not defeat Drederick Tatum. Did not quit.' },
+              { emoji: '🎤', title: 'Country Music Singer', org: 'Capitol Records · "Homer in the House"', desc: 'Brief but passionate. One hit single. Briefly famous. Immediately forgotten. No regrets.' },
+              { emoji: '🍔', title: 'Food Critic', org: 'Springfield Shopper', desc: 'Positive reviews only. Ate every dish in Springfield. Gained 8 lbs on assignment. Called it "fieldwork."' },
+              { emoji: '🌐', title: 'Grease Recycling Entrepreneur', org: 'Homer\'s Can Do Corp · 1998', desc: 'Founded Homer\'s Can Do Corp. Business model: collect and resell cooking grease. Genuinely profitable for six days.' },
+            ].map((a, i) => (
+              <div key={a.title} style={{ padding: '20px', border: panelBorder, margin: '-1px 0 0 -1px', background: 'white' }}>
+                <div style={{ fontSize: 28, marginBottom: 8 }}>{a.emoji}</div>
+                <p className={lilita.className} style={{ fontSize: 15, color: blue, margin: '0 0 4px' }}>{a.title}</p>
+                <p style={{ fontSize: 10, color: '#9ca3af', fontWeight: 800, letterSpacing: '0.08em', margin: '0 0 8px' }}>{a.org}</p>
+                <p style={{ fontSize: 13, color: '#374151', margin: 0, lineHeight: 1.6 }}>{a.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* THE STORY */}
-      <section id="story" style={{ background: 'white', borderBottom: `3px solid ${yellow}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
-          <p style={{ fontSize: 11, fontWeight: 800, color: orange, letterSpacing: '0.25em', marginBottom: 16 }}>// 01 THE SPRINGFIELD STORY</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
-            <div>
-              <h2 className={lilita.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: blue, lineHeight: 1.05, margin: '0 0 28px' }}>
-                Not the smartest.<br />
-                <span style={{ color: orange }}>But the most alive.</span>
-              </h2>
-              <div style={{ background: yellow, borderRadius: 16, padding: 24, border: `3px solid ${blue}`, boxShadow: `4px 4px 0 ${blue}` }}>
-                <p className={lilita.className} style={{ fontSize: 20, color: blue, margin: '0 0 8px' }}>&ldquo;D&apos;oh!&rdquo;</p>
-                <p style={{ fontSize: 13, color: '#92400e', margin: 0, fontWeight: 700 }}>— Homer J. Simpson, approximately 4,000 times per season</p>
-              </div>
-            </div>
-            <div>
-              <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.85, marginBottom: 16, fontWeight: 400 }}>
-                Born May 12, 1956 in Springfield — a city with no confirmed state. Raised by Mona and Abraham Simpson,
-                Homer attended Springfield High School and graduated despite losing a significant portion of his brain function
-                to a crayon lodged in his nasal cavity.
-              </p>
-              <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.85, fontWeight: 400 }}>
-                He met Marge Bouvier at a school detention. They have been inseparable ever since —
-                a love story that has survived unemployment, alien abductions, a brief stint as a mafia boss,
-                and one too many trips to Moe&apos;s Tavern. Homer is, against all odds, irreplaceable.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+        {/* ROW 3: Skills (1/3) + Family (2/3) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', borderBottom: panelBorder }}>
 
-      {/* ADVENTURES */}
-      <section id="adventures" style={{ background: '#fef9c3', borderBottom: `3px solid ${yellow}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
-          <p style={{ fontSize: 11, fontWeight: 800, color: orange, letterSpacing: '0.25em', marginBottom: 16 }}>// 02 ADVENTURES & CAREERS</p>
-          <h2 className={lilita.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: blue, lineHeight: 1.05, margin: '0 0 48px' }}>
-            He has done it all.<br />
-            <span style={{ color: orange }}>Usually by accident.</span>
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {adventures.map((a) => (
-              <div key={a.title}
-                style={{ background: 'white', border: `3px solid ${yellow}`, borderRadius: 16, padding: '24px 28px', display: 'grid', gridTemplateColumns: '64px 1fr', gap: 20, alignItems: 'center', transition: 'all 0.2s ease', cursor: 'default', boxShadow: `3px 3px 0 ${yellow}` }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = a.color; el.style.boxShadow = `4px 4px 0 ${a.color}`; el.style.transform = 'translateY(-2px)' }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = yellow; el.style.boxShadow = `3px 3px 0 ${yellow}`; el.style.transform = 'translateY(0)' }}
-              >
-                <div style={{ fontSize: 36, textAlign: 'center' }}>{a.emoji}</div>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 4 }}>
-                    <p className={lilita.className} style={{ fontSize: 16, color: blue, margin: 0 }}>{a.title}</p>
-                    <p style={{ fontSize: 11, color: '#94a3b8', margin: 0, fontWeight: 700 }}>{a.org}</p>
-                  </div>
-                  <p style={{ fontSize: 14, color: '#475569', margin: 0, lineHeight: 1.6 }}>{a.desc}</p>
+          {/* Skills */}
+          <div className="panel" style={{ background: blue, padding: '36px 28px', border: 'none', borderRight: panelBorder }}>
+            <span className="panel-num" style={{ color: 'rgba(255,255,255,0.3)' }}>05</span>
+            <h2 className={lilita.className} style={{ fontSize: 22, color: yellow, marginBottom: 24, marginTop: 8 }}>Skill Assessment</h2>
+            {[['Eating', 99, yellow], ['Sleeping', 97, yellow], ['TV Watching', 95, yellow], ['Bowling', 63, orange], ['Parenting', 52, orange], ['Nuclear Safety', 8, red]].map(([skill, pct, color]) => (
+              <div key={skill as string} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: 'white' }}>{skill}</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: color as string }}>{pct}</span>
+                </div>
+                <div style={{ height: 8, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.2)' }}>
+                  <div style={{ width: `${pct}%`, height: '100%', background: color as string }} />
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* FAMILY */}
-      <section id="family" style={{ background: 'white', borderBottom: `3px solid ${yellow}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
-          <p style={{ fontSize: 11, fontWeight: 800, color: orange, letterSpacing: '0.25em', marginBottom: 16 }}>// 03 THE SIMPSONS</p>
-          <h2 className={lilita.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: blue, lineHeight: 1.05, margin: '0 0 48px' }}>
-            742 Evergreen Terrace.<br />
-            <span style={{ color: orange }}>The best address in Springfield.</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
-            {[
-              { emoji: '💙', name: 'Marge Simpson', desc: 'The heart of the family. Extraordinarily patient. Somehow still in love with Homer after 35 years.', color: blue },
-              { emoji: '😈', name: 'Bart Simpson', desc: 'Underachiever and proud of it. 4th grade. Expert slingshot operator. Homer\'s son in every way.', color: orange },
-              { emoji: '📚', name: 'Lisa Simpson', desc: '8 years old. Saxophone virtuoso. Future president. Morally the most evolved person in Springfield.', color: '#7c3aed' },
-              { emoji: '🍼', name: 'Maggie Simpson', desc: 'Baby. Pacifier. Shot Mr. Burns once. Has never spoken. May be the most competent Simpson.', color: '#ec4899' },
-            ].map(m => (
-              <div key={m.name} style={{ background: '#fffbeb', border: `3px solid ${yellow}`, borderRadius: 20, padding: 24, textAlign: 'center', boxShadow: `4px 4px 0 ${yellow}` }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>{m.emoji}</div>
-                <p className={lilita.className} style={{ fontSize: 16, color: m.color, margin: '0 0 8px' }}>{m.name}</p>
-                <p style={{ fontSize: 13, color: '#475569', margin: 0, lineHeight: 1.6 }}>{m.desc}</p>
-              </div>
-            ))}
+          {/* Family */}
+          <div className="panel" style={{ background: 'white', padding: '36px 40px', border: 'none' }}>
+            <span className="panel-num">06</span>
+            <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 28, marginTop: 8 }}>742 Evergreen Terrace</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+              {[
+                { emoji: '💙', name: 'Marge Simpson', tag: 'WIFE', desc: 'The heart of the family. Impossibly patient. Still in love with Homer after 35 years — nobody knows how.', color: blue },
+                { emoji: '😈', name: 'Bart Simpson', tag: 'SON', desc: '4th grade. Underachiever and proud of it. Expert slingshot operator. Homer\'s son in every way.', color: orange },
+                { emoji: '📚', name: 'Lisa Simpson', tag: 'DAUGHTER', desc: '8 years old. Future president. Saxophone prodigy. The most evolved moral being in all of Springfield.', color: '#7c3aed' },
+                { emoji: '🍼', name: 'Maggie Simpson', tag: 'DAUGHTER', desc: 'Baby. Never speaks. Shot Mr. Burns once. May be the most competent Simpson alive.', color: '#db2777' },
+              ].map(m => (
+                <div key={m.name} style={{ border: `2.5px solid ${m.color}`, padding: '16px', background: `${m.color}08` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <span style={{ fontSize: 28 }}>{m.emoji}</span>
+                    <div>
+                      <p className={lilita.className} style={{ fontSize: 14, color: m.color, margin: 0 }}>{m.name}</p>
+                      <p style={{ fontSize: 9, fontWeight: 800, color: '#9ca3af', letterSpacing: '0.2em', margin: 0 }}>{m.tag}</p>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 13, color: '#374151', margin: 0, lineHeight: 1.6 }}>{m.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* PASSIONS */}
-      <section id="passions" style={{ background: yellow, borderTop: `3px solid ${blue}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
-          <p style={{ fontSize: 11, fontWeight: 800, color: darkBlue, letterSpacing: '0.25em', marginBottom: 16 }}>// 04 CORE PASSIONS</p>
-          <h2 className={lilita.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: blue, lineHeight: 1.05, margin: '0 0 48px' }}>
-            Simple pleasures.<br />
-            <span style={{ color: darkBlue }}>Infinite enthusiasm.</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
-            {[
-              { icon: '🍩', label: 'Donuts', note: 'Pink frosted, sprinkles' },
-              { icon: '🍺', label: 'Duff Beer', note: "Moe's Tavern, booth #2" },
-              { icon: '📺', label: 'Television', note: 'Any channel, any time' },
-              { icon: '🎳', label: 'Bowling', note: 'Pin Pals team captain' },
-              { icon: '🛋️', label: 'Napping', note: '3x daily, incl. at work' },
-              { icon: '🥩', label: 'BBQ', note: 'Host of the year, always' },
-            ].map(p => (
-              <div key={p.label} style={{ background: 'white', border: `3px solid ${blue}`, borderRadius: 16, padding: '20px 16px', textAlign: 'center', boxShadow: `4px 4px 0 ${blue}` }}>
-                <div style={{ fontSize: 32, marginBottom: 8 }}>{p.icon}</div>
-                <p className={lilita.className} style={{ fontSize: 15, color: blue, margin: '0 0 4px' }}>{p.label}</p>
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: 0, fontWeight: 700 }}>{p.note}</p>
-              </div>
-            ))}
-          </div>
+        {/* ROW 4: Full-width quote panel */}
+        <div className="panel" style={{ background: yellow, padding: '48px 40px', border: 'none', borderBottom: panelBorder, textAlign: 'center' }}>
+          <span className="panel-num">07</span>
+          <p className={lilita.className} style={{ fontSize: 'clamp(1.5rem, 5vw, 4rem)', color: blue, margin: '0 0 16px', lineHeight: 1.1 }}>
+            &ldquo;To alcohol! The cause of — and solution to — all of life&apos;s problems.&rdquo;
+          </p>
+          <p style={{ fontSize: 14, color: '#92400e', fontWeight: 800, margin: 0, letterSpacing: '0.1em' }}>— HOMER J. SIMPSON</p>
         </div>
-      </section>
 
-      <footer style={{ background: blue, borderTop: `3px solid ${darkBlue}`, padding: '24px 32px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span className={lilita.className} style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>🍩 SPRINGFIELD, USA</span>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, fontWeight: 700 }}>Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>BeOnWeb</Link></p>
+        {/* Footer */}
+        <div style={{ background: blue, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className={lilita.className} style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>🍩 SPRINGFIELD, USA</span>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, fontWeight: 800 }}>
+            Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>BeOnWeb</Link>
+          </p>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }
