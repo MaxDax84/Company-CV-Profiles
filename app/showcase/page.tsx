@@ -3,25 +3,22 @@
 import Link from 'next/link'
 
 const professionalItems = [
-  { slug: 'leonardo-dicaprio', name: 'Leonardo DiCaprio', role: 'Actor & Producer', style: 'Modern Dark Teal', bg: '#0d1c24', accent: '#0d9488', emoji: '🎬' },
   { slug: 'elon-musk', name: 'Elon Musk', role: 'CEO & Entrepreneur', style: 'Futuristic Sections', bg: '#040810', accent: '#3b82f6', emoji: '🚀' },
-  { slug: 'cristiano-ronaldo', name: 'Cristiano Ronaldo', role: 'Professional Footballer', style: 'Dark Navy & Gold', bg: '#0a0f1e', accent: '#c9a84c', emoji: '⚽' },
-  { slug: 'coco-chanel', name: 'Coco Chanel', role: 'Fashion Designer & Couturière', style: 'Parisian Black & White', bg: '#0a0a0a', accent: '#8c8279', emoji: '✂️' },
-  { slug: 'marie-curie', name: 'Marie Curie', role: 'Physicist & Chemist', style: 'Academic Bordeaux', bg: '#7c1e35', accent: '#f7f3ef', emoji: '⚗️' },
-  { slug: 'tony-stark', name: 'Tony Stark', role: 'CEO, Stark Industries', style: 'Futuristic HUD', bg: '#030608', accent: '#ef4444', emoji: '🤖' },
   { slug: 'audrey-hepburn', name: 'Audrey Hepburn', role: 'Actress & Humanitarian', style: 'Vintage Elegance', bg: '#0a0907', accent: '#c9a84c', emoji: '🎭' },
-  { slug: 'sherlock-holmes', name: 'Sherlock Holmes', role: 'Consulting Detective', style: 'Victorian Dark', bg: '#080f0c', accent: '#b8860b', emoji: '🔍' },
+  { slug: 'tony-stark', name: 'Tony Stark', role: 'CEO, Stark Industries', style: 'Futuristic HUD', bg: '#030608', accent: '#ef4444', emoji: '🤖' },
 ]
 
+// Hidden from grid — not deleted, under evaluation:
+// leonardo-dicaprio, sherlock-holmes, cristiano-ronaldo, coco-chanel, marie-curie
+
 const boldItems = [
-  { slug: 'sailor-moon', name: 'Sailor Moon', role: 'Guardian of Love & Justice', style: 'Kawaii Pastel', bg: '#ffeef8', accent: '#e91e8c', emoji: '🌙' },
   { slug: 'darth-vader', name: 'Darth Vader', role: 'Dark Lord of the Sith', style: 'Imperial Minimal', bg: '#000000', accent: '#dc2626', emoji: '⚫' },
   { slug: 'homer-simpson', name: 'Homer Simpson', role: 'Safety Inspector, Sector 7-G', style: 'Fun & Colorful', bg: '#fbbf24', accent: '#1d4ed8', emoji: '🍩' },
   { slug: 'hermione-granger', name: 'Hermione Granger', role: 'Witch & Minister for Magic', style: 'Magical Academic', bg: '#3b0a14', accent: '#c9993f', emoji: '⚡' },
-  { slug: 'walter-white', name: 'Walter White', role: 'Chemistry Teacher', style: 'Clinical & Clean', bg: '#f9fafb', accent: '#374151', emoji: '🧪' },
-  { slug: 'son-goku', name: 'Son Goku', role: "Z Fighter, Earth's Protector", style: 'Manga Energy', bg: '#ea580c', accent: '#1d4ed8', emoji: '💥' },
-  { slug: 'forrest-gump', name: 'Forrest Gump', role: 'Captain, Bubba Gump Shrimp Co.', style: 'Warm Americana', bg: '#fdf3e3', accent: '#92400e', emoji: '🏃' },
 ]
+
+// Hidden from grid — not deleted, under evaluation:
+// sailor-moon, walter-white, son-goku, forrest-gump
 
 function ShowcaseCard({ item }: { item: typeof professionalItems[0] }) {
   return (
@@ -131,7 +128,7 @@ export default function ShowcasePage() {
             Every Story Has Its Own Style
           </h1>
           <p style={{ fontSize: 18, color: '#9ca3af', maxWidth: 600, margin: '0 auto', lineHeight: 1.65 }}>
-            18 designs across two worlds — from polished professional CVs
+            6 designs across two worlds — from polished professional CVs
             to bold creative statements. All built from scratch by BeOnWeb.
           </p>
         </div>
@@ -177,7 +174,7 @@ export default function ShowcasePage() {
                 Bold & Exuberant
               </h2>
               <p style={{ fontSize: 15, color: '#6b7280', margin: 0, maxWidth: 480 }}>
-                Seven iconic characters, seven completely different creative styles — kawaii pastels, imperial darkness, manga energy and beyond.
+                Three iconic characters, three completely different creative styles — imperial darkness, cartoon energy, magical academia.
               </p>
             </div>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.06)' }} />
