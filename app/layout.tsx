@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: 'BeOnWeb | Professional Web CV Creation',
   description:
     'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Custom design, domain setup, and ongoing maintenance.',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
