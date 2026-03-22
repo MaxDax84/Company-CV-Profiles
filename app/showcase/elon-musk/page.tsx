@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'] })
 
-export const metadata: Metadata = { title: 'Elon Musk — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Elon Musk — BeOnWeb Showcase' }
 
 export default function ElonMuskPage() {
   const blue = '#2563eb'
@@ -201,7 +201,7 @@ export default function ElonMuskPage() {
         <div style={{ marginTop: 64, paddingTop: 20, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <p className={dmMono.className} style={{ fontSize: 10, color: '#e5e7eb' }}>CONFIDENTIAL</p>
           <p style={{ fontSize: 12, color: '#d1d5db' }}>
-            Designed by <Link href="/" style={{ color: blue, textDecoration: 'none', fontWeight: 500 }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: blue, textDecoration: 'none', fontWeight: 500 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

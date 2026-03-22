@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const garamond = EB_Garamond({ subsets: ['latin'], weight: ['400', '500', '700', '800'], style: ['normal', 'italic'] })
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '600', '900'] })
 
-export const metadata: Metadata = { title: 'Hermione Granger — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Hermione Granger — BeOnWeb Showcase' }
 
 export default function HermioneGrangerPage() {
   const burgundy = '#7f1d1d'
@@ -122,7 +122,7 @@ export default function HermioneGrangerPage() {
 
         <div style={{ textAlign: 'center', paddingTop: 32, borderTop: `1px solid ${gold}30` }}>
           <p className={garamond.className} style={{ fontSize: 12, color: '#6b5a3e', fontStyle: 'italic', letterSpacing: '0.1em' }}>
-            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

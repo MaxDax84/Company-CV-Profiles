@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const bangers = Bangers({ subsets: ['latin'], weight: ['400'] })
 const rajdhani = Rajdhani({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
-export const metadata: Metadata = { title: 'Son Goku — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Son Goku — BeOnWeb Showcase' }
 
 export default function SonGokuPage() {
   const orange = '#ea580c'
@@ -141,7 +141,7 @@ export default function SonGokuPage() {
 
         <div style={{ marginTop: 48, paddingTop: 20, borderTop: `1px solid rgba(255,255,255,0.05)`, textAlign: 'center' }}>
           <p style={{ fontSize: 12, color: '#374151', letterSpacing: '0.1em' }}>
-            DESIGNED BY <Link href="/" style={{ color: orange, textDecoration: 'none' }}>GOONWEB</Link>
+            DESIGNED BY <Link href="/" style={{ color: orange, textDecoration: 'none' }}>BEONWEB</Link>
           </p>
         </div>
       </div>

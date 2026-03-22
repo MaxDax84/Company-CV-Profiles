@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 const orbitron = Orbitron({ subsets: ['latin'], weight: ['400', '700', '900'] })
 
-export const metadata: Metadata = { title: 'Tony Stark — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Tony Stark — BeOnWeb Showcase' }
 
 export default function TonyStarkPage() {
   const red = '#ef4444'
@@ -119,7 +119,7 @@ export default function TonyStarkPage() {
         <div style={{ marginTop: 64, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
           <p style={{ fontSize: 10, color: '#374151', letterSpacing: '0.2em' }}>
             STARK INDUSTRIES CONFIDENTIAL · DESIGNED BY{' '}
-            <Link href="/" style={{ color: red, textDecoration: 'none' }}>GOONWEB</Link>
+            <Link href="/" style={{ color: red, textDecoration: 'none' }}>BEONWEB</Link>
           </p>
         </div>
       </div>

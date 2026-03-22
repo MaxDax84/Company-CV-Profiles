@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
-export const metadata: Metadata = { title: 'Leonardo DiCaprio — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Leonardo DiCaprio — BeOnWeb Showcase' }
 
 export default function LeonardoDiCaprioPage() {
   const teal = '#0d9488'
@@ -178,7 +178,7 @@ export default function LeonardoDiCaprioPage() {
 
       <div style={{ borderTop: `1px solid ${border}`, padding: '16px 40px', display: 'flex', justifyContent: 'center' }}>
         <p style={{ fontSize: 11, color: '#1e3545', letterSpacing: '0.15em' }}>
-          Designed by <Link href="/" style={{ color: teal, textDecoration: 'none' }}>GoOnWeb</Link>
+          Designed by <Link href="/" style={{ color: teal, textDecoration: 'none' }}>BeOnWeb</Link>
         </p>
       </div>
     </div>

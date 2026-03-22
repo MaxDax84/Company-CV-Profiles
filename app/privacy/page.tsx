@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | GoOnWeb',
-  description: 'Privacy Policy for GoOnWeb — how we handle your personal data.',
+  title: 'Privacy Policy | BeOnWeb',
+  description: 'Privacy Policy for BeOnWeb — how we handle your personal data.',
 }
 
 export default function PrivacyPage() {
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           href="/"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-12"
         >
-          ← Back to GoOnWeb
+          ← Back to BeOnWeb
         </Link>
 
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Privacy Policy</h1>
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
               <p>
-                The data controller is GoOnWeb, reachable at{' '}
+                The data controller is BeOnWeb, reachable at{' '}
                 <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
                   massimo.dassano@gmail.com
                 </a>.
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
               <p>
-                Il titolare del trattamento è GoOnWeb, contattabile all&apos;indirizzo{' '}
+                Il titolare del trattamento è BeOnWeb, contattabile all&apos;indirizzo{' '}
                 <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
                   massimo.dassano@gmail.com
                 </a>.

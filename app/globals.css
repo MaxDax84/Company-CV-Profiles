@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* GoOnWeb — Deep Space Electric Blue */
+  /* BeOnWeb — Deep Space Electric Blue */
   --background: oklch(0.10 0.012 255);
   --foreground: oklch(0.95 0.008 250);
   --card: oklch(0.15 0.012 255);

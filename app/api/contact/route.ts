@@ -49,15 +49,15 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `"GoOnWeb Contact" <${process.env.GMAIL_USER}>`,
+      from: `"BeOnWeb Contact" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: email,
-      subject: `New enquiry from ${escapeHtml(name)} — GoOnWeb`,
+      subject: `New enquiry from ${escapeHtml(name)} — BeOnWeb`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}${attachment ? `\n\nAttachment: ${attachment.name}` : ''}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #0a0b14; color: #f0f0f5; padding: 32px; border-radius: 12px; border: 1px solid #2a2d3e;">
           <div style="margin-bottom: 24px;">
-            <h2 style="margin: 0 0 4px; color: #5b9cf6; font-size: 20px;">New GoOnWeb Enquiry</h2>
+            <h2 style="margin: 0 0 4px; color: #5b9cf6; font-size: 20px;">New BeOnWeb Enquiry</h2>
             <p style="margin: 0; color: #6b7280; font-size: 14px;">Received via the contact form</p>
           </div>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">

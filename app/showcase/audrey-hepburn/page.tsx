@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700', '900'], style: ['normal', 'italic'] })
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
 
-export const metadata: Metadata = { title: 'Audrey Hepburn — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Audrey Hepburn — BeOnWeb Showcase' }
 
 export default function AudreyHepburnPage() {
   const gold = '#c9a84c'
@@ -102,7 +102,7 @@ export default function AudreyHepburnPage() {
 
         <div style={{ textAlign: 'center', paddingTop: 32, borderTop: `1px solid ${gold}20` }}>
           <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2a', letterSpacing: '0.15em', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

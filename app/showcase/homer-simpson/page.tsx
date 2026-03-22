@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const lilita = Lilita_One({ subsets: ['latin'], weight: ['400'] })
 const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800'] })
 
-export const metadata: Metadata = { title: 'Homer Simpson — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Homer Simpson — BeOnWeb Showcase' }
 
 export default function HomerSimpsonPage() {
   const yellow = '#fbbf24'
@@ -121,7 +121,7 @@ export default function HomerSimpsonPage() {
 
         <div style={{ textAlign: 'center', marginTop: 32 }}>
           <p style={{ fontSize: 12, color: '#a16207' }}>
-            Designed with 🍩 by <Link href="/" style={{ color: blue, textDecoration: 'none', fontWeight: 800 }}>GoOnWeb</Link>
+            Designed with 🍩 by <Link href="/" style={{ color: blue, textDecoration: 'none', fontWeight: 800 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

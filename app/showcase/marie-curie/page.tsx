@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const crimson = Crimson_Pro({ subsets: ['latin'], weight: ['300', '400', '600', '700'], style: ['normal', 'italic'] })
 const sourceSans = Source_Sans_3({ subsets: ['latin'], weight: ['300', '400', '600', '700'] })
 
-export const metadata: Metadata = { title: 'Marie Curie — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Marie Curie — BeOnWeb Showcase' }
 
 export default function MarieCuriePage() {
   const bordeaux = '#7c1e35'
@@ -177,7 +177,7 @@ export default function MarieCuriePage() {
 
         <div style={{ marginTop: 56, paddingTop: 20, borderTop: '1px solid #e8e0e4', textAlign: 'center' }}>
           <p className={crimson.className} style={{ fontSize: 14, color: '#c8a8b0', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: bordeaux, textDecoration: 'none', fontWeight: 600 }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: bordeaux, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

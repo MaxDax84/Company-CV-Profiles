@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const specialElite = Special_Elite({ subsets: ['latin'], weight: ['400'] })
 const lora = Lora({ subsets: ['latin'], weight: ['400', '500', '600', '700'], style: ['normal', 'italic'] })
 
-export const metadata: Metadata = { title: 'Forrest Gump — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Forrest Gump — BeOnWeb Showcase' }
 
 export default function ForrestGumpPage() {
   const brown = '#92400e'
@@ -164,7 +164,7 @@ export default function ForrestGumpPage() {
             &ldquo;That&apos;s all I have to say about that.&rdquo;
           </p>
           <p style={{ fontSize: 12, color: '#a16207' }}>
-            Designed by <Link href="/" style={{ color: brown, textDecoration: 'none', fontWeight: 600 }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: brown, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

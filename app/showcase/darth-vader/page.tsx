@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 const oswald = Oswald({ subsets: ['latin'], weight: ['300', '400', '700'] })
 
-export const metadata: Metadata = { title: 'Darth Vader — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Darth Vader — BeOnWeb Showcase' }
 
 export default function DarthVaderPage() {
   const red = '#dc2626'
@@ -99,7 +99,7 @@ export default function DarthVaderPage() {
 
         <div style={{ textAlign: 'center', paddingTop: 32, borderTop: `1px solid rgba(255,255,255,0.05)` }}>
           <p style={{ fontSize: 10, color: '#1f2937', letterSpacing: '0.25em', textTransform: 'uppercase' }}>
-            Imperial Intelligence · Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>GoOnWeb</Link>
+            Imperial Intelligence · Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

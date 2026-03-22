@@ -13,7 +13,7 @@ export const translations = {
       titleGradient: 'Your Career,',
       titleNormal: 'Elevated Online.',
       subtitle:
-        'GoOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
+        'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
       ctaPrimary: 'View Portfolio',
       ctaSecondary: 'Get Started',
     },
@@ -21,7 +21,7 @@ export const translations = {
       sectionLabel: 'What We Offer',
       title: 'Everything You Need to Stand Out',
       subtitle:
-        'From first design to going live, GoOnWeb handles every detail of your professional online presence.',
+        'From first design to going live, BeOnWeb handles every detail of your professional online presence.',
       cards: [
         {
           title: 'Custom Design',
@@ -154,7 +154,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
-      rights: '© 2025 GoOnWeb. All rights reserved.',
+      rights: '© 2025 BeOnWeb. All rights reserved.',
     },
   },
 
@@ -170,7 +170,7 @@ export const translations = {
       titleGradient: 'La Tua Carriera,',
       titleNormal: 'Elevata Online.',
       subtitle:
-        'GoOnWeb crea eleganti CV web completamente personalizzati — un\'alternativa moderna al curriculum tradizionale. Scegli i tuoi colori, il tuo stile, il tuo dominio.',
+        'BeOnWeb crea eleganti CV web completamente personalizzati — un\'alternativa moderna al curriculum tradizionale. Scegli i tuoi colori, il tuo stile, il tuo dominio.',
       ctaPrimary: 'Vedi il Portfolio',
       ctaSecondary: 'Inizia Ora',
     },
@@ -178,7 +178,7 @@ export const translations = {
       sectionLabel: 'Cosa Offriamo',
       title: 'Tutto il Necessario per Distinguerti',
       subtitle:
-        'Dal primo design al lancio online, GoOnWeb gestisce ogni dettaglio della tua presenza professionale sul web.',
+        'Dal primo design al lancio online, BeOnWeb gestisce ogni dettaglio della tua presenza professionale sul web.',
       cards: [
         {
           title: 'Design Personalizzato',
@@ -311,7 +311,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Creiamo presenze professionali online, un profilo alla volta.',
-      rights: '© 2025 GoOnWeb. Tutti i diritti riservati.',
+      rights: '© 2025 BeOnWeb. Tutti i diritti riservati.',
     },
   },
 } as const

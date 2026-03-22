@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const baskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'] })
 const sourceSerif = Source_Serif_4({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
 
-export const metadata: Metadata = { title: 'Sherlock Holmes — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Sherlock Holmes — BeOnWeb Showcase' }
 
 export default function SherlockHolmesPage() {
   const amber = '#b8860b'
@@ -124,7 +124,7 @@ export default function SherlockHolmesPage() {
 
         <div style={{ borderTop: `1px solid ${amber}20`, paddingTop: 32, textAlign: 'center' }}>
           <p className={sourceSerif.className} style={{ fontSize: 12, color: '#3d5046', letterSpacing: '0.1em', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: amber, textDecoration: 'none' }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: amber, textDecoration: 'none' }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

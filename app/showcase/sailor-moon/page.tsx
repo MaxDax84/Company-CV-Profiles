@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800', '900'] })
 
-export const metadata: Metadata = { title: 'Sailor Moon — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Sailor Moon — BeOnWeb Showcase' }
 
 export default function SailorMoonPage() {
   const pink = '#e91e8c'
@@ -118,7 +118,7 @@ export default function SailorMoonPage() {
 
         <div style={{ textAlign: 'center', marginTop: 40 }}>
           <p style={{ fontSize: 12, color: '#d4a0c0' }}>
-            Designed with 💕 by <Link href="/" style={{ color: pink, textDecoration: 'none', fontWeight: 700 }}>GoOnWeb</Link>
+            Designed with 💕 by <Link href="/" style={{ color: pink, textDecoration: 'none', fontWeight: 700 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

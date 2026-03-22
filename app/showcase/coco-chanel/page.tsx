@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], style: ['normal', 'italic'] })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
-export const metadata: Metadata = { title: 'Coco Chanel — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Coco Chanel — BeOnWeb Showcase' }
 
 export default function CocoChannelPage() {
   const black = '#0a0a0a'
@@ -120,7 +120,7 @@ export default function CocoChannelPage() {
 
         <div style={{ textAlign: 'center', marginTop: 48 }}>
           <p className={cormorant.className} style={{ fontSize: 14, color: '#c8bdb6', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>GoOnWeb</Link>
+            Designed by <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
           </p>
         </div>
       </div>

@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'] })
 
-export const metadata: Metadata = { title: 'Cristiano Ronaldo — GoOnWeb Showcase' }
+export const metadata: Metadata = { title: 'Cristiano Ronaldo — BeOnWeb Showcase' }
 
 export default function CristianoRonaldoPage() {
   const gold = '#c9a84c'
@@ -177,7 +177,7 @@ export default function CristianoRonaldoPage() {
 
       <div style={{ borderTop: `1px solid ${navyBorder}`, padding: '16px 40px', textAlign: 'center' }}>
         <p style={{ fontSize: 11, color: '#1a2540', letterSpacing: '0.1em' }}>
-          Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>GoOnWeb</Link>
+          Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
         </p>
       </div>
     </div>

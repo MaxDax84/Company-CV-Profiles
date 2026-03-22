@@ -237,7 +237,7 @@ export default function ShowcasePage() {
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14,
             color: '#6b7280', textDecoration: 'none', marginBottom: 56 }}
         >
-          ← Back to GoOnWeb
+          ← Back to BeOnWeb
         </Link>
 
         {/* Page header */}
@@ -252,7 +252,7 @@ export default function ShowcasePage() {
           </h1>
           <p style={{ fontSize: 18, color: '#9ca3af', maxWidth: 600, margin: '0 auto', lineHeight: 1.65 }}>
             15 designs across two worlds — from polished professional CVs
-            to bold creative statements. All built from scratch by GoOnWeb.
+            to bold creative statements. All built from scratch by BeOnWeb.
           </p>
         </div>
 
@@ -319,7 +319,7 @@ export default function ShowcasePage() {
         {/* Footer note */}
         <p style={{ textAlign: 'center', color: '#4b5563', fontSize: 13, marginTop: 72 }}>
           All designs are original works. Characters are fictional, historical, or public figures. Designs by{' '}
-          <Link href="/" style={{ color: '#5b9cf6', textDecoration: 'none' }}>GoOnWeb</Link>.
+          <Link href="/" style={{ color: '#5b9cf6', textDecoration: 'none' }}>BeOnWeb</Link>.
         </p>
       </div>
     </div>

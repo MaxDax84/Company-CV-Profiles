@@ -7,9 +7,9 @@ const _geist = Geist({ subsets: ['latin'] })
 const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'GoOnWeb | Professional Web CV Creation',
+  title: 'BeOnWeb | Professional Web CV Creation',
   description:
-    'GoOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Custom design, domain setup, and ongoing maintenance.',
+    'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Custom design, domain setup, and ongoing maintenance.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
