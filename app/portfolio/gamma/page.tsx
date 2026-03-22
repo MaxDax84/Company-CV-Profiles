@@ -210,7 +210,7 @@ export default function GammaPage() {
 
       {/* ── HERO ── */}
       <section id="top" style={{ background: dark, minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: 60 }}>
-        <div className="gf-container" style={{ padding: '80px 32px 96px', width: '100%' }}>
+        <div className="gf-container" style={{ padding: '80px 32px 96px', width: '100%', textAlign: 'center' }}>
 
           {/* Disclaimer badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', marginBottom: 20 }}>
@@ -224,15 +224,15 @@ export default function GammaPage() {
             Head of People & Culture · Milano, Italia
           </p>
 
-          <h1 style={{ fontSize: 'clamp(3.5rem, 10vw, 7.5rem)', fontWeight: 800, color: '#fff', lineHeight: 0.9, margin: '0 0 40px', letterSpacing: '-0.03em' }}>
-            Maria<br /><span style={{ color: em }}>Rossi</span>
+          <h1 style={{ fontSize: 'clamp(3.5rem, 10vw, 7.5rem)', fontWeight: 800, color: '#fff', lineHeight: 0.9, margin: '0 0 40px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
+            Maria <span style={{ color: em }}>Rossi</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'rgba(255,255,255,0.48)', maxWidth: 580, lineHeight: 1.8, margin: '0 0 56px', fontWeight: 300 }}>
+          <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'rgba(255,255,255,0.48)', maxWidth: 780, margin: '0 auto 56px', lineHeight: 1.8, fontWeight: 300 }}>
             12 anni a costruire culture aziendali che funzionano davvero. Da HR Coordinator a Head of People, ho accompagnato start-up, agenzie e aziende manifatturiere attraverso crescita, crisi e cambiamento.
           </p>
 
-          <div className="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 80 }}>
+          <div className="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 80, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '14px 28px', background: em, color: '#fff', fontWeight: 700, fontSize: 14, borderRadius: 10, textDecoration: 'none' }}>
               Vedi il percorso
             </a>
@@ -242,7 +242,7 @@ export default function GammaPage() {
           </div>
 
           {/* Stats strip */}
-          <div className="stats-strip">
+          <div className="stats-strip" style={{ maxWidth: 780, margin: '0 auto' }}>
             {[
               { value: '12', unit: ' anni', label: 'di esperienza HR' },
               { value: '3', unit: ' settori', label: 'manifatturiero · digitale · tech' },
