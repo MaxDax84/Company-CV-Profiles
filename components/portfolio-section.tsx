@@ -192,6 +192,24 @@ export default function PortfolioSection() {
           </p>
         </div>
 
+        {/* Showcase link */}
+        <div
+          className={cn(
+            'text-center mb-12 transition-all duration-700',
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
+          )}
+          style={{ transitionDelay: '100ms' }}
+        >
+          <a
+            href="/showcase"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-primary/40 bg-primary/8 text-primary font-semibold text-sm hover:bg-primary/15 hover:border-primary/60 transition-all duration-200"
+          >
+            <span>✦</span>
+            <span>View Style Showcase — 10 iconic CV designs</span>
+            <span>→</span>
+          </a>
+        </div>
+
         {/* Project cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {t.projects.map((project, i) => {
