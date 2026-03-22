@@ -164,6 +164,36 @@ export const translations = {
         fileTooLarge: 'File exceeds 5MB limit.',
       },
     },
+    mission: {
+      sectionLabel: 'Why BeOnWeb',
+      headline: 'You own it.',
+      headlineAccent: 'Always.',
+      subheadline: 'No subscriptions. No lock-in. No hostages.',
+      pillars: [
+        {
+          icon: '💳',
+          title: 'Pay once, yours forever',
+          description: 'No monthly fees, no platform subscriptions. Pay for the build — the site is yours, live, forever. We\'re a studio, not a SaaS.',
+        },
+        {
+          icon: '🌐',
+          title: 'Your domain, your credentials',
+          description: 'We choose the domain together. It gets registered in your name, with full login credentials delivered directly to you — not us.',
+        },
+        {
+          icon: '</>',
+          title: 'Your source code (Advanced)',
+          description: 'The Advanced plan includes full source code delivery. Modify it, deploy it yourself, or hand it to any developer. Zero lock-in.',
+        },
+        {
+          icon: '✦',
+          title: 'Your CV deserves better than a PDF',
+          description: 'Every CV looks the same in PDF. We build web presences with personality, real design, and structure that reflects who you actually are.',
+        },
+      ],
+      note: 'Unlike Wix, Squarespace, or similar platforms — if you stop paying them, your site goes offline. We don\'t do that.',
+      noteBold: 'Your site stays live.',
+    },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
       rights: '© 2025 BeOnWeb. All rights reserved.',
@@ -332,6 +362,36 @@ export const translations = {
         error: 'Qualcosa è andato storto. Riprova o scrivici direttamente.',
         fileTooLarge: 'Il file supera il limite di 5MB.',
       },
+    },
+    mission: {
+      sectionLabel: 'Perché BeOnWeb',
+      headline: 'Lo possiedi.',
+      headlineAccent: 'Per sempre.',
+      subheadline: 'Nessun abbonamento. Nessun vincolo. Nessun ostaggio.',
+      pillars: [
+        {
+          icon: '💳',
+          title: 'Paghi una volta, è tuo per sempre',
+          description: 'Nessun canone mensile, nessuna piattaforma. Paghi il lavoro — il sito è tuo, online, per sempre. Siamo uno studio, non un software.',
+        },
+        {
+          icon: '🌐',
+          title: 'Il dominio è tuo, le credenziali anche',
+          description: 'Scegliamo insieme il dominio. Viene registrato a tuo nome, con le credenziali di accesso consegnate direttamente a te — non a noi.',
+        },
+        {
+          icon: '</>',
+          title: 'Il tuo codice sorgente (Advanced)',
+          description: 'Il piano Advanced include la consegna del codice sorgente completo. Modificalo, deployalo da solo o passalo a qualsiasi developer. Zero vincoli.',
+        },
+        {
+          icon: '✦',
+          title: 'Il tuo CV merita di meglio di un PDF',
+          description: 'Tutti i CV sembrano uguali in PDF. Noi costruiamo presenze web con personalità, design autentico e struttura che riflette davvero chi sei.',
+        },
+      ],
+      note: 'A differenza di Wix, Squarespace e simili — se smetti di pagare, il tuo sito va offline. Noi no.',
+      noteBold: 'Il tuo sito rimane online.',
     },
     footer: {
       tagline: 'Creiamo presenze professionali online, un profilo alla volta.',

@@ -197,7 +197,7 @@ export default function GammaPage() {
       {/* ── NAVBAR ── */}
       <nav className="gf-nav">
         <div className="gf-nav-inner">
-          <a href="#top" style={{ fontSize: 17, fontWeight: 800, color: ink, textDecoration: 'none', letterSpacing: '-0.02em' }}>GF</a>
+          <a href="#top" style={{ fontSize: 17, fontWeight: 800, color: ink, textDecoration: 'none', letterSpacing: '-0.02em' }}>MR</a>
           <div className="gf-nav-links">
             {[['#about', 'About'], ['#experience', 'Esperienza'], ['#skills', 'Competenze'], ['#contact', 'Contatti']].map(([href, label]) => (
               <a key={href} href={href} className="gf-nav-link">{label}</a>
@@ -212,12 +212,20 @@ export default function GammaPage() {
       <section id="top" style={{ background: dark, minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: 60 }}>
         <div className="gf-container" style={{ padding: '80px 32px 96px', width: '100%' }}>
 
+          {/* Disclaimer badge */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', marginBottom: 20 }}>
+            <span style={{ fontSize: 11 }}>🎭</span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 500, letterSpacing: '0.05em' }}>
+              Progetto dimostrativo · Personaggio di fantasia
+            </span>
+          </div>
+
           <p style={{ fontSize: 12, fontWeight: 700, color: em, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 28px' }}>
             Head of People & Culture · Milano, Italia
           </p>
 
           <h1 style={{ fontSize: 'clamp(3.5rem, 10vw, 7.5rem)', fontWeight: 800, color: '#fff', lineHeight: 0.9, margin: '0 0 40px', letterSpacing: '-0.03em' }}>
-            Giulia<br /><span style={{ color: em }}>Ferrara</span>
+            Maria<br /><span style={{ color: em }}>Rossi</span>
           </h1>
 
           <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'rgba(255,255,255,0.48)', maxWidth: 580, lineHeight: 1.8, margin: '0 0 56px', fontWeight: 300 }}>
@@ -275,8 +283,8 @@ export default function GammaPage() {
                   ['📍', 'Milano, Italia'],
                   ['🏢', 'Head of People & Culture · Arca Systems'],
                   ['🎓', 'MSc Psicologia del Lavoro · UniMi · 110/110L'],
-                  ['✉', 'giulia.ferrara@mail.com'],
-                  ['🔗', 'linkedin.com/in/giuliaferrara'],
+                  ['✉', 'maria.rossi@mail.com'],
+                  ['🔗', 'linkedin.com/in/mariarossi'],
                 ].map(([icon, text], i, arr) => (
                   <div key={text as string} style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '14px 24px', borderBottom: i < arr.length - 1 ? `1px solid ${border}` : 'none' }}>
                     <span style={{ fontSize: 16, width: 22, textAlign: 'center', flexShrink: 0 }}>{icon}</span>
@@ -339,7 +347,7 @@ export default function GammaPage() {
           <p style={{ fontSize: 'clamp(1.3rem, 2.8vw, 2rem)', fontWeight: 300, color: '#fff', lineHeight: 1.65, fontStyle: 'italic', margin: '0 0 24px' }}>
             &ldquo;Un buon processo HR non si vede. Si sente nell&rsquo;atmosfera dell&rsquo;ufficio, nelle conversazioni tra i team, nella voglia delle persone di restare.&rdquo;
           </p>
-          <span style={{ fontSize: 14, color: em, fontWeight: 600, letterSpacing: '0.08em' }}>— Giulia Ferrara</span>
+          <span style={{ fontSize: 14, color: em, fontWeight: 600, letterSpacing: '0.08em' }}>— Maria Rossi</span>
         </div>
       </section>
 
@@ -433,15 +441,18 @@ export default function GammaPage() {
             Disponibile a conversazioni su ruoli HR senior, advisory e progetti di cultura aziendale.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 60 }}>
-            <a href="mailto:giulia.ferrara@mail.com" style={{ padding: '14px 28px', background: em, color: '#fff', fontWeight: 700, fontSize: 14, borderRadius: 10, textDecoration: 'none' }}>
-              ✉ giulia.ferrara@mail.com
+            <a href="mailto:maria.rossi@mail.com" style={{ padding: '14px 28px', background: em, color: '#fff', fontWeight: 700, fontSize: 14, borderRadius: 10, textDecoration: 'none' }}>
+              ✉ maria.rossi@mail.com
             </a>
-            <a href="https://linkedin.com/in/giuliaferrara" style={{ padding: '13px 28px', border: '1.5px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontSize: 14, borderRadius: 10, textDecoration: 'none' }}>
+            <a href="https://linkedin.com/in/mariarossi" style={{ padding: '13px 28px', border: '1.5px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontSize: 14, borderRadius: 10, textDecoration: 'none' }}>
               LinkedIn →
             </a>
           </div>
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 32 }}>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.18)', margin: '0 0 6px' }}>© 2025 Giulia Ferrara · Milano</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: '0 0 8px', fontStyle: 'italic' }}>
+              🎭 Questa è una pagina dimostrativa. Maria Rossi è un personaggio di fantasia creato da BeOnWeb a scopo illustrativo.
+            </p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.18)', margin: '0 0 6px' }}>© 2025 Maria Rossi · Milano</p>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.18)', margin: 0 }}>
               Progettato da <Link href="/" style={{ color: em, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
             </p>
