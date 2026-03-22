@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(npm run:*)",
       "Bash(gh repo:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(grep -r \"favicon\\\\|icon\\\\|logo\" '/c/Users/Massimo/Documents/Projects/CV/Company website' --include=*.tsx --include=*.ts --include=*.jsx --include=*.js --include=*.json)"
     ]
   }
 }
