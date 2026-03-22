@@ -15,11 +15,66 @@ const border = 'rgba(255,255,255,0.06)'
 const borderAmber = 'rgba(184,134,11,0.25)'
 
 const cases = [
-  { year: '1887', title: 'A Study in Scarlet', type: 'Murder Investigation', outcome: 'SOLVED', note: 'First published case. First meeting with Dr. Watson. Jefferson Hope arrested after ingenious trap at 221B.' },
-  { year: '1888', title: 'The Sign of Four', type: 'Theft & Murder', outcome: 'SOLVED', note: 'The Agra treasure recovered. Jonathan Small apprehended on the Thames. Miss Mary Morstan engaged to Watson.' },
-  { year: '1891', title: 'The Final Problem', type: 'Criminal Mastermind', outcome: 'PYRRHIC', note: 'Confrontation with Professor Moriarty at Reichenbach Falls. Both presumed dead. Holmes survived in secret.' },
-  { year: '1893', title: 'The Empty House', type: 'Return & Murder', outcome: 'SOLVED', note: 'Return from the Great Hiatus. Colonel Moran — Moriarty\'s top assassin — apprehended at 221B.' },
-  { year: '1902', title: 'The Hound of the Baskervilles', type: 'Supernatural / Murder', outcome: 'SOLVED', note: 'Solved the mystery of Grimpen Mire. Stapleton exposed. The hound was flesh, not legend.' },
+  {
+    period: '1878 – 1887',
+    title: 'Independent Consulting Detective',
+    client: 'Self-employed · 221B Baker Street, London',
+    outcome: 'ESTABLISHED',
+    bullets: [
+      'Created the world\'s first and only consulting detective practice — a profession invented from scratch',
+      'Developed proprietary methods in observation, deduction, and forensic chemistry adopted later by Scotland Yard',
+      'Established intelligence network across London: informants, street urchins, and professional contacts',
+      'Published monographs on tobacco ash, footprints, and cipher-breaking — cited by law enforcement internationally',
+    ],
+  },
+  {
+    period: '1887 – 1891',
+    title: 'Lead Investigator · Watson Partnership',
+    client: 'Holmes & Watson · Baker Street Consultancy',
+    outcome: 'PEAK YEARS',
+    bullets: [
+      'A Study in Scarlet: first documented case — Jefferson Hope murder solved via deductive reconstruction',
+      'The Sign of Four: Agra treasure recovered, Jonathan Small apprehended on the Thames after river pursuit',
+      'Closed 73 cases in this period; zero wrongful arrests attributed to Holmes\'s evidence',
+      'Defeated the Irene Adler operation — the only adversary to successfully outmanoeuvre him on record',
+    ],
+  },
+  {
+    period: '1891 – 1894',
+    title: 'The Great Hiatus · Undercover Operations',
+    client: 'British Government (covert) · Mycroft Holmes, liaison',
+    outcome: 'CLASSIFIED',
+    bullets: [
+      'Defeated Professor Moriarty at Reichenbach Falls — dismantling the largest criminal network in Europe',
+      'Operated in Tibet, Persia, Mecca, and France under the alias "Sigerson"',
+      'Conducted intelligence work on behalf of the Crown during absence — nature of missions still classified',
+      'Returned to London 1894 to apprehend Colonel Moran, Moriarty\'s remaining top operative',
+    ],
+  },
+  {
+    period: '1894 – 1903',
+    title: 'Senior Consulting Detective · Post-Hiatus',
+    client: 'Holmes & Watson · Scotland Yard · Crown',
+    outcome: 'PROLIFIC',
+    bullets: [
+      'The Hound of the Baskervilles: solved the mystery of Grimpen Mire; Stapleton exposed and eliminated',
+      'Closed over 200 cases in this nine-year period — highest output of career',
+      'Consulted directly for the Prime Minister on three occasions of national importance',
+      'Trained a generation of Scotland Yard inspectors in observational methodology',
+    ],
+  },
+  {
+    period: '1903 – 1914',
+    title: 'Retirement & Final Assignment',
+    client: 'Sussex Beekeeping · British Intelligence (1914)',
+    outcome: 'LEGACY',
+    bullets: [
+      'Retired to Sussex Downs to study philosophy and keep bees — published "Practical Handbook of Bee Culture"',
+      'Came out of retirement in 1914 at Mycroft\'s request: His Last Bow — German spy ring dismantled on eve of WWI',
+      'Delivered Von Bork, Kaiser\'s top British intelligence asset, to Scotland Yard personally',
+      'Final recorded words: "There\'s an east wind coming, Watson." Country saved. Case closed.',
+    ],
+  },
 ]
 
 export default function SherlockHolmesPage() {
@@ -108,28 +163,72 @@ export default function SherlockHolmesPage() {
         </div>
       </section>
 
-      {/* NOTABLE CASES */}
+      {/* NOTABLE CASES — work experience timeline */}
       <section id="cases" style={{ background: darkBg }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 40px' }}>
-          <p className={sourceSerif.className} style={{ fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>02 · Notable Cases</p>
-          <h2 className={baskerville.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 56px', color: '#f0ece4' }}>
+          <p className={sourceSerif.className} style={{ fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>02 · Career</p>
+          <h2 className={baskerville.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 64px', color: '#f0ece4' }}>
             From the casebooks<br /><em style={{ color: amber, fontWeight: 400 }}>of Dr. Watson.</em>
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {cases.map((c) => (
-              <div key={c.title} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 12, padding: '22px 28px', display: 'grid', gridTemplateColumns: '64px 1fr 100px', gap: 24, alignItems: 'center', transition: 'all 0.3s ease' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = borderAmber; el.style.transform = 'translateX(6px)'; el.style.background = 'rgba(184,134,11,0.05)' }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = border; el.style.transform = 'translateX(0)'; el.style.background = cardBg }}
-              >
-                <p className={sourceSerif.className} style={{ fontSize: 18, color: amber, fontStyle: 'italic', margin: 0, fontWeight: 300 }}>{c.year}</p>
-                <div>
-                  <p className={baskerville.className} style={{ fontSize: 17, fontWeight: 700, color: '#f0ece4', margin: '0 0 2px' }}>{c.title}</p>
-                  <p className={sourceSerif.className} style={{ fontSize: 13, color: '#4a6050', margin: '0 0 6px', letterSpacing: '0.08em' }}>{c.type}</p>
-                  <p className={sourceSerif.className} style={{ fontSize: 14, color: '#7a9070', margin: 0, lineHeight: 1.5, fontWeight: 300 }}>{c.note}</p>
+
+          {/* Timeline */}
+          <div style={{ position: 'relative' }}>
+            {/* Vertical line */}
+            <div style={{ position: 'absolute', left: 159, top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, ${amber}60, ${amber}20, transparent)` }} />
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {cases.map((c, i) => (
+                <div key={c.title} style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: 40, paddingBottom: 52 }}>
+
+                  {/* Left: period + dot */}
+                  <div style={{ textAlign: 'right', paddingTop: 4, position: 'relative' }}>
+                    <p className={sourceSerif.className} style={{ fontSize: 13, color: amber, margin: '0 0 4px', fontStyle: 'italic', lineHeight: 1.4 }}>{c.period}</p>
+                    {/* Timeline dot */}
+                    <div style={{ position: 'absolute', right: -46, top: 6, width: 10, height: 10, borderRadius: '50%', background: amber, border: `2px solid ${darkBg}`, boxShadow: `0 0 0 3px ${amber}30` }} />
+                  </div>
+
+                  {/* Right: content card */}
+                  <div
+                    style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 14, padding: '24px 28px', transition: 'all 0.3s ease' }}
+                    onMouseEnter={e => {
+                      const el = e.currentTarget as HTMLDivElement
+                      el.style.borderColor = borderAmber
+                      el.style.background = 'rgba(184,134,11,0.06)'
+                      el.style.transform = 'translateX(4px)'
+                    }}
+                    onMouseLeave={e => {
+                      const el = e.currentTarget as HTMLDivElement
+                      el.style.borderColor = border
+                      el.style.background = cardBg
+                      el.style.transform = 'translateX(0)'
+                    }}
+                  >
+                    {/* Card header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 12 }}>
+                      <p className={baskerville.className} style={{ fontSize: 19, fontWeight: 700, color: '#f0ece4', margin: 0, lineHeight: 1.2 }}>{c.title}</p>
+                      <span style={{
+                        fontSize: 10, fontWeight: 700, letterSpacing: '0.18em',
+                        color: c.outcome === 'PEAK YEARS' || c.outcome === 'PROLIFIC' ? '#10b981' : c.outcome === 'CLASSIFIED' ? '#8b5cf6' : amber,
+                        padding: '3px 10px',
+                        border: `1px solid ${c.outcome === 'PEAK YEARS' || c.outcome === 'PROLIFIC' ? '#10b98140' : c.outcome === 'CLASSIFIED' ? '#8b5cf640' : borderAmber}`,
+                        borderRadius: 99, whiteSpace: 'nowrap', flexShrink: 0,
+                      }}>{c.outcome}</span>
+                    </div>
+                    <p className={sourceSerif.className} style={{ fontSize: 13, color: '#4a6050', margin: '0 0 18px', fontStyle: 'italic', letterSpacing: '0.06em' }}>{c.client}</p>
+
+                    {/* Bullet points */}
+                    <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {c.bullets.map(pt => (
+                        <li key={pt} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                          <span style={{ color: amber, fontSize: 10, marginTop: 5, flexShrink: 0, opacity: 0.7 }}>◆</span>
+                          <span className={sourceSerif.className} style={{ fontSize: 15, color: '#7a9070', lineHeight: 1.65, fontWeight: 300 }}>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: c.outcome === 'SOLVED' ? '#10b981' : amber, letterSpacing: '0.15em', textAlign: 'right' }}>{c.outcome}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
