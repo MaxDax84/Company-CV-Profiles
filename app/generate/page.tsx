@@ -139,9 +139,6 @@ export default function GeneratePage() {
               </button>
             ))}
           </div>
-          <p className="text-xs text-white/25 text-center">
-            {selected.preview} · <a href={`/profile/${selected.demoSlug}`} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2" style={{ color: selected.accent }}>vedi esempio completo ↗</a>
-          </p>
         </div>
 
         {/* Upload area */}
