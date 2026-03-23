@@ -56,7 +56,9 @@ export default function HeroSection() {
           className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in"
           style={{ animationDelay: '0.24s' }}
         >
-          {t.subtitle}
+          {t.subtitle.split('. ').map((sentence, i, arr) => (
+            <span key={i}>{sentence}{i < arr.length - 1 ? '.' : ''}{i < arr.length - 1 && <br />}</span>
+          ))}
         </p>
 
         {/* CTAs */}
