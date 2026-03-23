@@ -47,7 +47,7 @@ export const translations = {
         'Every project is handcrafted for the individual. Here are some examples of what we have delivered.',
       projects: [
         {
-          label: 'Project Delta',
+          label: 'Project Alpha',
           role: 'Product & Growth Leader',
           description:
             'A dark, minimal web CV inspired by modern SaaS design — violet accent on near-black background, transparent navbar, timeline experience layout, and clean section headers with gradient dividers.',
@@ -55,7 +55,7 @@ export const translations = {
           href: '/portfolio/delta',
         },
         {
-          label: 'Project Alpha',
+          label: 'Project Beta',
           role: 'Finance & Management Professional',
           description:
             'A dark, sophisticated web CV with a gold accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
@@ -63,7 +63,7 @@ export const translations = {
           href: '/portfolio/alpha',
         },
         {
-          label: 'Project Beta',
+          label: 'Project Gamma',
           role: 'Business Consulting Executive',
           description:
             'An editorial executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
@@ -71,7 +71,7 @@ export const translations = {
           href: '/portfolio/beta',
         },
         {
-          label: 'Project Gamma',
+          label: 'Project Delta',
           role: 'HR & People Operations Leader',
           description:
             'A warm, minimal web CV for an HR professional who grew from Coordinator to Head of People across three companies — featuring a career timeline, soft-skills grid, and a values-led narrative.',
@@ -86,10 +86,13 @@ export const translations = {
       subtitle: 'No surprises. Pick the plan that fits your needs and get online.',
       mostPopular: 'Most Popular',
       oneTime: 'one-time',
+      launchBadge: 'Launch offer',
+      launchNote: 'Limited spots — introductory pricing for early clients',
       plans: [
         {
           name: 'Basic',
-          price: '25',
+          price: '30',
+          originalPrice: '60',
           description: 'A first look at your web CV on a temporary domain.',
           features: [
             'Custom design (colors, fonts, layout)',
@@ -104,6 +107,7 @@ export const translations = {
         {
           name: 'Professional',
           price: '55',
+          originalPrice: '110',
           description: 'Your web CV live on a custom domain, chosen together.',
           features: [
             'Custom design (colors, fonts, layout)',
@@ -120,6 +124,7 @@ export const translations = {
         {
           name: 'Advanced',
           price: '75',
+          originalPrice: '150',
           description: 'Everything in Professional, plus your source code and one free revision.',
           features: [
             'Everything in Professional',
@@ -144,7 +149,7 @@ export const translations = {
           'Profile always current and accurate',
         ],
         cta: 'Get in Touch',
-        note: 'Can be added to any plan',
+        note: 'Optional add-on — not required for any plan',
       },
     },
     contact: {
@@ -254,7 +259,7 @@ export const translations = {
         'Ogni progetto è realizzato su misura per la persona. Ecco alcuni esempi di ciò che abbiamo consegnato.',
       projects: [
         {
-          label: 'Progetto Delta',
+          label: 'Progetto Alpha',
           role: 'Product & Growth Leader',
           description:
             'Un CV web scuro e minimalista ispirato al design SaaS moderno — accento viola su sfondo quasi-nero, navbar trasparente, layout a timeline e intestazioni di sezione con divisori a gradiente.',
@@ -262,7 +267,7 @@ export const translations = {
           href: '/portfolio/delta',
         },
         {
-          label: 'Progetto Alpha',
+          label: 'Progetto Beta',
           role: 'Professionista Finance & Management',
           description:
             'Un CV web sofisticato con palette oro su sfondo scuro — timeline completa della carriera, griglia di competenze e dashboard di statistiche professionali.',
@@ -270,7 +275,7 @@ export const translations = {
           href: '/portfolio/alpha',
         },
         {
-          label: 'Progetto Beta',
+          label: 'Progetto Gamma',
           role: 'Executive Business Consulting',
           description:
             'Profilo executive editoriale con sezione competenze multilingua, cards di filosofia lavorativa e narrativa orientata ai risultati.',
@@ -278,7 +283,7 @@ export const translations = {
           href: '/portfolio/beta',
         },
         {
-          label: 'Progetto Gamma',
+          label: 'Progetto Delta',
           role: 'HR & People Operations Leader',
           description:
             'CV web caldo e minimalista per una professionista HR cresciuta da Coordinator a Head of People in tre aziende — con timeline di carriera, griglia soft-skills e narrativa orientata ai valori.',
@@ -293,10 +298,13 @@ export const translations = {
       subtitle: 'Nessuna sorpresa. Scegli il piano adatto alle tue esigenze e vai online.',
       mostPopular: 'Più Popolare',
       oneTime: 'una tantum',
+      launchBadge: 'Offerta lancio',
+      launchNote: 'Posti limitati — prezzi introduttivi per i primi clienti',
       plans: [
         {
           name: 'Basic',
-          price: '25',
+          price: '30',
+          originalPrice: '60',
           description: 'Una prima versione del tuo CV web su un dominio temporaneo.',
           features: [
             'Design personalizzato (colori, font, layout)',
@@ -311,6 +319,7 @@ export const translations = {
         {
           name: 'Professional',
           price: '55',
+          originalPrice: '110',
           description: 'Il tuo CV web live su un dominio personalizzato, scelto insieme.',
           features: [
             'Design personalizzato (colori, font, layout)',
@@ -327,6 +336,7 @@ export const translations = {
         {
           name: 'Advanced',
           price: '75',
+          originalPrice: '150',
           description: 'Tutto incluso in Professional, più il codice sorgente e una modifica gratuita.',
           features: [
             'Tutto incluso in Professional',
@@ -351,7 +361,7 @@ export const translations = {
           'Profilo sempre aggiornato e accurato',
         ],
         cta: 'Contattaci',
-        note: 'Aggiungibile a qualsiasi piano',
+        note: 'Add-on opzionale — non richiesto da nessun piano',
       },
     },
     contact: {

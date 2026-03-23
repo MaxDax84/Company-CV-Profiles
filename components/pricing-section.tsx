@@ -47,6 +47,19 @@ export default function PricingSection() {
           </p>
         </div>
 
+        {/* Launch promo banner */}
+        <div
+          className={cn(
+            'flex items-center justify-center gap-3 mb-8 px-5 py-3 rounded-xl border border-primary/30 bg-primary/5 text-center transition-all duration-700',
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+          )}
+          style={{ transitionDelay: '100ms' }}
+        >
+          <span className="text-sm font-bold text-primary">🎉 {(t as { launchBadge?: string }).launchBadge}</span>
+          <span className="text-muted-foreground/50">·</span>
+          <span className="text-sm text-muted-foreground">{(t as { launchNote?: string }).launchNote}</span>
+        </div>
+
         {/* 3 main plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch mb-8">
           {t.plans.map((plan, i) => (
@@ -75,6 +88,10 @@ export default function PricingSection() {
               </p>
 
               {/* Price */}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg line-through text-muted-foreground/50 font-medium">€{(plan as { originalPrice?: string }).originalPrice}</span>
+                <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">-50%</span>
+              </div>
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-4xl font-bold">€{plan.price}</span>
                 <span className="text-muted-foreground text-sm ml-1">{t.oneTime}</span>
@@ -153,7 +170,10 @@ export default function PricingSection() {
                 {t.maintenance.description}
               </p>
 
-              <p className="text-xs text-primary/70 mt-2 font-medium">{t.maintenance.note}</p>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-xs font-semibold text-muted-foreground/70 border border-border/60 rounded-full px-2.5 py-0.5">Optional</span>
+                <span className="text-xs text-muted-foreground/60">{t.maintenance.note}</span>
+              </div>
             </div>
 
             {/* Features + CTA */}

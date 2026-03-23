@@ -271,18 +271,28 @@ export default function BetaPage() {
         /* About split */
         .about-split { display: grid; grid-template-columns: 1fr 420px; gap: 0; min-height: 500px; }
 
+        /* Hero layout */
+        .sc-hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: end; }
+        .sc-hero-deco { width: 160px; height: 160px; flex-shrink: 0; }
+        /* Education grid */
+        .sc-edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
         /* Responsive */
         @media (max-width: 960px) {
           .about-split { grid-template-columns: 1fr !important; }
           .eng-row { grid-template-columns: 1fr !important; gap: 16px !important; }
           .exp-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .numbers-row { grid-template-columns: repeat(2, 1fr) !important; }
+          .sc-edu-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 600px) {
           .sc-nav-links { display: none; }
           .exp-grid { grid-template-columns: 1fr !important; }
           .hero-inner { padding: 80px 20px 60px !important; }
           .numbers-row { grid-template-columns: repeat(2, 1fr) !important; }
+          .sc-hero-deco { display: none !important; }
+          .sc-hero-grid { grid-template-columns: 1fr !important; }
+          .sc-edu-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
@@ -310,20 +320,20 @@ export default function BetaPage() {
             <span style={{ fontSize: 11, color: indigo, fontWeight: 500, letterSpacing: '0.05em' }}>{c.disclaimer}</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'end' }}>
+          <div className="sc-hero-grid">
             <div>
               <p style={{ fontSize: 12, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
                 {c.role}
               </p>
-              <h1 className={serif.className} style={{ fontSize: 'clamp(4rem, 10vw, 8.5rem)', color: ink, lineHeight: 0.88, margin: '0 0 36px', letterSpacing: '-0.02em' }}>
-                Sofia<br /><em style={{ color: indigo }}>Conti</em>
+              <h1 className={serif.className} style={{ fontSize: 'clamp(3rem, 8vw, 8.5rem)', color: ink, lineHeight: 0.88, margin: '0 0 36px', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+                Sofia <em style={{ color: indigo }}>Conti</em>
               </h1>
-              <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.18rem)', color: sub, maxWidth: 600, lineHeight: 1.8, margin: 0, fontWeight: 300 }}>
+              <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.18rem)', color: sub, maxWidth: 720, lineHeight: 1.8, margin: 0, fontWeight: 300 }}>
                 {c.heroSubtitle}
               </p>
             </div>
             {/* Decorative accent block */}
-            <div style={{ width: 160, height: 160, background: `linear-gradient(135deg, ${indigo}, ${indigoLight})`, borderRadius: 24, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
+            <div className="sc-hero-deco" style={{ background: `linear-gradient(135deg, ${indigo}, ${indigoLight})`, borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
               🗺
             </div>
           </div>
@@ -436,7 +446,7 @@ export default function BetaPage() {
           </div>
 
           {/* Education */}
-          <div style={{ marginTop: 56, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div className="sc-edu-grid" style={{ marginTop: 56 }}>
             {c.education.map(ed => (
               <div key={ed.degree} style={{ padding: '24px 28px', background: bg, border: `1px solid ${border}`, borderRadius: 12, borderLeft: `3px solid ${indigo}` }}>
                 <p style={{ fontSize: 15, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{ed.degree}</p>

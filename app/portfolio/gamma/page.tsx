@@ -387,6 +387,7 @@ export default function GammaPage() {
           .stats-strip { grid-template-columns: 1fr 1fr !important; }
           .hero-ctas { flex-direction: column !important; }
           .hero-ctas a { text-align: center; }
+          .gf-hero-h1 { white-space: normal !important; }
         }
       `}</style>
 
@@ -420,7 +421,7 @@ export default function GammaPage() {
             {c.role}
           </p>
 
-          <h1 style={{ fontSize: 'clamp(3.5rem, 10vw, 7.5rem)', fontWeight: 800, color: '#fff', lineHeight: 0.9, margin: '0 0 40px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
+          <h1 className="gf-hero-h1" style={{ fontSize: 'clamp(3.5rem, 10vw, 7.5rem)', fontWeight: 800, color: '#fff', lineHeight: 0.9, margin: '0 0 40px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
             Maria <span style={{ color: em }}>Rossi</span>
           </h1>
 

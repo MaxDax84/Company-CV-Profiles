@@ -314,6 +314,12 @@ export default function AlphaPage() {
 
         /* Numbers grid */
         .numbers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
+        /* Hero stats as a proper grid */
+        .mb-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+
+        /* About grid */
+        .mb-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+        .mb-edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
         /* Responsive */
         @media (max-width: 960px) {
@@ -321,12 +327,16 @@ export default function AlphaPage() {
           .skills-grid { grid-template-columns: 1fr !important; }
           .numbers-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .hero-stats { flex-direction: column !important; gap: 20px !important; }
+          .mb-about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .mb-edu-grid { grid-template-columns: 1fr !important; }
+          .mb-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (max-width: 600px) {
           .mb-nav-links { display: none; }
           .mb-section { padding: 72px 20px !important; }
           .numbers-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .hero-ctas { flex-direction: column; }
+          .mb-about-grid { padding: 0 !important; }
         }
       `}</style>
 
@@ -351,7 +361,7 @@ export default function AlphaPage() {
         {/* Large decorative index */}
         <div style={{ position: 'absolute', right: '5%', top: '50%', transform: 'translateY(-50%)', fontSize: 'clamp(10rem, 25vw, 22rem)', fontWeight: 700, color: 'rgba(212,168,67,0.04)', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>CFO</div>
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px 96px', width: '100%', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px 96px', width: '100%', position: 'relative', zIndex: 1, textAlign: 'center' }}>
 
           {/* Disclaimer */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', border: `1px solid ${border}`, marginBottom: 20 }}>
@@ -367,11 +377,11 @@ export default function AlphaPage() {
             Marco <span style={{ color: gold }}>Bianchi</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.15rem)', color: softText, maxWidth: 620, lineHeight: 1.8, margin: '0 0 48px', fontWeight: 300 }}>
+          <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.15rem)', color: softText, maxWidth: 700, lineHeight: 1.8, margin: '0 auto 48px', fontWeight: 300 }}>
             {c.heroSubtitle}
           </p>
 
-          <div className="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 72 }}>
+          <div className="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 72, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '13px 28px', background: gold, color: dark, fontWeight: 700, fontSize: 14, borderRadius: 6, textDecoration: 'none' }}>
               {c.ctaPrimary}
             </a>
@@ -380,12 +390,12 @@ export default function AlphaPage() {
             </a>
           </div>
 
-          {/* Stats — horizontal row */}
-          <div className="hero-stats" style={{ display: 'flex', gap: 0 }}>
+          {/* Stats grid */}
+          <div className="mb-stats-grid" style={{ border: `1px solid ${goldBorder}`, borderRadius: 8, overflow: 'hidden' }}>
             {c.statsRow.map(({ value, unit, label }, i, arr) => (
-              <div key={label} style={{ padding: '24px 32px', borderLeft: i > 0 ? `1px solid ${goldBorder}` : 'none', borderTop: `1px solid ${goldBorder}`, borderBottom: `1px solid ${goldBorder}`, borderRight: i === arr.length - 1 ? `1px solid ${goldBorder}` : 'none', flex: 1 }}>
-                <p style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1 }}>
-                  {value}<span style={{ fontSize: 14, color: gold }}>{unit}</span>
+              <div key={label} style={{ padding: '24px 20px', background: darkCard, borderRight: i < arr.length - 1 ? `1px solid ${goldBorder}` : 'none' }}>
+                <p style={{ fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1 }}>
+                  {value}<span style={{ fontSize: 13, color: gold }}>{unit}</span>
                 </p>
                 <p style={{ fontSize: 11, color: sub, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
               </div>
@@ -399,7 +409,7 @@ export default function AlphaPage() {
       <section id="about" className="mb-section" style={{ padding: '100px 32px', background: darkCard }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 16px', opacity: 0.8 }}>{c.aboutLabel}</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80 }}>
+          <div className="mb-about-grid">
             <div>
               <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.12, margin: '0 0 28px', letterSpacing: '-0.02em' }}>
                 {c.aboutHeading}<br /><span style={{ color: gold }}>{c.aboutHeadingAccent}</span>
@@ -498,7 +508,7 @@ export default function AlphaPage() {
           </div>
 
           {/* Education + certs */}
-          <div style={{ marginTop: 48, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div className="mb-edu-grid" style={{ marginTop: 48 }}>
             {c.education.map(ed => (
               <div key={ed.degree} style={{ padding: '24px 28px', background: dark, border: `1px solid ${goldBorder}`, borderRadius: 10 }}>
                 <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: '0 0 4px' }}>{ed.degree}</p>

@@ -385,6 +385,9 @@ export default function DeltaPage() {
           .stats-row { grid-template-columns: 1fr 1fr !important; }
           .hero-ctas { flex-direction: column !important; }
         }
+        @media (max-width: 480px) {
+          .lr-hero-h1 { white-space: normal !important; }
+        }
       `}</style>
 
       {/* ── NAVBAR ── */}
@@ -410,7 +413,7 @@ export default function DeltaPage() {
         <div
           ref={heroIn.ref}
           className="lr-container"
-          style={{ padding: '80px 24px 96px', width: '100%', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(32px)' }}
+          style={{ padding: '80px 24px 96px', width: '100%', textAlign: 'center', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(32px)' }}
         >
           {/* Disclaimer */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '4px 14px', borderRadius: 999, background: vFaint, border: `1px solid ${vBorder}`, marginBottom: 24 }}>
@@ -422,15 +425,15 @@ export default function DeltaPage() {
             {c.role}
           </p>
 
-          <h1 style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
+          <h1 className="lr-hero-h1" style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
             Luca <span style={{ color: v }}>Romano</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.12rem)', color: mut, maxWidth: 600, lineHeight: 1.8, margin: '0 0 48px', fontWeight: 300 }}>
+          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.12rem)', color: mut, maxWidth: 700, lineHeight: 1.8, margin: '0 auto 48px', fontWeight: 300 }}>
             {c.heroSubtitle}
           </p>
 
-          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 80 }}>
+          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 80, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 26px', background: v, color: bg, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
               {c.ctaPrimary}
             </a>
