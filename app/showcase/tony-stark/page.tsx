@@ -56,18 +56,57 @@ const roles = [
 export default function TonyStarkPage() {
   return (
     <div className={dmSans.className} style={{ background: darkBg, color: '#e2e8f0', overflowX: 'hidden' }}>
-      <style>{`html { scroll-behavior: smooth; }`}</style>
+      <style>{`
+        html { scroll-behavior: smooth; }
+
+        /* ── Navbar ── */
+        .ts-nav-inner {
+          max-width: 1100px; margin: 0 auto; padding: 0 32px;
+          height: 56px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .ts-nav-links { display: flex; gap: 32px; align-items: center; }
+        .ts-back-mobile { display: none; font-size: 12px; color: #6b7280; text-decoration: none; }
+        .ts-back-mobile:hover { color: ${red}; }
+
+        /* ── Sections ── */
+        .ts-section { max-width: 1100px; margin: 0 auto; padding: 96px 32px; }
+
+        /* ── About ── */
+        .ts-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+        .ts-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+
+        /* ── Role card inner ── */
+        .ts-role-grid { display: grid; grid-template-columns: 260px 1fr; gap: 32px; }
+
+        /* ── Footer ── */
+        .ts-footer-inner {
+          max-width: 1100px; margin: 0 auto;
+          display: flex; justify-content: space-between; align-items: center;
+        }
+
+        @media (max-width: 768px) {
+          .ts-about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .ts-role-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+        }
+        @media (max-width: 600px) {
+          .ts-nav-links { display: none !important; }
+          .ts-back-mobile { display: block !important; }
+          .ts-section { padding: 64px 20px !important; }
+          .ts-footer-inner { flex-direction: column !important; gap: 8px !important; text-align: center; }
+        }
+      `}</style>
 
       {/* NAVBAR */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(3,6,8,0.88)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="ts-nav-inner">
           <span className={orbitron.className} style={{ fontSize: 13, color: red, letterSpacing: '0.1em', fontWeight: 700 }}>TS</span>
-          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+          <div className="ts-nav-links">
             {[['#about', 'Profile'], ['#roles', 'Career'], ['#skills', 'Tech'], ['#education', 'Education']].map(([href, label]) => (
               <a key={href} href={href} style={{ fontSize: 12, color: '#6b7280', textDecoration: 'none', letterSpacing: '0.1em' }}>{label}</a>
             ))}
             <Link href="/showcase" style={{ fontSize: 12, color: '#374151', textDecoration: 'none' }}>← Showcase</Link>
           </div>
+          <Link href="/showcase" className="ts-back-mobile">← Showcase</Link>
         </div>
       </nav>
 
@@ -89,7 +128,7 @@ export default function TonyStarkPage() {
           </p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {[['ARC REACTOR', '100%', red], ['SUIT MARK', 'LXXXV', gold], ['IQ', '270+', '#8b5cf6'], ['NET WORTH', '$12.4B', '#10b981']].map(([k, v, c]) => (
-              <div key={k} style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${border}`, borderRadius: 10, minWidth: 110 }}>
+              <div key={k} style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${border}`, borderRadius: 10, minWidth: 100 }}>
                 <p className={orbitron.className} style={{ fontSize: 20, fontWeight: 700, color: c as string, margin: 0, lineHeight: 1 }}>{v}</p>
                 <p className={orbitron.className} style={{ fontSize: 9, color: '#4b5563', margin: '4px 0 0', letterSpacing: '0.15em' }}>{k}</p>
               </div>
@@ -100,9 +139,9 @@ export default function TonyStarkPage() {
 
       {/* PROFILE */}
       <section id="about" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
+        <div className="ts-section">
           <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 01 BIOGRAPHICAL DATA</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
+          <div className="ts-about-grid">
             <div>
               <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 32px' }}>
                 I AM<br /><span style={{ color: red }}>IRON MAN.</span>
@@ -119,12 +158,12 @@ export default function TonyStarkPage() {
                 Engineering and Physics. Inherited Stark Industries at 21 — turning a weapons empire into a
                 $12.4B clean energy company.
               </p>
-              <p style={{ fontSize: 15, color: '#9ca3af', lineHeight: 1.85, marginBottom: 28, fontWeight: 300 }}>
+              <p style={{ fontSize: 15, color: '#9ca3af', lineHeight: 1.85, marginBottom: 0, fontWeight: 300 }}>
                 The 2008 Afghanistan capture changed everything. Returning with an ARC reactor in his chest,
                 Stark dismantled the weapons division overnight — then walked into a press conference and said
                 four words that changed the world.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="ts-info-grid">
                 {[['Born', 'May 29, 1970'], ['Alma Mater', 'MIT, Class of 1987'], ['Enrolled', 'Age 15'], ['Partner', 'Virginia Potts']].map(([k, v]) => (
                   <div key={k} style={{ padding: '10px 14px', background: cardBg, border: `1px solid ${borderRed}`, borderRadius: 8 }}>
                     <p className={orbitron.className} style={{ fontSize: 9, color: '#4b5563', margin: '0 0 2px', letterSpacing: '0.12em' }}>{k}</p>
@@ -139,18 +178,19 @@ export default function TonyStarkPage() {
 
       {/* CAREER */}
       <section id="roles" style={{ background: darkBg }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
+        <div className="ts-section">
           <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 02 OPERATIONAL HISTORY</p>
           <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 56px' }}>
             Three chapters.<br /><span style={{ color: red }}>All classified.</span>
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {roles.map((r) => (
-              <div key={r.title} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 16, padding: '28px 32px', transition: 'all 0.3s ease' }}
+              <div key={r.title}
+                style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 16, padding: '28px 32px', transition: 'all 0.3s ease' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = r.color + '40'; el.style.boxShadow = `0 12px 40px ${r.color}10`; el.style.transform = 'translateX(4px)' }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = border; el.style.boxShadow = 'none'; el.style.transform = 'translateX(0)' }}
               >
-                <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 32 }}>
+                <div className="ts-role-grid">
                   <div>
                     <p className={orbitron.className} style={{ fontSize: 10, color: r.color, margin: '0 0 6px', letterSpacing: '0.1em' }}>{r.period}</p>
                     <p className={orbitron.className} style={{ fontSize: 14, fontWeight: 700, color: '#ffffff', margin: '0 0 4px' }}>{r.title}</p>
@@ -174,12 +214,12 @@ export default function TonyStarkPage() {
 
       {/* SKILLS */}
       <section id="skills" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
+        <div className="ts-section">
           <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 03 TECHNICAL CAPABILITIES</p>
           <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, margin: '0 0 48px' }}>
             Off the charts.<br /><span style={{ color: gold }}>Literally.</span>
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 }}>
             {[['Mechanical Engineering', 100, red], ['Quantum Physics', 94, gold], ['AI Development', 98, '#8b5cf6'], ['Armor Combat', 88, red], ['Clean Energy Systems', 97, '#10b981'], ['Business Strategy', 85, gold], ['Materials Science', 96, '#06b6d4'], ['Weapons Engineering', 99, red]].map(([skill, pct, color]) => (
               <div key={skill as string} style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${border}`, borderRadius: 10, padding: '16px 18px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -197,7 +237,7 @@ export default function TonyStarkPage() {
 
       {/* EDUCATION */}
       <section id="education" style={{ background: darkBg }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 32px' }}>
+        <div className="ts-section">
           <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 04 EDUCATION</p>
           <div style={{ padding: '32px', background: cardBg, border: `1px solid ${borderRed}`, borderRadius: 16 }}>
             <p className={orbitron.className} style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', margin: '0 0 6px' }}>Massachusetts Institute of Technology</p>
@@ -208,9 +248,9 @@ export default function TonyStarkPage() {
       </section>
 
       <footer style={{ background: midBg, borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="ts-footer-inner">
           <span className={orbitron.className} style={{ fontSize: 10, color: '#1f2937', letterSpacing: '0.2em' }}>STARK INDUSTRIES CONFIDENTIAL</span>
-          <p style={{ fontSize: 12, color: '#374151' }}>Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>BeOnWeb</Link></p>
+          <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>BeOnWeb</Link></p>
         </div>
       </footer>
     </div>

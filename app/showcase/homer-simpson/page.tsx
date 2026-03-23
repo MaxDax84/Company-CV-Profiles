@@ -64,6 +64,36 @@ export default function HomerSimpsonPage() {
           border-top: 11px solid white;
           z-index: 1;
         }
+
+        /* Layout grids */
+        .hs-row1 { display: grid; grid-template-columns: 2fr 1fr; border-bottom: ${panelBorder}; }
+        .hs-bio-panel { padding: 36px 40px; border-right: ${panelBorder}; }
+        .hs-stats-panel { padding: 36px 28px; }
+        .hs-adventures-outer { padding: 36px 40px; }
+        .hs-adventures-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+        .hs-row3 { display: grid; grid-template-columns: 1fr 2fr; border-bottom: ${panelBorder}; }
+        .hs-skills-panel { padding: 36px 28px; border-right: ${panelBorder}; }
+        .hs-family-panel { padding: 36px 40px; }
+        .hs-family-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .hs-footer { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+
+        @media (max-width: 768px) {
+          .hs-row1 { grid-template-columns: 1fr !important; }
+          .hs-bio-panel { border-right: none !important; border-bottom: ${panelBorder} !important; }
+          .hs-row3 { grid-template-columns: 1fr !important; }
+          .hs-skills-panel { border-right: none !important; border-bottom: ${panelBorder} !important; }
+          .hs-adventures-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 600px) {
+          .hs-adventures-grid { grid-template-columns: 1fr !important; }
+          .hs-family-grid { grid-template-columns: 1fr !important; }
+          .hs-footer { padding: 16px 20px !important; flex-direction: column !important; gap: 8px; text-align: center; }
+          .hs-bio-panel { padding: 24px 20px !important; }
+          .hs-stats-panel { padding: 24px 16px !important; }
+          .hs-adventures-outer { padding: 24px 20px !important; }
+          .hs-skills-panel { padding: 24px 16px !important; }
+          .hs-family-panel { padding: 24px 20px !important; }
+        }
       `}</style>
 
       {/* ── PANEL 01: TITLE BANNER ── */}
@@ -90,17 +120,17 @@ export default function HomerSimpsonPage() {
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
         {/* ROW 1: Bio (2/3) + Stats (1/3) */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', borderBottom: panelBorder }}>
+        <div className="hs-row1">
 
           {/* Bio panel */}
-          <div className="panel" style={{ background: 'white', padding: '36px 40px', borderRadius: 0, border: 'none', borderRight: panelBorder }}>
+          <div className="panel hs-bio-panel" style={{ background: 'white', borderRadius: 0, border: 'none' }}>
             <span className="panel-num">02</span>
             <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 16, marginTop: 8 }}>The Springfield Story</h2>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 16 }}>
               Born <strong>May 12, 1956</strong> in Springfield — a city in a state nobody can identify. Son of Abe and Mona Simpson. Attended Springfield High School and graduated, somewhat miraculously, despite losing significant brain function to a crayon lodged in his nasal cavity.
             </p>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 24 }}>
-              Met Marge Bouvier at a detention in 1974. Has been inseparable from her — and never fully understood why she chose him — ever since. They have three children, a dog, a cat, and a car that shouldn't still be running.
+              Met Marge Bouvier at a detention in 1974. Has been inseparable from her — and never fully understood why she chose him — ever since. They have three children, a dog, a cat, and a car that shouldn&apos;t still be running.
             </p>
             <div style={{ marginTop: 8 }}>
               <div className="speech" style={{ fontSize: 20, marginBottom: 16 }}>
@@ -111,7 +141,7 @@ export default function HomerSimpsonPage() {
           </div>
 
           {/* Stats panel */}
-          <div className="panel" style={{ background: yellow, padding: '36px 28px', border: 'none' }}>
+          <div className="panel hs-stats-panel" style={{ background: yellow, border: 'none' }}>
             <span className="panel-num">03</span>
             <h2 className={lilita.className} style={{ fontSize: 22, color: blue, marginBottom: 20, marginTop: 8 }}>By the Numbers</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -135,13 +165,13 @@ export default function HomerSimpsonPage() {
         </div>
 
         {/* ROW 2: Adventures (full width, 3 cols) */}
-        <div className="panel" style={{ border: 'none', borderBottom: panelBorder, background: '#fff7ed', padding: '36px 40px' }}>
+        <div className="panel hs-adventures-outer" style={{ border: 'none', borderBottom: panelBorder, background: '#fff7ed' }}>
           <span className="panel-num">04</span>
           <h2 className={lilita.className} style={{ fontSize: 26, color: orange, marginBottom: 28, marginTop: 8 }}>Adventures & Side Jobs</h2>
           <p style={{ fontSize: 13, fontWeight: 800, color: '#9a3412', letterSpacing: '0.1em', marginBottom: 20 }}>
             HOMER HAS DONE IT ALL. USUALLY BY ACCIDENT.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
+          <div className="hs-adventures-grid">
             {[
               { emoji: '☢️', title: 'Nuclear Safety Inspector', org: 'Springfield Nuclear Power Plant · 1989→Now', desc: 'Sector 7-G. Responsible for preventing meltdown. Has caused 3. Fired 27 times. Still employed.' },
               { emoji: '🚀', title: 'NASA Astronaut', org: 'Kennedy Space Center · 1994', desc: 'Selected as the average American for a mission. Ate all the food in zero gravity. Counts it on his resume.' },
@@ -149,7 +179,7 @@ export default function HomerSimpsonPage() {
               { emoji: '🎤', title: 'Country Music Singer', org: 'Capitol Records · "Homer in the House"', desc: 'Brief but passionate. One hit single. Briefly famous. Immediately forgotten. No regrets.' },
               { emoji: '🍔', title: 'Food Critic', org: 'Springfield Shopper', desc: 'Positive reviews only. Ate every dish in Springfield. Gained 8 lbs on assignment. Called it "fieldwork."' },
               { emoji: '🌐', title: 'Grease Recycling Entrepreneur', org: 'Homer\'s Can Do Corp · 1998', desc: 'Founded Homer\'s Can Do Corp. Business model: collect and resell cooking grease. Genuinely profitable for six days.' },
-            ].map((a, i) => (
+            ].map((a) => (
               <div key={a.title} style={{ padding: '20px', border: panelBorder, margin: '-1px 0 0 -1px', background: 'white' }}>
                 <div style={{ fontSize: 28, marginBottom: 8 }}>{a.emoji}</div>
                 <p className={lilita.className} style={{ fontSize: 15, color: blue, margin: '0 0 4px' }}>{a.title}</p>
@@ -161,10 +191,10 @@ export default function HomerSimpsonPage() {
         </div>
 
         {/* ROW 3: Skills (1/3) + Family (2/3) */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', borderBottom: panelBorder }}>
+        <div className="hs-row3">
 
           {/* Skills */}
-          <div className="panel" style={{ background: blue, padding: '36px 28px', border: 'none', borderRight: panelBorder }}>
+          <div className="panel hs-skills-panel" style={{ background: blue, border: 'none' }}>
             <span className="panel-num" style={{ color: 'rgba(255,255,255,0.3)' }}>05</span>
             <h2 className={lilita.className} style={{ fontSize: 22, color: yellow, marginBottom: 24, marginTop: 8 }}>Skill Assessment</h2>
             {[['Eating', 99, yellow], ['Sleeping', 97, yellow], ['TV Watching', 95, yellow], ['Bowling', 63, orange], ['Parenting', 52, orange], ['Nuclear Safety', 8, red]].map(([skill, pct, color]) => (
@@ -181,10 +211,10 @@ export default function HomerSimpsonPage() {
           </div>
 
           {/* Family */}
-          <div className="panel" style={{ background: 'white', padding: '36px 40px', border: 'none' }}>
+          <div className="panel hs-family-panel" style={{ background: 'white', border: 'none' }}>
             <span className="panel-num">06</span>
             <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 28, marginTop: 8 }}>742 Evergreen Terrace</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+            <div className="hs-family-grid">
               {[
                 { emoji: '💙', name: 'Marge Simpson', tag: 'WIFE', desc: 'The heart of the family. Impossibly patient. Still in love with Homer after 35 years — nobody knows how.', color: blue },
                 { emoji: '😈', name: 'Bart Simpson', tag: 'SON', desc: '4th grade. Underachiever and proud of it. Expert slingshot operator. Homer\'s son in every way.', color: orange },
@@ -216,7 +246,7 @@ export default function HomerSimpsonPage() {
         </div>
 
         {/* Footer */}
-        <div style={{ background: blue, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="hs-footer" style={{ background: blue }}>
           <span className={lilita.className} style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>🍩 SPRINGFIELD, USA</span>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, fontWeight: 800 }}>
             Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>BeOnWeb</Link>

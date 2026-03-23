@@ -24,27 +24,50 @@ export default function AudreyHepburnPage() {
     <div className={cormorant.className} style={{ background: darkBg, color: '#e8e0d0', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
-        .pull-quote {
+        .ah-pull-quote {
           margin: 0 -80px;
           padding: 0 80px;
         }
+        .ah-header {
+          padding: 20px 40px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid rgba(201,168,76,0.1);
+        }
+        .ah-header-date { display: block; }
+        .ah-back-mobile { display: none; font-size: 13px; color: #4b3e2e; text-decoration: none; letter-spacing: 0.15em; font-style: italic; }
+        .ah-film-grid { display: grid; grid-template-columns: 48px 1fr; gap: 32; }
+        .ah-footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+
         @media (max-width: 900px) {
-          .pull-quote { margin: 0; padding: 0; }
+          .ah-pull-quote { margin: 0; padding: 0; }
+        }
+        .ah-content-col { padding: 0 40px 100px; }
+        .ah-hero { padding: 100px 0 80px; }
+
+        @media (max-width: 600px) {
+          .ah-pull-quote { margin: 0 !important; padding: 0 !important; }
+          .ah-header { padding: 12px 20px !important; }
+          .ah-header-date { display: none; }
+          .ah-back-mobile { display: block; }
+          .ah-content-col { padding: 0 20px 60px !important; }
+          .ah-hero { padding: 56px 0 40px !important; }
         }
       `}</style>
 
       {/* Top strip */}
       <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${gold}, transparent)` }} />
 
-      {/* Minimal header — not sticky, just a reading aid */}
-      <div style={{ padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid rgba(201,168,76,0.1)` }}>
+      {/* Minimal header */}
+      <div className="ah-header">
         <Link href="/showcase" className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', textDecoration: 'none', letterSpacing: '0.15em', fontStyle: 'italic' }}>← Showcase</Link>
         <p className={cormorant.className} style={{ fontSize: 11, color: '#4b3e2e', letterSpacing: '0.4em', margin: 0, textTransform: 'uppercase' }}>BeOnWeb · Style Showcase</p>
-        <p className={cormorant.className} style={{ fontSize: 12, color: '#4b3e2e', margin: 0, fontStyle: 'italic' }}>4 May 1929 – 20 January 1993</p>
+        <p className={`ah-header-date ${cormorant.className}`} style={{ fontSize: 12, color: '#4b3e2e', margin: 0, fontStyle: 'italic' }}>4 May 1929 – 20 January 1993</p>
       </div>
 
       {/* ── OPENING — full-bleed typographic title ── */}
-      <section style={{ padding: '100px 0 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section className="ah-hero" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.06), transparent 60%)`, pointerEvents: 'none' }} />
         <p className={cormorant.className} style={{ fontSize: 12, letterSpacing: '0.6em', color: gold, textTransform: 'uppercase', margin: '0 0 32px' }}>
           Actress · Humanitarian · Style Icon
@@ -59,10 +82,10 @@ export default function AudreyHepburnPage() {
       </section>
 
       {/* ── MAGAZINE CONTENT COLUMN ── */}
-      <div style={{ maxWidth: 820, margin: '0 auto', padding: '0 40px 100px' }}>
+      <div className="ah-content-col" style={{ maxWidth: 820, margin: '0 auto' }}>
 
         {/* Opening quote — editorial pull style */}
-        <div className="pull-quote" style={{ borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}`, padding: '40px 80px', margin: '0 -80px 64px', textAlign: 'center' }}>
+        <div className="ah-pull-quote" style={{ borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}`, padding: '40px 80px', margin: '0 -80px 64px', textAlign: 'center' }}>
           <p className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontWeight: 400, fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5 }}>
             &ldquo;Nothing is impossible — the word itself says I&rsquo;m possible.&rdquo;
           </p>
@@ -82,7 +105,7 @@ export default function AudreyHepburnPage() {
           </p>
 
           {/* Pull quote mid-article */}
-          <div className="pull-quote" style={{ margin: '40px -80px', padding: '36px 80px', background: parchment, borderLeft: `3px solid ${gold}` }}>
+          <div className="ah-pull-quote" style={{ margin: '40px -80px', padding: '36px 80px', background: parchment, borderLeft: `3px solid ${gold}` }}>
             <p className={playfair.className} style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.55 }}>
               &ldquo;She survived a war. Then she conquered Hollywood. Then she gave it all up — for children she would never meet.&rdquo;
             </p>
@@ -113,7 +136,7 @@ export default function AudreyHepburnPage() {
                 </div>
                 {/* Content */}
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 6, flexWrap: 'wrap' }}>
                     <p className={playfair.className} style={{ fontSize: 22, fontWeight: 700, color: '#ffffff', margin: 0 }}>{f.title}</p>
                     <p className={cormorant.className} style={{ fontSize: 14, color: gold, margin: 0, fontStyle: 'italic', letterSpacing: '0.1em' }}>{f.year}</p>
                   </div>
@@ -160,7 +183,7 @@ export default function AudreyHepburnPage() {
         <section id="humanitarian">
           <p className={cormorant.className} style={{ fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Humanitarian Legacy</p>
 
-          <div className="pull-quote" style={{ margin: '0 -80px 48px', padding: '40px 80px', borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}` }}>
+          <div className="ah-pull-quote" style={{ margin: '0 -80px 48px', padding: '40px 80px', borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}` }}>
             <p className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5, textAlign: 'center' }}>
               &ldquo;She gave up cinema to save children. And she never once looked back.&rdquo;
             </p>
@@ -175,7 +198,7 @@ export default function AudreyHepburnPage() {
         </section>
 
         {/* Footer */}
-        <div style={{ marginTop: 80, paddingTop: 32, borderTop: `1px solid rgba(201,168,76,0.15)`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="ah-footer-row" style={{ marginTop: 80, paddingTop: 32, borderTop: `1px solid rgba(201,168,76,0.15)` }}>
           <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>4 May 1929 – 20 January 1993</p>
           <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>
             Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>

@@ -11,11 +11,25 @@ const mid = '#4b5563'
 
 export default function DarthVaderPage() {
   return (
-    <div className={mono.className} style={{ minHeight: '100vh', background: '#000000', color: '#9ca3af', padding: '0 0 80px' }}>
+    <div className={mono.className} style={{ minHeight: '100vh', background: '#000000', color: '#9ca3af', padding: '0 0 80px', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
-        .redact { background: #374151; color: transparent; border-radius: 2px; display: inline-block; userSelect: 'none'; }
+        .redact { background: #374151; color: transparent; border-radius: 2px; display: inline-block; user-select: none; }
         @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:0.96} 93%{opacity:0.85} 94%{opacity:0.96} }
+
+        .dv-identity-row { display: grid; grid-template-columns: 200px 1fr; gap: 20px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .dv-service-inner { display: grid; grid-template-columns: 130px 1fr; gap: 20px; }
+        .dv-force-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .dv-force-row { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: grid; grid-template-columns: 180px 1fr; gap: 12px; }
+
+        .dv-separator { overflow: hidden; white-space: nowrap; max-width: 100%; }
+
+        @media (max-width: 600px) {
+          .dv-identity-row { grid-template-columns: 1fr !important; gap: 4px !important; }
+          .dv-service-inner { grid-template-columns: 1fr !important; gap: 6px !important; }
+          .dv-force-grid { grid-template-columns: 1fr !important; }
+          .dv-force-row { grid-template-columns: 1fr !important; gap: 4px !important; }
+        }
       `}</style>
 
       {/* Scanline overlay */}
@@ -28,7 +42,7 @@ export default function DarthVaderPage() {
 
         {/* Classification header */}
         <div style={{ borderTop: `1px solid ${dim}`, borderBottom: `1px solid ${dim}`, padding: '28px 0', marginBottom: 48, textAlign: 'center' }}>
-          <p style={{ fontSize: 10, color: dim, letterSpacing: '0.35em', margin: '0 0 12px' }}>
+          <p className="dv-separator" style={{ fontSize: 10, color: dim, letterSpacing: '0.35em', margin: '0 0 12px' }}>
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           </p>
           <p style={{ fontSize: 11, color: mid, letterSpacing: '0.3em', margin: '0 0 6px' }}>IMPERIAL INTELLIGENCE SERVICE</p>
@@ -65,7 +79,7 @@ export default function DarthVaderPage() {
             ['BIOLOGICAL STATUS', 'Life-support dependent. 92% prosthetic.'],
             ['MIDI-CHLORIAN COUNT', <span key="midi"><span className="redact">████</span> /mL (highest on record — UNVERIFIED)</span>],
           ].map(([label, value], i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 20, padding: '10px 0', borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+            <div key={i} className="dv-identity-row">
               <p style={{ fontSize: 10, color: dim, margin: 0, letterSpacing: '0.15em' }}>{label}</p>
               <p style={{ fontSize: 13, color: '#d1d5db', margin: 0, lineHeight: 1.5 }}>{value}</p>
             </div>
@@ -100,7 +114,7 @@ export default function DarthVaderPage() {
             },
           ].map((r, i) => (
             <div key={i} style={{ padding: '16px 0', borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr', gap: 20 }}>
+              <div className="dv-service-inner">
                 <div>
                   <p style={{ fontSize: 10, color: red, margin: '0 0 4px', letterSpacing: '0.1em' }}>{r.date}</p>
                   <p style={{ fontSize: 10, color: dim, margin: 0, fontWeight: 700, letterSpacing: '0.12em' }}>{r.org}</p>
@@ -119,7 +133,7 @@ export default function DarthVaderPage() {
           <p style={{ fontSize: 12, color: dim, margin: '0 0 20px', lineHeight: 1.6, letterSpacing: '0.03em' }}>
             Assessment based on field observation and intercepted Jedi Council records (pre-purge). Proficiency ratings classified 0–10. Lord Vader's profile has been truncated at analyst discretion.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+          <div className="dv-force-grid">
             {[
               ['Force Choke', '██████████ 10/10'],
               ['Telekinesis', '█████████░ 09/10'],
@@ -130,7 +144,7 @@ export default function DarthVaderPage() {
               ['Force Barrier', '████████░░ 08/10'],
               ['Mechanical Engineering', <span key="eng"><span className="redact">████████</span> [REDACTED]</span>],
             ].map(([skill, rating], i) => (
-              <div key={i} style={{ padding: '10px 0', borderBottom: `1px solid rgba(255,255,255,0.04)`, display: 'grid', gridTemplateColumns: '180px 1fr', gap: 12 }}>
+              <div key={i} className="dv-force-row">
                 <p style={{ fontSize: 11, color: mid, margin: 0 }}>{skill}</p>
                 <p style={{ fontSize: 11, color: red, margin: 0 }}>{rating}</p>
               </div>

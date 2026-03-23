@@ -33,8 +33,30 @@ export default function HermioneGrangerPage() {
           border-left: 2px solid rgba(201,153,63,0.3);
           padding-left: 12px;
         }
+        .hg-header { padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .hg-header-title { display: block; }
+        .hg-header-attr { display: block; }
+        .hg-content-col { padding: 24px 40px 100px; position: relative; }
+        .hg-section-pad { padding: 48px 56px; }
+        .hg-academic-row { display: grid; grid-template-columns: 220px 1fr; padding: 10px 0; }
+        .hg-career-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; }
+        .hg-footer-row { display: flex; justify-content: space-between; align-items: center; }
+
         @media (max-width: 1100px) {
           .margin-note { display: none; }
+        }
+        @media (max-width: 768px) {
+          .hg-section-pad { padding: 36px 32px !important; }
+        }
+        @media (max-width: 600px) {
+          .hg-header { padding: 12px 20px !important; }
+          .hg-header-title { display: none !important; }
+          .hg-header-attr { display: none !important; }
+          .hg-content-col { padding: 16px 20px 60px !important; }
+          .hg-section-pad { padding: 28px 24px !important; }
+          .hg-academic-row { grid-template-columns: 1fr !important; gap: 2px; }
+          .hg-career-row { grid-template-columns: 1fr !important; gap: 4px; }
+          .hg-footer-row { flex-direction: column !important; gap: 6px; text-align: center; }
         }
       `}</style>
 
@@ -42,17 +64,17 @@ export default function HermioneGrangerPage() {
       <div style={{ height: 4, background: `linear-gradient(90deg, ${burgundy}, ${gold}, ${burgundy})` }} />
 
       {/* Running header */}
-      <div style={{ padding: '14px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="hg-header">
         <Link href="/showcase" className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.4)', textDecoration: 'none', letterSpacing: '0.2em' }}>← SHOWCASE</Link>
-        <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.3em', margin: 0 }}>THE LIFE OF HERMIONE JEAN GRANGER</p>
-        <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.15em', margin: 0 }}>BeOnWeb · Style Showcase</p>
+        <p className={`hg-header-title ${cinzel.className}`} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.3em', margin: 0 }}>THE LIFE OF HERMIONE JEAN GRANGER</p>
+        <p className={`hg-header-attr ${cinzel.className}`} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.15em', margin: 0 }}>BeOnWeb · Style Showcase</p>
       </div>
 
       {/* Content: centered book column */}
-      <div style={{ maxWidth: 700, margin: '0 auto', padding: '24px 40px 100px', position: 'relative' }}>
+      <div className="hg-content-col" style={{ maxWidth: 700, margin: '0 auto' }}>
 
         {/* ── FRONTISPIECE ── */}
-        <div className="page-bg" style={{ padding: '64px 56px', marginBottom: 48, textAlign: 'center' }}>
+        <div className="page-bg hg-section-pad" style={{ marginBottom: 48, textAlign: 'center' }}>
           <p className={cinzel.className} style={{ fontSize: 10, color: burgundy, letterSpacing: '0.5em', margin: '0 0 24px' }}>HOGWARTS · MINISTRY OF MAGIC · GRYFFINDOR</p>
           <div style={{ fontSize: 40, marginBottom: 16 }}>⚡</div>
           <h1 className={cinzel.className} style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, lineHeight: 1, color: ink, margin: '0 0 16px' }}>
@@ -80,7 +102,7 @@ export default function HermioneGrangerPage() {
             <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>THE MUGGLE-BORN PRODIGY</p>
           </div>
 
-          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+          <div className="page-bg hg-section-pad" style={{ position: 'relative' }}>
             <span className="margin-note">She arrived knowing more than most third-years. The teachers noticed on day one.</span>
 
             {/* Drop cap */}
@@ -117,14 +139,14 @@ export default function HermioneGrangerPage() {
             <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>SEVEN YEARS AT HOGWARTS</p>
           </div>
 
-          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+          <div className="page-bg hg-section-pad" style={{ position: 'relative' }}>
             <span className="margin-note" style={{ top: 80 }}>She achieved 11 O.W.L.s — the highest marks in Hogwarts history for her year.</span>
 
             <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 28 }}>
               Over seven years, Hermione Granger accumulated a record that Hogwarts had not seen in a generation: 11 O.W.L.s Outstanding, 10 N.E.W.T.s, Prefect and Head Girl, founder of S.P.E.W. (the Society for the Promotion of Elfish Welfare), and the only student known to have used a Time-Turner to attend classes — not to bend time, but to read more books.
             </p>
 
-            {/* Academic record — inline table style */}
+            {/* Academic record */}
             <div style={{ marginBottom: 28, borderTop: `1px solid rgba(127,29,29,0.2)`, borderBottom: `1px solid rgba(127,29,29,0.2)` }}>
               {[
                 ['O.W.L.s Achieved', '11 Outstanding'],
@@ -133,7 +155,7 @@ export default function HermioneGrangerPage() {
                 ['Positions Held', 'Prefect · Head Girl'],
                 ['Distinctions', 'Time-Turner usage approved, Ministry of Magic · 1993'],
               ].map(([k, v], i) => (
-                <div key={k} style={{ display: 'grid', gridTemplateColumns: '220px 1fr', padding: '10px 0', borderBottom: i < 4 ? `1px solid rgba(127,29,29,0.1)` : 'none' }}>
+                <div key={k} className="hg-academic-row" style={{ borderBottom: i < 4 ? `1px solid rgba(127,29,29,0.1)` : 'none' }}>
                   <p className={cinzel.className} style={{ fontSize: 11, color: burgundy, margin: 0, letterSpacing: '0.1em' }}>{k}</p>
                   <p className={garamond.className} style={{ fontSize: 16, color: ink, margin: 0 }}>{v}</p>
                 </div>
@@ -158,7 +180,7 @@ export default function HermioneGrangerPage() {
             <p className={cinzel.className} style={{ fontSize: 13, color: gold, letterSpacing: '0.3em', margin: 0 }}>THE MINISTRY OF MAGIC</p>
           </div>
 
-          <div className="page-bg" style={{ padding: '48px 56px', position: 'relative' }}>
+          <div className="page-bg hg-section-pad" style={{ position: 'relative' }}>
             <span className="margin-note" style={{ top: 48 }}>Youngest Minister for Magic in recorded history. First Muggle-born to hold the office.</span>
 
             <p className={garamond.className} style={{ fontSize: 19, lineHeight: 1.9, color: '#3d1f14', marginBottom: 28 }}>
@@ -173,7 +195,7 @@ export default function HermioneGrangerPage() {
                 { period: '2007–2019', role: 'Deputy Minister for Magic', dept: 'Office of the Minister', note: 'Youngest Deputy in history. Wizengamot reform, Muggle Relations Act, Ministry transparency.' },
                 { period: '2019→', role: 'Minister for Magic', dept: 'Ministry of Magic, London', note: 'Youngest ever. First Muggle-born. Still in office. Still reading every brief.' },
               ].map((c, i) => (
-                <div key={c.role} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 24, paddingBottom: 20, marginBottom: 20, borderBottom: i < 3 ? `1px solid rgba(127,29,29,0.15)` : 'none' }}>
+                <div key={c.role} className="hg-career-row" style={{ paddingBottom: 20, marginBottom: 20, borderBottom: i < 3 ? `1px solid rgba(127,29,29,0.15)` : 'none' }}>
                   <p className={cinzel.className} style={{ fontSize: 11, color: gold, margin: 0, fontWeight: 600 }}>{c.period}</p>
                   <div>
                     <p className={cinzel.className} style={{ fontSize: 13, color: ink, margin: '0 0 2px', fontWeight: 900 }}>{c.role}</p>
@@ -192,7 +214,7 @@ export default function HermioneGrangerPage() {
         </div>
 
         {/* ── CLOSING — author's note style ── */}
-        <div className="page-bg" style={{ padding: '48px 56px', marginBottom: 48, textAlign: 'center' }}>
+        <div className="page-bg hg-section-pad" style={{ marginBottom: 48, textAlign: 'center' }}>
           <p className={cinzel.className} style={{ fontSize: 10, color: burgundy, letterSpacing: '0.4em', margin: '0 0 24px' }}>A NOTE ON THE SUBJECT</p>
           <p className={garamond.className} style={{ fontSize: 20, lineHeight: 1.9, color: '#3d1f14', fontStyle: 'italic', marginBottom: 20 }}>
             &ldquo;The brightest witch of her age did not inherit the wizarding world. She earned every inch of it — and spent the rest of her life making it more just than she found it.&rdquo;
@@ -203,7 +225,7 @@ export default function HermioneGrangerPage() {
 
         {/* Bottom stripe + footer */}
         <div style={{ height: 3, background: `linear-gradient(90deg, ${burgundy}, ${gold}, ${burgundy})`, marginBottom: 24 }} />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="hg-footer-row">
           <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', margin: 0, letterSpacing: '0.2em' }}>MINISTRY OF MAGIC · OFFICIAL RECORD</p>
           <p className={garamond.className} style={{ fontSize: 13, color: 'rgba(201,153,63,0.4)', margin: 0, fontStyle: 'italic' }}>
             Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
