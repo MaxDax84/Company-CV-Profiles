@@ -1,11 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import { Cormorant_Garamond, Montserrat } from 'next/font/google'
-import type { Metadata } from 'next'
 
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], style: ['normal', 'italic'] })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
-
-export const metadata: Metadata = { title: 'Coco Chanel — BeOnWeb Showcase' }
 
 export default function CocoChannelPage() {
   const black = '#0a0a0a'
@@ -14,12 +13,29 @@ export default function CocoChannelPage() {
   const accent = '#2c2420'
 
   return (
-    <div className={montserrat.className} style={{ minHeight: '100vh', background: offwhite, color: black }}>
+    <div className={montserrat.className} style={{ minHeight: '100vh', background: offwhite, color: black, overflowX: 'hidden' }}>
+      <style>{`
+        .cc-main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; margin-bottom: 52px; }
+        .cc-timeline-grid { display: grid; grid-template-columns: 52px 1fr; gap: 16px; }
+        .cc-header-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+        .cc-header-top { display: flex; justify-content: space-between; align-items: flex-end; }
+        .cc-back-mobile { display: none; font-size: 11px; color: #3a3a3a; text-decoration: none; letter-spacing: 0.15em; }
+
+        @media (max-width: 700px) {
+          .cc-main-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .cc-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+          .cc-back-mobile { display: block; }
+        }
+        @media (max-width: 480px) {
+          .cc-timeline-grid { grid-template-columns: 44px 1fr !important; gap: 10px !important; }
+          .cc-header-meta { gap: 16px !important; }
+        }
+      `}</style>
 
       {/* Black header band */}
       <div style={{ background: black, color: offwhite, padding: '0' }}>
         <div style={{ maxWidth: 840, margin: '0 auto', padding: '48px 40px 44px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div className="cc-header-top">
             <div>
               <p style={{ fontSize: 10, letterSpacing: '0.5em', color: warmgray, textTransform: 'uppercase', margin: '0 0 16px', fontWeight: 500 }}>
                 Couturière · Parfumeur · Icône de la Mode
@@ -30,11 +46,11 @@ export default function CocoChannelPage() {
                 Chanel
               </h1>
             </div>
-            <Link href="/showcase" style={{ fontSize: 11, color: '#3a3a3a', textDecoration: 'none', letterSpacing: '0.15em', marginBottom: 4 }}>
+            <Link href="/showcase" className="cc-back-mobile" style={{ fontSize: 11, color: '#3a3a3a', textDecoration: 'none', letterSpacing: '0.15em', marginBottom: 4 }}>
               ← SHOWCASE
             </Link>
           </div>
-          <div style={{ marginTop: 28, display: 'flex', gap: 32 }}>
+          <div className="cc-header-meta" style={{ marginTop: 28 }}>
             {[['Born', '19 August 1883 · Saumur, France'], ['Died', '10 January 1971 · Paris, France'], ['House', 'Maison Chanel · est. 1910']].map(([k, v]) => (
               <div key={k}>
                 <p style={{ fontSize: 9, color: '#3a3a3a', margin: '0 0 3px', letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600 }}>{k}</p>
@@ -59,7 +75,7 @@ export default function CocoChannelPage() {
           </p>
         </section>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 52, marginBottom: 52 }}>
+        <div className="cc-main-grid">
           {/* Career timeline */}
           <div>
             <p style={{ fontSize: 10, letterSpacing: '0.3em', color: warmgray, textTransform: 'uppercase', fontWeight: 600, marginBottom: 24 }}>Maison — Career</p>
@@ -72,7 +88,7 @@ export default function CocoChannelPage() {
               ['1955', 'The 2.55 bag', 'Quilted shoulder bag. Named for its creation date: February 1955.'],
               ['1983 →', 'Karl Lagerfeld', 'Appointed Creative Director. Preserved and reimagined the legacy.'],
             ].map(([year, title, desc]) => (
-              <div key={title} style={{ display: 'grid', gridTemplateColumns: '52px 1fr', gap: 16, paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid #e8e3dd' }}>
+              <div key={title} className="cc-timeline-grid" style={{ paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid #e8e3dd' }}>
                 <span className={cormorant.className} style={{ fontSize: 13, color: warmgray, fontStyle: 'italic', paddingTop: 2 }}>{year}</span>
                 <div>
                   <p style={{ fontWeight: 600, fontSize: 13, color: black, margin: '0 0 2px' }}>{title}</p>

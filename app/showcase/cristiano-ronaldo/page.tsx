@@ -1,10 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import { Plus_Jakarta_Sans } from 'next/font/google'
-import type { Metadata } from 'next'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'] })
-
-export const metadata: Metadata = { title: 'Cristiano Ronaldo — BeOnWeb Showcase' }
 
 export default function CristianoRonaldoPage() {
   const gold = '#c9a84c'
@@ -14,7 +13,30 @@ export default function CristianoRonaldoPage() {
   const navyBorder = '#1a2540'
 
   return (
-    <div className={jakarta.className} style={{ minHeight: '100vh', background: navy, color: '#e8edf5' }}>
+    <div className={jakarta.className} style={{ minHeight: '100vh', background: navy, color: '#e8edf5', overflowX: 'hidden' }}>
+      <style>{`
+        .cr-stat-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; border-radius: 12px; overflow: hidden; background: ${navyBorder}; }
+        .cr-main-grid { display: grid; grid-template-columns: 1fr 260px; gap: 40px; }
+        .cr-club-row { display: grid; grid-template-columns: 100px 1fr 60px 60px; gap: 12px; align-items: center; }
+        .cr-info-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 680px; }
+        .cr-hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+        .cr-back-mobile { display: none; font-size: 12px; color: #2a3c55; text-decoration: none; }
+
+        @media (max-width: 900px) {
+          .cr-main-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .cr-stat-bar { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+        @media (max-width: 600px) {
+          .cr-stat-bar { grid-template-columns: repeat(2, 1fr) !important; }
+          .cr-club-row { grid-template-columns: 1fr !important; gap: 4px !important; border-bottom: 1px solid ${navyBorder}; padding-bottom: 12px !important; }
+          .cr-info-cards { grid-template-columns: repeat(2, 1fr) !important; }
+          .cr-hero-top { flex-direction: column; gap: 12px; }
+          .cr-back-mobile { display: block; }
+        }
+        @media (max-width: 480px) {
+          .cr-info-cards { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
 
       {/* Gold top bar */}
       <div style={{ height: 4, background: `linear-gradient(90deg, ${gold}, ${goldLight}, ${gold})` }} />
@@ -22,7 +44,7 @@ export default function CristianoRonaldoPage() {
       {/* Hero */}
       <div style={{ background: `linear-gradient(180deg, #0f1628 0%, ${navy} 100%)`, borderBottom: `1px solid ${navyBorder}` }}>
         <div style={{ maxWidth: 920, margin: '0 auto', padding: '48px 40px 40px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
+          <div className="cr-hero-top">
             <div>
               <p style={{ fontSize: 11, letterSpacing: '0.4em', color: gold, textTransform: 'uppercase', fontWeight: 600, margin: '0 0 12px' }}>
                 Professional Athlete · Forward
@@ -35,13 +57,13 @@ export default function CristianoRonaldoPage() {
                 CR7 · Funchal, Madeira · Born 5 February 1985
               </p>
             </div>
-            <Link href="/showcase" style={{ fontSize: 12, color: '#2a3c55', textDecoration: 'none' }}>
+            <Link href="/showcase" className="cr-back-mobile" style={{ fontSize: 12, color: '#2a3c55', textDecoration: 'none' }}>
               ← Showcase
             </Link>
           </div>
 
           {/* Career stat bar */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 1, borderRadius: 12, overflow: 'hidden', background: navyBorder }}>
+          <div className="cr-stat-bar">
             {[
               ['900+', 'Career Goals'],
               ['5×', 'Ballon d\'Or'],
@@ -59,7 +81,7 @@ export default function CristianoRonaldoPage() {
       </div>
 
       <div style={{ maxWidth: 920, margin: '0 auto', padding: '40px 40px 80px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: 40 }}>
+        <div className="cr-main-grid">
 
           {/* Main */}
           <div>
@@ -89,7 +111,7 @@ export default function CristianoRonaldoPage() {
                 { period: '2021–2022', club: 'Manchester United', apps: '54', goals: '27', honors: 'Second stint — PL record scorer' },
                 { period: '2023 – Now', club: 'Al-Nassr FC', apps: '85+', goals: '75+', honors: 'Arab Champions Cup' },
               ].map(({ period, club, apps, goals, honors }) => (
-                <div key={club} style={{ display: 'grid', gridTemplateColumns: '100px 1fr 60px 60px', gap: 12, alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${navyBorder}` }}>
+                <div key={club} className="cr-club-row" style={{ padding: '12px 0', borderBottom: `1px solid ${navyBorder}` }}>
                   <span style={{ fontSize: 11, color: gold, fontWeight: 600 }}>{period}</span>
                   <div>
                     <p style={{ fontWeight: 700, fontSize: 14, color: '#e8edf5', margin: 0 }}>{club}</p>
