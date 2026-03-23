@@ -2,6 +2,8 @@ export const professionalItems = [
   { slug: 'elon-musk', name: 'Elon Musk', role: 'CEO & Entrepreneur', style: 'Futuristic Sections', bg: '#040810', accent: '#3b82f6', emoji: '🚀' },
   { slug: 'audrey-hepburn', name: 'Audrey Hepburn', role: 'Actress & Humanitarian', style: 'Vintage Elegance', bg: '#0a0907', accent: '#c9a84c', emoji: '🎭' },
   { slug: 'tony-stark', name: 'Tony Stark', role: 'CEO, Stark Industries', style: 'Futuristic HUD', bg: '#030608', accent: '#ef4444', emoji: '🤖' },
+  { slug: 'coco-chanel', name: 'Coco Chanel', role: 'Fashion Designer & Icon', style: 'Timeless Elegance', bg: '#f5f0eb', accent: '#1a1a1a', emoji: '✦' },
+  { slug: 'cristiano-ronaldo', name: 'Cristiano Ronaldo', role: 'Professional Footballer', style: 'Athletic Premium', bg: '#0a1628', accent: '#c9a84c', emoji: '⚽' },
 ]
 
 export const boldItems = [
