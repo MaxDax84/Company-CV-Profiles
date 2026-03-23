@@ -56,9 +56,8 @@ export default function HeroSection() {
           className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in"
           style={{ animationDelay: '0.24s' }}
         >
-          <style>{`.hero-s1 { white-space: nowrap; } @media (max-width: 640px) { .hero-s1 { white-space: normal; } }`}</style>
           {t.subtitle.split('. ').map((sentence, i, arr) => (
-            <span key={i} className={i === 0 ? 'hero-s1' : ''}>
+            <span key={i}>
               {sentence}{i < arr.length - 1 ? '.' : ''}{i < arr.length - 1 && <br />}
             </span>
           ))}
