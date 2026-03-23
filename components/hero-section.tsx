@@ -64,9 +64,11 @@ export default function HeroSection() {
           className="text-sm sm:text-base font-semibold text-foreground max-w-xl mx-auto mb-10 animate-fade-in"
           style={{ animationDelay: '0.30s' }}
         >
-          {lang === 'it'
-            ? 'Tu ci dai il PDF, noi ti diamo il link.\u00A0 Al resto (dominio, server, codice) pensiamo noi.'
-            : 'You give us the PDF, we give you the link.\u00A0 We handle the rest — domain, server, code.'}
+          {lang === 'it' ? (
+            <>Tu ci dai il PDF, noi ti diamo il link.<br />Al resto (dominio, server, codice) pensiamo noi.</>
+          ) : (
+            <>You give us the PDF, we give you the link.<br />We handle the rest — domain, server, code.</>
+          )}
         </p>
 
         {/* CTAs */}
