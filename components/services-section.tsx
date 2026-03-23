@@ -79,20 +79,6 @@ export default function ServicesSection() {
           })}
         </div>
 
-        {/* Tagline */}
-        <p
-          className={cn(
-            'text-center text-sm sm:text-base font-semibold text-foreground mt-12 transition-all duration-700',
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-          )}
-          style={{ transitionDelay: '450ms' }}
-        >
-          {lang === 'it' ? (
-            <>Tu ci dai il PDF, noi ti diamo il link.<br />Al resto (dominio, server, codice) pensiamo noi.</>
-          ) : (
-            <>You give us the PDF, we give you the link.<br />We handle the rest — domain, server, code.</>
-          )}
-        </p>
       </div>
     </section>
   )

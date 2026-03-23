@@ -1,5 +1,6 @@
 import Navigation from '@/components/navigation'
 import HeroSection from '@/components/hero-section'
+import TaglineStrip from '@/components/tagline-strip'
 import ServicesSection from '@/components/services-section'
 import PortfolioSection from '@/components/portfolio-section'
 import MissionSection from '@/components/mission-section'
@@ -12,6 +13,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Navigation />
       <HeroSection />
+      <TaglineStrip />
       <ServicesSection />
       <PortfolioSection />
       <MissionSection />
