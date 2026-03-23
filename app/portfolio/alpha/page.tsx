@@ -365,9 +365,13 @@ export default function AlphaPage() {
           .mb-edu-grid { grid-template-columns: 1fr !important; }
           .mb-stats-strip { grid-template-columns: repeat(2, 1fr) !important; }
         }
+        .mb-back-mobile { display: none; font-size: 13px; color: ${onDarkMuted}; text-decoration: none; font-weight: 500; }
+        .mb-back-mobile:hover { color: ${gold}; }
+
         /* ── Responsive 600px ── */
         @media (max-width: 600px) {
           .mb-nav-links { display: none; }
+          .mb-back-mobile { display: block; }
           .mb-nav-inner { padding: 0 20px !important; }
           .mb-section-dark, .mb-section-card { padding: 72px 20px !important; }
           .mb-section-cream { padding: 60px 20px !important; }
@@ -388,6 +392,7 @@ export default function AlphaPage() {
             ))}
             <Link href="/#portfolio" className="mb-nav-link" style={{ fontSize: 12 }}>{c.backLabel}</Link>
           </div>
+          <Link href="/#portfolio" className="mb-back-mobile">{c.backLabel}</Link>
           <a href="#contact" className="mb-nav-cta">{c.navCta}</a>
         </div>
       </nav>

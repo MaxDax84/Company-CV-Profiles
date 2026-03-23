@@ -28,7 +28,7 @@ export default function Footer() {
           </div>
 
           {/* Nav links */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             {[
               { href: '#services', label: nav.services },
               { href: '#portfolio', label: nav.portfolio },
@@ -43,6 +43,12 @@ export default function Footer() {
                 {link.label}
               </a>
             ))}
+            <a href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              {lang === 'en' ? 'Privacy Policy' : 'Privacy Policy'}
+            </a>
+            <a href="/cookies" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              {lang === 'en' ? 'Cookie Policy' : 'Cookie Policy'}
+            </a>
           </div>
 
           {/* Copyright */}

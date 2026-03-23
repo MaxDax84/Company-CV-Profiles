@@ -285,8 +285,12 @@ export default function BetaPage() {
           .numbers-row { grid-template-columns: repeat(2, 1fr) !important; }
           .sc-edu-grid { grid-template-columns: 1fr !important; }
         }
+        .sc-back-mobile { display: none; font-size: 13px; color: ${muted}; text-decoration: none; font-weight: 500; }
+        .sc-back-mobile:hover { color: ${ink}; }
+
         @media (max-width: 600px) {
           .sc-nav-links { display: none; }
+          .sc-back-mobile { display: block; }
           .exp-grid { grid-template-columns: 1fr !important; }
           .hero-inner { padding: 80px 20px 60px !important; }
           .numbers-row { grid-template-columns: repeat(2, 1fr) !important; }
@@ -306,6 +310,7 @@ export default function BetaPage() {
             ))}
             <Link href="/#portfolio" className="sc-nav-link" style={{ color: muted, fontSize: 12 }}>{c.backLabel}</Link>
           </div>
+          <Link href="/#portfolio" className="sc-back-mobile">{c.backLabel}</Link>
           <a href="#contact" className="sc-nav-cta">{c.navCta}</a>
         </div>
       </nav>

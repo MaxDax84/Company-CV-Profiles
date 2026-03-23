@@ -378,8 +378,12 @@ export default function GammaPage() {
           .edu-grid { grid-template-columns: 1fr !important; }
           .stats-strip { grid-template-columns: repeat(2, 1fr) !important; }
         }
+        .gf-back-mobile { display: none; font-size: 13px; color: ${muted}; text-decoration: none; font-weight: 500; }
+        .gf-back-mobile:hover { color: ${ink}; }
+
         @media (max-width: 600px) {
           .gf-nav-links { display: none; }
+          .gf-back-mobile { display: block; }
           .gf-section { padding: 72px 20px; }
           .gf-nav-inner { padding: 0 20px; }
           .skills-grid { grid-template-columns: 1fr !important; }
@@ -401,6 +405,7 @@ export default function GammaPage() {
             ))}
             <Link href="/#portfolio" className="gf-nav-link" style={{ color: muted, fontSize: 12 }}>{c.backLabel}</Link>
           </div>
+          <Link href="/#portfolio" className="gf-back-mobile">{c.backLabel}</Link>
           <a href="#contact" className="gf-nav-cta">{c.navCta}</a>
         </div>
       </nav>

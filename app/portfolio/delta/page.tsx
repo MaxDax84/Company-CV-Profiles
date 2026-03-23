@@ -379,8 +379,12 @@ export default function DeltaPage() {
           .edu-grid { grid-template-columns: 1fr !important; }
           .stats-row { grid-template-columns: repeat(2, 1fr) !important; }
         }
+        .lr-back-mobile { display: none; font-size: 13px; color: ${mut}; text-decoration: none; font-weight: 500; }
+        .lr-back-mobile:hover { color: ${fg}; }
+
         @media (max-width: 600px) {
           .lr-nav-links { display: none; }
+          .lr-back-mobile { display: block; }
           .numbers-grid { grid-template-columns: 1fr 1fr !important; }
           .stats-row { grid-template-columns: 1fr 1fr !important; }
           .hero-ctas { flex-direction: column !important; }
@@ -400,6 +404,7 @@ export default function DeltaPage() {
             ))}
             <Link href="/#portfolio" className="lr-nav-link" style={{ color: mut, fontSize: 12 }}>{c.backLabel}</Link>
           </div>
+          <Link href="/#portfolio" className="lr-back-mobile">{c.backLabel}</Link>
           <a href="#contact" className="lr-nav-cta">{c.navCta}</a>
         </div>
       </nav>
