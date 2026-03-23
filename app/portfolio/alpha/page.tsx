@@ -1,20 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { Space_Grotesk } from 'next/font/google'
+import { Playfair_Display, Inter } from 'next/font/google'
 import { useLanguage } from '@/components/language-provider'
 
-const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['400', '700', '900'],
+  style: ['normal', 'italic'],
+})
+const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
-const gold = '#d4a843'
-const goldFaint = 'rgba(212,168,67,0.07)'
-const goldBorder = 'rgba(212,168,67,0.18)'
-const dark = '#07090e'
-const darkCard = '#0c0f16'
-const text = '#dde4ef'
-const sub = '#64748b'
-const softText = '#94a3b8'
-const border = 'rgba(255,255,255,0.06)'
+const gold = '#c9a84c'
+const goldBorder = 'rgba(201,168,76,0.22)'
+const navy = '#0a1628'
+const navyCard = '#0d1f3c'
+const cream = '#f4f0e8'
+const creamBorder = 'rgba(0,0,0,0.09)'
+const inkDark = '#1a2332'
+const inkMid = '#3d4f63'
+const inkLight = '#6b7d93'
+const onDark = '#ddd8cc'
+const onDarkMuted = '#7a8ca0'
 
 const content = {
   en: {
@@ -136,7 +143,7 @@ const content = {
     ],
     certs: ['CFA Level II · 2014', 'IFRS Specialist Cert. · 2013', 'SAP FI/CO Certified · 2017'],
     contactLabel: 'Contact',
-    contactHeading: 'Let\'s talk',
+    contactHeading: "Let's talk",
     contactHeadingAccent: 'strategic finance.',
     contactSub: 'Available for CFO roles, financial advisory, and M&A projects.',
     footerDisclaimer: '🎭 This is a demo page. Marco Bianchi is a fictional character created by BeOnWeb for illustrative purposes.',
@@ -161,7 +168,7 @@ const content = {
     aboutHeading: 'La finanza non è un costo.',
     aboutHeadingAccent: 'È una leva strategica.',
     about1: 'Ho iniziato in una boutique M&A, dove ho imparato che i numeri da soli non bastano — contano le storie che raccontano. Da lì in poi, ogni ruolo ha aggiunto uno strato: il controlling industriale, la complessità delle scale-up tech, la pressione degli LP.',
-    about2: 'Oggi come CFO il mio lavoro è tradurre l\'ambizione del business in numeri che reggono — davanti a un board, a una banca, o a un acquirente. E costruire team che fanno lo stesso anche quando non ci sono io.',
+    about2: "Oggi come CFO il mio lavoro è tradurre l'ambizione del business in numeri che reggono — davanti a un board, a una banca, o a un acquirente. E costruire team che fanno lo stesso anche quando non ci sono io.",
     infoRows: [
       ['📍', 'Milano, Italia'],
       ['🏢', 'CFO · Meridian Capital (attuale)'],
@@ -274,161 +281,188 @@ export default function AlphaPage() {
   const c = content[lang]
 
   return (
-    <div className={grotesk.className} style={{ background: dark, color: text, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className={inter.className} style={{ background: navy, color: onDark, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
 
-        /* Navbar */
+        /* ── Navbar ── */
         .mb-nav {
           position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-          background: rgba(7,9,14,0.92); backdrop-filter: blur(14px);
+          background: rgba(10,22,40,0.96); backdrop-filter: blur(14px);
           border-bottom: 1px solid ${goldBorder};
         }
         .mb-nav-inner {
-          max-width: 1100px; margin: 0 auto; padding: 0 32px;
-          height: 60px; display: flex; align-items: center; justify-content: space-between;
+          max-width: 1200px; margin: 0 auto; padding: 0 40px;
+          height: 64px; display: flex; align-items: center; justify-content: space-between;
         }
         .mb-nav-links { display: flex; gap: 28px; align-items: center; }
-        .mb-nav-link { font-size: 13px; color: ${sub}; text-decoration: none; font-weight: 500; transition: color 0.15s; }
+        .mb-nav-link { font-size: 13px; color: ${onDarkMuted}; text-decoration: none; font-weight: 500; transition: color 0.15s; }
         .mb-nav-link:hover { color: ${gold}; }
         .mb-nav-cta {
-          font-size: 13px; font-weight: 700; color: ${dark};
+          font-size: 13px; font-weight: 700; color: ${navy};
           background: ${gold}; text-decoration: none;
-          padding: 8px 18px; border-radius: 6px; transition: opacity 0.15s;
+          padding: 9px 20px; border-radius: 5px; transition: opacity 0.15s;
         }
         .mb-nav-cta:hover { opacity: 0.85; }
 
-        /* Experience rows */
-        .exp-row {
-          padding: 40px 0;
-          border-bottom: 1px solid ${border};
+        /* ── Sections ── */
+        .mb-section-dark { padding: 96px 40px; }
+        .mb-section-card { padding: 96px 40px; background: ${navyCard}; }
+        .mb-section-cream { padding: 80px 40px; background: ${cream}; color: ${inkDark}; }
+        .mb-container { max-width: 1200px; margin: 0 auto; }
+
+        /* ── Hero inner ── */
+        .mb-hero-inner { padding: 80px 40px 0; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+        /* ── Stats strip ── */
+        .mb-stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); }
+
+        /* ── About ── */
+        .mb-about-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 72px; align-items: start; }
+
+        /* ── Metrics ── */
+        .mb-metrics-grid {
+          display: grid; grid-template-columns: repeat(4, 1fr);
+          border: 1px solid ${creamBorder}; border-radius: 10px; overflow: hidden;
         }
-        .exp-row:last-child { border-bottom: none; }
-        .exp-grid {
-          display: grid; grid-template-columns: 300px 1fr; gap: 48px; align-items: start;
+
+        /* ── Experience ── */
+        .mb-exp-item { padding: 52px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .mb-exp-item:last-child { border-bottom: none; }
+        .mb-exp-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: 10px; flex-wrap: wrap; }
+        .mb-exp-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+        .mb-exp-points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 36px; }
+
+        /* ── Skills ── */
+        .mb-skill-row {
+          display: flex; align-items: baseline; gap: 24px;
+          padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .mb-skill-row:last-child { border-bottom: none; }
+        .mb-skill-label {
+          font-size: 10px; font-weight: 700; color: ${gold};
+          letter-spacing: 0.18em; text-transform: uppercase;
+          min-width: 190px; flex-shrink: 0;
+        }
+        .mb-skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .mb-pill {
+          font-size: 12px; font-weight: 500; color: ${onDarkMuted};
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+          border-radius: 4px; padding: 5px 13px;
         }
 
-        /* Skills grid */
-        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-
-        /* Numbers grid */
-        .numbers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
-        /* Hero stats as a proper grid */
-        .mb-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
-
-        /* About grid */
-        .mb-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+        /* ── Education ── */
         .mb-edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* Responsive */
+        /* ── Responsive 960px ── */
         @media (max-width: 960px) {
-          .exp-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
-          .skills-grid { grid-template-columns: 1fr !important; }
-          .numbers-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .hero-stats { flex-direction: column !important; gap: 20px !important; }
           .mb-about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .mb-metrics-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .mb-exp-points { grid-template-columns: 1fr !important; }
+          .mb-skill-row { flex-direction: column !important; gap: 12px !important; }
+          .mb-skill-label { min-width: unset !important; }
           .mb-edu-grid { grid-template-columns: 1fr !important; }
-          .mb-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .mb-stats-strip { grid-template-columns: repeat(2, 1fr) !important; }
         }
+        /* ── Responsive 600px ── */
         @media (max-width: 600px) {
           .mb-nav-links { display: none; }
-          .mb-section { padding: 72px 20px !important; }
-          .numbers-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .hero-ctas { flex-direction: column; }
-          .mb-about-grid { padding: 0 !important; }
+          .mb-nav-inner { padding: 0 20px !important; }
+          .mb-section-dark, .mb-section-card { padding: 72px 20px !important; }
+          .mb-section-cream { padding: 60px 20px !important; }
+          .mb-hero-inner { padding: 60px 20px 0 !important; }
+          .mb-stats-strip { grid-template-columns: repeat(2, 1fr) !important; }
+          .mb-hero-ctas { flex-direction: column !important; }
+          .mb-hero-ctas a { text-align: center !important; }
         }
       `}</style>
 
-      {/* NAVBAR */}
+      {/* ── NAVBAR ── */}
       <nav className="mb-nav">
         <div className="mb-nav-inner">
-          <a href="#top" style={{ fontSize: 16, fontWeight: 700, color: gold, textDecoration: 'none', letterSpacing: '0.06em' }}>MB</a>
+          <span className={playfair.className} style={{ fontSize: 18, fontWeight: 700, color: gold, letterSpacing: '0.04em' }}>MB</span>
           <div className="mb-nav-links">
             {c.navLinks.map(([href, label]) => (
               <a key={href} href={href} className="mb-nav-link">{label}</a>
             ))}
-            <Link href="/#portfolio" className="mb-nav-link" style={{ color: sub, fontSize: 12 }}>{c.backLabel}</Link>
+            <Link href="/#portfolio" className="mb-nav-link" style={{ fontSize: 12 }}>{c.backLabel}</Link>
           </div>
           <a href="#contact" className="mb-nav-cta">{c.navCta}</a>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section id="top" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: 60, position: 'relative', overflow: 'hidden' }}>
-        {/* Background gold grid lines */}
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `linear-gradient(${goldBorder} 1px, transparent 1px), linear-gradient(90deg, ${goldBorder} 1px, transparent 1px)`, backgroundSize: '80px 80px', opacity: 0.3, pointerEvents: 'none' }} />
-        {/* Large decorative index */}
-        <div style={{ position: 'absolute', right: '5%', top: '50%', transform: 'translateY(-50%)', fontSize: 'clamp(10rem, 25vw, 22rem)', fontWeight: 700, color: 'rgba(212,168,67,0.04)', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>CFO</div>
+      {/* ── HERO ── */}
+      <section id="top" style={{ paddingTop: 64, position: 'relative', overflow: 'hidden' }}>
+        {/* Diagonal line texture */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `repeating-linear-gradient(135deg, ${goldBorder} 0, ${goldBorder} 1px, transparent 0, transparent 50%)`, backgroundSize: '60px 60px', opacity: 0.12, pointerEvents: 'none' }} />
+        {/* Large decorative label */}
+        <div style={{ position: 'absolute', right: '3%', top: '44%', transform: 'translateY(-50%)', fontSize: 'clamp(8rem, 20vw, 18rem)', fontWeight: 900, color: `rgba(201,168,76,0.04)`, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', fontFamily: playfair.style.fontFamily }}>CFO</div>
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 32px 96px', width: '100%', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-
+        <div className="mb-hero-inner">
           {/* Disclaimer */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', border: `1px solid ${border}`, marginBottom: 20 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', border: `1px solid ${goldBorder}`, marginBottom: 32 }}>
             <span style={{ fontSize: 11 }}>🎭</span>
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontWeight: 500, letterSpacing: '0.05em' }}>{c.disclaimer}</span>
           </div>
 
-          <p style={{ fontSize: 12, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 24px', opacity: 0.8 }}>
-            {c.role}
-          </p>
-
-          <h1 style={{ fontSize: 'clamp(3.5rem, 9vw, 8rem)', fontWeight: 700, color: '#fff', lineHeight: 0.9, margin: '0 0 36px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
-            Marco <span style={{ color: gold }}>Bianchi</span>
-          </h1>
-
-          <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.15rem)', color: softText, maxWidth: 700, lineHeight: 1.8, margin: '0 auto 48px', fontWeight: 300 }}>
-            {c.heroSubtitle}
-          </p>
-
-          <div className="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 72, justifyContent: 'center' }}>
-            <a href="#experience" style={{ padding: '13px 28px', background: gold, color: dark, fontWeight: 700, fontSize: 14, borderRadius: 6, textDecoration: 'none' }}>
-              {c.ctaPrimary}
-            </a>
-            <a href="#contact" style={{ padding: '12px 28px', border: `1.5px solid ${goldBorder}`, color: softText, fontWeight: 600, fontSize: 14, borderRadius: 6, textDecoration: 'none' }}>
-              {c.ctaContact}
-            </a>
+          {/* Name — two-line typographic treatment, no whiteSpace:nowrap needed */}
+          <div className={playfair.className} style={{ margin: '0 0 24px', lineHeight: 1 }}>
+            <div style={{ fontSize: 'clamp(2.4rem, 6vw, 5.2rem)', fontWeight: 400, color: onDark, marginBottom: 4, letterSpacing: '-0.01em' }}>Marco</div>
+            <div style={{ fontSize: 'clamp(4rem, 11vw, 9rem)', fontWeight: 900, color: gold, letterSpacing: '-0.03em', lineHeight: 0.88 }}>Bianchi</div>
           </div>
 
-          {/* Stats grid */}
-          <div className="mb-stats-grid" style={{ border: `1px solid ${goldBorder}`, borderRadius: 8, overflow: 'hidden' }}>
-            {c.statsRow.map(({ value, unit, label }, i, arr) => (
-              <div key={label} style={{ padding: '24px 20px', background: darkCard, borderRight: i < arr.length - 1 ? `1px solid ${goldBorder}` : 'none' }}>
-                <p style={{ fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1 }}>
-                  {value}<span style={{ fontSize: 13, color: gold }}>{unit}</span>
-                </p>
-                <p style={{ fontSize: 11, color: sub, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
-              </div>
-            ))}
-          </div>
+          <p style={{ fontSize: 12, fontWeight: 600, color: onDarkMuted, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 28px' }}>{c.role}</p>
 
+          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.15rem)', color: onDarkMuted, maxWidth: 680, lineHeight: 1.85, margin: '0 0 48px', fontWeight: 300 }}>{c.heroSubtitle}</p>
+
+          <div className="mb-hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 72 }}>
+            <a href="#experience" style={{ padding: '13px 28px', background: gold, color: navy, fontWeight: 700, fontSize: 14, borderRadius: 5, textDecoration: 'none' }}>{c.ctaPrimary}</a>
+            <a href="#contact" style={{ padding: '12px 28px', border: `1.5px solid ${goldBorder}`, color: onDarkMuted, fontWeight: 600, fontSize: 14, borderRadius: 5, textDecoration: 'none' }}>{c.ctaContact}</a>
+          </div>
+        </div>
+
+        {/* Stats strip */}
+        <div style={{ background: navyCard, borderTop: `1px solid ${goldBorder}` }}>
+          <div className="mb-container" style={{ padding: '0 40px' }}>
+            <div className="mb-stats-strip">
+              {c.statsRow.map(({ value, unit, label }, i, arr) => (
+                <div key={label} style={{ padding: '28px 32px', borderRight: i < arr.length - 1 ? `1px solid ${goldBorder}` : 'none' }}>
+                  <p style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1, fontFamily: playfair.style.fontFamily }}>
+                    {value}<span style={{ fontSize: 13, color: gold, fontFamily: inter.style.fontFamily }}>{unit}</span>
+                  </p>
+                  <p style={{ fontSize: 11, color: onDarkMuted, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="mb-section" style={{ padding: '100px 32px', background: darkCard }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 16px', opacity: 0.8 }}>{c.aboutLabel}</p>
+      {/* ── ABOUT ── */}
+      <section id="about" className="mb-section-cream">
+        <div className="mb-container">
+          <p style={{ fontSize: 11, fontWeight: 700, color: inkLight, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 16px' }}>{c.aboutLabel}</p>
           <div className="mb-about-grid">
             <div>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.12, margin: '0 0 28px', letterSpacing: '-0.02em' }}>
-                {c.aboutHeading}<br /><span style={{ color: gold }}>{c.aboutHeadingAccent}</span>
+              <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 28px', letterSpacing: '-0.01em' }}>
+                {c.aboutHeading}<br /><em style={{ color: gold }}>{c.aboutHeadingAccent}</em>
               </h2>
-              <p style={{ fontSize: 16, color: softText, lineHeight: 1.85, margin: '0 0 20px', fontWeight: 300 }}>{c.about1}</p>
-              <p style={{ fontSize: 16, color: softText, lineHeight: 1.85, fontWeight: 300 }}>{c.about2}</p>
+              <p style={{ fontSize: 16, color: inkMid, lineHeight: 1.88, margin: '0 0 20px' }}>{c.about1}</p>
+              <p style={{ fontSize: 16, color: inkMid, lineHeight: 1.88 }}>{c.about2}</p>
             </div>
             <div>
-              <div style={{ background: dark, border: `1px solid ${goldBorder}`, borderRadius: 12, padding: '8px 0', marginBottom: 24 }}>
+              <div style={{ background: '#fff', border: `1px solid ${creamBorder}`, borderRadius: 10, padding: '8px 0', marginBottom: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
                 {c.infoRows.map(([icon, val], i, arr) => (
-                  <div key={val as string} style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '14px 24px', borderBottom: i < arr.length - 1 ? `1px solid ${border}` : 'none' }}>
+                  <div key={val as string} style={{ display: 'flex', gap: 14, alignItems: 'center', padding: '13px 22px', borderBottom: i < arr.length - 1 ? `1px solid ${creamBorder}` : 'none' }}>
                     <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontSize: 14, color: softText }}>{val}</span>
+                    <span style={{ fontSize: 14, color: inkMid }}>{val}</span>
                   </div>
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {c.languages.map(l => (
-                  <span key={l} style={{ fontSize: 12, fontWeight: 500, color: gold, background: goldFaint, border: `1px solid ${goldBorder}`, borderRadius: 4, padding: '5px 12px' }}>{l}</span>
+                  <span key={l} style={{ fontSize: 12, fontWeight: 500, color: inkDark, background: 'rgba(201,168,76,0.12)', border: `1px solid rgba(201,168,76,0.28)`, borderRadius: 4, padding: '5px 12px' }}>{l}</span>
                 ))}
               </div>
             </div>
@@ -436,118 +470,113 @@ export default function AlphaPage() {
         </div>
       </section>
 
-      {/* EXPERIENCE */}
-      <section id="experience" className="mb-section" style={{ padding: '100px 32px', background: dark }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 16px', opacity: 0.8 }}>{c.expLabel}</p>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.12, margin: '0 0 56px', letterSpacing: '-0.02em' }}>
-            {c.expHeading}<br /><span style={{ color: gold }}>{c.expHeadingAccent}</span>
+      {/* ── EXPERIENCE ── */}
+      <section id="experience" className="mb-section-dark">
+        <div className="mb-container">
+          <p style={{ fontSize: 11, fontWeight: 700, color: gold, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 14px', opacity: 0.8 }}>{c.expLabel}</p>
+          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 64px', letterSpacing: '-0.01em' }}>
+            {c.expHeading} <em style={{ color: gold }}>{c.expHeadingAccent}</em>
           </h2>
 
           {c.experience.map((e) => (
-            <div key={e.index} className="exp-row">
-              <div className="exp-grid">
-                {/* Left */}
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: gold, opacity: 0.4, letterSpacing: '0.1em' }}>{e.index}</span>
-                    <div style={{ flex: 1, height: 1, background: goldBorder }} />
-                    {e.current && <span style={{ fontSize: 10, fontWeight: 700, background: gold, color: dark, borderRadius: 3, padding: '2px 7px' }}>Now</span>}
-                  </div>
-                  <p style={{ fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 4px', letterSpacing: '-0.01em' }}>{e.company}</p>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: gold, margin: '0 0 6px' }}>{e.role}</p>
-                  <p style={{ fontSize: 12, color: sub, margin: '0 0 12px' }}>{e.type}</p>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: softText, background: darkCard, border: `1px solid ${border}`, borderRadius: 4, padding: '4px 10px', display: 'inline-block' }}>{e.period}</span>
-                </div>
-                {/* Right */}
-                <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-                  {e.points.map((pt, j) => (
-                    <li key={j} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 14 }}>
-                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: gold, flexShrink: 0, marginTop: 8, opacity: 0.7 }} />
-                      <span style={{ fontSize: 15, color: softText, lineHeight: 1.72 }}>{pt}</span>
-                    </li>
-                  ))}
-                </ul>
+            <div key={e.index} className="mb-exp-item">
+              <div className="mb-exp-header">
+                <span style={{ fontSize: 11, fontWeight: 700, color: gold, opacity: 0.45, letterSpacing: '0.15em' }}>{e.index}</span>
+                <h3 className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.8vw, 2rem)', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.01em' }}>{e.company}</h3>
+                {e.current && <span style={{ fontSize: 10, fontWeight: 700, background: gold, color: navy, borderRadius: 3, padding: '2px 8px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Now</span>}
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* NUMBERS */}
-      <section style={{ background: gold }}>
-        <div className="numbers-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
-          {c.numbersRow.map(({ value, label }) => (
-            <div key={label} style={{ padding: '40px 32px', textAlign: 'center', background: 'rgba(0,0,0,0.08)' }}>
-              <p style={{ fontSize: 40, fontWeight: 700, color: dark, margin: '0 0 6px', lineHeight: 1, letterSpacing: '-0.02em' }}>{value}</p>
-              <p style={{ fontSize: 13, color: 'rgba(7,9,14,0.6)', margin: 0, fontWeight: 500 }}>{label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* SKILLS */}
-      <section id="skills" className="mb-section" style={{ padding: '100px 32px', background: darkCard }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 16px', opacity: 0.8 }}>{c.skillsLabel}</p>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.12, margin: '0 0 48px', letterSpacing: '-0.02em' }}>
-            {c.skillsHeading}<br /><span style={{ color: gold }}>{c.skillsHeadingAccent}</span>
-          </h2>
-          <div className="skills-grid">
-            {c.skillGroups.map(({ label, items }) => (
-              <div key={label} style={{ padding: '28px', background: dark, border: `1px solid ${goldBorder}`, borderRadius: 10, borderLeft: `3px solid ${gold}` }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: gold, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px', opacity: 0.9 }}>{label}</p>
-                {items.map(item => (
-                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: `1px solid ${border}` }}>
-                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: gold, flexShrink: 0, opacity: 0.6 }} />
-                    <span style={{ fontSize: 14, color: softText }}>{item}</span>
+              <div className="mb-exp-meta">
+                <span style={{ fontSize: 15, fontWeight: 600, color: gold }}>{e.role}</span>
+                <span style={{ fontSize: 12, color: onDarkMuted }}>{e.type}</span>
+                <span style={{ fontSize: 12, fontWeight: 500, color: onDarkMuted, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, padding: '3px 10px' }}>{e.period}</span>
+              </div>
+              <div className="mb-exp-points">
+                {e.points.map((pt, j) => (
+                  <div key={j} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: gold, flexShrink: 0, marginTop: 9, opacity: 0.65 }} />
+                    <span style={{ fontSize: 14, color: onDarkMuted, lineHeight: 1.72 }}>{pt}</span>
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          {/* Education + certs */}
-          <div className="mb-edu-grid" style={{ marginTop: 48 }}>
-            {c.education.map(ed => (
-              <div key={ed.degree} style={{ padding: '24px 28px', background: dark, border: `1px solid ${goldBorder}`, borderRadius: 10 }}>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: '0 0 4px' }}>{ed.degree}</p>
-                <p style={{ fontSize: 13, color: gold, margin: '0 0 4px', opacity: 0.8 }}>{ed.school}</p>
-                <p style={{ fontSize: 12, color: sub, margin: 0 }}>{ed.year}{ed.note ? ` · ${ed.note}` : ''}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 20, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            {c.certs.map(cert => (
-              <div key={cert} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 16px', background: dark, border: `1px solid ${goldBorder}`, borderRadius: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: gold, opacity: 0.7 }} />
-                <span style={{ fontSize: 13, color: softText }}>{cert}</span>
+      {/* ── METRICS BAND ── */}
+      <section style={{ background: cream }}>
+        <div className="mb-container" style={{ padding: '0 40px' }}>
+          <div className="mb-metrics-grid">
+            {c.numbersRow.map(({ value, label }) => (
+              <div key={label} style={{ padding: '48px 32px', textAlign: 'center', background: '#fff' }}>
+                <p className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 900, color: inkDark, margin: '0 0 8px', lineHeight: 1, letterSpacing: '-0.02em' }}>{value}</p>
+                <p style={{ fontSize: 12, color: inkLight, margin: 0, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section id="contact" className="mb-section" style={{ padding: '100px 32px', background: dark, textAlign: 'center' }}>
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: gold, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 24px', opacity: 0.8 }}>{c.contactLabel}</p>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#fff', lineHeight: 1.12, margin: '0 0 16px', letterSpacing: '-0.02em' }}>
-            {c.contactHeading}<br /><span style={{ color: gold }}>{c.contactHeadingAccent}</span>
+      {/* ── SKILLS ── */}
+      <section id="skills" className="mb-section-card">
+        <div className="mb-container">
+          <p style={{ fontSize: 11, fontWeight: 700, color: gold, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 14px', opacity: 0.8 }}>{c.skillsLabel}</p>
+          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 48px', letterSpacing: '-0.01em' }}>
+            {c.skillsHeading} <em style={{ color: gold }}>{c.skillsHeadingAccent}</em>
           </h2>
-          <p style={{ fontSize: 16, color: softText, margin: '0 0 48px', lineHeight: 1.75, fontWeight: 300 }}>{c.contactSub}</p>
+
+          <div style={{ marginBottom: 56 }}>
+            {c.skillGroups.map(({ label, items }) => (
+              <div key={label} className="mb-skill-row">
+                <span className="mb-skill-label">{label}</span>
+                <div className="mb-skill-pills">
+                  {items.map(item => <span key={item} className="mb-pill">{item}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mb-edu-grid" style={{ marginBottom: 24 }}>
+            {c.education.map(ed => (
+              <div key={ed.degree} style={{ padding: '22px 26px', background: navy, border: `1px solid ${goldBorder}`, borderRadius: 8 }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: '0 0 4px' }}>{ed.degree}</p>
+                <p style={{ fontSize: 13, color: gold, margin: '0 0 4px', opacity: 0.85 }}>{ed.school}</p>
+                <p style={{ fontSize: 12, color: onDarkMuted, margin: 0 }}>{ed.year}{ed.note ? ` · ${ed.note}` : ''}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {c.certs.map(cert => (
+              <div key={cert} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: navy, border: `1px solid ${goldBorder}`, borderRadius: 5 }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: gold, opacity: 0.7 }} />
+                <span style={{ fontSize: 13, color: onDarkMuted }}>{cert}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT ── */}
+      <section id="contact" className="mb-section-cream" style={{ textAlign: 'center' }}>
+        <div style={{ maxWidth: 600, margin: '0 auto' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: inkLight, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 20px' }}>{c.contactLabel}</p>
+          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 16px', letterSpacing: '-0.01em' }}>
+            {c.contactHeading} <em style={{ color: gold }}>{c.contactHeadingAccent}</em>
+          </h2>
+          <p style={{ fontSize: 16, color: inkMid, margin: '0 0 48px', lineHeight: 1.75 }}>{c.contactSub}</p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 56 }}>
-            <a href="mailto:marco.bianchi@mail.com" style={{ padding: '13px 28px', background: gold, color: dark, fontWeight: 700, fontSize: 14, borderRadius: 6, textDecoration: 'none' }}>
+            <a href="mailto:marco.bianchi@mail.com" style={{ padding: '13px 28px', background: gold, color: navy, fontWeight: 700, fontSize: 14, borderRadius: 5, textDecoration: 'none' }}>
               ✉ marco.bianchi@mail.com
             </a>
-            <a href="https://linkedin.com/in/marcobianchi" style={{ padding: '12px 28px', border: `1.5px solid ${goldBorder}`, color: softText, fontWeight: 600, fontSize: 14, borderRadius: 6, textDecoration: 'none' }}>
+            <a href="https://linkedin.com/in/marcobianchi" style={{ padding: '12px 28px', border: `1.5px solid rgba(0,0,0,0.16)`, color: inkMid, fontWeight: 600, fontSize: 14, borderRadius: 5, textDecoration: 'none' }}>
               LinkedIn →
             </a>
           </div>
-          <div style={{ borderTop: `1px solid ${border}`, paddingTop: 32 }}>
-            <p style={{ fontSize: 12, color: sub, margin: '0 0 8px', fontStyle: 'italic' }}>{c.footerDisclaimer}</p>
-            <p style={{ fontSize: 12, color: sub, margin: '0 0 6px' }}>© 2025 Marco Bianchi · Milano</p>
-            <p style={{ fontSize: 12, color: sub, margin: 0 }}>
+          <div style={{ borderTop: `1px solid ${creamBorder}`, paddingTop: 32 }}>
+            <p style={{ fontSize: 12, color: inkLight, margin: '0 0 8px', fontStyle: 'italic' }}>{c.footerDisclaimer}</p>
+            <p style={{ fontSize: 12, color: inkLight, margin: '0 0 6px' }}>© 2025 Marco Bianchi · Milano</p>
+            <p style={{ fontSize: 12, color: inkLight, margin: 0 }}>
               {c.footerBy} <Link href="/" style={{ color: gold, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
             </p>
           </div>
