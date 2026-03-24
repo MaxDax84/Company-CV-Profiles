@@ -142,9 +142,7 @@ export const translations = {
       ],
       maintenance: {
         name: 'Maintenance',
-        startingFrom: 'Starting from',
-        price: '25',
-        monthly: '/month',
+        tagline: 'On-demand maintenance — not required. Packages from €20 if ever needed.',
         description: 'Keep your web CV always up to date. Content updates, performance checks, and ongoing care for your profile.',
         features: [
           'Up to 3 content updates/month',
@@ -358,9 +356,7 @@ export const translations = {
       ],
       maintenance: {
         name: 'Manutenzione',
-        startingFrom: 'A partire da',
-        price: '25',
-        monthly: '/mese',
+        tagline: 'Manutenzione su richiesta — non necessaria. Pacchetti a partire da €20 in caso di necessità.',
         description: 'Tieni il tuo CV web sempre aggiornato. Modifiche ai contenuti, controllo performance e cura continuativa del tuo profilo.',
         features: [
           'Fino a 3 modifiche ai contenuti/mese',

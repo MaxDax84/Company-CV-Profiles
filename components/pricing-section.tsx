@@ -164,11 +164,9 @@ export default function PricingSection() {
                 </p>
               </div>
 
-              <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-sm text-muted-foreground">{t.maintenance.startingFrom}</span>
-                <span className="text-3xl font-bold ml-2">€{t.maintenance.price}</span>
-                <span className="text-muted-foreground text-sm">{t.maintenance.monthly}</span>
-              </div>
+              <p className="text-base font-medium text-foreground/80 leading-relaxed max-w-xl mb-3">
+                {(t.maintenance as { tagline?: string }).tagline}
+              </p>
 
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
                 {t.maintenance.description}
