@@ -37,8 +37,15 @@ export async function POST(req: NextRequest) {
     const profile = await parseResume(buffer);
 
     // User's choice always wins over the AI suggestion
+    const TEMPLATE_COLORS: Record<string, string> = {
+      alpha: "#6366f1",
+      beta:  "#4f46e5",
+      gamma: "#10b981",
+      delta: "#c9a84c",
+    };
     if (templateChoice && ["alpha", "beta", "gamma", "delta"].includes(templateChoice as string)) {
       profile.metadata.template = templateChoice as import("@/lib/schema").TemplateStyle;
+      profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice as string];
     }
 
     // Generate unique slug
