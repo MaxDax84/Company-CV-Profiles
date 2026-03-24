@@ -222,7 +222,7 @@ export default function TemplateAlpha({ profile }: Props) {
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
 
-          <h1 className="lr-hero-h1" style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em', whiteSpace: 'nowrap' }}>
+          <h1 className="lr-hero-h1" style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em' }}>
             {firstName} <span style={{ color: v }}>{lastName}</span>
           </h1>
 
