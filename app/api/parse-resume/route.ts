@@ -36,6 +36,9 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const profile = await parseResume(buffer);
 
+    // Normalize apostrophes in name (e.g. D'Assano → Dassano)
+    profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
+
     // User's choice always wins over the AI suggestion
     const TEMPLATE_COLORS: Record<string, string> = {
       alpha: "#6366f1",

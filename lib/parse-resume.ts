@@ -8,6 +8,7 @@ const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extr
 Rules:
 - Return ONLY the JSON object, no markdown, no explanation, no code fences.
 - Never hallucinate data that is not present in the document. Use null or omit optional fields if data is missing.
+- For full_name: remove apostrophes from surnames (e.g. "D'Assano" → "Dassano", "Dell'Aquila" → "DellAquila", "O'Brien" → "OBrien").
 - Obfuscate email: keep first letter, replace middle with ***, keep domain. Example: "mario.rossi@gmail.com" → "m***@gmail.com".
 - Obfuscate phone: keep country code and last 4 digits, replace rest with *. Example: "+39 333 1234567" → "+39 3** *** 4567".
 - For description bullet points: max 4 items, concise, start with action verb.
