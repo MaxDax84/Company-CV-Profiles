@@ -174,6 +174,9 @@ export const translations = {
       ctaReady: 'Start preview →',
       ctaWaiting: 'Upload a PDF to continue',
       back: '← Back to site',
+      privacyLabel: 'I have read and agree to the',
+      privacyLink: 'Privacy Policy',
+      privacyNote: 'Your CV data is processed solely to generate your profile page and is not shared with third parties.',
     },
     contact: {
       sectionLabel: 'Contact',
@@ -409,6 +412,9 @@ export const translations = {
       ctaReady: 'Avvia la preview →',
       ctaWaiting: 'Carica un PDF per continuare',
       back: '← Torna al sito',
+      privacyLabel: 'Ho letto e accetto la',
+      privacyLink: 'Privacy Policy',
+      privacyNote: 'I dati del tuo CV vengono elaborati esclusivamente per generare la tua pagina profilo e non vengono condivisi con terze parti.',
     },
     contact: {
       sectionLabel: 'Contatti',

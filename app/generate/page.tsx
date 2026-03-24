@@ -47,6 +47,7 @@ const TEMPLATES: { id: TemplateStyle; name: string; description: string; accent:
 export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
+  const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -89,13 +90,14 @@ export default function GeneratePage() {
     setSlug(null);
     setFile(null);
     setError(null);
+    setPrivacy(false);
     if (inputRef.current) inputRef.current.value = "";
   }
 
   const { lang } = useLanguage();
   const t = translations[lang].generate;
   const selected = TEMPLATES.find(t => t.id === template)!;
-  const canGenerate = !!file && state !== "uploading";
+  const canGenerate = !!file && privacy && state !== "uploading";
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
@@ -260,6 +262,46 @@ export default function GeneratePage() {
                 {error}
               </div>
             )}
+
+            {/* Privacy consent */}
+            <div className="space-y-2">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <div className="relative mt-0.5 shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={privacy}
+                    onChange={e => setPrivacy(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div
+                    className="w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-150"
+                    style={{
+                      borderColor: privacy ? "var(--primary)" : "rgba(255,255,255,0.2)",
+                      background: privacy ? "var(--primary)" : "transparent",
+                    }}
+                  >
+                    {privacy && (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                        <path d="M1.5 4L3.5 6L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground leading-tight">
+                  {t.privacyLabel}{" "}
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2 hover:opacity-80"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {t.privacyLink}
+                  </a>
+                </span>
+              </label>
+              <p className="text-xs text-muted-foreground/50 pl-7">{t.privacyNote}</p>
+            </div>
 
             {/* Generate button */}
             <button
