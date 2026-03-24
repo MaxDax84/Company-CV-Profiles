@@ -180,7 +180,15 @@ export default function TemplateBeta({ profile }: Props) {
           {/* Stats divider */}
           <div className="sb-stats-divider">
             {[
-              { v: `${experience.length}`, label: isIT ? 'aziende' : 'companies' },
+              ...(() => {
+                const uniqueCo = new Set(experience.map(e => e.company)).size
+                const roles = experience.length
+                if (roles > uniqueCo) return [
+                  { v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' },
+                  { v: `${roles}`,    label: isIT ? 'ruoli ricoperti' : 'roles held' },
+                ]
+                return [{ v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' }]
+              })(),
               { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'anno inizio carriera' : 'career started' },
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${certifications.length || education.length}`, label: certifications.length ? (isIT ? 'certificazioni' : 'certifications') : (isIT ? 'titoli' : 'degrees') },

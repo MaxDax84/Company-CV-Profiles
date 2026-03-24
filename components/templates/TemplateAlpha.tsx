@@ -76,7 +76,17 @@ export default function TemplateAlpha({ profile }: Props) {
   // ── Stats ─────────────────────────────────────────────────────────────
   const stats = [
     { value: yearsOfExp(experience), unit: isIT ? ' anni' : ' yrs', label: isIT ? 'di esperienza' : 'of experience' },
-    { value: `${experience.length}`, unit: '', label: isIT ? 'aziende' : 'companies' },
+    ...((() => {
+      const uniqueCo = new Set(experience.map(e => e.company)).size
+      const roles = experience.length
+      if (roles > uniqueCo) {
+        return [
+          { value: `${uniqueCo}`, unit: '', label: isIT ? 'aziende' : 'companies' },
+          { value: `${roles}`,    unit: '', label: isIT ? 'ruoli ricoperti' : 'roles held' },
+        ]
+      }
+      return [{ value: `${uniqueCo}`, unit: '', label: isIT ? 'aziende' : 'companies' }]
+    })()),
     { value: `${skills.hard.length + skills.tools.length}`, unit: '', label: isIT ? 'competenze tech' : 'tech skills' },
     { value: `${projects.length || education.length}`, unit: '', label: projects.length ? (isIT ? 'progetti' : 'projects') : (isIT ? 'titoli' : 'degrees') },
   ]

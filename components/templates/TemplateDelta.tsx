@@ -176,7 +176,15 @@ export default function TemplateDelta({ profile }: Props) {
           <div className="dl-stats-grid">
             {[
               { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'inizio carriera' : 'career start' },
-              { v: `${experience.length}`, label: isIT ? 'aziende' : 'companies' },
+              ...(() => {
+                const uniqueCo = new Set(experience.map(e => e.company)).size
+                const roles = experience.length
+                if (roles > uniqueCo) return [
+                  { v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' },
+                  { v: `${roles}`,    label: isIT ? 'ruoli ricoperti' : 'roles held' },
+                ]
+                return [{ v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' }]
+              })(),
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length + certifications.length}`, label: isIT ? 'titoli & cert.' : 'degrees & certs' },
             ].map(({ v, label }) => (

@@ -173,7 +173,15 @@ export default function TemplateGamma({ profile }: Props) {
           {/* Stats strip */}
           <div className="gm-stats-strip">
             {[
-              { v: `${experience.length}`, label: isIT ? 'aziende' : 'companies' },
+              ...(() => {
+                const uniqueCo = new Set(experience.map(e => e.company)).size
+                const roles = experience.length
+                if (roles > uniqueCo) return [
+                  { v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' },
+                  { v: `${roles}`,    label: isIT ? 'ruoli ricoperti' : 'roles held' },
+                ]
+                return [{ v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' }]
+              })(),
               { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'inizio carriera' : 'career start' },
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length}`, label: isIT ? 'titoli' : 'degrees' },
