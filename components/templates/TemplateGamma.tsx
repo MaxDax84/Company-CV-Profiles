@@ -185,7 +185,7 @@ export default function TemplateGamma({ profile }: Props) {
               { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'inizio carriera' : 'career start' },
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length}`, label: isIT ? 'titoli' : 'degrees' },
-            ].map(({ v, label }) => (
+            ].slice(0, 4).map(({ v, label }) => (
               <div key={label} className="gm-stat">
                 <p style={{ fontSize: 26, fontWeight: 700, color: white, margin: '0 0 4px', lineHeight: 1 }}>{v}</p>
                 <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{label}</p>

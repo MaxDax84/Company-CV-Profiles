@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import type { TemplateStyle } from "@/lib/schema";
+import { useLanguage } from "@/components/language-provider";
+import { translations } from "@/lib/i18n";
+import Navigation from "@/components/navigation";
 
 type State = "idle" | "uploading" | "done" | "error";
 
@@ -89,11 +92,14 @@ export default function GeneratePage() {
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  const { lang } = useLanguage();
+  const t = translations[lang].generate;
   const selected = TEMPLATES.find(t => t.id === template)!;
   const canGenerate = !!file && state !== "uploading";
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground flex items-center justify-center px-6 py-24 overflow-hidden animate-fade-in">
+    <div className="relative min-h-screen bg-background text-foreground overflow-hidden animate-fade-in">
+      <Navigation />
 
       {/* Background */}
       <div className="absolute inset-0 grid-overlay" />
@@ -104,28 +110,20 @@ export default function GeneratePage() {
       />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.10_0.012_255)_100%)] pointer-events-none" />
 
+      <div className="flex items-center justify-center px-6 py-24">
       <div className="relative z-10 w-full max-w-2xl space-y-10">
-
-        {/* Back link */}
-        <a
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Torna al sito
-        </a>
 
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium">
             <Sparkles className="w-3 h-3" />
-            Generatore di profili
+            {t.badge}
           </div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Crea il tuo profilo web
+            {t.title}
           </h1>
           <p className="text-muted-foreground">
-            Carica il CV, scegli lo stile e premi Genera — la tua pagina è pronta in secondi.
+            {t.subtitle}
           </p>
         </div>
 
@@ -134,8 +132,8 @@ export default function GeneratePage() {
           <div className="rounded-3xl border border-primary/30 bg-primary/5 p-8 text-center space-y-5" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.10)" }}>
             <div className="text-4xl">✅</div>
             <div>
-              <p className="font-semibold text-foreground">Profilo creato!</p>
-              <p className="text-sm text-muted-foreground mt-1">Il tuo sito è disponibile a questo link:</p>
+              <p className="font-semibold text-foreground">{t.done}</p>
+              <p className="text-sm text-muted-foreground mt-1">{t.doneNote}</p>
             </div>
             <a
               href={`/profile/${slug}`}
@@ -144,21 +142,21 @@ export default function GeneratePage() {
               className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"
               style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 20px ${selected.accent}50` }}
             >
-              Apri il profilo ↗
+              {t.openProfile}
             </a>
             <button
               onClick={handleReset}
               className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
             >
-              Genera un altro
+              {t.generateAnother}
             </button>
           </div>
         ) : state === "uploading" ? (
           /* ── Uploading state ── */
           <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 text-center space-y-4" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.08)" }}>
             <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
-            <p className="text-foreground/60">Estrazione dati in corso…</p>
-            <p className="text-xs text-muted-foreground/50">Potrebbe richiedere 10–20 secondi</p>
+            <p className="text-foreground/60">{t.generating}</p>
+            <p className="text-xs text-muted-foreground/50">{t.generatingNote}</p>
           </div>
         ) : (
           /* ── Idle / error state ── */
@@ -166,7 +164,7 @@ export default function GeneratePage() {
             {/* Template selector */}
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                1 · Scegli il template
+                {t.stepTemplate}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {TEMPLATES.map(t => (
@@ -218,7 +216,7 @@ export default function GeneratePage() {
             {/* Upload area */}
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                2 · Carica il tuo CV
+                {t.stepUpload}
               </p>
               <div
                 onClick={() => inputRef.current?.click()}
@@ -241,14 +239,14 @@ export default function GeneratePage() {
                   <>
                     <p className="text-3xl mb-3">✅</p>
                     <p className="font-medium text-foreground/80">{file.name}</p>
-                    <p className="text-xs text-muted-foreground/50 mt-1">Clicca per cambiare file</p>
+                    <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
                   </>
                 ) : (
                   <>
                     <p className="text-4xl mb-4">📄</p>
-                    <p className="font-medium text-foreground/80">Trascina il PDF qui</p>
-                    <p className="text-sm text-muted-foreground mt-1">oppure clicca per selezionare il file</p>
-                    <p className="text-xs text-muted-foreground/50 mt-3">Max 10 MB · solo PDF</p>
+                    <p className="font-medium text-foreground/80">{t.dragHere}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{t.dragOr}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-3">{t.dragLimit}</p>
                   </>
                 )}
                 <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
@@ -276,11 +274,12 @@ export default function GeneratePage() {
                 color: "rgba(255,255,255,0.3)",
               }}
             >
-              {file ? "Genera il profilo →" : "Carica un PDF per continuare"}
+              {file ? t.ctaReady : t.ctaWaiting}
             </button>
           </>
         )}
 
+      </div>
       </div>
     </div>
   );

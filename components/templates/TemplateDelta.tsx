@@ -187,7 +187,7 @@ export default function TemplateDelta({ profile }: Props) {
               })(),
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length + certifications.length}`, label: isIT ? 'titoli & cert.' : 'degrees & certs' },
-            ].map(({ v, label }) => (
+            ].slice(0, 4).map(({ v, label }) => (
               <div key={label} className="dl-stat">
                 <p className={playfair.className} style={{ fontSize: 28, fontWeight: 700, color: accent, margin: '0 0 4px', lineHeight: 1 }}>{v}</p>
                 <p style={{ fontSize: 11, color: muted, margin: 0, letterSpacing: '0.05em' }}>{label}</p>

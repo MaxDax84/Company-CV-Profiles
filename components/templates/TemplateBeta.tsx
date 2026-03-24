@@ -192,7 +192,7 @@ export default function TemplateBeta({ profile }: Props) {
               { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'anno inizio carriera' : 'career started' },
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${certifications.length || education.length}`, label: certifications.length ? (isIT ? 'certificazioni' : 'certifications') : (isIT ? 'titoli' : 'degrees') },
-            ].map(({ v, label }) => (
+            ].slice(0, 4).map(({ v, label }) => (
               <div key={label} className="sb-stat">
                 <p style={{ fontSize: 28, fontWeight: 700, color: ink, margin: '0 0 4px', lineHeight: 1 }}>
                   {v}<span style={{ fontSize: 14, color: accent, fontWeight: 500 }}> </span>
