@@ -80,7 +80,7 @@ export async function parseResume(pdfBuffer: Buffer): Promise<ProfileSchema> {
   const base64Pdf = pdfBuffer.toString("base64");
 
   const stream = client.messages.stream({
-    model: "claude-sonnet-4-6",
+    model: "claude-haiku-4-5",
     max_tokens: 4096,
     system: SYSTEM_PROMPT,
     messages: [
