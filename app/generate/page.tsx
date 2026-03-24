@@ -98,8 +98,9 @@ export default function GeneratePage() {
   const canGenerate = !!file && state !== "uploading";
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-hidden animate-fade-in">
+    <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
+      <div className="animate-fade-in">
 
       {/* Background */}
       <div className="absolute inset-0 grid-overlay" />
@@ -279,6 +280,7 @@ export default function GeneratePage() {
           </>
         )}
 
+      </div>
       </div>
       </div>
     </div>

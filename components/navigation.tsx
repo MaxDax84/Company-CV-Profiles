@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Globe, Menu, X } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -11,6 +12,8 @@ export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { lang, setLang } = useLanguage()
   const t = translations[lang].nav
+  const pathname = usePathname()
+  const isHome = pathname === '/'
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 24)
@@ -18,11 +21,14 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  // On non-home pages, anchor links must include the path
+  const href = (anchor: string) => isHome ? anchor : `/${anchor}`
+
   const links = [
-    { href: '#services', label: t.services },
-    { href: '#portfolio', label: t.portfolio },
-    { href: '#pricing', label: t.pricing },
-    { href: '#contact', label: t.contact },
+    { href: href('#services'), label: t.services },
+    { href: href('#portfolio'), label: t.portfolio },
+    { href: href('#pricing'), label: t.pricing },
+    { href: href('#contact'), label: t.contact },
   ]
 
   const generateLabel = (t as { generate?: string }).generate ?? 'Try Free'
@@ -38,7 +44,7 @@ export default function Navigation() {
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 group">
+        <a href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center transition-all group-hover:border-primary/60 group-hover:bg-primary/25">
             <Globe className="w-4 h-4 text-primary" />
           </div>
@@ -78,7 +84,7 @@ export default function Navigation() {
 
           {/* Get started button (desktop) */}
           <a
-            href="#contact"
+            href={href('#contact')}
             className="hidden md:inline-flex items-center px-4 py-1.5 rounded-lg bg-primary/15 border border-primary/30 hover:bg-primary/25 hover:border-primary/50 text-primary text-sm font-medium transition-all duration-200"
           >
             {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
