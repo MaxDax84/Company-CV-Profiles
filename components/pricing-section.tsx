@@ -178,17 +178,8 @@ export default function PricingSection() {
               </div>
             </div>
 
-            {/* Features + CTA */}
-            <div className="lg:w-80 shrink-0">
-              <ul className="space-y-2.5 mb-6">
-                {t.maintenance.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-sm">
-                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
+            {/* CTA */}
+            <div className="lg:w-60 shrink-0">
               <a
                 href="#contact"
                 className="block w-full text-center py-3 rounded-xl font-semibold text-sm border border-primary/40 hover:border-primary/70 hover:bg-primary/8 text-primary transition-all duration-200"
