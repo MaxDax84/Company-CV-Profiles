@@ -88,13 +88,17 @@ export default function PricingSection() {
               </p>
 
               {/* Price */}
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg line-through text-muted-foreground/50 font-medium">€{(plan as { originalPrice?: string }).originalPrice}</span>
-                <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">-50%</span>
-              </div>
+              {(plan as { originalPrice?: string }).originalPrice && (
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg line-through text-muted-foreground/50 font-medium">€{(plan as { originalPrice?: string }).originalPrice}</span>
+                  <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">-50%</span>
+                </div>
+              )}
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-4xl font-bold">€{plan.price}</span>
-                <span className="text-muted-foreground text-sm ml-1">{t.oneTime}</span>
+                <span className="text-muted-foreground text-sm ml-1">
+                  {(plan as { priceNote?: string }).priceNote ?? t.oneTime}
+                </span>
               </div>
 
               {/* Description */}
