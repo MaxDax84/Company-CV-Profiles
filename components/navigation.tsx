@@ -25,6 +25,8 @@ export default function Navigation() {
     { href: '#contact', label: t.contact },
   ]
 
+  const generateLabel = (t as { generate?: string }).generate ?? 'Try Free'
+
   return (
     <nav
       className={cn(
@@ -56,6 +58,12 @@ export default function Navigation() {
               {link.label}
             </a>
           ))}
+          <a
+            href="/generate"
+            className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
+          >
+            {generateLabel}
+          </a>
         </div>
 
         {/* Right side */}
@@ -101,11 +109,11 @@ export default function Navigation() {
             </a>
           ))}
           <a
-            href="#contact"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm font-medium"
+            href="/generate"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
-            {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
+            {generateLabel}
           </a>
         </div>
       )}

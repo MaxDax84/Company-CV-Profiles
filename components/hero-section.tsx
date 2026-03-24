@@ -71,8 +71,8 @@ export default function HeroSection() {
             {t.ctaPrimary}
           </a>
           <a
-            href="#contact"
-            className="px-8 py-3.5 rounded-xl border border-border hover:border-primary/50 text-foreground font-semibold text-sm transition-all duration-200 hover:bg-primary/6 hover:-translate-y-0.5"
+            href="/generate"
+            className="px-8 py-3.5 rounded-xl border border-primary/40 hover:border-primary/70 text-primary font-semibold text-sm transition-all duration-200 hover:bg-primary/8 hover:-translate-y-0.5"
           >
             {t.ctaSecondary}
           </a>

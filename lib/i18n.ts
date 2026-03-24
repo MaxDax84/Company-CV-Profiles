@@ -7,6 +7,7 @@ export const translations = {
       portfolio: 'Portfolio',
       pricing: 'Pricing',
       contact: 'Contact',
+      generate: 'Try Free',
     },
     hero: {
       badge: 'Professional Web Presence',
@@ -15,7 +16,7 @@ export const translations = {
       subtitle:
         'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
       ctaPrimary: 'View Portfolio',
-      ctaSecondary: 'Get Started',
+      ctaSecondary: 'Try Free →',
     },
     services: {
       sectionLabel: 'What We Offer',
@@ -221,6 +222,7 @@ export const translations = {
       portfolio: 'Portfolio',
       pricing: 'Prezzi',
       contact: 'Contatti',
+      generate: 'Prova Gratis',
     },
     hero: {
       badge: 'Presenza Professionale Online',
@@ -229,7 +231,7 @@ export const translations = {
       subtitle:
         'BeOnWeb crea eleganti CV web completamente personalizzati — un\'alternativa moderna al curriculum tradizionale. Scegli i tuoi colori, il tuo stile, il tuo dominio.',
       ctaPrimary: 'Vedi il Portfolio',
-      ctaSecondary: 'Inizia Ora',
+      ctaSecondary: 'Prova Gratis →',
     },
     services: {
       sectionLabel: 'Cosa Offriamo',
