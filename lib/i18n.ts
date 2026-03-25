@@ -94,7 +94,7 @@ export const translations = {
           name: 'Starter',
           price: '30',
           originalPrice: '60',
-          description: 'Your web CV live in minutes, on a shared link. No domain, no customisation — just your content online.',
+          description: 'Your web CV built on a standard template and delivered on a public shareable link — no personal domain.',
           features: [
             'Standard design (fixed template)',
             'All your content included',
@@ -333,7 +333,7 @@ export const translations = {
           name: 'Starter',
           price: '30',
           originalPrice: '60',
-          description: 'Il tuo CV web online in pochi minuti, su un link condiviso. Nessun dominio, nessuna personalizzazione — solo i tuoi contenuti online.',
+          description: 'Il tuo CV web realizzato su template standard e consegnato su un link pubblico condivisibile — nessun dominio personale.',
           features: [
             'Design standard (template fisso)',
             'Tutti i tuoi contenuti inclusi',
