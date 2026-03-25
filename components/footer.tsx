@@ -43,11 +43,14 @@ export default function Footer() {
                 {link.label}
               </a>
             ))}
+            <a href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              {lang === 'en' ? 'Terms of Service' : 'Termini di Servizio'}
+            </a>
             <a href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {lang === 'en' ? 'Privacy Policy' : 'Privacy Policy'}
+              Privacy Policy
             </a>
             <a href="/cookies" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {lang === 'en' ? 'Cookie Policy' : 'Cookie Policy'}
+              Cookie Policy
             </a>
           </div>
 
