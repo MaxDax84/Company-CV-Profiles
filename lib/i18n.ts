@@ -91,6 +91,21 @@ export const translations = {
       launchNote: 'Limited spots — introductory pricing for early clients',
       plans: [
         {
+          name: 'Starter',
+          price: '30',
+          originalPrice: '60',
+          description: 'Your web CV live in minutes, on a shared link. No domain, no customisation — just your content online.',
+          features: [
+            'Standard design (fixed template)',
+            'All your content included',
+            'PC & mobile responsive',
+            'Delivered on a shared link (no personal domain)',
+            'Delivered in 1 business day',
+          ],
+          cta: 'Get Started',
+          highlighted: false,
+        },
+        {
           name: 'Professional',
           price: '55',
           originalPrice: '110',
@@ -314,6 +329,21 @@ export const translations = {
       launchBadge: 'Offerta lancio',
       launchNote: 'Posti limitati — prezzi introduttivi per i primi clienti',
       plans: [
+        {
+          name: 'Starter',
+          price: '30',
+          originalPrice: '60',
+          description: 'Il tuo CV web online in pochi minuti, su un link condiviso. Nessun dominio, nessuna personalizzazione — solo i tuoi contenuti online.',
+          features: [
+            'Design standard (template fisso)',
+            'Tutti i tuoi contenuti inclusi',
+            'Ottimizzato per PC e mobile',
+            'Consegnato su link condiviso (nessun dominio personale)',
+            'Consegna in 1 giorno lavorativo',
+          ],
+          cta: 'Inizia Ora',
+          highlighted: false,
+        },
         {
           name: 'Professional',
           price: '55',
