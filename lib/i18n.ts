@@ -108,20 +108,6 @@ export const translations = {
           highlighted: true,
         },
         {
-          name: 'Advanced',
-          price: '75',
-          originalPrice: '150',
-          description: 'Everything in Professional, plus your source code and one free revision.',
-          features: [
-            'Everything in Professional',
-            'Full source code delivered',
-            '1 free change within 1 month of payment',
-            'Free change can include a full site redesign',
-          ],
-          cta: 'Get Started',
-          highlighted: false,
-        },
-        {
           name: 'Complete',
           price: '250',
           originalPrice: '500',
@@ -344,20 +330,6 @@ export const translations = {
           ],
           cta: 'Inizia Ora',
           highlighted: true,
-        },
-        {
-          name: 'Advanced',
-          price: '75',
-          originalPrice: '150',
-          description: 'Tutto incluso in Professional, più il codice sorgente e una modifica gratuita.',
-          features: [
-            'Tutto incluso in Professional',
-            'Codice sorgente consegnato',
-            '1 modifica gratuita entro 1 mese dal pagamento',
-            'La modifica può includere un redesign completo del sito',
-          ],
-          cta: 'Inizia Ora',
-          highlighted: false,
         },
         {
           name: 'Completo',

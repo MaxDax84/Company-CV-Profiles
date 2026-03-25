@@ -160,9 +160,7 @@ export default function TemplateDelta({ profile }: Props) {
             {p.full_name.split(' ')[0]}<br />
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
-          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.1rem)', color: muted, maxWidth: 560, lineHeight: 1.85, margin: '0 0 48px', fontWeight: 300 }}>
-            {p.bio}
-          </p>
+
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 72 }}>
             <a href="#experience" style={{ padding: '12px 28px', background: accent, color: navy, fontWeight: 600, fontSize: 13, borderRadius: 6, textDecoration: 'none', letterSpacing: '0.04em' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}

@@ -164,9 +164,6 @@ export default function TemplateBeta({ profile }: Props) {
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.12rem)', color: muted, maxWidth: 640, lineHeight: 1.8, margin: '0 0 48px', fontWeight: 300 }}>
-            {p.bio}
-          </p>
 
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 64 }}>
             <a href="#experience" style={{ padding: '12px 26px', background: accent, color: white, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>

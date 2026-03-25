@@ -226,9 +226,6 @@ export default function TemplateAlpha({ profile }: Props) {
             {firstName} <span style={{ color: v }}>{lastName}</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.12rem)', color: mut, maxWidth: 700, lineHeight: 1.8, margin: '0 auto 48px', fontWeight: 300 }}>
-            {p.bio}
-          </p>
 
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 80, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 26px', background: v, color: bg, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
