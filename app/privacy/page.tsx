@@ -38,7 +38,7 @@ export default function PrivacyPage() {
               <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
               <p>
                 Il titolare del trattamento è <strong className="text-foreground">BeOnWeb</strong>,
-                gestito da Massimo D&apos;Assano, con sede in Italia.
+                gestito da Massimo Dassano, con sede in Italia.
                 <br />
                 Email di contatto:{' '}
                 <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
               <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
               <p>
                 The data controller is <strong className="text-foreground">BeOnWeb</strong>,
-                operated by Massimo D&apos;Assano, based in Italy.
+                operated by Massimo Dassano, based in Italy.
                 <br />
                 Contact email:{' '}
                 <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
