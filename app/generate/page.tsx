@@ -9,39 +9,11 @@ import Navigation from "@/components/navigation";
 
 type State = "idle" | "uploading" | "done" | "error";
 
-const TEMPLATES: { id: TemplateStyle; name: string; description: string; accent: string; bg: string; demoSlug: string }[] = [
-  {
-    id: "alpha",
-    name: "Alpha",
-    description: "Dark · minimal · timeline",
-    accent: "#6366f1",
-    bg: "#030608",
-    demoSlug: "marco-ferretti",
-  },
-  {
-    id: "beta",
-    name: "Beta",
-    description: "Light · elegante · editoriale",
-    accent: "#4f46e5",
-    bg: "#ffffff",
-    demoSlug: "marco-ferretti-beta",
-  },
-  {
-    id: "gamma",
-    name: "Gamma",
-    description: "Hero scuro · sezioni chiare",
-    accent: "#10b981",
-    bg: "#0b1f14",
-    demoSlug: "marco-ferretti-gamma",
-  },
-  {
-    id: "delta",
-    name: "Delta",
-    description: "Luxury · navy · gold",
-    accent: "#c9a84c",
-    bg: "#0a1628",
-    demoSlug: "marco-ferretti-delta",
-  },
+const TEMPLATES: { id: TemplateStyle; name: string; accent: string; bg: string; demoSlug: string }[] = [
+  { id: "alpha", name: "Alpha", accent: "#6366f1", bg: "#030608", demoSlug: "marco-ferretti" },
+  { id: "beta",  name: "Beta",  accent: "#4f46e5", bg: "#ffffff", demoSlug: "marco-ferretti-beta" },
+  { id: "gamma", name: "Gamma", accent: "#10b981", bg: "#0b1f14", demoSlug: "marco-ferretti-gamma" },
+  { id: "delta", name: "Delta", accent: "#c9a84c", bg: "#0a1628", demoSlug: "marco-ferretti-delta" },
 ];
 
 export default function GeneratePage() {
@@ -170,41 +142,41 @@ export default function GeneratePage() {
                 {t.stepTemplate}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {TEMPLATES.map(t => (
+                {TEMPLATES.map(tpl => (
                   <button
-                    key={t.id}
-                    onClick={() => setTemplate(t.id)}
+                    key={tpl.id}
+                    onClick={() => setTemplate(tpl.id)}
                     className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
                     style={{
-                      borderColor: template === t.id ? t.accent : "rgba(255,255,255,0.08)",
-                      boxShadow: template === t.id ? `0 0 16px ${t.accent}40, 0 0 0 1px ${t.accent}` : "none",
+                      borderColor: template === tpl.id ? tpl.accent : "rgba(255,255,255,0.08)",
+                      boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
-                    <div className="h-14" style={{ background: t.bg, borderBottom: `2px solid ${t.accent}30` }}>
+                    <div className="h-14" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
                       <div className="h-full flex items-center justify-center">
-                        <span className="text-xs font-bold tracking-widest" style={{ color: t.accent }}>
-                          {t.name.toUpperCase()}
+                        <span className="text-xs font-bold tracking-widest" style={{ color: tpl.accent }}>
+                          {tpl.name.toUpperCase()}
                         </span>
                       </div>
                     </div>
                     <div className="p-3 bg-white/[0.03] space-y-1.5">
-                      <p className="text-xs font-semibold text-foreground/80 leading-tight">{t.name}</p>
-                      <p className="text-[10px] text-muted-foreground leading-tight">{t.description}</p>
+                      <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
+                      <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
                       <a
-                        href={`/profile/${t.demoSlug}`}
+                        href={`/profile/${tpl.demoSlug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                         className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
-                        style={{ background: `${t.accent}22`, color: t.accent, border: `1px solid ${t.accent}40` }}
+                        style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
                       >
                         Preview ↗
                       </a>
                     </div>
-                    {template === t.id && (
+                    {template === tpl.id && (
                       <div
                         className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
-                        style={{ background: t.accent, boxShadow: `0 0 8px ${t.accent}80` }}
+                        style={{ background: tpl.accent, boxShadow: `0 0 8px ${tpl.accent}80` }}
                       >
                         <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                           <path d="M1.5 4L3.5 6L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

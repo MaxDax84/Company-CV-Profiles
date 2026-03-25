@@ -178,6 +178,12 @@ export const translations = {
       privacyLabel: 'I have read and agree to the',
       privacyLink: 'Privacy Policy',
       privacyNote: 'Your CV data is processed solely to generate your profile page and is not shared with third parties.',
+      templates: {
+        alpha: 'Dark · minimal · timeline',
+        beta: 'Light · elegant · editorial',
+        gamma: 'Dark hero · light sections',
+        delta: 'Luxury · navy · gold',
+      },
     },
     contact: {
       sectionLabel: 'Contact',
@@ -417,6 +423,12 @@ export const translations = {
       privacyLabel: 'Ho letto e accetto la',
       privacyLink: 'Privacy Policy',
       privacyNote: 'I dati del tuo CV vengono elaborati esclusivamente per generare la tua pagina profilo e non vengono condivisi con terze parti.',
+      templates: {
+        alpha: 'Dark · minimale · timeline',
+        beta: 'Chiaro · elegante · editoriale',
+        gamma: 'Hero scuro · sezioni chiare',
+        delta: 'Luxury · navy · gold',
+      },
     },
     contact: {
       sectionLabel: 'Contatti',
