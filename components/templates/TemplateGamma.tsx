@@ -218,10 +218,18 @@ export default function TemplateGamma({ profile }: Props) {
                 ['✉', p.email_obfuscated],
                 ...(p.social_links.linkedin ? [['🔗', p.social_links.linkedin.replace('https://', '')]] : []),
               ] as [string, string][]).map(([icon, val], i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 0', borderBottom: `1px solid ${border}` }}>
-                  <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
-                  <span style={{ fontSize: 13, color: sub }}>{val}</span>
-                </div>
+                icon === '🔗' ? (
+                  <a key={i} href={p.social_links.linkedin} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 0', borderBottom: `1px solid ${border}`, textDecoration: 'none' }}>
+                    <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
+                    <span style={{ fontSize: 13, color: accent }}>LinkedIn →</span>
+                  </a>
+                ) : (
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 0', borderBottom: `1px solid ${border}` }}>
+                    <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
+                    <span style={{ fontSize: 13, color: sub }}>{val}</span>
+                  </div>
+                )
               ))}
             </div>
           </div>

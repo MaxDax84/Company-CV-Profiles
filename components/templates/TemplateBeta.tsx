@@ -221,10 +221,18 @@ export default function TemplateBeta({ profile }: Props) {
             <div className="sb-about-right">
               <p style={{ fontSize: 11, fontWeight: 600, color: `${accent}90`, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>Info</p>
               {infoRows.map(([icon, val], i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14 }}>
-                  <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{icon}</span>
-                  <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{val}</span>
-                </div>
+                icon === '🔗' ? (
+                  <a key={i} href={p.social_links.linkedin} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14, textDecoration: 'none' }}>
+                    <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                    <span style={{ fontSize: 13, color: accent, lineHeight: 1.5 }}>LinkedIn →</span>
+                  </a>
+                ) : (
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14 }}>
+                    <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                    <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>{val}</span>
+                  </div>
+                )
               ))}
               {p.social_links.github && (
                 <a href={p.social_links.github} target="_blank" rel="noopener noreferrer"

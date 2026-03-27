@@ -221,10 +221,18 @@ export default function TemplateDelta({ profile }: Props) {
                   ['✉', p.email_obfuscated],
                   ...(p.social_links.linkedin ? [['🔗', p.social_links.linkedin.replace('https://', '')]] : []),
                 ] as [string, string][]).map(([icon, val], i, arr) => (
-                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${accent}15` : 'none' }}>
-                    <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontSize: 13, color: inkMid }}>{val}</span>
-                  </div>
+                  icon === '🔗' ? (
+                    <a key={i} href={p.social_links.linkedin} target="_blank" rel="noopener noreferrer"
+                      style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${accent}15` : 'none', textDecoration: 'none' }}>
+                      <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
+                      <span style={{ fontSize: 13, color: accent }}>LinkedIn →</span>
+                    </a>
+                  ) : (
+                    <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${accent}15` : 'none' }}>
+                      <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
+                      <span style={{ fontSize: 13, color: inkMid }}>{val}</span>
+                    </div>
+                  )
                 ))}
               </div>
               {p.social_links.github && (

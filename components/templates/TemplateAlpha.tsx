@@ -268,10 +268,18 @@ export default function TemplateAlpha({ profile }: Props) {
             <div>
               <div style={{ background: card, border: `1px solid ${bdr}`, borderRadius: 12, padding: '8px 0', marginBottom: 20 }}>
                 {infoRows.map(([icon, val], i, arr) => (
-                  <div key={val} style={{ display: 'flex', gap: 14, alignItems: 'center', padding: '13px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${bdr}` : 'none' }}>
-                    <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontSize: 13, color: mut }}>{val}</span>
-                  </div>
+                  icon === '🔗' ? (
+                    <a key={val} href={p.social_links.linkedin} target="_blank" rel="noopener noreferrer"
+                      style={{ display: 'flex', gap: 14, alignItems: 'center', padding: '13px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${bdr}` : 'none', textDecoration: 'none' }}>
+                      <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{icon}</span>
+                      <span style={{ fontSize: 13, color: v }}>LinkedIn →</span>
+                    </a>
+                  ) : (
+                    <div key={val} style={{ display: 'flex', gap: 14, alignItems: 'center', padding: '13px 20px', borderBottom: i < arr.length - 1 ? `1px solid ${bdr}` : 'none' }}>
+                      <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{icon}</span>
+                      <span style={{ fontSize: 13, color: mut }}>{val}</span>
+                    </div>
+                  )
                 ))}
               </div>
               {(p.social_links.github || p.social_links.portfolio || p.social_links.twitter) && (
