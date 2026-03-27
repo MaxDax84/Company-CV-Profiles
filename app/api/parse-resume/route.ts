@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     if (linkedinInput && typeof linkedinInput === "string" && linkedinInput.trim()) {
       let linkedinUrl = linkedinInput.trim();
       if (!linkedinUrl.startsWith("http")) linkedinUrl = "https://" + linkedinUrl;
-      profile.social_links.linkedin = linkedinUrl;
+      profile.personal_info.social_links.linkedin = linkedinUrl;
     }
 
     // User's choice always wins over the AI suggestion
