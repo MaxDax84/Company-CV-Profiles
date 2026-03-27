@@ -19,6 +19,7 @@ const TEMPLATES: { id: TemplateStyle; name: string; accent: string; bg: string; 
 export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
+  const [linkedin, setLinkedin] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export default function GeneratePage() {
     const formData = new FormData();
     formData.append("pdf", file);
     formData.append("template", template);
+    if (linkedin.trim()) formData.append("linkedin", linkedin.trim());
 
     try {
       const res = await fetch("/api/parse-resume", { method: "POST", body: formData });
@@ -61,6 +63,7 @@ export default function GeneratePage() {
     setState("idle");
     setSlug(null);
     setFile(null);
+    setLinkedin("");
     setError(null);
     setPrivacy(false);
     if (inputRef.current) inputRef.current.value = "";
@@ -186,6 +189,37 @@ export default function GeneratePage() {
                     )}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* LinkedIn input */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                {t.stepLinkedin}
+              </p>
+              <div
+                className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
+                style={{ borderColor: linkedin ? `${selected.accent}60` : "rgba(255,255,255,0.08)" }}
+              >
+                <svg className="w-4 h-4 shrink-0 text-muted-foreground/50" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+                <input
+                  type="url"
+                  value={linkedin}
+                  onChange={e => setLinkedin(e.target.value)}
+                  placeholder={t.linkedinPlaceholder}
+                  className="flex-1 bg-transparent text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none"
+                />
+                {linkedin && (
+                  <button
+                    onClick={() => setLinkedin("")}
+                    className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
             </div>
 

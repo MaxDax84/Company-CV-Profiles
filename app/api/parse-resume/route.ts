@@ -39,6 +39,14 @@ export async function POST(req: NextRequest) {
     // Normalize apostrophes in name (e.g. D'Assano → Dassano)
     profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
 
+    // Override LinkedIn URL if provided by the user
+    const linkedinInput = formData.get("linkedin");
+    if (linkedinInput && typeof linkedinInput === "string" && linkedinInput.trim()) {
+      let linkedinUrl = linkedinInput.trim();
+      if (!linkedinUrl.startsWith("http")) linkedinUrl = "https://" + linkedinUrl;
+      profile.social_links.linkedin = linkedinUrl;
+    }
+
     // User's choice always wins over the AI suggestion
     const TEMPLATE_COLORS: Record<string, string> = {
       alpha: "#6366f1",
