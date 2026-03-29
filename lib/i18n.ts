@@ -222,7 +222,7 @@ export const translations = {
         {
           icon: '💳',
           title: 'Pay once, yours forever',
-          description: 'No monthly fees, no platform subscriptions. Pay for the build — the site is yours for as long as you choose to keep the domain active. You own the domain, you decide. We\'re a studio, not a SaaS.',
+          description: 'No platform fees, no subscriptions. Pay for the build — then nothing, unless you want changes. The only recurring cost is your domain renewal (typically €10–15/year), which you control directly. We\'re a studio, not a SaaS.',
         },
         {
           icon: '🌐',
@@ -470,7 +470,7 @@ export const translations = {
         {
           icon: '💳',
           title: 'Paghi una volta, è tuo per sempre',
-          description: 'Nessun canone mensile, nessuna piattaforma. Paghi il lavoro — il sito è tuo finché decidi di tenere il dominio attivo. Tu sei il proprietario del dominio, tu decidi. Siamo uno studio, non un software.',
+          description: 'Nessuna piattaforma, nessun abbonamento. Paghi il lavoro — poi niente, a meno che non vuoi modifiche. L\'unico costo ricorrente è il rinnovo annuale del dominio (in genere €10–15/anno), che gestisci direttamente tu. Siamo uno studio, non un software.',
         },
         {
           icon: '🌐',
