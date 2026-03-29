@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   const email = (formData.get('email') as string | null)?.trim() ?? ''
   const message = (formData.get('message') as string | null)?.trim() ?? ''
   const attachment = formData.get('attachment') as File | null
+  const existingSite = (formData.get('existingSite') as string | null)?.trim() ?? ''
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
       to: process.env.GMAIL_USER,
       replyTo: email,
       subject: `New enquiry from ${escapeHtml(name)} — BeOnWeb`,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}${attachment ? `\n\nAttachment: ${attachment.name}` : ''}`,
+      text: `Name: ${name}\nEmail: ${email}\n${existingSite ? `Existing site: ${existingSite}\n` : ''}\nMessage:\n${message}${attachment ? `\n\nAttachment: ${attachment.name}` : ''}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #0a0b14; color: #f0f0f5; padding: 32px; border-radius: 12px; border: 1px solid #2a2d3e;">
           <div style="margin-bottom: 24px;">
@@ -69,6 +70,10 @@ export async function POST(req: NextRequest) {
               <td style="padding: 8px 0; color: #9ca3af; font-size: 14px;">Email</td>
               <td style="padding: 8px 0; font-size: 14px;"><a href="mailto:${escapeHtml(email)}" style="color: #5b9cf6;">${escapeHtml(email)}</a></td>
             </tr>
+            ${existingSite ? `<tr>
+              <td style="padding: 8px 0; color: #9ca3af; font-size: 14px;">Existing site</td>
+              <td style="padding: 8px 0; font-size: 14px;"><a href="${escapeHtml(existingSite)}" style="color: #5b9cf6;">${escapeHtml(existingSite)}</a></td>
+            </tr>` : ''}
             ${attachment ? `<tr>
               <td style="padding: 8px 0; color: #9ca3af; font-size: 14px;">Attachment</td>
               <td style="padding: 8px 0; font-size: 14px;">${escapeHtml(attachment.name)}</td>

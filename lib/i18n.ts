@@ -204,6 +204,9 @@ export const translations = {
         messagePlaceholder: 'Tell us a bit about yourself and what you are looking for...',
         attachment: 'Attach your CV (PDF, optional)',
         attachmentHint: 'Max 5MB — PDF only',
+        existingSite: 'Or share your current website (optional)',
+        existingSitePlaceholder: 'https://yoursite.com',
+        existingSiteHint: 'Have a site you want to modernise? Drop the URL here.',
         privacy: 'I have read and agree to the',
         privacyLink: 'Privacy Policy',
         submit: 'Send Message',
@@ -227,7 +230,7 @@ export const translations = {
         {
           icon: '🌐',
           title: 'Your domain, your credentials',
-          description: 'We choose the domain together. It gets registered in your name, with full login credentials delivered directly to you — not us.',
+          description: 'We choose the domain together and handle everything — registration, DNS, deployment. If you prefer full ownership, we register it in your name and hand you the credentials directly. Either way, you\'re never locked in.',
         },
         {
           icon: '</>',
@@ -240,8 +243,8 @@ export const translations = {
           description: 'Every CV looks the same in PDF. We build web presences with personality, real design, and structure that reflects who you actually are.',
         },
       ],
-      note: 'Unlike Wix, Squarespace, or similar platforms — if you stop paying them, your site goes offline. We don\'t do that.',
-      noteBold: 'Your site stays live.',
+      note: 'Unlike Wix, Squarespace, or similar platforms — if you stop paying them, your site goes offline. With us, the only recurring cost is your domain renewal. No updates needed? ',
+      noteBold: 'Nothing else to pay.',
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
@@ -452,6 +455,9 @@ export const translations = {
         messagePlaceholder: 'Raccontaci un po\' di te e cosa stai cercando...',
         attachment: 'Allega il tuo CV (PDF, opzionale)',
         attachmentHint: 'Max 5MB — solo PDF',
+        existingSite: 'Oppure condividi il tuo sito attuale (opzionale)',
+        existingSitePlaceholder: 'https://tuosito.com',
+        existingSiteHint: 'Hai un sito da rinnovare? Inserisci l\'URL qui.',
         privacy: 'Ho letto e accetto la',
         privacyLink: 'Privacy Policy',
         submit: 'Invia Messaggio',
@@ -475,7 +481,7 @@ export const translations = {
         {
           icon: '🌐',
           title: 'Il dominio è tuo, le credenziali anche',
-          description: 'Scegliamo insieme il dominio. Viene registrato a tuo nome, con le credenziali di accesso consegnate direttamente a te — non a noi.',
+          description: 'Scegliamo insieme il dominio e gestiamo tutto noi — registrazione, DNS, deploy. Se preferisci la proprietà diretta, lo registriamo a tuo nome e ti consegniamo le credenziali. In entrambi i casi, non sei mai vincolato.',
         },
         {
           icon: '</>',
@@ -488,8 +494,8 @@ export const translations = {
           description: 'Tutti i CV sembrano uguali in PDF. Noi costruiamo presenze web con personalità, design autentico e struttura che riflette davvero chi sei.',
         },
       ],
-      note: 'A differenza di Wix, Squarespace e simili — se smetti di pagare, il tuo sito va offline. Noi no.',
-      noteBold: 'Il tuo sito rimane online.',
+      note: 'A differenza di Wix, Squarespace e simili — se smetti di pagare, il tuo sito va offline. Con noi, l\'unico costo ricorrente è il rinnovo del dominio. Nessuna modifica? ',
+      noteBold: 'Non paghi nient\'altro.',
     },
     footer: {
       tagline: 'Creiamo presenze professionali online, un profilo alla volta.',

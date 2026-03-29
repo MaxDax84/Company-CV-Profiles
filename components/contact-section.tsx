@@ -22,6 +22,7 @@ export default function ContactSection() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [existingSite, setExistingSite] = useState('')
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
   const [fileError, setFileError] = useState('')
@@ -63,6 +64,7 @@ export default function ContactSection() {
     formData.append('email', email)
     formData.append('message', message)
     if (file) formData.append('attachment', file)
+    if (existingSite.trim()) formData.append('existingSite', existingSite.trim())
 
     try {
       const res = await fetch('/api/contact', { method: 'POST', body: formData })
@@ -74,6 +76,7 @@ export default function ContactSection() {
         setEmail('')
         setMessage('')
         setFile(null)
+        setExistingSite('')
         setPrivacyAccepted(false)
       } else {
         setStatus('error')
@@ -245,6 +248,34 @@ export default function ContactSection() {
                     {fileError && (
                       <p className="text-xs text-destructive mt-1.5">{fileError}</p>
                     )}
+                  </div>
+
+                  {/* Existing site URL */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      {f.existingSite}
+                    </label>
+                    <div className={cn(
+                      'flex items-center gap-3 px-4 py-3 rounded-xl bg-background border transition-all duration-200',
+                      existingSite ? 'border-primary/40' : 'border-border',
+                    )}>
+                      <svg className="w-4 h-4 shrink-0 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                      </svg>
+                      <input
+                        type="url"
+                        value={existingSite}
+                        onChange={(e) => setExistingSite(e.target.value)}
+                        placeholder={f.existingSitePlaceholder}
+                        className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/40 focus:outline-none"
+                      />
+                      {existingSite && (
+                        <button type="button" onClick={() => setExistingSite('')} className="text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground/50 mt-1.5">{f.existingSiteHint}</p>
                   </div>
 
                   {/* Privacy consent */}
