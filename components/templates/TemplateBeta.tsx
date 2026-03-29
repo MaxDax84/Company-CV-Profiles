@@ -153,7 +153,7 @@ export default function TemplateBeta({ profile }: Props) {
         <div
           ref={heroIn.ref}
           className="sb-container"
-          style={{ padding: '96px 24px 64px', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(28px)' }}
+          style={{ padding: '96px 24px 64px', textAlign: 'center', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(28px)' }}
         >
           <p style={{ fontSize: 12, fontWeight: 600, color: accent, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 20px' }}>
             {p.title}{p.location ? ` · ${p.location}` : ''}
@@ -165,7 +165,7 @@ export default function TemplateBeta({ profile }: Props) {
           </h1>
 
 
-          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 64 }}>
+          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 64, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 26px', background: accent, color: white, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}
             </a>
@@ -190,7 +190,7 @@ export default function TemplateBeta({ profile }: Props) {
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${certifications.length || education.length}`, label: certifications.length ? (isIT ? 'certificazioni' : 'certifications') : (isIT ? 'titoli' : 'degrees') },
             ].slice(0, 4).map(({ v, label }) => (
-              <div key={label} className="sb-stat">
+              <div key={label} className="sb-stat" style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: 28, fontWeight: 700, color: ink, margin: '0 0 4px', lineHeight: 1 }}>
                   {v}<span style={{ fontSize: 14, color: accent, fontWeight: 500 }}> </span>
                 </p>

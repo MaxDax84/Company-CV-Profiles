@@ -239,7 +239,7 @@ export default function TemplateAlpha({ profile }: Props) {
           {/* Stats row */}
           <div className="stats-row" style={{ border: `1px solid ${bdr}`, borderRadius: 12, overflow: 'hidden' }}>
             {stats.slice(0, 4).map(({ value, unit, label }, i, arr) => (
-              <div key={label} style={{ padding: '24px 20px', background: card, borderRight: i < arr.length - 1 ? `1px solid ${bdr}` : 'none' }}>
+              <div key={label} style={{ padding: '24px 20px', background: card, borderRight: i < arr.length - 1 ? `1px solid ${bdr}` : 'none', textAlign: 'center' }}>
                 <p style={{ fontSize: 26, fontWeight: 700, color: fg, margin: '0 0 4px', lineHeight: 1 }}>
                   {value}<span style={{ fontSize: 13, color: v, fontWeight: 500 }}>{unit}</span>
                 </p>

@@ -151,7 +151,7 @@ export default function TemplateDelta({ profile }: Props) {
         <div
           ref={heroIn.ref}
           className="dl-container"
-          style={{ position: 'relative', padding: '80px 24px 96px', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(32px)' }}
+          style={{ position: 'relative', padding: '80px 24px 96px', textAlign: 'center', transition: 'opacity 0.8s, transform 0.8s', opacity: heroIn.inView ? 1 : 0, transform: heroIn.inView ? 'translateY(0)' : 'translateY(32px)' }}
         >
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.3em', textTransform: 'uppercase', margin: '0 0 24px' }}>
             {p.title}{p.location ? ` · ${p.location}` : ''}
@@ -161,7 +161,7 @@ export default function TemplateDelta({ profile }: Props) {
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
 
-          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 72 }}>
+          <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 72, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 28px', background: accent, color: navy, fontWeight: 600, fontSize: 13, borderRadius: 6, textDecoration: 'none', letterSpacing: '0.04em' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}
             </a>
@@ -186,7 +186,7 @@ export default function TemplateDelta({ profile }: Props) {
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length + certifications.length}`, label: isIT ? 'titoli & cert.' : 'degrees & certs' },
             ].slice(0, 4).map(({ v, label }) => (
-              <div key={label} className="dl-stat">
+              <div key={label} className="dl-stat" style={{ textAlign: 'center' }}>
                 <p className={playfair.className} style={{ fontSize: 28, fontWeight: 700, color: accent, margin: '0 0 4px', lineHeight: 1 }}>{v}</p>
                 <p style={{ fontSize: 11, color: muted, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
               </div>
