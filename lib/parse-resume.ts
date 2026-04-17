@@ -147,11 +147,19 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
   const raw = textBlock.text.trim();
   const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
 
+  // Extract the JSON object robustly — handles extra text before/after the braces
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) {
+    throw new Error(`No JSON object found. stop_reason=${json.stop_reason} output=${cleaned.slice(0, 500)}`);
+  }
+  const jsonStr = cleaned.slice(start, end + 1);
+
   let profile: ProfileSchema;
   try {
-    profile = JSON.parse(cleaned);
+    profile = JSON.parse(jsonStr);
   } catch {
-    throw new Error(`Invalid JSON from model: ${cleaned.slice(0, 300)}`);
+    throw new Error(`stop_reason=${json.stop_reason} | output_length=${cleaned.length} | tail=${cleaned.slice(-200)}`);
   }
 
   if (!profile.metadata?.generated_at) {
