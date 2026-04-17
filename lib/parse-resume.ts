@@ -94,7 +94,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema> {
   const base64Pdf = arrayBufferToBase64(pdfBuffer);
 
-  const stream = client.messages.stream({
+  const message = await client.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 8192,
     system: SYSTEM_PROMPT,
@@ -119,8 +119,6 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
     ],
   });
 
-  const message = await stream.finalMessage();
-
   if (message.stop_reason === "max_tokens") {
     throw new Error(
       "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
@@ -140,9 +138,8 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
   let profile: ProfileSchema;
   try {
     profile = JSON.parse(cleaned);
-  } catch {
-    // If output was silently truncated (stop_reason wasn't max_tokens but JSON is incomplete)
-    throw new Error("CV too long to process. Please try with a shorter CV (max 2 pages recommended).");
+  } catch (e) {
+    throw new Error(`Model returned invalid JSON: ${e instanceof Error ? e.message : String(e)} — output: ${cleaned.slice(0, 300)}`);
   }
 
   // Ensure generated_at is set
