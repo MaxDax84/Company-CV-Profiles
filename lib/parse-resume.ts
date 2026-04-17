@@ -82,8 +82,17 @@ Schema:
   }
 }`;
 
-export async function parseResume(pdfBuffer: Buffer): Promise<ProfileSchema> {
-  const base64Pdf = pdfBuffer.toString("base64");
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema> {
+  const base64Pdf = arrayBufferToBase64(pdfBuffer);
 
   const stream = client.messages.stream({
     model: "claude-haiku-4-5",

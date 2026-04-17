@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { parseResume } from "@/lib/parse-resume";
 
-export const maxDuration = 60;
+export const runtime = 'edge';
+export const maxDuration = 30;
 
 // Converts "Mario Rossi" → "mario-rossi", with collision suffix if needed
 function toSlug(fullName: string): string {
@@ -35,8 +36,8 @@ export async function POST(req: NextRequest) {
 
     const templateChoice = formData.get("template");
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const profile = await parseResume(buffer);
+    const arrayBuffer = await file.arrayBuffer();
+    const profile = await parseResume(arrayBuffer);
 
     // Normalize apostrophes in name (e.g. D'Assano → Dassano)
     profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
