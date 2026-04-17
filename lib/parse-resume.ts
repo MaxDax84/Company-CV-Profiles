@@ -1,7 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
 import type { ProfileSchema } from "./schema";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extract information from a CV/resume PDF and return ONLY a valid JSON object matching the schema below.
 
@@ -94,55 +91,69 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema> {
   const base64Pdf = arrayBufferToBase64(pdfBuffer);
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5",
-    max_tokens: 8192,
-    system: SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "document",
-            source: {
-              type: "base64",
-              media_type: "application/pdf",
-              data: base64Pdf,
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.ANTHROPIC_API_KEY!,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "pdfs-2024-09-25",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 8192,
+      system: SYSTEM_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: base64Pdf,
+              },
             },
-          },
-          {
-            type: "text",
-            text: "Extract all data from this CV and return the JSON object. Set metadata.generated_at to the current ISO timestamp.",
-          },
-        ],
-      },
-    ],
+            {
+              type: "text",
+              text: "Extract all data from this CV and return the JSON object. Set metadata.generated_at to the current ISO timestamp.",
+            },
+          ],
+        },
+      ],
+    }),
   });
 
-  if (message.stop_reason === "max_tokens") {
-    throw new Error(
-      "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
-    );
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Anthropic API error ${res.status}: ${body}`);
   }
 
-  const textBlock = message.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
+  const json = await res.json() as {
+    stop_reason: string;
+    content: { type: string; text: string }[];
+  };
+
+  if (json.stop_reason === "max_tokens") {
+    throw new Error("CV too long to process. Please try with a shorter CV (max 2 pages recommended).");
+  }
+
+  const textBlock = json.content.find((b) => b.type === "text");
+  if (!textBlock) {
     throw new Error("No text response from model");
   }
 
   const raw = textBlock.text.trim();
-
-  // Strip accidental markdown code fences if present
   const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
 
   let profile: ProfileSchema;
   try {
     profile = JSON.parse(cleaned);
-  } catch (e) {
-    throw new Error(`Model returned invalid JSON: ${e instanceof Error ? e.message : String(e)} — output: ${cleaned.slice(0, 300)}`);
+  } catch {
+    throw new Error(`Invalid JSON from model: ${cleaned.slice(0, 300)}`);
   }
 
-  // Ensure generated_at is set
   if (!profile.metadata?.generated_at) {
     profile.metadata.generated_at = new Date().toISOString();
   }
