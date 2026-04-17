@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { parseResume } from "@/lib/parse-resume";
 
+export const maxDuration = 60;
+
 // Converts "Mario Rossi" → "mario-rossi", with collision suffix if needed
 function toSlug(fullName: string): string {
   return fullName
