@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { kv } from "@/lib/kv";
 import { notFound } from "next/navigation";
 import type { ProfileSchema, TemplateStyle } from "@/lib/schema";
 import { TemplateAlpha, TemplateBeta, TemplateGamma, TemplateDelta } from "@/components/templates";
