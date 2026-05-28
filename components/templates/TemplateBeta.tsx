@@ -128,6 +128,8 @@ export default function TemplateBeta({ profile }: Props) {
           .sb-expertise-grid { grid-template-columns: 1fr !important; }
           .hero-ctas { flex-direction: column !important; align-items: flex-start !important; }
         }
+        .sb-hero-h1 { white-space: nowrap; }
+        @media (max-width: 480px) { .sb-hero-h1 { white-space: normal !important; } }
       `}</style>
 
       {/* ── NAVBAR ── */}
@@ -159,8 +161,8 @@ export default function TemplateBeta({ profile }: Props) {
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
 
-          <h1 className={serif.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, color: ink, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
-            {p.full_name.split(' ')[0]}<br />
+          <h1 className={`${serif.className} sb-hero-h1`} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, color: ink, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
+            {p.full_name.split(' ')[0]}{' '}
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
 

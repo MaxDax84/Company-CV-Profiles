@@ -183,6 +183,7 @@ export default function TemplateAlpha({ profile }: Props) {
         }
         .lr-back-mobile { display: none; font-size: 13px; color: ${mut}; text-decoration: none; font-weight: 500; }
         .lr-back-mobile:hover { color: ${fg}; }
+        .lr-hero-h1 { white-space: nowrap; }
 
         @media (max-width: 600px) {
           .lr-nav-links { display: none; }
