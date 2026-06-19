@@ -132,7 +132,7 @@ export default function PricingSection() {
                   'block w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200',
                   plan.highlighted
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30'
-                    : 'border border-border hover:border-primary/50 hover:bg-primary/6 text-foreground',
+                    : 'border border-border hover:border-border/80 hover:bg-muted/40 text-foreground',
                 )}
               >
                 {plan.cta}

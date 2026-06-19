@@ -92,8 +92,8 @@ export const translations = {
       plans: [
         {
           name: 'Starter',
-          price: '30',
-          originalPrice: '60',
+          price: '15',
+          originalPrice: '30',
           description: 'Your web CV built on a standard template and delivered on a public shareable link — no personal domain.',
           features: [
             'Standard design (fixed template)',
@@ -107,8 +107,8 @@ export const translations = {
         },
         {
           name: 'Professional',
-          price: '55',
-          originalPrice: '110',
+          price: '35',
+          originalPrice: '70',
           description: 'Your site built and hosted on your own custom domain. Fully customizable on written request.',
           features: [
             'Built on your personal custom domain',
@@ -310,8 +310,8 @@ export const translations = {
       plans: [
         {
           name: 'Starter',
-          price: '30',
-          originalPrice: '60',
+          price: '15',
+          originalPrice: '30',
           description: 'Il tuo CV web realizzato su template standard e consegnato su un link pubblico condivisibile — nessun dominio personale.',
           features: [
             'Design standard (template fisso)',
@@ -325,8 +325,8 @@ export const translations = {
         },
         {
           name: 'Professional',
-          price: '55',
-          originalPrice: '110',
+          price: '35',
+          originalPrice: '70',
           description: 'Il tuo sito realizzato su dominio personalizzato. Completamente personalizzabile su richiesta scritta.',
           features: [
             'Realizzato su dominio personalizzato',
