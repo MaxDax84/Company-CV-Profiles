@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, Zap, RefreshCw } from 'lucide-react'
+import { Check, Zap } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -60,8 +60,8 @@ export default function PricingSection() {
           <span className="text-sm text-muted-foreground">{(t as { launchNote?: string }).launchNote}</span>
         </div>
 
-        {/* 3 main plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch mb-8">
+        {/* Plans */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch mb-8 max-w-3xl mx-auto">
           {t.plans.map((plan, i) => (
             <div
               key={plan.name}
@@ -141,54 +141,6 @@ export default function PricingSection() {
           ))}
         </div>
 
-        {/* Maintenance card — full width below */}
-        <div
-          className={cn(
-            'relative rounded-2xl border border-primary/25 bg-card/60 p-8 transition-all duration-700 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/8',
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10',
-          )}
-          style={{ transitionDelay: '550ms' }}
-        >
-          {/* Subtle glow */}
-          <div className="absolute inset-0 rounded-2xl bg-primary/3 pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8">
-            {/* Icon + text */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <RefreshCw className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                  {t.maintenance.name}
-                </p>
-              </div>
-
-              <p className="text-base font-medium text-foreground/80 leading-relaxed max-w-xl mb-3">
-                {(t.maintenance as { tagline?: string }).tagline}
-              </p>
-
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-                {t.maintenance.description}
-              </p>
-
-              <div className="flex items-center gap-2 mt-3">
-                <span className="text-xs font-semibold text-muted-foreground/70 border border-border/60 rounded-full px-2.5 py-0.5">Optional</span>
-                <span className="text-xs text-muted-foreground/60">{t.maintenance.note}</span>
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="lg:w-60 shrink-0">
-              <a
-                href="#contact"
-                className="block w-full text-center py-3 rounded-xl font-semibold text-sm border border-primary/40 hover:border-primary/70 hover:bg-primary/8 text-primary transition-all duration-200"
-              >
-                {t.maintenance.cta}
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   )
