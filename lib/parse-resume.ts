@@ -5,6 +5,7 @@ const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extr
 Rules:
 - Return ONLY the JSON object, no markdown, no explanation, no code fences.
 - Never hallucinate data that is not present in the document. Use null or omit optional fields if data is missing.
+- The schema below uses "| undefined" to mark optional fields. NEVER write the literal word "undefined" in your JSON output — it is not valid JSON. For a missing optional field, use null or omit the field entirely.
 - For full_name: remove apostrophes from surnames (e.g. "D'Assano" → "Dassano", "Dell'Aquila" → "DellAquila", "O'Brien" → "OBrien").
 - Obfuscate email: keep first letter, replace middle with ***, keep domain. Example: "mario.rossi@gmail.com" → "m***@gmail.com".
 - Obfuscate phone: keep country code and last 4 digits, replace rest with *. Example: "+39 333 1234567" → "+39 3** *** 4567".
@@ -193,9 +194,15 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
     profile = JSON.parse(jsonStr);
   } catch {
     // Claude sometimes emits literal control characters (e.g. newlines in a bio)
-    // inside JSON string values, which is invalid JSON — escape them and retry.
+    // inside JSON string values, or the bare word `undefined` for an optional
+    // field (copying the "string | undefined" schema notation) — neither is
+    // valid JSON. Repair both and retry before giving up.
+    const repaired = escapeControlCharsInStrings(jsonStr).replace(
+      /:(\s*)undefined(\s*[,}\]])/g,
+      ":$1null$2"
+    );
     try {
-      profile = JSON.parse(escapeControlCharsInStrings(jsonStr));
+      profile = JSON.parse(repaired);
     } catch {
       console.error(`[parse-resume] Unparseable JSON:\n${jsonStr}`);
       throw new Error(`stop_reason=${json.stop_reason} | output_length=${cleaned.length} | tail=${cleaned.slice(-200)}`);
