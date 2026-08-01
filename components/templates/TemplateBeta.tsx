@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { DM_Serif_Display, DM_Sans } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
+import { earliestStartYear } from '@/lib/experience-utils'
 
 const serif = DM_Serif_Display({ subsets: ['latin'], weight: ['400'] })
 const sans  = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
@@ -188,7 +189,10 @@ export default function TemplateBeta({ profile }: Props) {
                 ]
                 return [{ v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' }]
               })(),
-              { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'anno inizio carriera' : 'career started' },
+              ...(() => {
+                const startYear = earliestStartYear(experience)
+                return startYear !== null ? [{ v: `${startYear}`, label: isIT ? 'anno inizio carriera' : 'career started' }] : []
+              })(),
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${certifications.length || education.length}`, label: certifications.length ? (isIT ? 'certificazioni' : 'certifications') : (isIT ? 'titoli' : 'degrees') },
             ].slice(0, 4).map(({ v, label }) => (

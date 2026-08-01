@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
+import { yearsOfExperience } from '@/lib/experience-utils'
 
 const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
@@ -42,12 +43,7 @@ function SectionHeader({ label, bdr, v }: { label: string; bdr: string; v: strin
 
 // ── Derive years of experience from first job start ───────────────────────
 function yearsOfExp(experience: ProfileSchema['experience']): string {
-  if (!experience.length) return '—'
-  const earliest = experience.reduce((min, e) => {
-    const year = parseInt(e.start_date.slice(0, 4))
-    return year < min ? year : min
-  }, 9999)
-  return `${new Date().getFullYear() - earliest}+`
+  return yearsOfExperience(experience) ?? '—'
 }
 
 // ── Main component ────────────────────────────────────────────────────────

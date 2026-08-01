@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
+import { earliestStartYear } from '@/lib/experience-utils'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
@@ -182,7 +183,10 @@ export default function TemplateGamma({ profile }: Props) {
                 ]
                 return [{ v: `${uniqueCo}`, label: isIT ? 'aziende' : 'companies' }]
               })(),
-              { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'inizio carriera' : 'career start' },
+              ...(() => {
+                const startYear = earliestStartYear(experience)
+                return startYear !== null ? [{ v: `${startYear}`, label: isIT ? 'inizio carriera' : 'career start' }] : []
+              })(),
               { v: `${skills.hard.length + skills.tools.length}`, label: isIT ? 'skill tech' : 'tech skills' },
               { v: `${education.length}`, label: isIT ? 'titoli' : 'degrees' },
             ].slice(0, 4).map(({ v, label }) => (

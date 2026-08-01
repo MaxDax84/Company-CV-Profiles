@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Playfair_Display, Inter } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
+import { earliestStartYear } from '@/lib/experience-utils'
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700', '900'] })
 const inter    = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
@@ -176,7 +177,10 @@ export default function TemplateDelta({ profile }: Props) {
           {/* Stats */}
           <div className="dl-stats-grid">
             {[
-              { v: `${experience.reduce((y, e) => { const s = parseInt(e.start_date); return s < y ? s : y }, 9999)}`, label: isIT ? 'inizio carriera' : 'career start' },
+              ...(() => {
+                const startYear = earliestStartYear(experience)
+                return startYear !== null ? [{ v: `${startYear}`, label: isIT ? 'inizio carriera' : 'career start' }] : []
+              })(),
               ...(() => {
                 const uniqueCo = new Set(experience.map(e => e.company)).size
                 const roles = experience.length
