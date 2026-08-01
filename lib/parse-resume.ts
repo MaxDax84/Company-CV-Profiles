@@ -79,6 +79,39 @@ Schema:
   }
 }`;
 
+// Escapes raw control characters (newline, tab, carriage return) found inside
+// JSON string literals — Claude occasionally emits these unescaped, which
+// JSON.parse rejects even though the surrounding structure is otherwise valid.
+function escapeControlCharsInStrings(jsonStr: string): string {
+  let result = "";
+  let inString = false;
+  let escapedNext = false;
+
+  for (const ch of jsonStr) {
+    if (escapedNext) {
+      result += ch;
+      escapedNext = false;
+      continue;
+    }
+    if (ch === "\\") {
+      result += ch;
+      escapedNext = true;
+      continue;
+    }
+    if (ch === '"') {
+      inString = !inString;
+      result += ch;
+      continue;
+    }
+    if (inString && ch === "\n") result += "\\n";
+    else if (inString && ch === "\r") result += "\\r";
+    else if (inString && ch === "\t") result += "\\t";
+    else result += ch;
+  }
+
+  return result;
+}
+
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
   let binary = "";
@@ -159,7 +192,14 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
   try {
     profile = JSON.parse(jsonStr);
   } catch {
-    throw new Error(`stop_reason=${json.stop_reason} | output_length=${cleaned.length} | tail=${cleaned.slice(-200)}`);
+    // Claude sometimes emits literal control characters (e.g. newlines in a bio)
+    // inside JSON string values, which is invalid JSON — escape them and retry.
+    try {
+      profile = JSON.parse(escapeControlCharsInStrings(jsonStr));
+    } catch {
+      console.error(`[parse-resume] Unparseable JSON:\n${jsonStr}`);
+      throw new Error(`stop_reason=${json.stop_reason} | output_length=${cleaned.length} | tail=${cleaned.slice(-200)}`);
+    }
   }
 
   if (!profile.metadata?.generated_at) {
