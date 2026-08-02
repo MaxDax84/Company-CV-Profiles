@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
 import { parseResume } from "@/lib/parse-resume";
+import { TEMPLATE_COLORS, PROFILE_TTL_SECONDS, isTemplateStyle } from "@/lib/templates";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -51,15 +52,9 @@ export async function POST(req: NextRequest) {
     }
 
     // User's choice always wins over the AI suggestion
-    const TEMPLATE_COLORS: Record<string, string> = {
-      alpha: "#6366f1",
-      beta:  "#4f46e5",
-      gamma: "#10b981",
-      delta: "#c9a84c",
-    };
-    if (templateChoice && ["alpha", "beta", "gamma", "delta"].includes(templateChoice as string)) {
-      profile.metadata.template = templateChoice as import("@/lib/schema").TemplateStyle;
-      profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice as string];
+    if (isTemplateStyle(templateChoice)) {
+      profile.metadata.template = templateChoice;
+      profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
     }
 
     // Generate unique slug
@@ -72,10 +67,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Matches the "20 giorni poi eliminato" copy shown to the user on /generate.
-    const TWENTY_DAYS_SECONDS = 60 * 60 * 24 * 20;
-    await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: TWENTY_DAYS_SECONDS });
+    await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PROFILE_TTL_SECONDS });
 
-    return NextResponse.json({ slug, profile });
+    // Management token: lets the profile owner change template or delete the
+    // profile later without a full login system. Never embedded in the
+    // profile JSON itself (that object is sent to the client template
+    // components), so it can't leak through the public page.
+    const manageToken = crypto.randomUUID();
+    await kv.set(`manage:${manageToken}`, slug, { ex: PROFILE_TTL_SECONDS });
+
+    return NextResponse.json({ slug, profile, manageToken });
   } catch (err) {
     console.error("[parse-resume]", err);
     return NextResponse.json(

@@ -4,6 +4,7 @@ export interface PersonalInfo {
   full_name: string;
   title: string;               // es. "Senior Software Engineer"
   bio: string;                 // max ~200 caratteri
+  bio_original?: string;       // frase originale dal CV, prima della riscrittura AI
   email_obfuscated: string;    // es. "m***@gmail.com"
   phone_obfuscated?: string;   // es. "+39 3** *** 1234"
   location?: string;           // es. "Milano, IT"

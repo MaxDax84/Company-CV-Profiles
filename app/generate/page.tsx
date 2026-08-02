@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Sparkles } from "lucide-react";
-import type { TemplateStyle } from "@/lib/schema";
+import type { TemplateStyle, ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import Navigation from "@/components/navigation";
@@ -20,9 +20,13 @@ export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
   const [linkedin, setLinkedin] = useState("");
+  const [email, setEmail] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
+  const [profile, setProfile] = useState<ProfileSchema | null>(null);
+  const [manageToken, setManageToken] = useState<string | null>(null);
+  const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +45,23 @@ export default function GeneratePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
       setSlug(data.slug);
+      setProfile(data.profile);
+      setManageToken(data.manageToken ?? null);
       setState("done");
+
+      if (email.trim() && data.manageToken) {
+        setEmailStatus("sending");
+        try {
+          const emailRes = await fetch("/api/send-manage-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email.trim(), token: data.manageToken }),
+          });
+          setEmailStatus(emailRes.ok ? "sent" : "error");
+        } catch {
+          setEmailStatus("error");
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
       setState("error");
@@ -62,8 +82,12 @@ export default function GeneratePage() {
   function handleReset() {
     setState("idle");
     setSlug(null);
+    setProfile(null);
+    setManageToken(null);
+    setEmailStatus("idle");
     setFile(null);
     setLinkedin("");
+    setEmail("");
     setError(null);
     setPrivacy(false);
     if (inputRef.current) inputRef.current.value = "";
@@ -114,6 +138,25 @@ export default function GeneratePage() {
               <p className="text-sm text-muted-foreground mt-1">{t.doneNote}</p>
             </div>
             <p className="text-xs text-muted-foreground/50">{t.doneExpiry}</p>
+
+            {profile?.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
+              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                  {t.beforeAfterTitle}
+                </p>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground/40 mb-1">{t.beforeLabel}</p>
+                  <p className="text-sm text-muted-foreground/70 line-through decoration-muted-foreground/30">
+                    {profile.personal_info.bio_original}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: selected.accent }}>{t.afterLabel}</p>
+                  <p className="text-sm text-foreground/90 font-medium">{profile.personal_info.bio}</p>
+                </div>
+              </div>
+            )}
+
             <a
               href={`/profile/${slug}`}
               target="_blank"
@@ -123,6 +166,29 @@ export default function GeneratePage() {
             >
               {t.openProfile}
             </a>
+
+            {manageToken && (
+              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                  {t.manageLinkTitle}
+                </p>
+                <p className="text-xs text-muted-foreground/60">{t.manageLinkNote}</p>
+                <a
+                  href={`/manage/${manageToken}`}
+                  className="block text-xs break-all hover:underline"
+                  style={{ color: selected.accent }}
+                >
+                  {typeof window !== "undefined" ? window.location.origin : ""}/manage/{manageToken}
+                </a>
+                {emailStatus === "sent" && (
+                  <p className="text-[11px] text-muted-foreground/50">{t.emailSentNote}</p>
+                )}
+                {emailStatus === "error" && (
+                  <p className="text-[11px] text-red-400/70">{t.emailErrorNote}</p>
+                )}
+              </div>
+            )}
+
             <button
               onClick={handleReset}
               className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
@@ -221,6 +287,38 @@ export default function GeneratePage() {
                   </button>
                 )}
               </div>
+            </div>
+
+            {/* Email input (optional — used only to send the management link) */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                {t.stepEmail}
+              </p>
+              <div
+                className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
+                style={{ borderColor: email ? `${selected.accent}60` : "rgba(255,255,255,0.08)" }}
+              >
+                <svg className="w-4 h-4 shrink-0 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16v16H4z" strokeLinejoin="round" />
+                  <path d="M4 6l8 7 8-7" strokeLinejoin="round" />
+                </svg>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder={t.emailPlaceholder}
+                  className="flex-1 bg-transparent text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none"
+                />
+                {email && (
+                  <button
+                    onClick={() => setEmail("")}
+                    className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <p className="text-[11px] text-muted-foreground/40">{t.emailHint}</p>
             </div>
 
             {/* Upload area */}

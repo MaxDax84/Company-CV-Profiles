@@ -12,6 +12,7 @@ Rules:
 - Obfuscate phone: keep country code and last 4 digits, replace rest with *. Example: "+39 333 1234567" → "+39 3** *** 4567".
 - For description bullet points: EXACTLY 1 item, max 12 words, start with action verb.
 - For bio: max 90 characters, professional tone, third person.
+- For bio_original: a short, literal, unpolished restatement of how the CV itself describes the person's role (e.g. lifted near-verbatim from the CV's own summary or job title line) — this shows the "before" state, so do NOT apply any of the improvements you apply to "bio". Same language as the CV. If the CV has no self-description to draw from, omit this field.
 - For experience: include at most 5 most recent entries.
 - For technologies per experience: max 3 items.
 - For skills (hard/soft/tools): max 6 items each.
@@ -28,6 +29,7 @@ Schema:
     "full_name": string,
     "title": string,
     "bio": string,
+    "bio_original": string | undefined,
     "email_obfuscated": string,
     "phone_obfuscated": string | undefined,
     "location": string | undefined,
