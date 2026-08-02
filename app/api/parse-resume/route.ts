@@ -71,7 +71,9 @@ export async function POST(req: NextRequest) {
       slug = `${baseSlug}-${attempt}`;
     }
 
-    await kv.set(`profile:${slug}`, JSON.stringify(profile));
+    // Matches the "20 giorni poi eliminato" copy shown to the user on /generate.
+    const TWENTY_DAYS_SECONDS = 60 * 60 * 24 * 20;
+    await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: TWENTY_DAYS_SECONDS });
 
     return NextResponse.json({ slug, profile });
   } catch (err) {
