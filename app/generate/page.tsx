@@ -137,7 +137,6 @@ export default function GeneratePage() {
               <p className="font-semibold text-foreground">{t.done}</p>
               <p className="text-sm text-muted-foreground mt-1">{t.doneNote}</p>
             </div>
-            <p className="text-xs text-muted-foreground/50">{t.doneExpiry}</p>
 
             {profile?.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
               <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-3">

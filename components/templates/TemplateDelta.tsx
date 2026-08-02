@@ -330,24 +330,34 @@ export default function TemplateDelta({ profile }: Props) {
           ))}
 
           {education.length > 0 && (
-            <div className="dl-edu-grid">
-              {education.map((ed, i) => (
-                <div key={i} style={{ background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 10, padding: '20px 24px' }}>
-                  <p className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
-                  <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
-                  <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
-                </div>
-              ))}
+            <div style={{ marginTop: 56, paddingTop: 40, borderTop: `1px solid ${accent}20` }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: inkMid, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
+                {isIT ? 'Formazione' : 'Education'}
+              </p>
+              <div className="dl-edu-grid">
+                {education.map((ed, i) => (
+                  <div key={i} style={{ background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 10, padding: '20px 24px' }}>
+                    <p className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
+                    <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
+                    <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {certifications.length > 0 && (
-            <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {certifications.map((cert, i) => (
-                <span key={i} style={{ fontSize: 12, color: inkMid, background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 6, padding: '6px 12px' }}>
-                  {cert.name} · {cert.issuer} · {cert.year}
-                </span>
-              ))}
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: inkMid, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+                {isIT ? 'Certificazioni' : 'Certifications'}
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {certifications.map((cert, i) => (
+                  <span key={i} style={{ fontSize: 12, color: inkMid, background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 6, padding: '6px 12px' }}>
+                    {cert.name} · {cert.issuer} · {cert.year}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>

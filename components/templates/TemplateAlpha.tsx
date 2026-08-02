@@ -364,7 +364,10 @@ export default function TemplateAlpha({ profile }: Props) {
 
           {/* Education */}
           {education.length > 0 && (
-            <div style={{ marginTop: 40 }}>
+            <div style={{ marginTop: 56, paddingTop: 40, borderTop: `1px solid ${bdr}` }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: v, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
+                {isIT ? 'Formazione' : 'Education'}
+              </p>
               <div className="edu-grid">
                 {education.map((ed, i) => (
                   <div key={i} style={{ background: card, border: `1px solid ${bdr}`, borderRadius: 10, padding: '20px 24px' }}>
@@ -379,13 +382,18 @@ export default function TemplateAlpha({ profile }: Props) {
 
           {/* Certifications */}
           {certifications.length > 0 && (
-            <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {certifications.map((cert, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: card, border: `1px solid ${bdr}`, borderRadius: 6 }}>
-                  <span style={{ fontSize: 10, color: v }}>●</span>
-                  <span style={{ fontSize: 12, color: mut }}>{cert.name} · {cert.issuer} · {cert.year}</span>
-                </div>
-              ))}
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: v, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+                {isIT ? 'Certificazioni' : 'Certifications'}
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {certifications.map((cert, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: card, border: `1px solid ${bdr}`, borderRadius: 6 }}>
+                    <span style={{ fontSize: 10, color: v }}>●</span>
+                    <span style={{ fontSize: 12, color: mut }}>{cert.name} · {cert.issuer} · {cert.year}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

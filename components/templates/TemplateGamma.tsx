@@ -317,24 +317,34 @@ export default function TemplateGamma({ profile }: Props) {
           </div>
 
           {education.length > 0 && (
-            <div className="gm-edu-grid">
-              {education.map((ed, i) => (
-                <div key={i} style={{ background: '#ffffff', border: `1px solid ${border}`, borderRadius: 10, padding: '20px 24px' }}>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
-                  <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
-                  <p style={{ fontSize: 12, color: muted, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
-                </div>
-              ))}
+            <div style={{ marginTop: 56, paddingTop: 40, borderTop: `1px solid ${border}` }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
+                {isIT ? 'Formazione' : 'Education'}
+              </p>
+              <div className="gm-edu-grid">
+                {education.map((ed, i) => (
+                  <div key={i} style={{ background: '#ffffff', border: `1px solid ${border}`, borderRadius: 10, padding: '20px 24px' }}>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
+                    <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
+                    <p style={{ fontSize: 12, color: muted, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {certifications.length > 0 && (
-            <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {certifications.map((cert, i) => (
-                <span key={i} style={{ fontSize: 12, color: sub, background: '#ffffff', border: `1px solid ${border}`, borderRadius: 6, padding: '6px 12px' }}>
-                  {cert.name} · {cert.issuer} · {cert.year}
-                </span>
-              ))}
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+                {isIT ? 'Certificazioni' : 'Certifications'}
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {certifications.map((cert, i) => (
+                  <span key={i} style={{ fontSize: 12, color: sub, background: '#ffffff', border: `1px solid ${border}`, borderRadius: 6, padding: '6px 12px' }}>
+                    {cert.name} · {cert.issuer} · {cert.year}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
