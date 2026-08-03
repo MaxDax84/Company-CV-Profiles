@@ -235,7 +235,6 @@ export default function GeneratePage() {
                           border: "none",
                           transform: "scale(0.21667)",
                           transformOrigin: "top left",
-                          pointerEvents: "none",
                         }}
                       />
                     </div>
@@ -460,7 +459,15 @@ export default function GeneratePage() {
                       boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
-                    <div className="relative h-28 overflow-hidden" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
+                    <div
+                      className="relative h-28 overflow-hidden"
+                      style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
+                      onWheel={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.currentTarget.querySelector("iframe")?.contentWindow?.scrollBy(0, e.deltaY);
+                      }}
+                    >
                       <iframe
                         src={`/profile/${tpl.demoSlug}`}
                         title={tpl.name}
