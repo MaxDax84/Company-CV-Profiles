@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Sparkles } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Sparkles, Copy, Check, Share2 } from "lucide-react";
 import type { TemplateStyle, ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
@@ -30,7 +30,18 @@ export default function GeneratePage() {
   const [manageToken, setManageToken] = useState<string | null>(null);
   const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (state !== "uploading") {
+      setStepIndex(0);
+      return;
+    }
+    const id = setInterval(() => setStepIndex(i => i + 1), 3000);
+    return () => clearInterval(id);
+  }, [state]);
 
   async function handleGenerate() {
     if (!file) return;
@@ -100,7 +111,31 @@ export default function GeneratePage() {
     setEmail("");
     setError(null);
     setPrivacy(false);
+    setCopied(false);
     if (inputRef.current) inputRef.current.value = "";
+  }
+
+  function profileUrl() {
+    return typeof window !== "undefined" ? `${window.location.origin}/profile/${slug}` : "";
+  }
+
+  async function handleCopyLink() {
+    await navigator.clipboard.writeText(profileUrl());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleShare() {
+    const url = profileUrl();
+    if (navigator.share) {
+      try {
+        await navigator.share({ url, title: profile?.personal_info.full_name });
+      } catch {
+        // user cancelled the share sheet — nothing to do
+      }
+    } else {
+      await handleCopyLink();
+    }
   }
 
   const { lang } = useLanguage();
@@ -224,6 +259,23 @@ export default function GeneratePage() {
               {t.openProfile}
             </a>
 
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+              >
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? t.copyLinkDone : t.copyLink}
+              </button>
+              <button
+                onClick={handleShare}
+                className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                {t.share}
+              </button>
+            </div>
+
             {manageToken && (
               <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
@@ -255,10 +307,35 @@ export default function GeneratePage() {
           </div>
         ) : state === "uploading" ? (
           /* ── Uploading state ── */
-          <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 text-center space-y-4" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.08)" }}>
+          <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.08)" }}>
             <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
-            <p className="text-foreground/60">{t.generating}</p>
-            <p className="text-xs text-muted-foreground/50">{t.generatingNote}</p>
+            <div className="space-y-2 max-w-xs mx-auto">
+              {t.generatingSteps.map((step, i) => {
+                const done = i < stepIndex;
+                const active = i === Math.min(stepIndex, t.generatingSteps.length - 1);
+                return (
+                  <div key={step} className="flex items-center gap-2.5 text-sm">
+                    <span
+                      className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[10px] border transition-colors duration-300"
+                      style={{
+                        borderColor: done || active ? "var(--primary)" : "rgba(255,255,255,0.15)",
+                        background: done ? "var(--primary)" : "transparent",
+                        color: done ? "#000" : "transparent",
+                      }}
+                    >
+                      ✓
+                    </span>
+                    <span
+                      className="transition-colors duration-300"
+                      style={{ color: done ? "var(--primary)" : active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)" }}
+                    >
+                      {step}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground/50 text-center">{t.generatingNote}</p>
           </div>
         ) : (
           /* ── Idle / error state ── */
