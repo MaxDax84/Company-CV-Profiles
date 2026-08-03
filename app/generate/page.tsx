@@ -263,55 +263,43 @@ export default function GeneratePage() {
         ) : (
           /* ── Idle / error state ── */
           <>
-            {/* Template selector */}
+            {/* Upload area */}
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                {t.stepTemplate}
+                {t.stepUpload}
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {TEMPLATES.map(tpl => (
-                  <button
-                    key={tpl.id}
-                    onClick={() => setTemplate(tpl.id)}
-                    className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
-                    style={{
-                      borderColor: template === tpl.id ? tpl.accent : "rgba(255,255,255,0.08)",
-                      boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
-                    }}
-                  >
-                    <div className="h-14" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
-                      <div className="h-full flex items-center justify-center">
-                        <span className="text-xs font-bold tracking-widest" style={{ color: tpl.accent }}>
-                          {tpl.name.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-3 bg-white/[0.03] space-y-1.5">
-                      <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
-                      <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
-                      <a
-                        href={`/profile/${tpl.demoSlug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
-                        style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
-                      >
-                        Preview ↗
-                      </a>
-                    </div>
-                    {template === tpl.id && (
-                      <div
-                        className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
-                        style={{ background: tpl.accent, boxShadow: `0 0 8px ${tpl.accent}80` }}
-                      >
-                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                          <path d="M1.5 4L3.5 6L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
-                ))}
+              <div
+                onClick={() => inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={e => e.preventDefault()}
+                className="border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300"
+                style={{ borderColor: file ? `${selected.accent}70` : `${selected.accent}35`, boxShadow: file ? `0 0 24px ${selected.accent}18` : "none" }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.borderColor = `${selected.accent}70`;
+                  el.style.boxShadow = `0 0 32px ${selected.accent}18`;
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.borderColor = file ? `${selected.accent}70` : `${selected.accent}35`;
+                  el.style.boxShadow = file ? `0 0 24px ${selected.accent}18` : "none";
+                }}
+              >
+                {file ? (
+                  <>
+                    <p className="text-3xl mb-3">✅</p>
+                    <p className="font-medium text-foreground/80">{file.name}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-4xl mb-4">📄</p>
+                    <p className="font-medium text-foreground/80">{t.dragHere}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{t.dragOr}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-3">{t.dragLimit}</p>
+                  </>
+                )}
+                <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
               </div>
             </div>
 
@@ -378,43 +366,55 @@ export default function GeneratePage() {
               <p className="text-[11px] text-muted-foreground/40">{t.emailHint}</p>
             </div>
 
-            {/* Upload area */}
+            {/* Template selector */}
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                {t.stepUpload}
+                {t.stepTemplate}
               </p>
-              <div
-                onClick={() => inputRef.current?.click()}
-                onDrop={handleDrop}
-                onDragOver={e => e.preventDefault()}
-                className="border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300"
-                style={{ borderColor: file ? `${selected.accent}70` : `${selected.accent}35`, boxShadow: file ? `0 0 24px ${selected.accent}18` : "none" }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLDivElement;
-                  el.style.borderColor = `${selected.accent}70`;
-                  el.style.boxShadow = `0 0 32px ${selected.accent}18`;
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLDivElement;
-                  el.style.borderColor = file ? `${selected.accent}70` : `${selected.accent}35`;
-                  el.style.boxShadow = file ? `0 0 24px ${selected.accent}18` : "none";
-                }}
-              >
-                {file ? (
-                  <>
-                    <p className="text-3xl mb-3">✅</p>
-                    <p className="font-medium text-foreground/80">{file.name}</p>
-                    <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-4xl mb-4">📄</p>
-                    <p className="font-medium text-foreground/80">{t.dragHere}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{t.dragOr}</p>
-                    <p className="text-xs text-muted-foreground/50 mt-3">{t.dragLimit}</p>
-                  </>
-                )}
-                <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {TEMPLATES.map(tpl => (
+                  <button
+                    key={tpl.id}
+                    onClick={() => setTemplate(tpl.id)}
+                    className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
+                    style={{
+                      borderColor: template === tpl.id ? tpl.accent : "rgba(255,255,255,0.08)",
+                      boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
+                    }}
+                  >
+                    <div className="h-14" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
+                      <div className="h-full flex items-center justify-center">
+                        <span className="text-xs font-bold tracking-widest" style={{ color: tpl.accent }}>
+                          {tpl.name.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-white/[0.03] space-y-1.5">
+                      <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
+                      <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
+                      <a
+                        href={`/profile/${tpl.demoSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
+                        style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
+                      >
+                        Preview ↗
+                      </a>
+                    </div>
+                    {template === tpl.id && (
+                      <div
+                        className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
+                        style={{ background: tpl.accent, boxShadow: `0 0 8px ${tpl.accent}80` }}
+                      >
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                          <path d="M1.5 4L3.5 6L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
 
