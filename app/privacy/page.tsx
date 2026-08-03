@@ -82,8 +82,10 @@ export default function PrivacyPage() {
                   su infrastruttura Vercel KV esclusivamente per rendere disponibile la pagina
                   profilo generata, per un periodo massimo di <strong className="text-foreground">20 giorni</strong> dalla
                   generazione, trascorsi i quali il profilo e i relativi dati vengono eliminati automaticamente.
-                  È possibile richiedere la cancellazione anticipata in qualsiasi momento scrivendo
-                  all&apos;indirizzo indicato nella sezione 7.
+                  È possibile eliminare il profilo autonomamente in qualsiasi momento tramite il
+                  link di gestione personale fornito al momento della generazione (e inviato via
+                  email se è stato indicato un indirizzo), oppure richiederne la cancellazione
+                  anticipata scrivendo all&apos;indirizzo indicato nella sezione 7.
                 </p>
               </div>
 
@@ -205,8 +207,10 @@ export default function PrivacyPage() {
                   uploaded via the generator is stored on Vercel KV infrastructure solely to make
                   the generated profile page available, for a maximum period of{' '}
                   <strong className="text-foreground">20 days</strong> from generation, after which
-                  the profile and associated data are deleted automatically. You may request early
-                  deletion at any time by writing to the address in section 7.
+                  the profile and associated data are deleted automatically. You may delete your
+                  profile yourself at any time via the personal management link provided at
+                  generation time (and emailed to you if an address was given), or request early
+                  deletion by writing to the address in section 7.
                 </p>
               </div>
 
