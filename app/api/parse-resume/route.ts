@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       slug = `${baseSlug}-${attempt}`;
     }
 
-    // Matches the "20 giorni poi eliminato" copy shown to the user on /generate.
+    // Matches the "48 ore poi eliminato" copy shown to the user on /generate.
     await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PROFILE_TTL_SECONDS });
 
     // Management token: lets the profile owner change template or delete the

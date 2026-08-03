@@ -80,7 +80,7 @@ export default function PrivacyPage() {
                   I dati del modulo di contatto vengono ricevuti via email e non sono archiviati
                   in alcun database. I dati del CV caricati tramite il generatore vengono conservati
                   su infrastruttura Vercel KV esclusivamente per rendere disponibile la pagina
-                  profilo generata, per un periodo massimo di <strong className="text-foreground">20 giorni</strong> dalla
+                  profilo generata, per un periodo massimo di <strong className="text-foreground">48 ore</strong> dalla
                   generazione, trascorsi i quali il profilo e i relativi dati vengono eliminati automaticamente.
                   È possibile eliminare il profilo autonomamente in qualsiasi momento tramite il
                   link di gestione personale fornito al momento della generazione (e inviato via
@@ -206,7 +206,7 @@ export default function PrivacyPage() {
                   Contact form data is received by email and is not stored in any database. CV data
                   uploaded via the generator is stored on Vercel KV infrastructure solely to make
                   the generated profile page available, for a maximum period of{' '}
-                  <strong className="text-foreground">20 days</strong> from generation, after which
+                  <strong className="text-foreground">48 hours</strong> from generation, after which
                   the profile and associated data are deleted automatically. You may delete your
                   profile yourself at any time via the personal management link provided at
                   generation time (and emailed to you if an address was given), or request early
