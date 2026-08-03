@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { kv } from "@/lib/kv";
+import { sendEmailRatelimit, getClientIp } from "@/lib/rate-limit";
 
 // Nodemailer needs Node APIs, so this runs on the default Node runtime —
 // deliberately kept separate from the edge-runtime parse-resume route.
@@ -16,6 +17,14 @@ function escapeHtml(text: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const { success, reset } = await sendEmailRatelimit.limit(getClientIp(req));
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a bit." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
+      );
+    }
+
     const { email, token } = await req.json();
 
     if (!email || typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

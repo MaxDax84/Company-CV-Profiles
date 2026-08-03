@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
 import { parseResume } from "@/lib/parse-resume";
 import { TEMPLATE_COLORS, PROFILE_TTL_SECONDS, isTemplateStyle } from "@/lib/templates";
+import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -19,6 +20,14 @@ function toSlug(fullName: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const { success, reset } = await parseResumeRatelimit.limit(getClientIp(req));
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a bit." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
+      );
+    }
+
     const formData = await req.formData();
     const file = formData.get("pdf");
 
