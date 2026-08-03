@@ -50,7 +50,7 @@ function yearsOfExp(experience: ProfileSchema['experience']): string {
 interface Props { profile: ProfileSchema }
 
 export default function TemplateAlpha({ profile }: Props) {
-  const { personal_info: p, experience, education, skills, projects, certifications, metadata } = profile
+  const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
 
   // ── Design tokens (same structure as delta, accent from metadata) ─────
   const accent = metadata.primary_color  // hex, e.g. "#6366f1"
@@ -391,6 +391,23 @@ export default function TemplateAlpha({ profile }: Props) {
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: card, border: `1px solid ${bdr}`, borderRadius: 6 }}>
                     <span style={{ fontSize: 10, color: v }}>●</span>
                     <span style={{ fontSize: 12, color: mut }}>{cert.name} · {cert.issuer} · {cert.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Other */}
+          {other && other.length > 0 && (
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: v, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+                {isIT ? 'Altro' : 'Other'}
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {other.map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: card, border: `1px solid ${bdr}`, borderRadius: 6 }}>
+                    <span style={{ fontSize: 10, color: v }}>●</span>
+                    <span style={{ fontSize: 12, color: mut }}>{item}</span>
                   </div>
                 ))}
               </div>

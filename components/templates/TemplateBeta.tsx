@@ -33,7 +33,7 @@ function useInView() {
 interface Props { profile: ProfileSchema }
 
 export default function TemplateBeta({ profile }: Props) {
-  const { personal_info: p, experience, education, skills, projects, certifications, metadata } = profile
+  const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
 
   const accent      = metadata.primary_color
   const white       = '#ffffff'
@@ -355,6 +355,21 @@ export default function TemplateBeta({ profile }: Props) {
                 {certifications.map((cert, i) => (
                   <span key={i} style={{ fontSize: 12, color: muted, background: lightBg, border: `1px solid ${border}`, borderRadius: 6, padding: '6px 12px' }}>
                     {cert.name} · {cert.issuer} · {cert.year}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {other && other.length > 0 && (
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+                {isIT ? 'Altro' : 'Other'}
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {other.map((item, i) => (
+                  <span key={i} style={{ fontSize: 12, color: muted, background: lightBg, border: `1px solid ${border}`, borderRadius: 6, padding: '6px 12px' }}>
+                    {item}
                   </span>
                 ))}
               </div>

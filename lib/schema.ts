@@ -76,5 +76,6 @@ export interface ProfileSchema {
   certifications: Certification[];
   skills: Skills;
   projects: Project[];
+  other?: string[];            // hobby, sport, volontariato, collaborazioni non professionali — tutto ciò che non rientra nelle sezioni sopra
   metadata: Metadata;
 }

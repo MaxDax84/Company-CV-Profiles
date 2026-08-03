@@ -21,6 +21,7 @@ Rules:
 - For primary_color: suggest a hex color that matches the person's industry (e.g. #6366f1 for tech, #0ea5e9 for finance, #10b981 for healthcare).
 - For template: choose "alpha" for creative/design roles, "beta" for tech/engineering, "gamma" for business/finance, "delta" for any other.
 - For image_placeholder: assign "gradient-1" through "gradient-8" to each project sequentially.
+- For other: catch-all for anything relevant that doesn't fit the sections above — hobbies, sports, volunteering, non-professional collaborations, extra languages, interests. Max 8 short items (a few words each), same language as the CV. Omit the field entirely if there's nothing like this in the CV — do not invent generic filler.
 - Detect language from the CV content and set metadata.language to "it" or "en".
 
 Schema:
@@ -75,6 +76,7 @@ Schema:
     "url": string | undefined,
     "image_placeholder": string
   }],
+  "other": string[] | undefined,
   "metadata": {
     "primary_color": string,
     "template": "alpha" | "beta" | "gamma" | "delta",
