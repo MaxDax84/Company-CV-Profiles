@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react";
 import type { TemplateStyle, ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
+import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
 import Navigation from "@/components/navigation";
 
 type State = "idle" | "uploading" | "done" | "error";
@@ -19,6 +20,7 @@ const TEMPLATES: { id: TemplateStyle; name: string; accent: string; bg: string; 
 export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
+  const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
   const [linkedin, setLinkedin] = useState("");
   const [email, setEmail] = useState("");
   const [privacy, setPrivacy] = useState(false);
@@ -68,15 +70,22 @@ export default function GeneratePage() {
     }
   }
 
+  function loadFile(f: File) {
+    setFile(f);
+    setPdfThumbnail(null);
+    // Best-effort — the upload flow doesn't depend on this succeeding.
+    renderPdfThumbnail(f).then(setPdfThumbnail).catch(() => {});
+  }
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
-    if (f) setFile(f);
+    if (f) loadFile(f);
   }
 
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     const f = e.dataTransfer.files?.[0];
-    if (f?.type === "application/pdf") setFile(f);
+    if (f?.type === "application/pdf") loadFile(f);
   }
 
   function handleReset() {
@@ -86,6 +95,7 @@ export default function GeneratePage() {
     setManageToken(null);
     setEmailStatus("idle");
     setFile(null);
+    setPdfThumbnail(null);
     setLinkedin("");
     setEmail("");
     setError(null);
@@ -113,7 +123,7 @@ export default function GeneratePage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.10_0.012_255)_100%)] pointer-events-none" />
 
       <div className="flex items-center justify-center px-6 py-24">
-      <div className="relative z-10 w-full max-w-2xl space-y-10">
+      <div className={`relative z-10 w-full space-y-10 transition-[max-width] duration-300 ${state === "done" ? "max-w-3xl" : "max-w-2xl"}`}>
 
         {/* Header */}
         <div className="text-center space-y-4">
@@ -140,19 +150,66 @@ export default function GeneratePage() {
             <p className="text-xs text-muted-foreground/50">{t.doneExpiry}</p>
 
             {profile?.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
-              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-5">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
                   {t.beforeAfterTitle}
                 </p>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground/40 mb-1">{t.beforeLabel}</p>
-                  <p className="text-sm text-muted-foreground/70 line-through decoration-muted-foreground/30">
-                    {profile.personal_info.bio_original}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: selected.accent }}>{t.afterLabel}</p>
-                  <p className="text-sm text-foreground/90 font-medium">{profile.personal_info.bio}</p>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {/* PRIMA — the raw PDF, rendered client-side, never uploaded anywhere for this */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
+                      {t.beforeLabel}
+                    </p>
+                    <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-white/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
+                      {pdfThumbnail ? (
+                        <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
+                      ) : (
+                        <div className="aspect-[210/297] flex items-center justify-center bg-white/5 text-muted-foreground/30 text-xs">PDF</div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-1 text-center">
+                      {profile.personal_info.bio_original}
+                    </p>
+                  </div>
+
+                  {/* DOPO — the real generated page, scaled down in a live iframe (always in sync with the actual template) */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-center" style={{ color: selected.accent }}>
+                      {t.afterLabel}
+                    </p>
+                    <div
+                      className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden relative"
+                      style={{ height: 368, border: `2px solid ${selected.accent}`, boxShadow: `0 0 24px ${selected.accent}35`, background: selected.bg }}
+                    >
+                      <div className="absolute top-0 left-0 right-0 h-6 flex items-center gap-1.5 px-2.5 z-10" style={{ background: "rgba(0,0,0,0.35)" }}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
+                      </div>
+                      <iframe
+                        src={`/profile/${slug}`}
+                        title={t.afterLabel}
+                        tabIndex={-1}
+                        style={{
+                          position: "absolute",
+                          top: 24,
+                          left: 0,
+                          width: 1200,
+                          height: 1697,
+                          border: "none",
+                          transform: "scale(0.21667)",
+                          transformOrigin: "top left",
+                          pointerEvents: "none",
+                        }}
+                      />
+                    </div>
+                    <p
+                      className="text-xs font-semibold px-3 py-2 rounded-lg text-center"
+                      style={{ color: selected.accent, background: `${selected.accent}15`, borderLeft: `2px solid ${selected.accent}` }}
+                    >
+                      {profile.personal_info.bio}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
