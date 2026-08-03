@@ -450,9 +450,8 @@ export default function GeneratePage() {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {TEMPLATES.map(tpl => (
-                  <button
+                  <div
                     key={tpl.id}
-                    onClick={() => setTemplate(tpl.id)}
                     className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
                     style={{
                       borderColor: template === tpl.id ? tpl.accent : "rgba(255,255,255,0.08)",
@@ -462,11 +461,6 @@ export default function GeneratePage() {
                     <div
                       className="relative h-28 overflow-hidden"
                       style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
-                      onWheel={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.currentTarget.querySelector("iframe")?.contentWindow?.scrollBy(0, e.deltaY);
-                      }}
                     >
                       <iframe
                         src={`/profile/${tpl.demoSlug}`}
@@ -481,17 +475,19 @@ export default function GeneratePage() {
                           border: "none",
                           transform: "scale(0.16)",
                           transformOrigin: "top left",
-                          pointerEvents: "none",
                         }}
                       />
                       <span
-                        className="absolute bottom-1.5 left-1.5 text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded"
+                        className="absolute bottom-1.5 left-1.5 text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded pointer-events-none"
                         style={{ background: "rgba(0,0,0,0.55)", color: tpl.accent }}
                       >
                         {tpl.name.toUpperCase()}
                       </span>
                     </div>
-                    <div className="p-3 bg-white/[0.03] space-y-1.5">
+                    <button
+                      onClick={() => setTemplate(tpl.id)}
+                      className="w-full p-3 bg-white/[0.03] space-y-1.5 text-left cursor-pointer hover:bg-white/[0.06] transition-colors"
+                    >
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
                       <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
                       <a
@@ -504,7 +500,7 @@ export default function GeneratePage() {
                       >
                         Preview ↗
                       </a>
-                    </div>
+                    </button>
                     {template === tpl.id && (
                       <div
                         className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
@@ -515,7 +511,7 @@ export default function GeneratePage() {
                         </svg>
                       </div>
                     )}
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
