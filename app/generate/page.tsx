@@ -460,7 +460,7 @@ export default function GeneratePage() {
                       boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
-                    <div className="relative h-24 overflow-hidden" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
+                    <div className="relative h-28 overflow-hidden" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
                       <iframe
                         src={`/profile/${tpl.demoSlug}`}
                         title={tpl.name}
@@ -472,7 +472,7 @@ export default function GeneratePage() {
                           width: 1200,
                           height: 1697,
                           border: "none",
-                          transform: "scale(0.1333)",
+                          transform: "scale(0.16)",
                           transformOrigin: "top left",
                           pointerEvents: "none",
                         }}
