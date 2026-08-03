@@ -125,7 +125,7 @@ export const translations = {
     },
     generate: {
       badge: 'Profile Generator',
-      title: 'Your CV already tells your story. We turn it into a website.',
+      title: 'Your CV already tells your story.\nWe turn it into a website.',
       subtitle: 'No forms, no copy-paste.\nOur AI reads your CV and builds a professional profile ready to share.',
       stepUpload: '1 · Upload your CV',
       stepLinkedin: '2 · Your LinkedIn (optional)',
@@ -381,7 +381,7 @@ export const translations = {
     },
     generate: {
       badge: 'Generatore di profili',
-      title: 'Il tuo CV racconta già la tua storia. Ne facciamo un sito.',
+      title: 'Il tuo CV racconta già la tua storia.\nNe facciamo un sito.',
       subtitle: 'Niente form, niente copia-incolla.\nLa nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
       stepUpload: '1 · Carica il tuo CV',
       stepLinkedin: '2 · Il tuo LinkedIn (opzionale)',

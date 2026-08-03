@@ -167,7 +167,7 @@ export default function GeneratePage() {
             <Sparkles className="w-3 h-3" />
             {t.badge}
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
             {t.title}
           </h1>
           <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
