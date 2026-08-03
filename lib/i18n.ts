@@ -126,7 +126,7 @@ export const translations = {
     generate: {
       badge: 'Profile Generator',
       title: 'Your CV already tells your story. We turn it into a website.',
-      subtitle: 'No forms, no copy-paste. Our AI reads your CV and builds a professional profile ready to share.',
+      subtitle: 'No forms, no copy-paste.\nOur AI reads your CV and builds a professional profile ready to share.',
       stepUpload: '1 · Upload your CV',
       stepLinkedin: '2 · Your LinkedIn (optional)',
       linkedinPlaceholder: 'linkedin.com/in/yourname',
@@ -167,6 +167,7 @@ export const translations = {
       privacyLabel: 'I have read and agree to the',
       privacyLink: 'Privacy Policy',
       privacyNote: 'Your CV data is processed solely to generate your profile page and is not shared with third parties.',
+      needPrivacyNote: 'Check the box above to agree to the Privacy Policy before continuing.',
       templates: {
         alpha: 'Dark · minimal · timeline',
         beta: 'Light · elegant · editorial',
@@ -381,7 +382,7 @@ export const translations = {
     generate: {
       badge: 'Generatore di profili',
       title: 'Il tuo CV racconta già la tua storia. Ne facciamo un sito.',
-      subtitle: 'Niente form, niente copia-incolla. La nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
+      subtitle: 'Niente form, niente copia-incolla.\nLa nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
       stepUpload: '1 · Carica il tuo CV',
       stepLinkedin: '2 · Il tuo LinkedIn (opzionale)',
       linkedinPlaceholder: 'linkedin.com/in/tuonome',
@@ -422,6 +423,7 @@ export const translations = {
       privacyLabel: 'Ho letto e accetto la',
       privacyLink: 'Privacy Policy',
       privacyNote: 'I dati del tuo CV vengono elaborati esclusivamente per generare la tua pagina profilo e non vengono condivisi con terze parti.',
+      needPrivacyNote: 'Spunta la casella qui sopra per accettare la Privacy Policy e continuare.',
       templates: {
         alpha: 'Dark · minimale · timeline',
         beta: 'Chiaro · elegante · editoriale',

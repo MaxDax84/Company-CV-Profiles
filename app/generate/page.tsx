@@ -142,6 +142,7 @@ export default function GeneratePage() {
   const t = translations[lang].generate;
   const selected = TEMPLATES.find(t => t.id === template)!;
   const canGenerate = !!file && privacy && state !== "uploading";
+  const needsPrivacy = !!file && !privacy;
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
@@ -169,7 +170,7 @@ export default function GeneratePage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
             {t.title}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
             {t.subtitle}
           </p>
         </div>
@@ -459,12 +460,29 @@ export default function GeneratePage() {
                       boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
-                    <div className="h-14" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
-                      <div className="h-full flex items-center justify-center">
-                        <span className="text-xs font-bold tracking-widest" style={{ color: tpl.accent }}>
-                          {tpl.name.toUpperCase()}
-                        </span>
-                      </div>
+                    <div className="relative h-24 overflow-hidden" style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}>
+                      <iframe
+                        src={`/profile/${tpl.demoSlug}`}
+                        title={tpl.name}
+                        tabIndex={-1}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: 1200,
+                          height: 1697,
+                          border: "none",
+                          transform: "scale(0.1333)",
+                          transformOrigin: "top left",
+                          pointerEvents: "none",
+                        }}
+                      />
+                      <span
+                        className="absolute bottom-1.5 left-1.5 text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded"
+                        style={{ background: "rgba(0,0,0,0.55)", color: tpl.accent }}
+                      >
+                        {tpl.name.toUpperCase()}
+                      </span>
                     </div>
                     <div className="p-3 bg-white/[0.03] space-y-1.5">
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
@@ -546,11 +564,15 @@ export default function GeneratePage() {
             <button
               onClick={handleGenerate}
               disabled={!canGenerate}
-              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
               style={canGenerate ? {
                 background: selected.accent,
                 color: "#000",
                 boxShadow: `0 4px 24px ${selected.accent}50`,
+              } : needsPrivacy ? {
+                background: "rgba(251,191,36,0.08)",
+                color: "rgba(251,191,36,0.9)",
+                border: "1px solid rgba(251,191,36,0.3)",
               } : {
                 background: "rgba(255,255,255,0.06)",
                 color: "rgba(255,255,255,0.3)",
@@ -558,6 +580,11 @@ export default function GeneratePage() {
             >
               {file ? t.ctaReady : t.ctaWaiting}
             </button>
+            {needsPrivacy && (
+              <p className="text-xs text-center -mt-3" style={{ color: "rgba(251,191,36,0.8)" }}>
+                {t.needPrivacyNote}
+              </p>
+            )}
           </>
         )}
 
