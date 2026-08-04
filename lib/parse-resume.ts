@@ -1,4 +1,5 @@
 import type { ProfileSchema } from "./schema";
+import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 
 const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extract information from a CV/resume PDF and return ONLY a valid JSON object matching the schema below.
 
@@ -25,98 +26,7 @@ Rules:
 - Detect language from the CV content and set metadata.language to "it" or "en".
 
 Schema:
-{
-  "personal_info": {
-    "full_name": string,
-    "title": string,
-    "bio": string,
-    "bio_original": string | undefined,
-    "email_obfuscated": string,
-    "phone_obfuscated": string | undefined,
-    "location": string | undefined,
-    "social_links": {
-      "linkedin": string | undefined,
-      "github": string | undefined,
-      "portfolio": string | undefined,
-      "twitter": string | undefined
-    }
-  },
-  "experience": [{
-    "company": string,
-    "role": string,
-    "start_date": string,
-    "end_date": string,
-    "description": string[],
-    "technologies": string[],
-    "location": string | undefined
-  }],
-  "education": [{
-    "institution": string,
-    "degree": string,
-    "field": string | undefined,
-    "start_year": number,
-    "end_year": number | "present",
-    "grade": string | undefined
-  }],
-  "certifications": [{
-    "name": string,
-    "issuer": string,
-    "year": number,
-    "url": string | undefined
-  }],
-  "skills": {
-    "hard": string[],
-    "soft": string[],
-    "tools": string[]
-  },
-  "projects": [{
-    "title": string,
-    "description": string,
-    "tags": string[],
-    "url": string | undefined,
-    "image_placeholder": string
-  }],
-  "other": string[] | undefined,
-  "metadata": {
-    "primary_color": string,
-    "template": "alpha" | "beta" | "gamma" | "delta",
-    "language": "it" | "en",
-    "generated_at": string
-  }
-}`;
-
-// Escapes raw control characters (newline, tab, carriage return) found inside
-// JSON string literals — Claude occasionally emits these unescaped, which
-// JSON.parse rejects even though the surrounding structure is otherwise valid.
-function escapeControlCharsInStrings(jsonStr: string): string {
-  let result = "";
-  let inString = false;
-  let escapedNext = false;
-
-  for (const ch of jsonStr) {
-    if (escapedNext) {
-      result += ch;
-      escapedNext = false;
-      continue;
-    }
-    if (ch === "\\") {
-      result += ch;
-      escapedNext = true;
-      continue;
-    }
-    if (ch === '"') {
-      inString = !inString;
-      result += ch;
-      continue;
-    }
-    if (inString && ch === "\n") result += "\\n";
-    else if (inString && ch === "\r") result += "\\r";
-    else if (inString && ch === "\t") result += "\\t";
-    else result += ch;
-  }
-
-  return result;
-}
+${PROFILE_JSON_SCHEMA_BLOCK}`;
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -174,45 +84,10 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
     content: { type: string; text: string }[];
   };
 
-  if (json.stop_reason === "max_tokens") {
-    throw new Error("CV too long to process. Please try with a shorter CV (max 2 pages recommended).");
-  }
-
-  const textBlock = json.content.find((b) => b.type === "text");
-  if (!textBlock) {
-    throw new Error("No text response from model");
-  }
-
-  const raw = textBlock.text.trim();
-  const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
-
-  // Extract the JSON object robustly — handles extra text before/after the braces
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  if (start === -1 || end === -1) {
-    throw new Error(`No JSON object found. stop_reason=${json.stop_reason} output=${cleaned.slice(0, 500)}`);
-  }
-  const jsonStr = cleaned.slice(start, end + 1);
-
-  let profile: ProfileSchema;
-  try {
-    profile = JSON.parse(jsonStr);
-  } catch {
-    // Claude sometimes emits literal control characters (e.g. newlines in a bio)
-    // inside JSON string values, or the bare word `undefined` for an optional
-    // field (copying the "string | undefined" schema notation) — neither is
-    // valid JSON. Repair both and retry before giving up.
-    const repaired = escapeControlCharsInStrings(jsonStr).replace(
-      /:(\s*)undefined(\s*[,}\]])/g,
-      ":$1null$2"
-    );
-    try {
-      profile = JSON.parse(repaired);
-    } catch {
-      console.error(`[parse-resume] Unparseable JSON:\n${jsonStr}`);
-      throw new Error(`stop_reason=${json.stop_reason} | output_length=${cleaned.length} | tail=${cleaned.slice(-200)}`);
-    }
-  }
+  const profile = extractProfileJson(
+    json,
+    "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
+  );
 
   if (!profile.metadata?.generated_at) {
     profile.metadata.generated_at = new Date().toISOString();
