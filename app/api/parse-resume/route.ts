@@ -7,6 +7,14 @@ import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 export const runtime = 'edge';
 export const maxDuration = 30;
 
+// Web Crypto (not Node's `crypto` module — this route runs on the edge)
+async function hashPdf(buffer: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", buffer);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 // Converts "Mario Rossi" → "mario-rossi", with collision suffix if needed
 function toSlug(fullName: string): string {
   return fullName
@@ -47,6 +55,31 @@ export async function POST(req: NextRequest) {
     const templateChoice = formData.get("template");
 
     const arrayBuffer = await file.arrayBuffer();
+
+    // Same PDF re-uploaded (accidental resubmit, or someone trying to run up
+    // the Claude bill by replaying the same file): reuse the existing profile
+    // instead of paying for a fresh extraction.
+    const pdfHash = await hashPdf(arrayBuffer);
+    const cachedSlug = await kv.get<string>(`pdf-hash:${pdfHash}`);
+    if (cachedSlug) {
+      const cachedRaw = await kv.get<string>(`profile:${cachedSlug}`);
+      if (cachedRaw) {
+        const cachedProfile = typeof cachedRaw === "string" ? JSON.parse(cachedRaw) : cachedRaw;
+
+        // Re-apply the template choice even on a cache hit — the extracted
+        // content is identical, but the user may have picked a different look.
+        if (isTemplateStyle(templateChoice) && templateChoice !== cachedProfile.metadata.template) {
+          cachedProfile.metadata.template = templateChoice;
+          cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
+          await kv.set(`profile:${cachedSlug}`, JSON.stringify(cachedProfile), { ex: PROFILE_TTL_SECONDS });
+        }
+
+        const manageToken = crypto.randomUUID();
+        await kv.set(`manage:${manageToken}`, cachedSlug, { ex: PROFILE_TTL_SECONDS });
+        return NextResponse.json({ slug: cachedSlug, profile: cachedProfile, manageToken });
+      }
+    }
+
     const profile = await parseResume(arrayBuffer);
 
     // Normalize apostrophes in name (e.g. D'Assano → Dassano)
@@ -77,6 +110,7 @@ export async function POST(req: NextRequest) {
 
     // Matches the "48 ore poi eliminato" copy shown to the user on /generate.
     await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PROFILE_TTL_SECONDS });
+    await kv.set(`pdf-hash:${pdfHash}`, slug, { ex: PROFILE_TTL_SECONDS });
 
     // Management token: lets the profile owner change template or delete the
     // profile later without a full login system. Never embedded in the
