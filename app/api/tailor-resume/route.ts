@@ -7,8 +7,10 @@ import { resolveProfileFromPdf, saveNewProfile, getProfileBySlug, extractSlugFro
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
 
-export const runtime = 'edge';
-export const maxDuration = 30;
+// Node runtime (not edge): this route makes two sequential Claude calls
+// (PDF extraction + tailoring), which can exceed the edge runtime's fixed
+// 25s execution ceiling — maxDuration only takes effect on Node functions.
+export const maxDuration = 60;
 
 const JOB_TEXT_MIN = 200;
 const JOB_TEXT_MAX = 20_000;
