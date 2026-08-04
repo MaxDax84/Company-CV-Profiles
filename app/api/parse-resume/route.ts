@@ -3,6 +3,7 @@ import { kv } from "@/lib/kv";
 import { parseResume } from "@/lib/parse-resume";
 import { TEMPLATE_COLORS, PROFILE_TTL_SECONDS, isTemplateStyle } from "@/lib/templates";
 import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -28,7 +29,8 @@ function toSlug(fullName: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { success, reset } = await parseResumeRatelimit.limit(getClientIp(req));
+    const clientIp = getClientIp(req);
+    const { success, reset } = await parseResumeRatelimit.limit(clientIp);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },
@@ -37,6 +39,16 @@ export async function POST(req: NextRequest) {
     }
 
     const formData = await req.formData();
+
+    const turnstileToken = formData.get("turnstileToken");
+    const captchaOk = await verifyTurnstile(
+      typeof turnstileToken === "string" ? turnstileToken : null,
+      clientIp
+    );
+    if (!captchaOk) {
+      return NextResponse.json({ error: "Captcha verification failed. Please try again." }, { status: 403 });
+    }
+
     const file = formData.get("pdf");
 
     if (!file || !(file instanceof Blob)) {

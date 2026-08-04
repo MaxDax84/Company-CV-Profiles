@@ -7,6 +7,7 @@ import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
 import Navigation from "@/components/navigation";
+import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 
 type State = "idle" | "uploading" | "done" | "error";
 
@@ -32,7 +33,9 @@ export default function GeneratePage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const turnstileRef = useRef<TurnstileHandle>(null);
 
   useEffect(() => {
     if (state !== "uploading") {
@@ -44,13 +47,14 @@ export default function GeneratePage() {
   }, [state]);
 
   async function handleGenerate() {
-    if (!file) return;
+    if (!file || !turnstileToken) return;
     setState("uploading");
     setError(null);
 
     const formData = new FormData();
     formData.append("pdf", file);
     formData.append("template", template);
+    formData.append("turnstileToken", turnstileToken);
     if (linkedin.trim()) formData.append("linkedin", linkedin.trim());
 
     try {
@@ -78,6 +82,10 @@ export default function GeneratePage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
       setState("error");
+    } finally {
+      // Turnstile tokens are single-use — always get a fresh one for the next attempt.
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     }
   }
 
@@ -141,7 +149,7 @@ export default function GeneratePage() {
   const { lang } = useLanguage();
   const t = translations[lang].generate;
   const selected = TEMPLATES.find(t => t.id === template)!;
-  const canGenerate = !!file && privacy && state !== "uploading";
+  const canGenerate = !!file && privacy && !!turnstileToken && state !== "uploading";
   const needsPrivacy = !!file && !privacy;
 
   return (
@@ -562,6 +570,17 @@ export default function GeneratePage() {
               </label>
               <p className="text-xs text-muted-foreground/50 pl-7">{t.privacyNote}</p>
             </div>
+
+            {/* Bot check — only mount once there's something to submit */}
+            {file && (
+              <div className="flex justify-center">
+                <TurnstileWidget
+                  ref={turnstileRef}
+                  onVerify={setTurnstileToken}
+                  language={lang === "it" ? "it" : "en"}
+                />
+              </div>
+            )}
 
             {/* Generate button */}
             <button
