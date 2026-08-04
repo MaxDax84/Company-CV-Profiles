@@ -30,6 +30,24 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
+// Deterministic backstop for the anti-fabrication rules above: regardless of
+// how well the model follows the prompt, a skill/tool/technology can only
+// survive in the output if its exact (case-insensitive) text already
+// appeared somewhere in the source profile's own skills/technologies.
+function collectAllowedTechTokens(source: ProfileSchema): Set<string> {
+  const items = [
+    ...source.skills.hard,
+    ...source.skills.soft,
+    ...source.skills.tools,
+    ...source.experience.flatMap((e) => e.technologies),
+  ];
+  return new Set(items.map((s) => s.toLowerCase().trim()));
+}
+
+function keepAllowed(items: string[], allowed: Set<string>): string[] {
+  return items.filter((item) => allowed.has(item.toLowerCase().trim()));
+}
+
 export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText: string): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -39,7 +57,7 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-sonnet-5",
       max_tokens: 8192,
       system: SYSTEM_PROMPT,
       messages: [
@@ -66,8 +84,19 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
     content: { type: string; text: string }[];
   };
 
-  return extractProfileJson(
+  const tailored = extractProfileJson(
     json,
     "Job posting or CV too long to process."
   );
+
+  const allowed = collectAllowedTechTokens(sourceProfile);
+  tailored.skills.hard = keepAllowed(tailored.skills.hard, allowed);
+  tailored.skills.soft = keepAllowed(tailored.skills.soft, allowed);
+  tailored.skills.tools = keepAllowed(tailored.skills.tools, allowed);
+  tailored.experience = tailored.experience.map((exp) => ({
+    ...exp,
+    technologies: keepAllowed(exp.technologies, allowed),
+  }));
+
+  return tailored;
 }
