@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Copy, Check, Share2 } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import type { TemplateStyle, ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
 import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
+import ProfileResultPanel from "@/components/profile-result-panel";
 
 type State = "idle" | "uploading" | "done" | "error";
 
@@ -31,7 +32,6 @@ export default function GeneratePage() {
   const [manageToken, setManageToken] = useState<string | null>(null);
   const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -119,31 +119,7 @@ export default function GeneratePage() {
     setEmail("");
     setError(null);
     setPrivacy(false);
-    setCopied(false);
     if (inputRef.current) inputRef.current.value = "";
-  }
-
-  function profileUrl() {
-    return typeof window !== "undefined" ? `${window.location.origin}/profile/${slug}` : "";
-  }
-
-  async function handleCopyLink() {
-    await navigator.clipboard.writeText(profileUrl());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  async function handleShare() {
-    const url = profileUrl();
-    if (navigator.share) {
-      try {
-        await navigator.share({ url, title: profile?.personal_info.full_name });
-      } catch {
-        // user cancelled the share sheet — nothing to do
-      }
-    } else {
-      await handleCopyLink();
-    }
   }
 
   const { lang } = useLanguage();
@@ -183,136 +159,91 @@ export default function GeneratePage() {
           </p>
         </div>
 
-        {state === "done" ? (
+        {state === "done" && slug && profile ? (
           /* ── Done state ── */
-          <div className="rounded-3xl border border-primary/30 bg-primary/5 p-8 text-center space-y-5" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.10)" }}>
-            <div className="text-4xl">✅</div>
-            <div>
-              <p className="font-semibold text-foreground">{t.done}</p>
-              <p className="text-sm text-muted-foreground mt-1">{t.doneNote}</p>
-            </div>
-            <p className="text-xs text-muted-foreground/50">{t.doneExpiry}</p>
-
-            {profile?.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
-              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
-                  {t.beforeAfterTitle}
-                </p>
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {/* PRIMA — the raw PDF, rendered client-side, never uploaded anywhere for this */}
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
-                      {t.beforeLabel}
-                    </p>
-                    <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-white/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
-                      {pdfThumbnail ? (
-                        <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
-                      ) : (
-                        <div className="aspect-[210/297] flex items-center justify-center bg-white/5 text-muted-foreground/30 text-xs">PDF</div>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-1 text-center">
-                      {profile.personal_info.bio_original}
-                    </p>
-                  </div>
-
-                  {/* DOPO — the real generated page, scaled down in a live iframe (always in sync with the actual template) */}
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-center" style={{ color: selected.accent }}>
-                      {t.afterLabel}
-                    </p>
-                    <div
-                      className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden relative"
-                      style={{ height: 368, border: `2px solid ${selected.accent}`, boxShadow: `0 0 24px ${selected.accent}35`, background: selected.bg }}
-                    >
-                      <div className="absolute top-0 left-0 right-0 h-6 flex items-center gap-1.5 px-2.5 z-10" style={{ background: "rgba(0,0,0,0.35)" }}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
-                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
+          <ProfileResultPanel
+            slug={slug}
+            profile={profile}
+            manageToken={manageToken}
+            emailStatus={emailStatus}
+            accentColor={selected.accent}
+            labels={t}
+            onReset={handleReset}
+            extraActions={
+              <a
+                href="/tailor"
+                className="block text-xs text-center hover:underline"
+                style={{ color: selected.accent }}
+              >
+                {t.tailorInvite}
+              </a>
+            }
+            beforeAfter={
+              profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio ? (
+                <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-5">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
+                    {t.beforeAfterTitle}
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {/* PRIMA — the raw PDF, rendered client-side, never uploaded anywhere for this */}
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
+                        {t.beforeLabel}
+                      </p>
+                      <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-white/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
+                        {pdfThumbnail ? (
+                          <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
+                        ) : (
+                          <div className="aspect-[210/297] flex items-center justify-center bg-white/5 text-muted-foreground/30 text-xs">PDF</div>
+                        )}
                       </div>
-                      <iframe
-                        src={`/profile/${slug}`}
-                        title={t.afterLabel}
-                        tabIndex={-1}
-                        style={{
-                          position: "absolute",
-                          top: 24,
-                          left: 0,
-                          width: 1200,
-                          height: 1697,
-                          border: "none",
-                          transform: "scale(0.21667)",
-                          transformOrigin: "top left",
-                        }}
-                      />
+                      <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-1 text-center">
+                        {profile.personal_info.bio_original}
+                      </p>
                     </div>
-                    <p
-                      className="text-xs font-semibold px-3 py-2 rounded-lg text-center"
-                      style={{ color: selected.accent, background: `${selected.accent}15`, borderLeft: `2px solid ${selected.accent}` }}
-                    >
-                      {profile.personal_info.bio}
-                    </p>
+
+                    {/* DOPO — the real generated page, scaled down in a live iframe (always in sync with the actual template) */}
+                    <div className="space-y-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-center" style={{ color: selected.accent }}>
+                        {t.afterLabel}
+                      </p>
+                      <div
+                        className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden relative"
+                        style={{ height: 368, border: `2px solid ${selected.accent}`, boxShadow: `0 0 24px ${selected.accent}35`, background: selected.bg }}
+                      >
+                        <div className="absolute top-0 left-0 right-0 h-6 flex items-center gap-1.5 px-2.5 z-10" style={{ background: "rgba(0,0,0,0.35)" }}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
+                        </div>
+                        <iframe
+                          src={`/profile/${slug}`}
+                          title={t.afterLabel}
+                          tabIndex={-1}
+                          style={{
+                            position: "absolute",
+                            top: 24,
+                            left: 0,
+                            width: 1200,
+                            height: 1697,
+                            border: "none",
+                            transform: "scale(0.21667)",
+                            transformOrigin: "top left",
+                          }}
+                        />
+                      </div>
+                      <p
+                        className="text-xs font-semibold px-3 py-2 rounded-lg text-center"
+                        style={{ color: selected.accent, background: `${selected.accent}15`, borderLeft: `2px solid ${selected.accent}` }}
+                      >
+                        {profile.personal_info.bio}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-
-            <a
-              href={`/profile/${slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"
-              style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 20px ${selected.accent}50` }}
-            >
-              {t.openProfile}
-            </a>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleCopyLink}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
-              >
-                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? t.copyLinkDone : t.copyLink}
-              </button>
-              <button
-                onClick={handleShare}
-                className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                {t.share}
-              </button>
-            </div>
-
-            {manageToken && (
-              <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  {t.manageLinkTitle}
-                </p>
-                <p className="text-xs text-muted-foreground/60">{t.manageLinkNote}</p>
-                <a
-                  href={`/manage/${manageToken}`}
-                  className="block text-xs break-all hover:underline"
-                  style={{ color: selected.accent }}
-                >
-                  {typeof window !== "undefined" ? window.location.origin : ""}/manage/{manageToken}
-                </a>
-                {emailStatus === "sent" && (
-                  <p className="text-[11px] text-muted-foreground/50">{t.emailSentNote}</p>
-                )}
-                {emailStatus === "error" && (
-                  <p className="text-[11px] text-red-400/70">{t.emailErrorNote}</p>
-                )}
-              </div>
-            )}
-
-            <button
-              onClick={handleReset}
-              className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-            >
-              {t.generateAnother}
-            </button>
-          </div>
+              ) : undefined
+            }
+          />
         ) : state === "uploading" ? (
           /* ── Uploading state ── */
           <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.08)" }}>

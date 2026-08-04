@@ -32,6 +32,7 @@ export default function Navigation() {
   ]
 
   const generateLabel = (t as { generate?: string }).generate ?? 'Try Free'
+  const tailorLabel = (t as { tailorLink?: string }).tailorLink ?? 'Tailor to a Job'
 
   return (
     <nav
@@ -69,6 +70,12 @@ export default function Navigation() {
             className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
           >
             {generateLabel}
+          </a>
+          <a
+            href="/tailor"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+          >
+            {tailorLabel}
           </a>
         </div>
 
@@ -120,6 +127,13 @@ export default function Navigation() {
             onClick={() => setMobileOpen(false)}
           >
             {generateLabel}
+          </a>
+          <a
+            href="/tailor"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => setMobileOpen(false)}
+          >
+            {tailorLabel}
           </a>
         </div>
       )}

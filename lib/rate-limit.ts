@@ -15,6 +15,12 @@ export const sendEmailRatelimit = new Ratelimit({
   prefix: "ratelimit:send-email",
 });
 
+export const tailorResumeRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(5, "1 h"),
+  prefix: "ratelimit:tailor-resume",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

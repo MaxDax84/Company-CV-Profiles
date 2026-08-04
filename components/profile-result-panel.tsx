@@ -1,0 +1,147 @@
+"use client";
+
+import { useState, type ReactNode } from "react";
+import { Copy, Check, Share2 } from "lucide-react";
+import type { ProfileSchema } from "@/lib/schema";
+
+export interface ProfileResultPanelLabels {
+  done: string;
+  doneNote: string;
+  doneExpiry: string;
+  openProfile: string;
+  copyLink: string;
+  copyLinkDone: string;
+  share: string;
+  manageLinkTitle: string;
+  manageLinkNote: string;
+  emailSentNote: string;
+  emailErrorNote: string;
+  generateAnother: string;
+}
+
+interface ProfileResultPanelProps {
+  slug: string;
+  profile: ProfileSchema;
+  manageToken: string | null;
+  emailStatus: "idle" | "sending" | "sent" | "error";
+  accentColor: string;
+  labels: ProfileResultPanelLabels;
+  onReset: () => void;
+  // Each flow's before/after comparison is semantically different (raw PDF
+  // vs. rewritten bio for /generate; original vs. tailored bio for /tailor,
+  // no PDF involved), so it stays a slot rather than shared logic here.
+  beforeAfter?: ReactNode;
+  // e.g. a "Download PDF" button on /tailor, or an invite to /tailor here.
+  extraActions?: ReactNode;
+}
+
+export default function ProfileResultPanel({
+  slug,
+  profile,
+  manageToken,
+  emailStatus,
+  accentColor,
+  labels,
+  onReset,
+  beforeAfter,
+  extraActions,
+}: ProfileResultPanelProps) {
+  const [copied, setCopied] = useState(false);
+
+  function profileUrl() {
+    return typeof window !== "undefined" ? `${window.location.origin}/profile/${slug}` : "";
+  }
+
+  async function handleCopyLink() {
+    await navigator.clipboard.writeText(profileUrl());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleShare() {
+    const url = profileUrl();
+    if (navigator.share) {
+      try {
+        await navigator.share({ url, title: profile.personal_info.full_name });
+      } catch {
+        // user cancelled the share sheet — nothing to do
+      }
+    } else {
+      await handleCopyLink();
+    }
+  }
+
+  return (
+    <div
+      className="rounded-3xl border border-primary/30 bg-primary/5 p-8 text-center space-y-5"
+      style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.10)" }}
+    >
+      <div className="text-4xl">✅</div>
+      <div>
+        <p className="font-semibold text-foreground">{labels.done}</p>
+        <p className="text-sm text-muted-foreground mt-1">{labels.doneNote}</p>
+      </div>
+      <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
+
+      {beforeAfter}
+
+      <a
+        href={`/profile/${slug}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"
+        style={{ background: accentColor, color: "#000", boxShadow: `0 4px 20px ${accentColor}50` }}
+      >
+        {labels.openProfile}
+      </a>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={handleCopyLink}
+          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+        >
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? labels.copyLinkDone : labels.copyLink}
+        </button>
+        <button
+          onClick={handleShare}
+          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          {labels.share}
+        </button>
+      </div>
+
+      {extraActions}
+
+      {manageToken && (
+        <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+            {labels.manageLinkTitle}
+          </p>
+          <p className="text-xs text-muted-foreground/60">{labels.manageLinkNote}</p>
+          <a
+            href={`/manage/${manageToken}`}
+            className="block text-xs break-all hover:underline"
+            style={{ color: accentColor }}
+          >
+            {typeof window !== "undefined" ? window.location.origin : ""}/manage/{manageToken}
+          </a>
+          {emailStatus === "sent" && (
+            <p className="text-[11px] text-muted-foreground/50">{labels.emailSentNote}</p>
+          )}
+          {emailStatus === "error" && (
+            <p className="text-[11px] text-red-400/70">{labels.emailErrorNote}</p>
+          )}
+        </div>
+      )}
+
+      <button
+        onClick={onReset}
+        className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+      >
+        {labels.generateAnother}
+      </button>
+    </div>
+  );
+}
