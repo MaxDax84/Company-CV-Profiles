@@ -498,7 +498,7 @@ export const translations = {
       jobSourceUrl: 'Incolla URL',
       jobTextPlaceholder: 'Incolla qui il testo completo dell\'annuncio…',
       jobUrlPlaceholder: 'https://azienda.com/carriere/il-ruolo',
-      jobFetchFailedNote: 'Non siamo riusciti a leggere quella pagina — incolla invece il testo dell\'annuncio.',
+      jobFetchFailedNote: 'Non riesco ad accedere alla pagina a causa della protezione del sito. Puoi incollarmi solo il testo dell\'annuncio?',
       dragHere: 'Trascina qui il tuo CV (in PDF)',
       dragOr: 'oppure clicca per selezionare il file',
       dragLimit: 'Max 10 MB · solo PDF',

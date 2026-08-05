@@ -72,6 +72,7 @@ export default function TailorPage() {
       if (!res.ok) {
         if (data.code === "JOB_FETCH_FAILED") {
           setJobSource("text");
+          throw new Error(t.jobFetchFailedNote);
         }
         throw new Error(data.error ?? "Errore sconosciuto");
       }
@@ -244,7 +245,9 @@ export default function TailorPage() {
                   <button
                     key={src}
                     onClick={() => setCvSource(src)}
-                    className="py-2 px-3 rounded-xl text-xs font-semibold border transition-all"
+                    className={`py-2 px-3 rounded-xl text-xs font-semibold border cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+                      cvSource === src ? "" : "hover:border-white/25 hover:bg-white/[0.06] hover:text-white/80 hover:shadow-lg hover:shadow-black/20"
+                    }`}
                     style={cvSource === src
                       ? { borderColor: `${ACCENT}70`, background: `${ACCENT}15`, color: ACCENT }
                       : { borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
@@ -307,7 +310,9 @@ export default function TailorPage() {
                   <button
                     key={src}
                     onClick={() => setJobSource(src)}
-                    className="py-2 px-3 rounded-xl text-xs font-semibold border transition-all"
+                    className={`py-2 px-3 rounded-xl text-xs font-semibold border cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+                      jobSource === src ? "" : "hover:border-white/25 hover:bg-white/[0.06] hover:text-white/80 hover:shadow-lg hover:shadow-black/20"
+                    }`}
                     style={jobSource === src
                       ? { borderColor: `${ACCENT}70`, background: `${ACCENT}15`, color: ACCENT }
                       : { borderColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
