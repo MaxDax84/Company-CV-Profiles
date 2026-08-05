@@ -62,9 +62,14 @@ function formatDateRange(start: string, end: string): string {
 }
 
 function ContactLine({ profile, accent }: { profile: ProfileSchema; accent: string }) {
-  const { email_obfuscated, phone_obfuscated, location, social_links } = profile.personal_info;
-  const parts: string[] = [email_obfuscated];
-  if (phone_obfuscated) parts.push(phone_obfuscated);
+  const { email, phone, email_obfuscated, phone_obfuscated, location, social_links } = profile.personal_info;
+  // Real, non-obfuscated contact info — this PDF is downloaded privately and
+  // submitted directly to job applications, unlike the public web profile
+  // (which stays obfuscated to deter scraping). Fall back to the obfuscated
+  // fields only for profiles generated before this field existed.
+  const parts: string[] = [email || email_obfuscated];
+  const displayPhone = phone || phone_obfuscated;
+  if (displayPhone) parts.push(displayPhone);
   if (location) parts.push(location);
 
   const links = [

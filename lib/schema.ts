@@ -5,8 +5,10 @@ export interface PersonalInfo {
   title: string;               // es. "Senior Software Engineer"
   bio: string;                 // max ~200 caratteri
   bio_original?: string;       // frase originale dal CV, prima della riscrittura AI
-  email_obfuscated: string;    // es. "m***@gmail.com"
-  phone_obfuscated?: string;   // es. "+39 3** *** 1234"
+  email_obfuscated: string;    // es. "m***@gmail.com" — usato sulla pagina web pubblica (anti-scraping)
+  phone_obfuscated?: string;   // es. "+39 3** *** 1234" — usato sulla pagina web pubblica (anti-scraping)
+  email?: string;              // reale, non oscurato — usato SOLO nel PDF scaricabile (mai sui template web pubblici)
+  phone?: string;              // reale, non oscurato — usato SOLO nel PDF scaricabile (mai sui template web pubblici)
   location?: string;           // es. "Milano, IT"
   social_links: {
     linkedin?: string;
@@ -21,8 +23,8 @@ export interface ExperienceItem {
   role: string;
   start_date: string;          // "2021-03" o "2021"
   end_date: string;            // "2024-01" o "present"
-  description: string[];       // bullet points, max 4 voci
-  technologies: string[];      // ["React", "Node.js"]
+  description: string[];       // bullet points, uno per risultato/responsabilità reale nella fonte (fino a 6)
+  technologies: string[];      // ["React", "Node.js"] — fino a 6
   location?: string;
 }
 

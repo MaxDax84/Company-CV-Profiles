@@ -96,6 +96,8 @@ export const PROFILE_JSON_SCHEMA_BLOCK = `{
     "bio_original": string | undefined,
     "email_obfuscated": string,
     "phone_obfuscated": string | undefined,
+    "email": string | undefined,
+    "phone": string | undefined,
     "location": string | undefined,
     "social_links": {
       "linkedin": string | undefined,
