@@ -10,6 +10,7 @@ import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-wi
 import ProfileResultPanel from "@/components/profile-result-panel";
 import PdfExportButton from "@/components/pdf-export-button";
 import TrustBadges from "@/components/trust-badges";
+import StepProgress from "@/components/step-progress";
 
 type State = "idle" | "uploading" | "done" | "error";
 type CvSource = "pdf" | "url";
@@ -47,6 +48,7 @@ export default function TailorPage() {
 
   const { lang } = useLanguage();
   const t = translations[lang].tailor;
+  const stepLabels = translations[lang].steps;
 
   const hasCv = cvSource === "pdf" ? !!file : profileUrl.trim().length > 0;
   const hasJob = jobSource === "text" ? jobText.trim().length >= JOB_TEXT_MIN : jobUrl.trim().length > 0;
@@ -152,6 +154,16 @@ export default function TailorPage() {
             {t.subtitle}
           </p>
         </div>
+
+        {(state === "idle" || state === "error") && (
+          <StepProgress
+            accent={ACCENT}
+            steps={[
+              { label: stepLabels.cv, done: hasCv },
+              { label: stepLabels.job, done: hasJob },
+            ]}
+          />
+        )}
 
         {state === "done" && slug && profile ? (
           /* ── Done state ── */

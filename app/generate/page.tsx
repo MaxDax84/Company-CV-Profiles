@@ -10,6 +10,7 @@ import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
 import TrustBadges from "@/components/trust-badges";
+import StepProgress from "@/components/step-progress";
 
 type State = "idle" | "uploading" | "done" | "error";
 
@@ -125,6 +126,7 @@ export default function GeneratePage() {
 
   const { lang } = useLanguage();
   const t = translations[lang].generate;
+  const stepLabels = translations[lang].steps;
   const selected = TEMPLATES.find(t => t.id === template)!;
   const canGenerate = !!file && privacy && !!turnstileToken && state !== "uploading";
   const needsPrivacy = !!file && !privacy;
@@ -159,6 +161,16 @@ export default function GeneratePage() {
             {t.subtitle}
           </p>
         </div>
+
+        {(state === "idle" || state === "error") && (
+          <StepProgress
+            accent={selected.accent}
+            steps={[
+              { label: stepLabels.cv, done: !!file },
+              { label: stepLabels.ready, done: canGenerate },
+            ]}
+          />
+        )}
 
         {state === "done" && slug && profile ? (
           /* ── Done state ── */

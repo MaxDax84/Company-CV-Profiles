@@ -15,6 +15,11 @@ export const translations = {
       deletable: 'Deletable anytime',
       noSharing: 'Never shared with third parties',
     },
+    steps: {
+      cv: 'CV',
+      job: 'Job posting',
+      ready: 'Ready',
+    },
     hero: {
       badge: 'Professional Web Presence',
       titleGradient: 'Your Career,',
@@ -326,6 +331,11 @@ export const translations = {
       autoDelete: 'Eliminato automaticamente dopo 48 ore',
       deletable: 'Cancellabile in qualsiasi momento',
       noSharing: 'Mai condiviso con terze parti',
+    },
+    steps: {
+      cv: 'CV',
+      job: 'Annuncio',
+      ready: 'Pronto',
     },
     hero: {
       badge: 'Presenza Professionale Online',
