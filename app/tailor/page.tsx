@@ -9,6 +9,7 @@ import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
 import PdfExportButton from "@/components/pdf-export-button";
+import TrustBadges from "@/components/trust-badges";
 
 type State = "idle" | "uploading" | "done" | "error";
 type CvSource = "pdf" | "url";
@@ -257,7 +258,7 @@ export default function TailorPage() {
                 ))}
               </div>
 
-              {cvSource === "pdf" ? (
+              {cvSource === "pdf" && (
                 <div
                   onClick={() => inputRef.current?.click()}
                   onDrop={handleDrop}
@@ -281,7 +282,9 @@ export default function TailorPage() {
                   )}
                   <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
                 </div>
-              ) : (
+              )}
+              {cvSource === "pdf" && <TrustBadges />}
+              {cvSource === "url" && (
                 <div className="space-y-2">
                   <div
                     className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"

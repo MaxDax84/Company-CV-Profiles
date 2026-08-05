@@ -9,6 +9,7 @@ import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
 import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
+import TrustBadges from "@/components/trust-badges";
 
 type State = "idle" | "uploading" | "done" | "error";
 
@@ -317,6 +318,7 @@ export default function GeneratePage() {
                 )}
                 <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
               </div>
+              <TrustBadges />
             </div>
 
             {/* LinkedIn input */}

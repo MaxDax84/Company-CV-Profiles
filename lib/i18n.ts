@@ -10,6 +10,11 @@ export const translations = {
       generate: 'Try Free',
       tailorLink: 'Tailor to a Job',
     },
+    trust: {
+      autoDelete: 'Auto-deleted after 48 hours',
+      deletable: 'Deletable anytime',
+      noSharing: 'Never shared with third parties',
+    },
     hero: {
       badge: 'Professional Web Presence',
       titleGradient: 'Your Career,',
@@ -316,6 +321,11 @@ export const translations = {
       contact: 'Contatti',
       generate: 'Prova Gratis',
       tailorLink: 'Adatta a un annuncio',
+    },
+    trust: {
+      autoDelete: 'Eliminato automaticamente dopo 48 ore',
+      deletable: 'Cancellabile in qualsiasi momento',
+      noSharing: 'Mai condiviso con terze parti',
     },
     hero: {
       badge: 'Presenza Professionale Online',
