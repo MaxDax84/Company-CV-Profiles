@@ -68,6 +68,11 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
       model: "claude-sonnet-5",
       max_tokens: 8192,
       system: SYSTEM_PROMPT,
+      // Adaptive thinking stays on (the default), but capped at "medium"
+      // effort instead of the implicit "high" — cuts cost/latency on this
+      // structured rewrite task while keeping the self-check reasoning that
+      // the anti-fabrication rules above rely on.
+      output_config: { effort: "medium" },
       messages: [
         {
           role: "user",
