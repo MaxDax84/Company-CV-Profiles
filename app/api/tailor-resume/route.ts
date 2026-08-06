@@ -10,7 +10,9 @@ import { tailorResume } from "@/lib/tailor-resume";
 // Node runtime (not edge): this route makes two sequential Claude calls
 // (PDF extraction + tailoring), which can exceed the edge runtime's fixed
 // 25s execution ceiling — maxDuration only takes effect on Node functions.
-export const maxDuration = 60;
+// Bumped from 60s after a real 504 (Vercel Runtime Timeout) on a long CV +
+// long job posting combo — two sequential Claude calls can exceed 60s.
+export const maxDuration = 120;
 
 const JOB_TEXT_MIN = 200;
 const JOB_TEXT_MAX = 20_000;

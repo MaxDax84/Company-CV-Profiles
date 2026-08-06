@@ -71,7 +71,14 @@ export default function TailorPage() {
 
     try {
       const res = await fetch("/api/tailor-resume", { method: "POST", body: formData });
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // Not JSON: a platform-level error page (e.g. a function timeout),
+        // not our own route's error response.
+        throw new Error(t.timeoutErrorNote);
+      }
       if (!res.ok) {
         if (data.code === "JOB_FETCH_FAILED") {
           setJobSource("text");
