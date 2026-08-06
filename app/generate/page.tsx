@@ -26,13 +26,11 @@ export default function GeneratePage() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
   const [linkedin, setLinkedin] = useState("");
-  const [email, setEmail] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
-  const [manageToken, setManageToken] = useState<string | null>(null);
-  const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [claimToken, setClaimToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -72,22 +70,8 @@ export default function GeneratePage() {
       if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
       setSlug(data.slug);
       setProfile(data.profile);
-      setManageToken(data.manageToken ?? null);
+      setClaimToken(data.claimToken ?? null);
       setState("done");
-
-      if (email.trim() && data.manageToken) {
-        setEmailStatus("sending");
-        try {
-          const emailRes = await fetch("/api/send-manage-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email.trim(), token: data.manageToken }),
-          });
-          setEmailStatus(emailRes.ok ? "sent" : "error");
-        } catch {
-          setEmailStatus("error");
-        }
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
       setState("error");
@@ -120,12 +104,10 @@ export default function GeneratePage() {
     setState("idle");
     setSlug(null);
     setProfile(null);
-    setManageToken(null);
-    setEmailStatus("idle");
+    setClaimToken(null);
     setFile(null);
     setPdfThumbnail(null);
     setLinkedin("");
-    setEmail("");
     setError(null);
     setPrivacy(false);
     if (inputRef.current) inputRef.current.value = "";
@@ -184,19 +166,27 @@ export default function GeneratePage() {
           <ProfileResultPanel
             slug={slug}
             profile={profile}
-            manageToken={manageToken}
-            emailStatus={emailStatus}
             accentColor={selected.accent}
             labels={t}
             onReset={handleReset}
-            extraActions={
-              <a
-                href="/tailor"
-                className="block text-xs text-center hover:underline"
-                style={{ color: selected.accent }}
-              >
-                {t.tailorInvite}
-              </a>
+            claimSlot={
+              claimToken ? (
+                <div className="text-left rounded-2xl border p-5 space-y-3" style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d` }}>
+                  <p className="text-sm font-semibold" style={{ color: selected.accent }}>
+                    Questa è solo un&apos;anteprima
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Crea un account gratuito per salvare questo profilo per sempre, scaricare il PDF (1 credito omaggio incluso) e adattarlo a un annuncio di lavoro.
+                  </p>
+                  <a
+                    href={`/signup?claim=${claimToken}`}
+                    className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
+                    style={{ background: selected.accent, color: "#000" }}
+                  >
+                    Crea account gratis →
+                  </a>
+                </div>
+              ) : undefined
             }
             beforeAfter={
               profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio ? (
@@ -369,38 +359,6 @@ export default function GeneratePage() {
                   </button>
                 )}
               </div>
-            </div>
-
-            {/* Email input (optional — used only to send the management link) */}
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-                {t.stepEmail}
-              </p>
-              <div
-                className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
-                style={{ borderColor: email ? `${selected.accent}60` : "rgba(255,255,255,0.08)" }}
-              >
-                <svg className="w-4 h-4 shrink-0 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16v16H4z" strokeLinejoin="round" />
-                  <path d="M4 6l8 7 8-7" strokeLinejoin="round" />
-                </svg>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder={t.emailPlaceholder}
-                  className="flex-1 bg-transparent text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none"
-                />
-                {email && (
-                  <button
-                    onClick={() => setEmail("")}
-                    className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors text-xs"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-              <p className="text-[11px] text-muted-foreground/40">{t.emailHint}</p>
             </div>
 
             {/* Template selector */}

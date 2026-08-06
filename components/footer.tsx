@@ -22,7 +22,7 @@ export default function Footer() {
             <div className="w-7 h-7 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
               <Globe className="w-3.5 h-3.5 text-primary" />
             </div>
-            <span className="font-bold text-base tracking-tight">
+            <span className="font-heading font-bold text-base tracking-tight">
               Go<span className="text-primary">On</span>Web
             </span>
           </div>
@@ -31,9 +31,6 @@ export default function Footer() {
           <div className="flex items-center gap-6 flex-wrap justify-center">
             {[
               { href: '#services', label: nav.services },
-              { href: '#portfolio', label: nav.portfolio },
-              { href: '#pricing', label: nav.pricing },
-              { href: '#contact', label: nav.contact },
             ].map((link) => (
               <a
                 key={link.href}

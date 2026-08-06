@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { ProfileSchema } from "@/lib/schema";
-import { isTemplateStyle, TEMPLATE_COLORS } from "@/lib/templates";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { resolveProfileFromPdf, saveNewProfile, getProfileBySlug, extractSlugFromProfileUrl } from "@/lib/profile-store";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getOwnedProfileRow, saveTailoredProfile } from "@/lib/profile-store";
+import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
 
-// Node runtime (not edge): this route makes two sequential Claude calls
-// (PDF extraction + tailoring), which can exceed the edge runtime's fixed
-// 25s execution ceiling — maxDuration only takes effect on Node functions.
-// Bumped from 60s after a real 504 (Vercel Runtime Timeout) on a long CV +
-// long job posting combo — two sequential Claude calls can exceed 60s.
+// Node runtime (not edge): this route makes a Claude call and can exceed the
+// edge runtime's fixed 25s execution ceiling — maxDuration only takes effect
+// on Node functions. Bumped from 60s after a real 504 (Vercel Runtime
+// Timeout) on a long CV + long job posting combo.
 export const maxDuration = 120;
 
 const JOB_TEXT_MIN = 200;
@@ -28,6 +27,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    }
+
     const formData = await req.formData();
 
     const turnstileToken = formData.get("turnstileToken");
@@ -39,48 +44,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Captcha verification failed. Please try again." }, { status: 403 });
     }
 
-    const cvSource = formData.get("cvSource");
-    if (cvSource !== "pdf" && cvSource !== "url") {
-      return NextResponse.json({ error: "Invalid or missing cvSource." }, { status: 400 });
-    }
-
     const jobSource = formData.get("jobSource");
     if (jobSource !== "text" && jobSource !== "url") {
       return NextResponse.json({ error: "Invalid or missing jobSource." }, { status: 400 });
     }
 
-    const templateChoice = formData.get("template");
-
-    // --- Resolve the source CV ---
-    let sourceProfile: ProfileSchema;
-    if (cvSource === "pdf") {
-      const file = formData.get("pdf");
-      if (!file || !(file instanceof Blob)) {
-        return NextResponse.json({ error: "No PDF file provided" }, { status: 400 });
-      }
-      if (file.type !== "application/pdf") {
-        return NextResponse.json({ error: "File must be a PDF" }, { status: 400 });
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        return NextResponse.json({ error: "PDF must be under 10 MB" }, { status: 413 });
-      }
-      const arrayBuffer = await file.arrayBuffer();
-      const resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
-      sourceProfile = resolved.profile;
-    } else {
-      const profileUrl = formData.get("profileUrl");
-      if (typeof profileUrl !== "string" || !profileUrl.trim()) {
-        return NextResponse.json({ error: "No profile URL provided" }, { status: 400 });
-      }
-      const slug = extractSlugFromProfileUrl(profileUrl.trim());
-      if (!slug) {
-        return NextResponse.json({ error: "That doesn't look like a valid profile link." }, { status: 400 });
-      }
-      const found = await getProfileBySlug(slug);
-      if (!found) {
-        return NextResponse.json({ error: "Profile not found or expired." }, { status: 404 });
-      }
-      sourceProfile = found;
+    // --- Resolve the source CV — always the caller's own claimed profile.
+    const sourceRow = await getOwnedProfileRow(supabase, user.id, "primary");
+    if (!sourceRow) {
+      return NextResponse.json({ error: "Generate your profile first." }, { status: 404 });
     }
 
     // --- Resolve the job posting text ---
@@ -110,7 +82,22 @@ export async function POST(req: NextRequest) {
       jobPostingText = fetched.text;
     }
 
+    // --- Spend the credit before running Claude. Not refunded if the
+    // tailoring call itself later fails — an accepted v1 gap (see project plan).
+    try {
+      await spendCredits(supabase, CREDIT_COSTS.tailor);
+    } catch (err) {
+      if (err instanceof InsufficientCreditsError) {
+        return NextResponse.json(
+          { error: "Not enough credits to tailor your profile.", code: "INSUFFICIENT_CREDITS" },
+          { status: 402 }
+        );
+      }
+      throw err;
+    }
+
     // --- Tailor ---
+    const sourceProfile = sourceRow.data;
     const tailored = await tailorResume(sourceProfile, jobPostingText);
 
     // Set by route code, not trusted to the model, so the before/after panel
@@ -118,14 +105,9 @@ export async function POST(req: NextRequest) {
     tailored.personal_info.bio_original = sourceProfile.personal_info.bio;
     tailored.metadata.generated_at = new Date().toISOString();
 
-    if (isTemplateStyle(templateChoice)) {
-      tailored.metadata.template = templateChoice;
-      tailored.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
-    }
+    const { slug } = await saveTailoredProfile(supabase, user.id, sourceRow.id, tailored);
 
-    const { slug, manageToken } = await saveNewProfile(tailored);
-
-    return NextResponse.json({ slug, profile: tailored, manageToken });
+    return NextResponse.json({ slug, profile: tailored });
   } catch (err) {
     console.error("[tailor-resume]", err);
     return NextResponse.json(

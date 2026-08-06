@@ -12,18 +12,12 @@ export interface ProfileResultPanelLabels {
   copyLink: string;
   copyLinkDone: string;
   share: string;
-  manageLinkTitle: string;
-  manageLinkNote: string;
-  emailSentNote: string;
-  emailErrorNote: string;
   generateAnother: string;
 }
 
 interface ProfileResultPanelProps {
   slug: string;
   profile: ProfileSchema;
-  manageToken: string | null;
-  emailStatus: "idle" | "sending" | "sent" | "error";
   accentColor: string;
   labels: ProfileResultPanelLabels;
   onReset: () => void;
@@ -33,18 +27,21 @@ interface ProfileResultPanelProps {
   beforeAfter?: ReactNode;
   // e.g. a "Download PDF" button on /tailor, or an invite to /tailor here.
   extraActions?: ReactNode;
+  // The claim-a-free-account CTA on /generate's still-pending preview.
+  // /tailor never renders this — its result is already saved to the
+  // caller's own (already-authenticated) account.
+  claimSlot?: ReactNode;
 }
 
 export default function ProfileResultPanel({
   slug,
   profile,
-  manageToken,
-  emailStatus,
   accentColor,
   labels,
   onReset,
   beforeAfter,
   extraActions,
+  claimSlot,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
 
@@ -114,27 +111,7 @@ export default function ProfileResultPanel({
 
       {extraActions}
 
-      {manageToken && (
-        <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
-            {labels.manageLinkTitle}
-          </p>
-          <p className="text-xs text-muted-foreground/60">{labels.manageLinkNote}</p>
-          <a
-            href={`/manage/${manageToken}`}
-            className="block text-xs break-all hover:underline"
-            style={{ color: accentColor }}
-          >
-            {typeof window !== "undefined" ? window.location.origin : ""}/manage/{manageToken}
-          </a>
-          {emailStatus === "sent" && (
-            <p className="text-[11px] text-muted-foreground/50">{labels.emailSentNote}</p>
-          )}
-          {emailStatus === "error" && (
-            <p className="text-[11px] text-red-400/70">{labels.emailErrorNote}</p>
-          )}
-        </div>
-      )}
+      {claimSlot}
 
       <button
         onClick={onReset}

@@ -9,12 +9,6 @@ export const parseResumeRatelimit = new Ratelimit({
   prefix: "ratelimit:parse-resume",
 });
 
-export const sendEmailRatelimit = new Ratelimit({
-  redis: kv,
-  limiter: Ratelimit.slidingWindow(3, "1 h"),
-  prefix: "ratelimit:send-email",
-});
-
 export const tailorResumeRatelimit = new Ratelimit({
   redis: kv,
   limiter: Ratelimit.slidingWindow(5, "1 h"),

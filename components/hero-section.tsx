@@ -43,7 +43,7 @@ export default function HeroSection() {
 
         {/* Title */}
         <h1
-          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] mb-6 animate-fade-in"
+          className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] mb-6 animate-fade-in"
           style={{ animationDelay: '0.12s' }}
         >
           <span className="gradient-text">{t.titleGradient}</span>
@@ -65,34 +65,34 @@ export default function HeroSection() {
           style={{ animationDelay: '0.36s' }}
         >
           <a
-            href="#portfolio"
+            href="/generate"
             className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}
           </a>
           <a
-            href="/generate"
+            href="/tailor"
             className="px-8 py-3.5 rounded-xl border border-primary/40 hover:border-primary/70 text-primary font-semibold text-sm transition-all duration-200 hover:bg-primary/8 hover:-translate-y-0.5"
           >
             {t.ctaSecondary}
           </a>
         </div>
 
-        {/* Floating stats bar */}
+        {/* Honest value props — no invented metrics */}
         <div
-          className="mt-20 flex flex-wrap justify-center gap-8 sm:gap-16 animate-fade-in"
+          className="mt-20 flex flex-wrap justify-center gap-3 sm:gap-4 animate-fade-in"
           style={{ animationDelay: '0.48s' }}
         >
           {[
-            { value: '200+', label: lang === 'en' ? 'Projects Delivered' : 'Progetti Consegnati' },
-            { value: '100%', label: lang === 'en' ? 'Custom Design' : 'Design Personalizzato' },
-            { value: '5★', label: lang === 'en' ? 'Client Satisfaction' : 'Soddisfazione Clienti' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl font-bold text-primary mb-1">{stat.value}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                {stat.label}
-              </div>
+            lang === 'en' ? 'Never invents anything' : 'Non inventa mai nulla',
+            lang === 'en' ? 'ATS-optimized PDF' : 'PDF ottimizzato per ATS',
+            lang === 'en' ? 'Ready in minutes' : 'Pronto in pochi minuti',
+          ].map((label) => (
+            <div
+              key={label}
+              className="glass-card rounded-full px-4 py-2 text-xs sm:text-sm text-muted-foreground"
+            >
+              {label}
             </div>
           ))}
         </div>

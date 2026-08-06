@@ -48,7 +48,7 @@ export default function MissionSection() {
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em] mb-4">
             {t.sectionLabel}
           </p>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
+          <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
             {t.headline}{' '}
             <span className="gradient-text">{t.headlineAccent}</span>
           </h2>

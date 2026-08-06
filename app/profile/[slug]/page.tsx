@@ -1,7 +1,7 @@
-import { kv } from "@/lib/kv";
 import { notFound } from "next/navigation";
 import type { ProfileSchema, TemplateStyle } from "@/lib/schema";
 import { TemplateAlpha, TemplateBeta, TemplateGamma, TemplateDelta } from "@/components/templates";
+import { getProfileBySlug } from "@/lib/profile-store";
 
 const TEMPLATE_MAP: Record<TemplateStyle, React.ComponentType<{ profile: ProfileSchema }>> = {
   alpha: TemplateAlpha,  // Inter · dark · timeline
@@ -16,11 +16,10 @@ interface Props {
 
 export default async function ProfilePage({ params }: Props) {
   const { slug } = await params;
-  const raw = await kv.get<string>(`profile:${slug}`);
+  const profile = await getProfileBySlug(slug);
 
-  if (!raw) notFound();
+  if (!profile) notFound();
 
-  const profile: ProfileSchema = typeof raw === "string" ? JSON.parse(raw) : raw;
   const Template = TEMPLATE_MAP[profile.metadata.template] ?? TemplateAlpha;
 
   return <Template profile={profile} />;
@@ -28,10 +27,9 @@ export default async function ProfilePage({ params }: Props) {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const raw = await kv.get<string>(`profile:${slug}`);
-  if (!raw) return {};
+  const profile = await getProfileBySlug(slug);
+  if (!profile) return {};
 
-  const profile: ProfileSchema = typeof raw === "string" ? JSON.parse(raw) : raw;
   const { full_name, title } = profile.personal_info;
 
   return {

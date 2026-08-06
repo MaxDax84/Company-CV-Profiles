@@ -1,10 +1,19 @@
 import { kv } from "./kv";
 import type { ProfileSchema } from "./schema";
 import { parseResume } from "./parse-resume";
-import { TEMPLATE_COLORS, PROFILE_TTL_SECONDS, isTemplateStyle } from "./templates";
-import { ALLOWED_PROFILE_HOSTS } from "./site-config";
+import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
+import { createServiceSupabaseClient } from "./supabase/service";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-// Shared slug/KV plumbing used by both /api/parse-resume and /api/tailor-resume.
+// Shared slug/KV/Postgres plumbing used by /api/parse-resume, /api/claim,
+// /api/tailor-resume, and app/profile/[slug]/page.tsx.
+
+// A just-generated-but-not-yet-registered profile lives in KV for a short
+// window — long enough for "generate, look at the preview, sign up" to
+// happen in one sitting, short enough that an abandoned preview cleans
+// itself up instead of accumulating forever like the old 48h anonymous
+// profiles did.
+export const PENDING_TTL_SECONDS = 60 * 60; // 1 hour
 
 // Converts "Mario Rossi" → "mario-rossi", with collision suffix if needed
 export function toSlug(fullName: string): string {
@@ -17,16 +26,114 @@ export function toSlug(fullName: string): string {
     .replace(/\s+/g, "-");
 }
 
-export async function getProfileBySlug(slug: string): Promise<ProfileSchema | null> {
+// personal_info.email/phone are the real, non-obfuscated contact details —
+// meant for the owner's own downloadable PDF only, never for a page a
+// stranger can load. Strip before anything leaves the server for public
+// consumption (the public /profile/[slug] page, its metadata, etc).
+function stripPII(profile: ProfileSchema): ProfileSchema {
+  return {
+    ...profile,
+    personal_info: {
+      ...profile.personal_info,
+      email: undefined,
+      phone: undefined,
+    },
+  };
+}
+
+async function getRawPendingProfile(slug: string): Promise<ProfileSchema | null> {
   const raw = await kv.get<string>(`profile:${slug}`);
   if (!raw) return null;
   return typeof raw === "string" ? JSON.parse(raw) : raw;
 }
 
-// Saves a brand-new profile under a fresh, collision-free slug, plus its own
-// management token — used by both flows so every generated/tailored profile
-// is a fully independent profile:<slug> + manage:<token> pair.
-export async function saveNewProfile(profile: ProfileSchema): Promise<{ slug: string; manageToken: string }> {
+// Public-safe read: used by the public profile page and its metadata.
+// Checks the permanent (claimed) Postgres record first, falls back to a
+// still-pending KV preview, strips PII either way.
+export async function getProfileBySlug(slug: string): Promise<ProfileSchema | null> {
+  const service = createServiceSupabaseClient();
+  const { data } = await service
+    .from("profiles")
+    .select("data")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (data) return stripPII(data.data as ProfileSchema);
+
+  const pending = await getRawPendingProfile(slug);
+  return pending ? stripPII(pending) : null;
+}
+
+// Owner-scoped read (dashboard, PDF export, tailoring source) — returns the
+// full row including the real email/phone, since only the owner sees this.
+export async function getOwnedProfileRow(
+  supabase: SupabaseClient,
+  userId: string,
+  kind: "primary" | "tailored" = "primary"
+): Promise<{ id: string; slug: string; data: ProfileSchema } | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data")
+    .eq("user_id", userId)
+    .eq("kind", kind)
+    .maybeSingle();
+  return data as { id: string; slug: string; data: ProfileSchema } | null;
+}
+
+// Same as above, looked up by slug instead of kind — used by the PDF route,
+// which serves both primary and tailored profiles. RLS's owner-only policy
+// means this naturally returns null for a slug that exists but belongs to
+// someone else, same as a slug that doesn't exist at all.
+export async function getOwnedProfileBySlug(
+  supabase: SupabaseClient,
+  userId: string,
+  slug: string
+): Promise<{ id: string; slug: string; data: ProfileSchema } | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data")
+    .eq("user_id", userId)
+    .eq("slug", slug)
+    .maybeSingle();
+  return data as { id: string; slug: string; data: ProfileSchema } | null;
+}
+
+// Saves a tailored (paid) output as a new, independent row owned by the
+// same account — never overwrites the primary profile. Slug uniqueness is
+// checked against Postgres now, not KV. RLS means each caller can only see
+// their own rows, so the pre-check can't detect another user's identical
+// slug — the DB's UNIQUE constraint is the real guard; on a collision
+// (Postgres code 23505) just retry with the next suffix.
+export async function saveTailoredProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  sourceProfileId: string,
+  profile: ProfileSchema
+): Promise<{ slug: string }> {
+  const baseSlug = toSlug(profile.personal_info.full_name) || "profile";
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt}`;
+    const { error } = await supabase.from("profiles").insert({
+      user_id: userId,
+      kind: "tailored",
+      slug,
+      data: profile,
+      source_profile_id: sourceProfileId,
+    });
+    if (!error) return { slug };
+    if (error.code !== "23505") throw error;
+  }
+
+  throw new Error("Could not allocate a unique slug for the tailored profile.");
+}
+
+// Writes a freshly-generated (not yet claimed by any account) profile to
+// KV under a fresh, collision-free slug, alongside an unguessable claim
+// token. Slugs are human-readable and guessable — the claim token, not the
+// slug, is the actual credential a signup uses to take ownership.
+export async function savePendingProfile(
+  profile: ProfileSchema
+): Promise<{ slug: string; claimToken: string }> {
   const baseSlug = toSlug(profile.personal_info.full_name) || "profile";
   let slug = baseSlug;
   let attempt = 0;
@@ -35,17 +142,48 @@ export async function saveNewProfile(profile: ProfileSchema): Promise<{ slug: st
     slug = `${baseSlug}-${attempt}`;
   }
 
-  // Matches the "48 ore poi eliminato" copy shown to the user on /generate.
-  await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PROFILE_TTL_SECONDS });
+  await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PENDING_TTL_SECONDS });
 
-  // Management token: lets the profile owner change template or delete the
-  // profile later without a full login system. Never embedded in the
-  // profile JSON itself (that object is sent to the client template
-  // components), so it can't leak through the public page.
-  const manageToken = crypto.randomUUID();
-  await kv.set(`manage:${manageToken}`, slug, { ex: PROFILE_TTL_SECONDS });
+  const claimToken = crypto.randomUUID();
+  await kv.set(`claim:${claimToken}`, JSON.stringify({ slug }), { ex: PENDING_TTL_SECONDS });
 
-  return { slug, manageToken };
+  return { slug, claimToken };
+}
+
+export type ClaimError = "expired" | "already_has_profile";
+
+// Moves a pending KV preview into the caller's permanent Postgres record.
+// `supabase` must be a request-scoped, already-authenticated client (see
+// lib/supabase/server.ts) — the insert relies on RLS's `auth.uid() = user_id`
+// check, not on anything passed in here.
+export async function claimPendingProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  claimToken: string
+): Promise<{ slug: string } | { error: ClaimError }> {
+  const claimRaw = await kv.get<string>(`claim:${claimToken}`);
+  if (!claimRaw) return { error: "expired" };
+  const { slug } = typeof claimRaw === "string" ? JSON.parse(claimRaw) : claimRaw;
+
+  const profile = await getRawPendingProfile(slug);
+  if (!profile) return { error: "expired" };
+
+  const existing = await getOwnedProfileRow(supabase, userId, "primary");
+  if (existing) return { error: "already_has_profile" };
+
+  const { error: insertError } = await supabase
+    .from("profiles")
+    .insert({ user_id: userId, kind: "primary", slug, data: profile });
+  if (insertError) {
+    // Most likely the partial-unique-index race (two claims at once) —
+    // surface it the same way as the pre-check above.
+    return { error: "already_has_profile" };
+  }
+
+  await kv.del(`profile:${slug}`);
+  await kv.del(`claim:${claimToken}`);
+
+  return { slug };
 }
 
 // Web Crypto (not Node's `crypto` module — this must stay edge-compatible)
@@ -70,10 +208,10 @@ export interface ResolveFromPdfResult {
 // call. Reapplies `templateChoice` even on a cache hit, since the extracted
 // content is identical but the user may have picked a different look.
 //
-// Deliberately does NOT touch the public profile:<slug>/manage:<token>
-// records itself — callers decide whether a cache hit should reuse the
-// existing public slug (as /api/parse-resume does) or just borrow the
-// extracted data as an input to something else (as /api/tailor-resume does).
+// The cache only ever looks at still-pending (unclaimed) KV previews — once
+// a profile is claimed into Postgres its KV entry is deleted, so a repeat
+// upload after that point correctly falls through to a fresh extraction
+// rather than trying to reuse someone's now-owned account data.
 export async function resolveProfileFromPdf(
   buf: ArrayBuffer,
   templateChoice: unknown
@@ -81,7 +219,7 @@ export async function resolveProfileFromPdf(
   const pdfHash = await hashPdf(buf);
   const cachedSlug = await kv.get<string>(`pdf-hash:${pdfHash}`);
   if (cachedSlug) {
-    const cachedProfile = await getProfileBySlug(cachedSlug);
+    const cachedProfile = await getRawPendingProfile(cachedSlug);
     if (cachedProfile) {
       let templateChanged = false;
       if (isTemplateStyle(templateChoice) && templateChoice !== cachedProfile.metadata.template) {
@@ -105,24 +243,4 @@ export async function resolveProfileFromPdf(
   }
 
   return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false };
-}
-
-// Parses a URL the user claims points at a profile this tool already
-// generated, and returns its slug — or null if the URL doesn't point at one
-// of our own allowed hosts in the expected /profile/<slug> shape. Used by
-// /tailor's "paste your profile link instead of re-uploading" CV source.
-export function extractSlugFromProfileUrl(input: string): string | null {
-  let url: URL;
-  try {
-    url = new URL(input);
-  } catch {
-    return null;
-  }
-
-  const isLocalDev = process.env.NODE_ENV !== "production" && url.hostname === "localhost";
-  if (url.protocol !== "https:" && !isLocalDev) return null;
-  if (!ALLOWED_PROFILE_HOSTS.includes(url.hostname.toLowerCase())) return null;
-
-  const match = url.pathname.match(/^\/profile\/([a-z0-9-]+)\/?$/);
-  return match ? match[1] : null;
 }

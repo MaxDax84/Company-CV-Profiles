@@ -9,12 +9,12 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  lang: 'en',
+  lang: 'it',
   setLang: () => {},
 })
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>('en')
+  const [lang, setLang] = useState<Language>('it')
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>
       {children}

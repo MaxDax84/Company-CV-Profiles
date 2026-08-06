@@ -4,31 +4,34 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* BeOnWeb — Deep Space Electric Blue */
-  --background: oklch(0.10 0.012 255);
-  --foreground: oklch(0.95 0.008 250);
-  --card: oklch(0.15 0.012 255);
-  --card-foreground: oklch(0.95 0.008 250);
-  --popover: oklch(0.15 0.012 255);
-  --popover-foreground: oklch(0.95 0.008 250);
-  --primary: oklch(0.68 0.22 230);
-  --primary-foreground: oklch(0.10 0.012 255);
-  --secondary: oklch(0.18 0.012 255);
-  --secondary-foreground: oklch(0.90 0.008 250);
-  --muted: oklch(0.18 0.012 255);
-  --muted-foreground: oklch(0.58 0.008 250);
-  --accent: oklch(0.68 0.22 230);
-  --accent-foreground: oklch(0.10 0.012 255);
+  /* BeOnWeb v2 — AI Career Platform: electric violet + cyan duotone */
+  --background: oklch(0.09 0.016 290);
+  --foreground: oklch(0.96 0.006 250);
+  --card: oklch(0.14 0.018 290);
+  --card-foreground: oklch(0.96 0.006 250);
+  --popover: oklch(0.14 0.018 290);
+  --popover-foreground: oklch(0.96 0.006 250);
+  --primary: oklch(0.68 0.21 292);
+  --primary-foreground: oklch(0.09 0.016 290);
+  --secondary: oklch(0.17 0.016 290);
+  --secondary-foreground: oklch(0.90 0.006 250);
+  --muted: oklch(0.17 0.016 290);
+  --muted-foreground: oklch(0.60 0.012 270);
+  --accent: oklch(0.68 0.21 292);
+  --accent-foreground: oklch(0.09 0.016 290);
+  --accent-cyan: oklch(0.78 0.13 195);
+  --accent-cyan-foreground: oklch(0.09 0.016 290);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.95 0.008 250);
-  --border: oklch(0.24 0.015 255);
-  --input: oklch(0.18 0.012 255);
-  --ring: oklch(0.68 0.22 230);
+  --destructive-foreground: oklch(0.96 0.006 250);
+  --border: oklch(0.26 0.02 290);
+  --input: oklch(0.17 0.016 290);
+  --ring: oklch(0.68 0.21 292);
   --radius: 0.75rem;
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
+  --font-sans: var(--font-body), 'Inter Fallback';
+  --font-heading: var(--font-heading), 'Space Grotesk Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -44,6 +47,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-cyan-foreground: var(--accent-cyan-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -94,15 +99,23 @@
 .gradient-text {
   background: linear-gradient(
     135deg,
-    oklch(0.72 0.22 225) 0%,
-    oklch(0.80 0.18 270) 45%,
-    oklch(0.72 0.22 225) 100%
+    oklch(0.78 0.13 195) 0%,
+    oklch(0.70 0.21 292) 55%,
+    oklch(0.78 0.13 195) 100%
   );
   background-size: 200% 200%;
   animation: gradient-x 7s ease infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Glass card — used across the redesigned marketing sections */
+.glass-card {
+  background: oklch(0.16 0.018 290 / 0.55);
+  border: 1px solid oklch(0.68 0.21 292 / 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .animate-glow-pulse {
@@ -121,8 +134,8 @@
 /* Grid overlay helper */
 .grid-overlay {
   background-image:
-    linear-gradient(oklch(0.68 0.22 230 / 1) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.68 0.22 230 / 1) 1px, transparent 1px);
+    linear-gradient(oklch(0.68 0.21 292 / 1) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.68 0.21 292 / 1) 1px, transparent 1px);
   background-size: 60px 60px;
   opacity: 0.025;
 }

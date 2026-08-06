@@ -38,7 +38,7 @@ export default function PortfolioSection() {
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em] mb-4">
             {t.sectionLabel}
           </p>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-5">{t.title}</h2>
+          <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-5">{t.title}</h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
             {t.subtitle}
           </p>

@@ -41,7 +41,7 @@ export default function PricingSection() {
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em] mb-4">
             {t.sectionLabel}
           </p>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-5">{t.title}</h2>
+          <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-5">{t.title}</h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto leading-relaxed">
             {t.subtitle}
           </p>
@@ -61,12 +61,12 @@ export default function PricingSection() {
         </div>
 
         {/* Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch mb-8 max-w-3xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-6 items-stretch mb-8 max-w-3xl mx-auto">
           {t.plans.map((plan, i) => (
             <div
               key={plan.name}
               className={cn(
-                'relative rounded-2xl border p-8 flex flex-col transition-all duration-700',
+                'relative rounded-2xl border p-8 flex flex-col w-full sm:w-80 transition-all duration-700',
                 plan.highlighted
                   ? 'border-primary/60 bg-primary/6 shadow-xl shadow-primary/15 scale-[1.02]'
                   : 'border-border/50 bg-card/60 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8',
@@ -127,7 +127,7 @@ export default function PricingSection() {
 
               {/* CTA */}
               <a
-                href="#contact"
+                href="/generate"
                 className={cn(
                   'block w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200',
                   plan.highlighted

@@ -26,9 +26,6 @@ export default function Navigation() {
 
   const links = [
     { href: href('#services'), label: t.services },
-    { href: href('#portfolio'), label: t.portfolio },
-    { href: href('#pricing'), label: t.pricing },
-    { href: href('#contact'), label: t.contact },
   ]
 
   const generateLabel = (t as { generate?: string }).generate ?? 'Try Free'
@@ -49,7 +46,7 @@ export default function Navigation() {
           <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center transition-all group-hover:border-primary/60 group-hover:bg-primary/25">
             <Globe className="w-4 h-4 text-primary" />
           </div>
-          <span className="font-bold text-lg tracking-tight">
+          <span className="font-heading font-bold text-lg tracking-tight">
             Go<span className="text-primary">On</span>Web
           </span>
         </a>
@@ -91,7 +88,7 @@ export default function Navigation() {
 
           {/* Get started button (desktop) */}
           <a
-            href={href('#contact')}
+            href="/generate"
             className="hidden md:inline-flex items-center px-4 py-1.5 rounded-lg bg-primary/15 border border-primary/30 hover:bg-primary/25 hover:border-primary/50 text-primary text-sm font-medium transition-all duration-200"
           >
             {lang === 'en' ? 'Get Started' : 'Inizia Ora'}

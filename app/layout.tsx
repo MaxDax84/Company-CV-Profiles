@@ -1,15 +1,19 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Space_Grotesk, Inter } from 'next/font/google'
 import { LanguageProvider } from '@/components/language-provider'
 import './globals.css'
 
-const _geist = Geist({ subsets: ['latin'] })
-const _geistMono = Geist_Mono({ subsets: ['latin'] })
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-heading',
+})
+const inter = Inter({ subsets: ['latin'], variable: '--font-body' })
 
 export const metadata: Metadata = {
-  title: 'BeOnWeb | Professional Web CV Creation',
+  title: 'BeOnWeb | Più colloqui, con il CV che hai già',
   description:
-    'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Custom design, domain setup, and ongoing maintenance.',
+    'BeOnWeb usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.',
   icons: {
     icon: '/icon.svg',
   },
@@ -18,7 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
+      <body className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased`}>
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
