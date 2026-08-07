@@ -1,14 +1,18 @@
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import PdfExportButton from "@/components/pdf-export-button";
+import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import { LogoutButton, DeleteProfileButton } from "@/components/account-actions";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedProfileRow } from "@/lib/profile-store";
 import { getCreditBalance } from "@/lib/credits";
 
 const ACCENT = "#6366f1";
 
 export default async function AccountPage() {
+  if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

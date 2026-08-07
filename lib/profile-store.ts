@@ -2,7 +2,7 @@ import { kv } from "./kv";
 import type { ProfileSchema } from "./schema";
 import { parseResume } from "./parse-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
-import { createServiceSupabaseClient } from "./supabase/service";
+import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Shared slug/KV/Postgres plumbing used by /api/parse-resume, /api/claim,
@@ -50,14 +50,26 @@ async function getRawPendingProfile(slug: string): Promise<ProfileSchema | null>
 // Public-safe read: used by the public profile page and its metadata.
 // Checks the permanent (claimed) Postgres record first, falls back to a
 // still-pending KV preview, strips PII either way.
+//
+// Before Supabase is configured (or on any Postgres error), this falls
+// through to the KV check instead of throwing — the seeded demo/showcase
+// profiles (see /api/seed-demo) only ever live in KV and have no account
+// behind them, so they must keep working even with no Supabase project set
+// up yet.
 export async function getProfileBySlug(slug: string): Promise<ProfileSchema | null> {
-  const service = createServiceSupabaseClient();
-  const { data } = await service
-    .from("profiles")
-    .select("data")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (data) return stripPII(data.data as ProfileSchema);
+  if (isSupabaseConfigured()) {
+    try {
+      const service = createServiceSupabaseClient();
+      const { data } = await service
+        .from("profiles")
+        .select("data")
+        .eq("slug", slug)
+        .maybeSingle();
+      if (data) return stripPII(data.data as ProfileSchema);
+    } catch (err) {
+      console.error("[getProfileBySlug] Postgres lookup failed, falling back to KV", err);
+    }
+  }
 
   const pending = await getRawPendingProfile(slug);
   return pending ? stripPII(pending) : null;

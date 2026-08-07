@@ -1,11 +1,15 @@
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import TailorForm from "@/components/tailor-form";
+import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedProfileRow } from "@/lib/profile-store";
 import { getCreditBalance } from "@/lib/credits";
 
 export default async function TailorPage() {
+  if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
