@@ -212,9 +212,14 @@ export default function GeneratePage() {
                   <p className="text-sm font-semibold" style={{ color: selected.accent }}>
                     Questa è solo un&apos;anteprima
                   </p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Crea un account gratuito per salvare questo profilo migliorato, scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso) oppure per adattare il CV ad un annuncio di lavoro specifico.
-                  </p>
+                  <div className="text-xs text-muted-foreground leading-relaxed space-y-1.5">
+                    <p>Crea un account gratuito per:</p>
+                    <ul className="space-y-1 pl-4">
+                      <li className="list-disc">Salvare questo profilo migliorato per sempre</li>
+                      <li className="list-disc">Scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso)</li>
+                      <li className="list-disc">Adattare il CV a un annuncio di lavoro specifico</li>
+                    </ul>
+                  </div>
                   <a
                     href={`/signup?claim=${claimToken}`}
                     className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"

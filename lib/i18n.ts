@@ -496,7 +496,7 @@ export const translations = {
       generatingNote: 'Potrebbe richiedere 10–20 secondi',
       timeoutErrorNote: 'Il server ha impiegato troppo tempo a rispondere. Riprova tra qualche istante.',
       done: 'Profilo creato!',
-      doneNote: 'Il tuo sito è disponibile a questo link:',
+      doneNote: '',
       openProfile: 'Apri il profilo ↗',
       generateAnother: 'Genera un altro',
       doneExpiry: 'Il profilo sarà disponibile per 48 ore, poi verrà eliminato automaticamente.',

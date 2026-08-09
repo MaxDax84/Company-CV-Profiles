@@ -80,7 +80,7 @@ export default function ProfileResultPanel({
       <div className="text-4xl">✅</div>
       <div>
         <p className="font-semibold text-foreground">{labels.done}</p>
-        <p className="text-sm text-muted-foreground mt-1">{labels.doneNote}</p>
+        {labels.doneNote && <p className="text-sm text-muted-foreground mt-1">{labels.doneNote}</p>}
       </div>
       <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
 
