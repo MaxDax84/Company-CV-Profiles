@@ -13,6 +13,10 @@ export interface ProfileResultPanelLabels {
   copyLinkDone: string;
   share: string;
   generateAnother: string;
+  // Short "why a web page, not just a PDF" blurb — optional since /tailor's
+  // result (already a saved, owned profile) doesn't need to re-sell the format.
+  valueTitle?: string;
+  valueText?: string;
 }
 
 interface ProfileResultPanelProps {
@@ -80,34 +84,49 @@ export default function ProfileResultPanel({
       </div>
       <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
 
+      {labels.valueTitle && labels.valueText && (
+        <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-1">
+          <p className="text-xs font-semibold text-foreground/80">{labels.valueTitle}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">{labels.valueText}</p>
+        </div>
+      )}
+
       {beforeAfter}
 
-      <a
-        href={`/profile/${slug}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"
-        style={{ background: accentColor, color: "#000", boxShadow: `0 4px 20px ${accentColor}50` }}
-      >
-        {labels.openProfile}
-      </a>
+      {/* Still a pending preview (no account behind it yet) — opening,
+          copying, or sharing this link is premature: it's unclaimed and
+          will expire, so these actions only appear once there's no
+          claimSlot to fill (i.e. the profile is already permanently saved). */}
+      {!claimSlot && (
+        <>
+          <a
+            href={`/profile/${slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"
+            style={{ background: accentColor, color: "#000", boxShadow: `0 4px 20px ${accentColor}50` }}
+          >
+            {labels.openProfile}
+          </a>
 
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={handleCopyLink}
-          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
-        >
-          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-          {copied ? labels.copyLinkDone : labels.copyLink}
-        </button>
-        <button
-          onClick={handleShare}
-          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
-        >
-          <Share2 className="w-3.5 h-3.5" />
-          {labels.share}
-        </button>
-      </div>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+            >
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? labels.copyLinkDone : labels.copyLink}
+            </button>
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              {labels.share}
+            </button>
+          </div>
+        </>
+      )}
 
       {extraActions}
 

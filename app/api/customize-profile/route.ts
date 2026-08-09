@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getClientIp, customizeProfileRatelimit } from "@/lib/rate-limit";
-import { updatePendingProfile } from "@/lib/profile-store";
+import { getClientIp, improveProfileRatelimit } from "@/lib/rate-limit";
+import { improveAndFinalizePendingProfile } from "@/lib/profile-store";
 import { isTemplateStyle } from "@/lib/templates";
-import type { TemplateStyle } from "@/lib/schema";
+import { computeCvScore } from "@/lib/cv-score";
 
-export const runtime = 'edge';
+// Node runtime (not edge): this route now makes a Claude call (the phase-2
+// "improve" pass) — maxDuration only takes effect on Node functions.
+export const maxDuration = 60;
 
-// Second step of the two-phase /generate flow: the CV was already analyzed
-// and scored (see /api/parse-resume), no Claude call happens here — this
-// just applies the user's template/LinkedIn choices to their pending
-// preview before it's shown as a finished page.
+// Second step of the two-phase /generate flow: phase 1 (/api/parse-resume)
+// only extracts faithfully and scores the CV as-is. This is where the AI
+// actually improves the content (mainly the bio) and the user's chosen
+// template gets applied, right before the page is finalized.
 export async function POST(req: NextRequest) {
   try {
     const clientIp = getClientIp(req);
-    const { success, reset } = await customizeProfileRatelimit.limit(clientIp);
+    const { success, reset } = await improveProfileRatelimit.limit(clientIp);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },
@@ -24,22 +26,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const claimToken = body?.claimToken;
     const template = body?.template;
-    const linkedin = body?.linkedin;
 
     if (!claimToken || typeof claimToken !== "string") {
       return NextResponse.json({ error: "Missing claim token" }, { status: 400 });
     }
-
-    const updates: { template?: TemplateStyle; linkedin?: string } = {};
-    if (template !== undefined) {
-      if (!isTemplateStyle(template)) {
-        return NextResponse.json({ error: "Invalid template" }, { status: 400 });
-      }
-      updates.template = template;
+    if (template !== undefined && !isTemplateStyle(template)) {
+      return NextResponse.json({ error: "Invalid template" }, { status: 400 });
     }
-    if (typeof linkedin === "string") updates.linkedin = linkedin;
 
-    const result = await updatePendingProfile(claimToken, updates);
+    const result = await improveAndFinalizePendingProfile(claimToken, template);
     if (!result) {
       return NextResponse.json(
         { error: "Preview expired. Please analyze your CV again." },
@@ -47,7 +42,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ slug: result.slug, profile: result.profile });
+    return NextResponse.json({
+      slug: result.slug,
+      profile: result.profile,
+      cvScoreAfter: computeCvScore(result.profile),
+    });
   } catch (err) {
     console.error("[customize-profile]", err);
     return NextResponse.json(

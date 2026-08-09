@@ -27,7 +27,6 @@ export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
-  const [linkedin, setLinkedin] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
@@ -99,7 +98,7 @@ export default function GeneratePage() {
       const res = await fetch("/api/customize-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ claimToken, template, linkedin: linkedin.trim() }),
+        body: JSON.stringify({ claimToken, template }),
       });
       let data;
       try {
@@ -109,6 +108,7 @@ export default function GeneratePage() {
       }
       if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
       setProfile(data.profile);
+      setCvScore(prev => prev ? { ...prev, after: data.cvScoreAfter ?? prev.after } : prev);
       setState("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
@@ -143,7 +143,6 @@ export default function GeneratePage() {
     setCvScore(null);
     setFile(null);
     setPdfThumbnail(null);
-    setLinkedin("");
     setError(null);
     setIsCreating(false);
     setPrivacy(false);
@@ -214,7 +213,7 @@ export default function GeneratePage() {
                     Questa è solo un&apos;anteprima
                   </p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Crea un account gratuito per salvare questo profilo per sempre, scaricare il PDF (1 credito omaggio incluso) e adattarlo a un annuncio di lavoro.
+                    Crea un account gratuito per salvare questo profilo migliorato, scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso) oppure per adattare il CV ad un annuncio di lavoro specifico.
                   </p>
                   <a
                     href={`/signup?claim=${claimToken}`}
@@ -373,40 +372,6 @@ export default function GeneratePage() {
           <>
             <p className="text-center font-semibold text-foreground">{t.customizeTitle}</p>
 
-            {/* LinkedIn input */}
-            <div className="space-y-3">
-              <p
-                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
-                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
-              >
-                {t.stepLinkedin}
-              </p>
-              <div
-                className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
-                style={{ borderColor: linkedin ? `${selected.accent}60` : "rgba(255,255,255,0.08)" }}
-              >
-                <svg className="w-4 h-4 shrink-0 text-muted-foreground/50" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
-                  <circle cx="4" cy="4" r="2"/>
-                </svg>
-                <input
-                  type="url"
-                  value={linkedin}
-                  onChange={e => setLinkedin(e.target.value)}
-                  placeholder={t.linkedinPlaceholder}
-                  className="flex-1 bg-transparent text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none"
-                />
-                {linkedin && (
-                  <button
-                    onClick={() => setLinkedin("")}
-                    className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors text-xs"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
-
             {/* Template selector */}
             <div className="space-y-3">
               <p
@@ -493,11 +458,19 @@ export default function GeneratePage() {
             <button
               onClick={handleCreate}
               disabled={isCreating}
-              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60"
+              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
             >
-              {isCreating ? t.creatingNote : t.ctaReady}
+              {isCreating ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full border-2 border-black/25 border-t-black animate-spin" />
+                  {t.creatingNote}
+                </span>
+              ) : t.ctaReady}
             </button>
+            {isCreating && (
+              <p className="text-xs text-muted-foreground/50 text-center -mt-3">{t.generatingNote}</p>
+            )}
             <button
               onClick={() => setState("scored")}
               className="block mx-auto text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"

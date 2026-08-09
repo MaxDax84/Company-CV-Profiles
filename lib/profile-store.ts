@@ -1,6 +1,7 @@
 import { kv } from "./kv";
 import type { ProfileSchema, TemplateStyle } from "./schema";
 import { parseResume, type CvScoreBeforeRaw } from "./parse-resume";
+import { improveResume } from "./improve-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -162,35 +163,34 @@ export async function savePendingProfile(
   return { slug, claimToken };
 }
 
-// Applies the user's template/LinkedIn choices to their still-pending
-// preview, made *after* seeing the CV score (the two-phase /generate flow:
-// analyze + score first, customize + create the page second). Keyed by the
-// claim token rather than the slug — slugs are human-readable/guessable,
-// so authorizing this by slug alone would let anyone who can guess another
-// user's slug deface their still-unclaimed preview before they sign up.
-export async function updatePendingProfile(
+// Phase 2 of the /generate flow: the CV was already faithfully extracted and
+// scored in phase 1 (see parseResume's "before" score) — this is where the
+// actual AI improvement happens (mainly the bio, see lib/improve-resume.ts),
+// plus the user's template choice, right before the page is finalized.
+// Keyed by the claim token rather than the slug — slugs are
+// human-readable/guessable, so authorizing this by slug alone would let
+// anyone who can guess another user's slug trigger AI calls against their
+// still-unclaimed preview before they sign up.
+export async function improveAndFinalizePendingProfile(
   claimToken: string,
-  updates: { template?: TemplateStyle; linkedin?: string }
+  template?: TemplateStyle
 ): Promise<{ slug: string; profile: ProfileSchema } | null> {
   const claimRaw = await kv.get<string>(`claim:${claimToken}`);
   if (!claimRaw) return null;
   const { slug } = typeof claimRaw === "string" ? JSON.parse(claimRaw) : claimRaw;
 
-  const profile = await getRawPendingProfile(slug);
-  if (!profile) return null;
+  const pending = await getRawPendingProfile(slug);
+  if (!pending) return null;
 
-  if (updates.template) {
-    profile.metadata.template = updates.template;
-    profile.metadata.primary_color = TEMPLATE_COLORS[updates.template];
-  }
-  if (updates.linkedin && updates.linkedin.trim()) {
-    let linkedinUrl = updates.linkedin.trim();
-    if (!linkedinUrl.startsWith("http")) linkedinUrl = "https://" + linkedinUrl;
-    profile.personal_info.social_links.linkedin = linkedinUrl;
+  const improved = await improveResume(pending);
+
+  if (template && isTemplateStyle(template)) {
+    improved.metadata.template = template;
+    improved.metadata.primary_color = TEMPLATE_COLORS[template];
   }
 
-  await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PENDING_TTL_SECONDS });
-  return { slug, profile };
+  await kv.set(`profile:${slug}`, JSON.stringify(improved), { ex: PENDING_TTL_SECONDS });
+  return { slug, profile: improved };
 }
 
 export type ClaimError = "expired" | "already_has_profile";
