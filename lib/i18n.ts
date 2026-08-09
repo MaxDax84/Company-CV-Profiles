@@ -206,6 +206,7 @@ export const translations = {
         specificSkills: 'Specific skills',
         beforeLabel: 'Before',
         afterLabel: 'After',
+        claim: 'This is just the starting point — your CV still has plenty of room to grow.',
       },
     },
     tailor: {
@@ -366,7 +367,7 @@ export const translations = {
       job: 'Annuncio',
       ready: 'Pronto',
       score: 'Punteggio',
-      page: 'Pagina web',
+      page: 'Profilo digitale',
     },
     hero: {
       badge: 'Piattaforma AI per dare un boost alla tua carriera',
@@ -481,7 +482,7 @@ export const translations = {
       stepEmail: '3 · La tua email (opzionale)',
       emailPlaceholder: 'tu@email.com',
       emailHint: 'Ricevi via email un link personale per modificare o eliminare il profilo in futuro — non serve un account.',
-      stepTemplate: 'Scegli il template (scorri su ciascun profilo per vedere l\'anteprima)',
+      stepTemplate: 'Scegli il template (scrolla su ciascun template o clicca su "Preview" per vedere l\'anteprima)',
       dragHere: 'Trascina qui il tuo CV (in PDF)',
       dragOr: 'oppure clicca per selezionare il file',
       dragLimit: 'Max 10 MB · solo PDF',
@@ -512,8 +513,8 @@ export const translations = {
       ctaReady: 'Migliora il mio CV e genera il mio profilo online →',
       ctaWaiting: 'Carica il tuo CV per iniziare',
       scoredTitle: 'Ecco il punteggio del tuo CV',
-      scoredSubtitle: 'La nostra AI può migliorare i contenuti per alzare il punteggio — senza mai inventare nulla — e trasformarli in un profilo digitale completo.',
-      ctaProceed: 'Procedi con la creazione e con il miglioramento →',
+      scoredSubtitle: 'La nostra AI può migliorare i contenuti per alzare il punteggio trasformarli in un profilo digitale completo, senza mai inventare nulla.',
+      ctaProceed: 'Procedi →',
       customizeTitle: 'Personalizza la tua pagina web',
       creatingNote: 'Creazione in corso…',
       backToScore: '← Torna al punteggio',
@@ -527,7 +528,7 @@ export const translations = {
       needPrivacyNote: 'Spunta la casella qui sopra per accettare la Privacy Policy e continuare.',
       templates: {
         alpha: 'Dark · minimale · timeline',
-        beta: 'Chiaro · elegante · editoriale',
+        beta: 'Chiaro · editoriale',
         gamma: 'Hero scuro · sezioni chiare',
         delta: 'Luxury · navy · gold',
       },
@@ -540,6 +541,7 @@ export const translations = {
         specificSkills: 'Competenze specifiche',
         beforeLabel: 'Prima',
         afterLabel: 'Dopo',
+        claim: 'Questo è solo il punto di partenza — il tuo CV ha ancora molto margine di crescita.',
       },
     },
     tailor: {

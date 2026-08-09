@@ -3,6 +3,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { computeCvScore } from "@/lib/cv-score";
 import { AtsResumeDocument } from "@/components/pdf/AtsResumeDocument";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
@@ -39,7 +40,8 @@ export async function GET(
     throw err;
   }
 
-  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} />);
+  const scoreTotal = computeCvScore(row.data).total;
+  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} scoreTotal={scoreTotal} />);
 
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {

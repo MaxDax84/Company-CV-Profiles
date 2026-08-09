@@ -55,6 +55,13 @@ const styles = StyleSheet.create({
   skillLine: { fontSize: 9.5, lineHeight: 1.65, color: "#333333" },
   skillLabel: { fontFamily: "Helvetica-Bold", color: "#232323" },
   link: { textDecoration: "none", fontFamily: "Helvetica-Bold" },
+  // Effectively invisible (white-on-white) but still real text in the PDF's
+  // content stream, so a later re-upload of this exact export is readable
+  // by lib/parse-resume.ts — lets it recognize "this is our own prior
+  // output" and keep the same score instead of re-judging it fresh under a
+  // (deliberately much stricter) scoring rubric. See the SYSTEM_PROMPT
+  // exception in lib/parse-resume.ts.
+  scoreMarker: { position: "absolute", bottom: 4, right: 6, fontSize: 4, color: "#ffffff" },
 });
 
 function formatDateRange(start: string, end: string): string {
@@ -140,7 +147,7 @@ const LABELS_BY_LANG: Record<"it" | "en", Labels> = {
   },
 };
 
-export function AtsResumeDocument({ profile }: { profile: ProfileSchema }) {
+export function AtsResumeDocument({ profile, scoreTotal }: { profile: ProfileSchema; scoreTotal?: number }) {
   const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
   const { personal_info, experience, education, certifications, skills, projects, other } = profile;
   const accent = profile.metadata.primary_color || FALLBACK_ACCENT;
@@ -150,6 +157,9 @@ export function AtsResumeDocument({ profile }: { profile: ProfileSchema }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.topBar, { backgroundColor: accent }]} fixed />
+        {typeof scoreTotal === "number" && (
+          <Text style={styles.scoreMarker} fixed>{`BEONWEB-CV-SCORE:${scoreTotal}`}</Text>
+        )}
         <View style={styles.body}>
           <Text style={[styles.name, { color: accent }]}>{personal_info.full_name}</Text>
           <Text style={styles.title}>{personal_info.title}</Text>

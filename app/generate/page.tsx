@@ -344,6 +344,7 @@ export default function GeneratePage() {
                 after={cvScore.after}
                 accentColor={selected.accent}
                 labels={t.cvScore}
+                variant="teaser"
               />
             )}
             <div
@@ -391,7 +392,8 @@ export default function GeneratePage() {
                     }}
                   >
                     <div
-                      className="relative h-28 overflow-hidden"
+                      onClick={() => setTemplate(tpl.id)}
+                      className="relative h-28 overflow-hidden cursor-pointer"
                       style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
                     >
                       <iframe
@@ -416,23 +418,34 @@ export default function GeneratePage() {
                         {tpl.name.toUpperCase()}
                       </span>
                     </div>
-                    <button
+                    <div
                       onClick={() => setTemplate(tpl.id)}
                       className="w-full p-3 bg-white/[0.03] space-y-1.5 text-left cursor-pointer hover:bg-white/[0.06] transition-colors"
                     >
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
                       <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
-                      <a
-                        href={`/profile/${tpl.demoSlug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
-                        style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
-                      >
-                        Preview ↗
-                      </a>
-                    </button>
+                      <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
+                        <button
+                          onClick={e => { e.stopPropagation(); setTemplate(tpl.id); }}
+                          className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80 cursor-pointer"
+                          style={template === tpl.id
+                            ? { background: tpl.accent, color: "#000" }
+                            : { background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
+                        >
+                          {template === tpl.id ? "Scelto ✓" : "Seleziona"}
+                        </button>
+                        <a
+                          href={`/profile/${tpl.demoSlug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
+                          style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
+                        >
+                          Preview ↗
+                        </a>
+                      </div>
+                    </div>
                     {template === tpl.id && (
                       <div
                         className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"

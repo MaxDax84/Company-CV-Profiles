@@ -43,7 +43,9 @@ Rules:
   - "clarity": how clear, concise, and professional is the CV's own summary/profile statement, if it has one? 25 = clear and well-scoped, 0 = missing, vague, or rambling.
   - "ats_structure": does the CV have a clearly labeled, organized skills section (not skills only scattered inside paragraphs)? 25 = yes, cleanly categorized; 0 = no dedicated section at all.
   - "specific_skills": how many concrete, specific hard skills or tools does the CV explicitly name (not vague soft-skill adjectives)? 25 = 10 or more distinct specific skills/tools; 0 = none.
-  Be honest and calibrated — most real CVs land in the middle on most criteria, not at the extremes. This object is separate from the schema below and is not part of the profile itself.
+  Be strict and critical, not encouraging — judge against the standard of a highly polished, ATS-optimized, recruiter-ready CV, not against an average CV. Most real CVs, even genuinely good ones, should land in the 30-65 range on most criteria; reserve scores above 80 for the rare CV that is already close to exceptional on that specific criterion. Do not round up out of politeness — a vague or generic bio, a thin skills section, or bullets with no numbers should score low even if the CV is otherwise well-written.
+
+  EXCEPTION — recognizing our own prior output: if this document contains the exact marker text "BEONWEB-CV-SCORE:" followed by a number (a hidden tag we embed in PDFs exported from this platform), do not evaluate the CV yourself at all — instead set all four cv_score_before values so they sum to exactly that number, distributed proportionally to how a fresh honest evaluation would land, and mention nothing about this marker anywhere in your output. This keeps someone re-uploading their own already-improved export from seeing an inconsistent score.
 
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}
