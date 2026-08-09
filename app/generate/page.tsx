@@ -14,7 +14,7 @@ import CvScoreCard from "@/components/cv-score-card";
 import TrustBadges from "@/components/trust-badges";
 import StepProgress from "@/components/step-progress";
 
-type State = "idle" | "uploading" | "done" | "error";
+type State = "idle" | "analyzing" | "scored" | "customizing" | "done";
 
 const TEMPLATES: { id: TemplateStyle; name: string; accent: string; bg: string; demoSlug: string }[] = [
   { id: "alpha", name: "Alpha", accent: "#6366f1", bg: "#030608", demoSlug: "marco-ferretti" },
@@ -35,13 +35,14 @@ export default function GeneratePage() {
   const [claimToken, setClaimToken] = useState<string | null>(null);
   const [cvScore, setCvScore] = useState<{ before: CvScoreBreakdown | null; after: CvScoreBreakdown } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const turnstileRef = useRef<TurnstileHandle>(null);
 
   useEffect(() => {
-    if (state !== "uploading") {
+    if (state !== "analyzing") {
       setStepIndex(0);
       return;
     }
@@ -49,16 +50,16 @@ export default function GeneratePage() {
     return () => clearInterval(id);
   }, [state]);
 
-  async function handleGenerate() {
+  // Phase 1: upload the CV, get it analyzed and scored — no template or
+  // LinkedIn choice yet, those come after the user decides to proceed.
+  async function handleAnalyze() {
     if (!file || !turnstileToken) return;
-    setState("uploading");
+    setState("analyzing");
     setError(null);
 
     const formData = new FormData();
     formData.append("pdf", file);
-    formData.append("template", template);
     formData.append("turnstileToken", turnstileToken);
-    if (linkedin.trim()) formData.append("linkedin", linkedin.trim());
 
     try {
       const res = await fetch("/api/parse-resume", { method: "POST", body: formData });
@@ -75,14 +76,44 @@ export default function GeneratePage() {
       setProfile(data.profile);
       setClaimToken(data.claimToken ?? null);
       setCvScore(data.cvScore ?? null);
-      setState("done");
+      setState("scored");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
-      setState("error");
+      setState("idle");
     } finally {
       // Turnstile tokens are single-use — always get a fresh one for the next attempt.
       turnstileRef.current?.reset();
       setTurnstileToken(null);
+    }
+  }
+
+  // Phase 2: apply the chosen template/LinkedIn to the already-analyzed
+  // profile and turn it into the finished page. No Claude call here — the
+  // profile content itself was already extracted and scored in phase 1.
+  async function handleCreate() {
+    if (!claimToken) return;
+    setIsCreating(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/customize-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ claimToken, template, linkedin: linkedin.trim() }),
+      });
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(t.timeoutErrorNote);
+      }
+      if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
+      setProfile(data.profile);
+      setState("done");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto");
+    } finally {
+      setIsCreating(false);
     }
   }
 
@@ -114,6 +145,7 @@ export default function GeneratePage() {
     setPdfThumbnail(null);
     setLinkedin("");
     setError(null);
+    setIsCreating(false);
     setPrivacy(false);
     if (inputRef.current) inputRef.current.value = "";
   }
@@ -122,7 +154,7 @@ export default function GeneratePage() {
   const t = translations[lang].generate;
   const stepLabels = translations[lang].steps;
   const selected = TEMPLATES.find(t => t.id === template)!;
-  const canGenerate = !!file && privacy && !!turnstileToken && state !== "uploading";
+  const canAnalyze = !!file && privacy && !!turnstileToken && state === "idle";
   const needsPrivacy = !!file && !privacy;
 
   return (
@@ -156,12 +188,13 @@ export default function GeneratePage() {
           </p>
         </div>
 
-        {(state === "idle" || state === "error") && (
+        {state !== "done" && (
           <StepProgress
             accent={selected.accent}
             steps={[
               { label: stepLabels.cv, done: !!file },
-              { label: stepLabels.ready, done: canGenerate },
+              { label: stepLabels.score, done: state === "scored" || state === "customizing" },
+              { label: stepLabels.page, done: false },
             ]}
           />
         )}
@@ -271,8 +304,8 @@ export default function GeneratePage() {
               ) : undefined
             }
           />
-        ) : state === "uploading" ? (
-          /* ── Uploading state ── */
+        ) : state === "analyzing" ? (
+          /* ── Analyzing state ── */
           <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.08)" }}>
             <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
             <div className="space-y-2 max-w-xs mx-auto">
@@ -303,52 +336,42 @@ export default function GeneratePage() {
             </div>
             <p className="text-xs text-muted-foreground/50 text-center">{t.generatingNote}</p>
           </div>
-        ) : (
-          /* ── Idle / error state ── */
-          <>
-            {/* Upload area */}
-            <div className="space-y-3">
-              <p
-                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
-                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
+        ) : state === "scored" ? (
+          /* ── Scored state: show the CV score, ask whether to proceed ── */
+          <div className="space-y-6">
+            {cvScore && (
+              <CvScoreCard
+                before={cvScore.before}
+                after={cvScore.after}
+                accentColor={selected.accent}
+                labels={t.cvScore}
+              />
+            )}
+            <div
+              className="rounded-3xl border p-8 text-center space-y-4"
+              style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d`, boxShadow: `0 0 40px ${selected.accent}18` }}
+            >
+              <p className="font-semibold text-foreground">{t.scoredTitle}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{t.scoredSubtitle}</p>
+              <button
+                onClick={() => setState("customizing")}
+                className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200"
+                style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
               >
-                {t.stepUpload}
-              </p>
-              <div
-                onClick={() => inputRef.current?.click()}
-                onDrop={handleDrop}
-                onDragOver={e => e.preventDefault()}
-                className="border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300"
-                style={{ borderColor: file ? `${selected.accent}70` : `${selected.accent}35`, boxShadow: file ? `0 0 24px ${selected.accent}18` : "none" }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLDivElement;
-                  el.style.borderColor = `${selected.accent}70`;
-                  el.style.boxShadow = `0 0 32px ${selected.accent}18`;
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLDivElement;
-                  el.style.borderColor = file ? `${selected.accent}70` : `${selected.accent}35`;
-                  el.style.boxShadow = file ? `0 0 24px ${selected.accent}18` : "none";
-                }}
+                {t.ctaProceed}
+              </button>
+              <button
+                onClick={handleReset}
+                className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
               >
-                {file ? (
-                  <>
-                    <p className="text-3xl mb-3">✅</p>
-                    <p className="font-medium text-foreground/80">{file.name}</p>
-                    <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-4xl mb-4">📄</p>
-                    <p className="font-medium text-foreground/80">{t.dragHere}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{t.dragOr}</p>
-                    <p className="text-xs text-muted-foreground/50 mt-3">{t.dragLimit}</p>
-                  </>
-                )}
-                <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
-              </div>
-              <TrustBadges />
+                {t.generateAnother}
+              </button>
             </div>
+          </div>
+        ) : state === "customizing" ? (
+          /* ── Customizing state: LinkedIn + template, then create the page ── */
+          <>
+            <p className="text-center font-semibold text-foreground">{t.customizeTitle}</p>
 
             {/* LinkedIn input */}
             <div className="space-y-3">
@@ -461,7 +484,76 @@ export default function GeneratePage() {
             </div>
 
             {/* Error */}
-            {state === "error" && error && (
+            {error && (
+              <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-400 text-center">
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleCreate}
+              disabled={isCreating}
+              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60"
+              style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
+            >
+              {isCreating ? t.creatingNote : t.ctaReady}
+            </button>
+            <button
+              onClick={() => setState("scored")}
+              className="block mx-auto text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            >
+              {t.backToScore}
+            </button>
+          </>
+        ) : (
+          /* ── Idle state ── */
+          <>
+            {/* Upload area */}
+            <div className="space-y-3">
+              <p
+                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
+                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
+              >
+                {t.stepUpload}
+              </p>
+              <div
+                onClick={() => inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={e => e.preventDefault()}
+                className="border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300"
+                style={{ borderColor: file ? `${selected.accent}70` : `${selected.accent}35`, boxShadow: file ? `0 0 24px ${selected.accent}18` : "none" }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.borderColor = `${selected.accent}70`;
+                  el.style.boxShadow = `0 0 32px ${selected.accent}18`;
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.borderColor = file ? `${selected.accent}70` : `${selected.accent}35`;
+                  el.style.boxShadow = file ? `0 0 24px ${selected.accent}18` : "none";
+                }}
+              >
+                {file ? (
+                  <>
+                    <p className="text-3xl mb-3">✅</p>
+                    <p className="font-medium text-foreground/80">{file.name}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-4xl mb-4">📄</p>
+                    <p className="font-medium text-foreground/80">{t.dragHere}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{t.dragOr}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-3">{t.dragLimit}</p>
+                  </>
+                )}
+                <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
+              </div>
+              <TrustBadges />
+            </div>
+
+            {/* Error */}
+            {error && (
               <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-400 text-center">
                 {error}
               </div>
@@ -518,12 +610,12 @@ export default function GeneratePage() {
               </div>
             )}
 
-            {/* Generate button */}
+            {/* Analyze button */}
             <button
-              onClick={handleGenerate}
-              disabled={!canGenerate}
+              onClick={handleAnalyze}
+              disabled={!canAnalyze}
               className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
-              style={canGenerate ? {
+              style={canAnalyze ? {
                 background: selected.accent,
                 color: "#000",
                 boxShadow: `0 4px 24px ${selected.accent}50`,
@@ -536,7 +628,7 @@ export default function GeneratePage() {
                 color: "rgba(255,255,255,0.3)",
               }}
             >
-              {file ? t.ctaReady : t.ctaWaiting}
+              {file ? t.ctaAnalyze : t.ctaWaiting}
             </button>
             {needsPrivacy && (
               <p className="text-xs text-center -mt-3" style={{ color: "rgba(251,191,36,0.8)" }}>

@@ -1,5 +1,5 @@
 import { kv } from "./kv";
-import type { ProfileSchema } from "./schema";
+import type { ProfileSchema, TemplateStyle } from "./schema";
 import { parseResume, type CvScoreBeforeRaw } from "./parse-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
@@ -160,6 +160,37 @@ export async function savePendingProfile(
   await kv.set(`claim:${claimToken}`, JSON.stringify({ slug }), { ex: PENDING_TTL_SECONDS });
 
   return { slug, claimToken };
+}
+
+// Applies the user's template/LinkedIn choices to their still-pending
+// preview, made *after* seeing the CV score (the two-phase /generate flow:
+// analyze + score first, customize + create the page second). Keyed by the
+// claim token rather than the slug — slugs are human-readable/guessable,
+// so authorizing this by slug alone would let anyone who can guess another
+// user's slug deface their still-unclaimed preview before they sign up.
+export async function updatePendingProfile(
+  claimToken: string,
+  updates: { template?: TemplateStyle; linkedin?: string }
+): Promise<{ slug: string; profile: ProfileSchema } | null> {
+  const claimRaw = await kv.get<string>(`claim:${claimToken}`);
+  if (!claimRaw) return null;
+  const { slug } = typeof claimRaw === "string" ? JSON.parse(claimRaw) : claimRaw;
+
+  const profile = await getRawPendingProfile(slug);
+  if (!profile) return null;
+
+  if (updates.template) {
+    profile.metadata.template = updates.template;
+    profile.metadata.primary_color = TEMPLATE_COLORS[updates.template];
+  }
+  if (updates.linkedin && updates.linkedin.trim()) {
+    let linkedinUrl = updates.linkedin.trim();
+    if (!linkedinUrl.startsWith("http")) linkedinUrl = "https://" + linkedinUrl;
+    profile.personal_info.social_links.linkedin = linkedinUrl;
+  }
+
+  await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PENDING_TTL_SECONDS });
+  return { slug, profile };
 }
 
 export type ClaimError = "expired" | "already_has_profile";

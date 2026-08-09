@@ -15,6 +15,15 @@ export const tailorResumeRatelimit = new Ratelimit({
   prefix: "ratelimit:tailor-resume",
 });
 
+// No Claude call here (just a KV write), so a looser limit than the two
+// above is fine — this only guards against scripted spam re-writing the
+// same pending preview over and over.
+export const customizeProfileRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(20, "1 h"),
+  prefix: "ratelimit:customize-profile",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
