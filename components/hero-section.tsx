@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 
@@ -35,9 +35,9 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-24">
         {/* Badge */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium mb-10 animate-fade-in"
+          className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-primary/30 bg-primary/8 text-primary text-base sm:text-lg font-semibold mb-10 animate-fade-in"
         >
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-5 h-5" />
           {t.badge}
         </div>
 
@@ -66,27 +66,21 @@ export default function HeroSection() {
         >
           <a
             href="/generate"
-            className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+            className="px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}
           </a>
-          <a
-            href="/tailor"
-            className="px-8 py-3.5 rounded-xl border border-primary/40 hover:border-primary/70 text-primary font-semibold text-sm transition-all duration-200 hover:bg-primary/8 hover:-translate-y-0.5"
-          >
-            {t.ctaSecondary}
-          </a>
         </div>
 
-        {/* Honest value props — no invented metrics */}
+        {/* Concrete trust signals — each explains a "why", not just a label */}
         <div
           className="mt-20 flex flex-wrap justify-center gap-3 sm:gap-4 animate-fade-in"
           style={{ animationDelay: '0.48s' }}
         >
           {[
-            lang === 'en' ? 'Never invents anything' : 'Non inventa mai nulla',
-            lang === 'en' ? 'ATS-optimized PDF' : 'PDF ottimizzato per ATS',
-            lang === 'en' ? 'Ready in minutes' : 'Pronto in pochi minuti',
+            lang === 'en' ? 'Built from your real CV — never invented' : 'Parte dal tuo CV vero — mai inventato',
+            lang === 'en' ? 'Optimized to pass ATS filters' : 'Ottimizzato per superare i filtri ATS',
+            lang === 'en' ? '1 free credit to get started' : '1 credito gratis per iniziare',
           ].map((label) => (
             <div
               key={label}
@@ -96,14 +90,6 @@ export default function HeroSection() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-        <span className="text-xs text-muted-foreground tracking-widest uppercase">
-          {lang === 'en' ? 'Scroll' : 'Scorri'}
-        </span>
-        <ChevronDown className="w-4 h-4 text-muted-foreground animate-bounce" />
       </div>
     </section>
   )

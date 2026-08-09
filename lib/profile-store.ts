@@ -1,6 +1,6 @@
 import { kv } from "./kv";
 import type { ProfileSchema } from "./schema";
-import { parseResume } from "./parse-resume";
+import { parseResume, type CvScoreBeforeRaw } from "./parse-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -212,6 +212,11 @@ export interface ResolveFromPdfResult {
   fromCache: boolean;
   cachedSlug: string | null;
   templateChanged: boolean;
+  // null on a cache hit — we don't persist the raw before-score alongside
+  // the cached pending profile, so a repeat upload within the same window
+  // just won't show a "before" comparison (the "after" score still works,
+  // it's computed fresh from the profile either way).
+  scoreBefore: CvScoreBeforeRaw | null;
 }
 
 // Extracts a profile from an uploaded PDF, reusing a cached extraction if
@@ -239,11 +244,11 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: null };
     }
   }
 
-  const profile = await parseResume(buf);
+  const { profile, scoreBefore } = await parseResume(buf);
 
   // Normalize apostrophes in name (e.g. D'Assano → Dassano)
   profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
@@ -254,5 +259,5 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false };
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore };
 }

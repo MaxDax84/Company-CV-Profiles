@@ -1,6 +1,19 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 
+// Raw 0-25-per-criterion score Claude assigns to the SOURCE CV, before any
+// of the extraction/clarity improvements above are applied — only the model
+// can judge this honestly, since by the time we have a ProfileSchema the
+// content has already been normalized into our structure. The comparable
+// "after" score is computed deterministically from the final profile in
+// lib/cv-score.ts instead of trusting the model's arithmetic twice.
+export interface CvScoreBeforeRaw {
+  quantified_results: number;
+  clarity: number;
+  ats_structure: number;
+  specific_skills: number;
+}
+
 const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extract information from a CV/resume PDF and return ONLY a valid JSON object matching the schema below.
 
 Rules:
@@ -25,9 +38,23 @@ Rules:
 - For image_placeholder: assign "gradient-1" through "gradient-8" to each project sequentially.
 - For other: catch-all for anything relevant that doesn't fit the sections above — hobbies, sports, volunteering, non-professional collaborations, extra languages, interests. Max 8 short items (a few words each), same language as the CV. Omit the field entirely if there's nothing like this in the CV — do not invent generic filler.
 - Detect language from the CV content and set metadata.language to "it" or "en".
+- Additionally, evaluate the SOURCE CV as originally written (before any of the improvements you make above) on 4 criteria, each an integer from 0 to 25, in a top-level "cv_score_before" object:
+  - "quantified_results": what fraction of the CV's own bullet points/achievements already include a concrete number, percentage, or monetary value? 25 = nearly all do, 0 = none do.
+  - "clarity": how clear, concise, and professional is the CV's own summary/profile statement, if it has one? 25 = clear and well-scoped, 0 = missing, vague, or rambling.
+  - "ats_structure": does the CV have a clearly labeled, organized skills section (not skills only scattered inside paragraphs)? 25 = yes, cleanly categorized; 0 = no dedicated section at all.
+  - "specific_skills": how many concrete, specific hard skills or tools does the CV explicitly name (not vague soft-skill adjectives)? 25 = 10 or more distinct specific skills/tools; 0 = none.
+  Be honest and calibrated — most real CVs land in the middle on most criteria, not at the extremes. This object is separate from the schema below and is not part of the profile itself.
 
 Schema:
-${PROFILE_JSON_SCHEMA_BLOCK}`;
+${PROFILE_JSON_SCHEMA_BLOCK}
+
+Also include, as a sibling of "personal_info" at the top level (not nested inside it):
+"cv_score_before": {
+  "quantified_results": number,
+  "clarity": number,
+  "ats_structure": number,
+  "specific_skills": number
+}`;
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -38,7 +65,12 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(binary);
 }
 
-export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema> {
+export interface ParseResumeResult {
+  profile: ProfileSchema;
+  scoreBefore: CvScoreBeforeRaw;
+}
+
+export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeResult> {
   const base64Pdf = arrayBufferToBase64(pdfBuffer);
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -85,14 +117,16 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ProfileSchema
     content: { type: string; text: string }[];
   };
 
-  const profile = extractProfileJson(
+  const parsed = extractProfileJson<ProfileSchema & { cv_score_before: CvScoreBeforeRaw }>(
     json,
     "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
   );
+
+  const { cv_score_before, ...profile } = parsed;
 
   if (!profile.metadata?.generated_at) {
     profile.metadata.generated_at = new Date().toISOString();
   }
 
-  return profile;
+  return { profile, scoreBefore: cv_score_before };
 }

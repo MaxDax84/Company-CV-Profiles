@@ -3,6 +3,7 @@ import { kv } from "@/lib/kv";
 import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { resolveProfileFromPdf, savePendingProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
+import { computeCvScore, normalizeScoreBefore } from "@/lib/cv-score";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -59,7 +60,12 @@ export async function POST(req: NextRequest) {
       }
       const claimToken = crypto.randomUUID();
       await kv.set(`claim:${claimToken}`, JSON.stringify({ slug: resolved.cachedSlug }), { ex: PENDING_TTL_SECONDS });
-      return NextResponse.json({ slug: resolved.cachedSlug, profile: resolved.profile, claimToken });
+      return NextResponse.json({
+        slug: resolved.cachedSlug,
+        profile: resolved.profile,
+        claimToken,
+        cvScore: { before: normalizeScoreBefore(resolved.scoreBefore), after: computeCvScore(resolved.profile) },
+      });
     }
 
     const profile = resolved.profile;
@@ -75,7 +81,12 @@ export async function POST(req: NextRequest) {
     const { slug, claimToken } = await savePendingProfile(profile);
     await kv.set(`pdf-hash:${resolved.pdfHash}`, slug, { ex: PENDING_TTL_SECONDS });
 
-    return NextResponse.json({ slug, profile, claimToken });
+    return NextResponse.json({
+      slug,
+      profile,
+      claimToken,
+      cvScore: { before: normalizeScoreBefore(resolved.scoreBefore), after: computeCvScore(profile) },
+    });
   } catch (err) {
     console.error("[parse-resume]", err);
     return NextResponse.json(

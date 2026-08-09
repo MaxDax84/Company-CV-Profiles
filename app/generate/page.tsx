@@ -3,12 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 import type { TemplateStyle, ProfileSchema } from "@/lib/schema";
+import type { CvScoreBreakdown } from "@/lib/cv-score";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
 import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
+import CvScoreCard from "@/components/cv-score-card";
 import TrustBadges from "@/components/trust-badges";
 import StepProgress from "@/components/step-progress";
 
@@ -31,6 +33,7 @@ export default function GeneratePage() {
   const [slug, setSlug] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [claimToken, setClaimToken] = useState<string | null>(null);
+  const [cvScore, setCvScore] = useState<{ before: CvScoreBreakdown | null; after: CvScoreBreakdown } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -71,6 +74,7 @@ export default function GeneratePage() {
       setSlug(data.slug);
       setProfile(data.profile);
       setClaimToken(data.claimToken ?? null);
+      setCvScore(data.cvScore ?? null);
       setState("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
@@ -105,6 +109,7 @@ export default function GeneratePage() {
     setSlug(null);
     setProfile(null);
     setClaimToken(null);
+    setCvScore(null);
     setFile(null);
     setPdfThumbnail(null);
     setLinkedin("");
@@ -189,7 +194,17 @@ export default function GeneratePage() {
               ) : undefined
             }
             beforeAfter={
-              profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio ? (
+              cvScore || (profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio) ? (
+                <div className="space-y-6">
+                  {cvScore && (
+                    <CvScoreCard
+                      before={cvScore.before}
+                      after={cvScore.after}
+                      accentColor={selected.accent}
+                      labels={t.cvScore}
+                    />
+                  )}
+                  {profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
                 <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-5">
                   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
                     {t.beforeAfterTitle}
@@ -251,6 +266,8 @@ export default function GeneratePage() {
                     </div>
                   </div>
                 </div>
+                  )}
+                </div>
               ) : undefined
             }
           />
@@ -291,7 +308,10 @@ export default function GeneratePage() {
           <>
             {/* Upload area */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <p
+                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
+                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
+              >
                 {t.stepUpload}
               </p>
               <div
@@ -332,7 +352,10 @@ export default function GeneratePage() {
 
             {/* LinkedIn input */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <p
+                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
+                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
+              >
                 {t.stepLinkedin}
               </p>
               <div
@@ -363,7 +386,10 @@ export default function GeneratePage() {
 
             {/* Template selector */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <p
+                className="inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-bold"
+                style={{ background: `${selected.accent}20`, color: selected.accent, border: `1px solid ${selected.accent}50` }}
+              >
                 {t.stepTemplate}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

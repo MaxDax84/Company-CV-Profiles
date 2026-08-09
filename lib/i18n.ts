@@ -187,6 +187,15 @@ export const translations = {
         delta: 'Luxury · navy · gold',
       },
       tailorInvite: 'Applying to a specific role? Tailor this profile to a job posting →',
+      cvScore: {
+        title: 'Your CV score',
+        quantifiedResults: 'Quantified results',
+        clarity: 'Clarity',
+        atsStructure: 'ATS structure',
+        specificSkills: 'Specific skills',
+        beforeLabel: 'Before',
+        afterLabel: 'After',
+      },
     },
     tailor: {
       badge: 'Job Tailoring',
@@ -319,8 +328,7 @@ export const translations = {
     finalCta: {
       title: 'Ready to get more interviews?',
       subtitle: 'Upload your CV and see it transform in minutes — free, during beta.',
-      ctaPrimary: 'Upload your CV →',
-      ctaSecondary: 'I already have a job posting',
+      ctaPrimary: 'Create your CV online →',
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
@@ -348,13 +356,12 @@ export const translations = {
       ready: 'Pronto',
     },
     hero: {
-      badge: 'Piattaforma AI per la tua carriera',
+      badge: 'Piattaforma AI per dare un boost alla tua carriera',
       titleGradient: 'Più colloqui,',
       titleNormal: 'non solo un CV più bello.',
       subtitle:
         'Carica il tuo CV: la nostra AI lo trasforma in un profilo pronto da condividere, lo adatta all\'annuncio a cui ti candidi e ti aiuta a rafforzarlo con numeri e risultati veri — senza inventare nulla.',
       ctaPrimary: 'Carica il tuo CV →',
-      ctaSecondary: 'Ho già un annuncio di lavoro',
     },
     services: {
       sectionLabel: 'Come funziona',
@@ -368,9 +375,9 @@ export const translations = {
             'Carica il PDF del tuo curriculum. In pochi secondi la nostra AI legge la tua esperienza e crea un profilo fedele a quello che hai scritto.',
         },
         {
-          title: 'Ottieni il tuo profilo',
+          title: 'Ricevi il tuo punteggio',
           description:
-            'Il tuo profilo AI è pronto: una pagina web personale e un PDF, con lo stesso contenuto del tuo CV, solo più chiaro e leggibile.',
+            'Il tuo CV riceve subito un punteggio su 4 criteri: risultati misurabili, chiarezza, struttura ATS e competenze specifiche. L\'AI lo migliora senza stravolgerlo — stesso contenuto, alzando il punteggio, mai inventando nulla.',
         },
         {
           title: 'Adatta il CV a un annuncio',
@@ -380,7 +387,7 @@ export const translations = {
         {
           title: 'Candidati con sicurezza',
           description:
-            'Scarica il PDF ottimizzato per i sistemi ATS o condividi il link del tuo profilo — pronto per essere allegato a ogni candidatura.',
+            'Scarica il PDF ottimizzato per i sistemi ATS oppure condividi la tua landing page personale — una pagina web dedicata al tuo profilo, pronta da allegare o linkare in ogni candidatura.',
         },
       ],
       wipBadge: 'Work in progress',
@@ -456,7 +463,7 @@ export const translations = {
       title: 'Il tuo CV racconta già la tua storia.\nNe facciamo un sito.',
       subtitle: 'Niente form, niente copia-incolla.\nLa nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
       stepUpload: '1 · Carica il tuo CV',
-      stepLinkedin: '2 · Il tuo LinkedIn (opzionale)',
+      stepLinkedin: '2 · Inserisci il link del tuo profilo LinkedIn (opzionale)',
       linkedinPlaceholder: 'linkedin.com/in/tuonome',
       stepEmail: '3 · La tua email (opzionale)',
       emailPlaceholder: 'tu@email.com',
@@ -504,6 +511,15 @@ export const translations = {
         delta: 'Luxury · navy · gold',
       },
       tailorInvite: 'Ti stai candidando per un ruolo specifico? Adatta questo profilo a un annuncio →',
+      cvScore: {
+        title: 'Il punteggio del tuo CV',
+        quantifiedResults: 'Risultati misurabili',
+        clarity: 'Chiarezza',
+        atsStructure: 'Struttura ATS',
+        specificSkills: 'Competenze specifiche',
+        beforeLabel: 'Prima',
+        afterLabel: 'Dopo',
+      },
     },
     tailor: {
       badge: 'Adattamento annuncio',
@@ -637,7 +653,6 @@ export const translations = {
       title: 'Pronto a ottenere più colloqui?',
       subtitle: 'Carica il tuo CV e scoprilo trasformato in pochi minuti — gratis, in fase beta.',
       ctaPrimary: 'Carica il tuo CV →',
-      ctaSecondary: 'Ho già un annuncio di lavoro',
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',

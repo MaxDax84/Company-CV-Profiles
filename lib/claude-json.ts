@@ -41,11 +41,14 @@ interface ClaudeMessageResponse {
   content: { type: string; text: string }[];
 }
 
-// Pulls a ProfileSchema out of a Claude messages-API response: guards against
+// Pulls a JSON object out of a Claude messages-API response: guards against
 // truncation, strips code fences, slices between the outer braces, then
 // parses with a repair-and-retry pass for the malformed JSON Claude
 // occasionally emits (raw control chars in strings, literal `undefined`).
-export function extractProfileJson(json: ClaudeMessageResponse, tooLongMessage: string): ProfileSchema {
+// Generic so callers that ask for extra top-level fields alongside the
+// ProfileSchema (e.g. parse-resume.ts's cv_score_before) get them typed —
+// defaults to ProfileSchema for the common case.
+export function extractProfileJson<T = ProfileSchema>(json: ClaudeMessageResponse, tooLongMessage: string): T {
   if (json.stop_reason === "max_tokens") {
     throw new Error(tooLongMessage);
   }
