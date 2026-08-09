@@ -1,8 +1,11 @@
 import { kv } from "./kv";
 import type { ProfileSchema, TemplateStyle } from "./schema";
-import { parseResume, type CvScoreBeforeRaw } from "./parse-resume";
+import { parseResume } from "./parse-resume";
 import { improveResume } from "./improve-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
+import type { CvScoreBreakdown } from "./cv-score";
+import { normalizeScoreBefore } from "./cv-score";
+import { hashPdf, getRememberedScore, rememberScore } from "./cv-score-memory";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -229,25 +232,13 @@ export async function claimPendingProfile(
   return { slug };
 }
 
-// Web Crypto (not Node's `crypto` module — this must stay edge-compatible)
-async function hashPdf(buffer: ArrayBuffer): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", buffer);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 export interface ResolveFromPdfResult {
   profile: ProfileSchema;
   pdfHash: string;
   fromCache: boolean;
   cachedSlug: string | null;
   templateChanged: boolean;
-  // null on a cache hit — we don't persist the raw before-score alongside
-  // the cached pending profile, so a repeat upload within the same window
-  // just won't show a "before" comparison (the "after" score still works,
-  // it's computed fresh from the profile either way).
-  scoreBefore: CvScoreBeforeRaw | null;
+  scoreBefore: CvScoreBreakdown | null;
 }
 
 // Extracts a profile from an uploaded PDF, reusing a cached extraction if
@@ -260,11 +251,19 @@ export interface ResolveFromPdfResult {
 // a profile is claimed into Postgres its KV entry is deleted, so a repeat
 // upload after that point correctly falls through to a fresh extraction
 // rather than trying to reuse someone's now-owned account data.
+//
+// The SCORE, unlike the extraction cache, is remembered permanently by PDF
+// hash (see lib/cv-score-memory.ts) — re-uploading the exact same file must
+// always show the same score, whether that's minutes or months later, and
+// whether it's an original CV or one of our own already-optimized exports
+// (which get their score remembered at export time, in /api/pdf/[slug]).
 export async function resolveProfileFromPdf(
   buf: ArrayBuffer,
   templateChoice: unknown
 ): Promise<ResolveFromPdfResult> {
   const pdfHash = await hashPdf(buf);
+  const rememberedScore = await getRememberedScore(pdfHash);
+
   const cachedSlug = await kv.get<string>(`pdf-hash:${pdfHash}`);
   if (cachedSlug) {
     const cachedProfile = await getRawPendingProfile(cachedSlug);
@@ -275,7 +274,7 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: null };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore };
     }
   }
 
@@ -290,5 +289,10 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore };
+  const finalScoreBefore = rememberedScore ?? normalizeScoreBefore(scoreBefore);
+  if (!rememberedScore && finalScoreBefore) {
+    await rememberScore(pdfHash, finalScoreBefore);
+  }
+
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: finalScoreBefore };
 }

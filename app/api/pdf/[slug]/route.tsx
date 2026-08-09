@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
+import { hashPdf, rememberScore } from "@/lib/cv-score-memory";
 import { AtsResumeDocument } from "@/components/pdf/AtsResumeDocument";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
@@ -40,8 +41,14 @@ export async function GET(
     throw err;
   }
 
-  const scoreTotal = computeCvScore(row.data).total;
-  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} scoreTotal={scoreTotal} />);
+  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} />);
+
+  // Remember this exact exported file's score by its content hash — if the
+  // user later re-uploads this very PDF (e.g. to tailor it or re-check the
+  // score), they get the same number back instead of a fresh, and likely
+  // lower under our strict rubric, AI judgment of an already-optimized CV.
+  const pdfHash = await hashPdf(buffer);
+  await rememberScore(pdfHash, computeCvScore(row.data));
 
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {

@@ -3,7 +3,7 @@ import { kv } from "@/lib/kv";
 import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { resolveProfileFromPdf, savePendingProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
-import { computeCvScore, normalizeScoreBefore } from "@/lib/cv-score";
+import { computeCvScore } from "@/lib/cv-score";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         slug: resolved.cachedSlug,
         profile: resolved.profile,
         claimToken,
-        cvScore: { before: normalizeScoreBefore(resolved.scoreBefore), after: computeCvScore(resolved.profile) },
+        cvScore: { before: resolved.scoreBefore, after: computeCvScore(resolved.profile) },
       });
     }
 
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       slug,
       profile,
       claimToken,
-      cvScore: { before: normalizeScoreBefore(resolved.scoreBefore), after: computeCvScore(profile) },
+      cvScore: { before: resolved.scoreBefore, after: computeCvScore(profile) },
     });
   } catch (err) {
     console.error("[parse-resume]", err);
