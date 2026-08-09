@@ -9,7 +9,17 @@
       "WebFetch(domain:www.alessandromarcello.it)",
       "Bash(grep -E \"\\\\.\\(ts|js|json\\)$\")",
       "Bash(grep -r tailwind /c/Users/Massimo/Documents/Projects/CV/CV_Alessandro_Marcello --include=*.json --include=*.ts --include=*.tsx --include=*.mjs)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(for dir:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/Massimo/Documents/Projects/CV/Company website/app/showcase$dir/**)",
+      "Skill(claude-api)",
+      "Bash(npm list:*)",
+      "Bash(curl:*)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npx vercel *)"
     ]
   }
 }
