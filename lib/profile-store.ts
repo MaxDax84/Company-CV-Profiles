@@ -113,6 +113,22 @@ export async function getOwnedProfileBySlug(
   return data as { id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" } | null;
 }
 
+// All of a user's tailored (job-specific) profiles, newest first — shown as
+// a list on the account dashboard. Uncapped, unlike the single primary
+// profile, since tailoring is paid-per-run and each output is independent.
+export async function getOwnedTailoredProfiles(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data, created_at")
+    .eq("user_id", userId)
+    .eq("kind", "tailored")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
+}
+
 // Saves a tailored (paid) output as a new, independent row owned by the
 // same account — never overwrites the primary profile. Slug uniqueness is
 // checked against Postgres now, not KV. RLS means each caller can only see

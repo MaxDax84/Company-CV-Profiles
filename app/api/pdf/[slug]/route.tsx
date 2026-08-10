@@ -30,7 +30,7 @@ export async function GET(
   }
 
   try {
-    await spendCredits(supabase, CREDIT_COSTS.pdfDownload);
+    await spendCredits(supabase, CREDIT_COSTS.pdfDownload, "pdf_download");
   } catch (err) {
     if (err instanceof InsufficientCreditsError) {
       return NextResponse.json(

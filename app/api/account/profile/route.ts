@@ -1,11 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
-// Owner deletes their own claimed (primary) profile — the accounts-era
-// replacement for the old anonymous manage-token delete.
-export async function DELETE() {
+// Owner deletes one of their own profile rows — the primary CV, or a
+// specific tailored (job-adapted) one. Body: { id: string } (the profiles
+// row id) — falls back to deleting the primary row for backward
+// compatibility with older clients that call this with no body at all.
+export async function DELETE(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -13,12 +15,13 @@ export async function DELETE() {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("kind", "primary");
+    const body = await req.json().catch(() => null);
+    const id = body?.id;
 
+    let query = supabase.from("profiles").delete().eq("user_id", user.id);
+    query = typeof id === "string" ? query.eq("id", id) : query.eq("kind", "primary");
+
+    const { error } = await query;
     if (error) throw error;
 
     return NextResponse.json({ success: true });

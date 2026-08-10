@@ -13,15 +13,18 @@ export class InsufficientCreditsError extends Error {
   }
 }
 
-// Calls the spend_credits RPC (see supabase/migrations/0001_init.sql) — the
-// only way a balance ever decreases. Throws InsufficientCreditsError on a
-// 0-credit account instead of returning a sentinel, so callers can't
-// accidentally ignore the failure.
+// Calls the spend_credits RPC (see supabase/migrations/0001_init.sql +
+// 0002_credit_ledger.sql) — the only way a balance ever decreases. Throws
+// InsufficientCreditsError on a 0-credit account instead of returning a
+// sentinel, so callers can't accidentally ignore the failure. `reason` is
+// just a ledger label (e.g. "pdf_download", "tailor") — it doesn't affect
+// the spend logic itself.
 export async function spendCredits(
   supabase: SupabaseClient,
-  amount: number
+  amount: number,
+  reason: string = "usage"
 ): Promise<number> {
-  const { data, error } = await supabase.rpc("spend_credits", { p_amount: amount });
+  const { data, error } = await supabase.rpc("spend_credits", { p_amount: amount, p_reason: reason });
   if (error) {
     if (error.message.includes("insufficient_credits")) {
       throw new InsufficientCreditsError();
@@ -39,4 +42,35 @@ export async function getCreditBalance(supabase: SupabaseClient, userId: string)
     .single();
   if (error) throw error;
   return data.credits as number;
+}
+
+export interface CreditLedgerEntry {
+  id: string;
+  amount: number;
+  reason: string;
+  created_at: string;
+}
+
+// Tolerant of the 0002_credit_ledger.sql migration not having been run yet
+// (e.g. right after this feature ships, before the user applies it) — the
+// account dashboard's history section just renders empty rather than
+// crashing the whole page over a missing table.
+export async function getCreditLedger(
+  supabase: SupabaseClient,
+  userId: string,
+  limit: number = 20
+): Promise<CreditLedgerEntry[]> {
+  try {
+    const { data, error } = await supabase
+      .from("credit_ledger")
+      .select("id, amount, reason, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return (data ?? []) as CreditLedgerEntry[];
+  } catch (err) {
+    console.error("[getCreditLedger]", err);
+    return [];
+  }
 }

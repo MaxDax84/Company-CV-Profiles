@@ -9,26 +9,37 @@ interface OwnerToolbarProps {
 // a visitor opening the shared link never sees this. Without it, landing on
 // your own public page was a dead end: no way back to the account, no way
 // to grab the PDF, no way to tailor the CV to a job posting.
+//
+// Every template has its own `position: fixed; top: 0; z-index: 100` nav bar
+// (see components/templates/Template*.tsx), which ignores normal document
+// flow and always pins to the viewport's top edge regardless of what's
+// rendered before it. A toolbar placed in normal flow just gets sat on top
+// of and hidden. So this one is fixed too, with a higher z-index (wins the
+// stack) and a height tall enough to fully cover the template's own bar
+// (all four use 64px) rather than leaving a sliver peeking out beneath it.
+// The color is a solid, saturated indigo specifically because it must read
+// clearly over any of the four templates' backgrounds — near-black (Alpha),
+// white (Beta), dark green (Gamma), or navy (Delta).
 export default function OwnerToolbar({ slug, kind }: OwnerToolbarProps) {
   return (
     <div
-      className="w-full flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-2.5 text-xs sm:text-sm"
-      style={{ background: "rgba(10,10,14,0.95)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+      className="fixed top-0 left-0 right-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 text-xs sm:text-sm"
+      style={{ height: 64, zIndex: 200, background: "#6366f1", boxShadow: "0 2px 12px rgba(0,0,0,0.35)" }}
     >
-      <span className="text-white/40 hidden sm:inline">Questa è la tua pagina pubblica —</span>
-      <a href="/account" className="font-semibold text-white/90 hover:text-white transition-colors">
+      <span className="hidden sm:inline" style={{ color: "rgba(0,0,0,0.55)" }}>Questa è la tua pagina pubblica —</span>
+      <a href="/account" className="font-semibold transition-opacity hover:opacity-70" style={{ color: "#000" }}>
         Il tuo account
       </a>
-      <span className="text-white/20">·</span>
+      <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
       <PdfExportButton
         slug={slug}
         label="Scarica PDF ↓"
-        className="font-semibold text-white/90 hover:text-white transition-colors"
+        className="font-semibold text-black transition-opacity hover:opacity-70"
       />
       {kind === "primary" && (
         <>
-          <span className="text-white/20">·</span>
-          <a href={`/tailor?profile=${slug}`} className="font-semibold hover:opacity-80 transition-opacity" style={{ color: "#818cf8" }}>
+          <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
+          <a href={`/tailor?profile=${slug}`} className="font-bold underline underline-offset-2 transition-opacity hover:opacity-70" style={{ color: "#000" }}>
             Adatta a un annuncio →
           </a>
         </>
