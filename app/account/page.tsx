@@ -7,7 +7,7 @@ import ChangePasswordForm from "@/components/change-password-form";
 import { LogoutButton, DeleteProfileButton, DeleteAccountButton } from "@/components/account-actions";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
-import { getOwnedProfileRow, getOwnedTailoredProfiles } from "@/lib/profile-store";
+import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles } from "@/lib/profile-store";
 import { getCreditBalance, getCreditLedger } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
 
@@ -35,12 +35,16 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileRow, tailoredProfiles, credits, ledger] = await Promise.all([
-    getOwnedProfileRow(supabase, user.id, "primary"),
+  const [primaryProfiles, tailoredProfiles, credits, ledger] = await Promise.all([
+    getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
     getCreditBalance(supabase, user.id),
     getCreditLedger(supabase, user.id),
   ]);
+  // "Dati anagrafici" and the CV picked as tailoring source default to the
+  // most recently uploaded CV — a user can have several (see the list
+  // below), but most flows still need one "current" one.
+  const profileRow = primaryProfiles[0] ?? null;
 
   const memberSince = new Date(user.created_at).toLocaleDateString("it-IT", { year: "numeric", month: "long" });
 
@@ -122,46 +126,55 @@ export default async function AccountPage() {
           )}
         </div>
 
-        {/* ── CV principale ───────────────────────────────────────────── */}
+        {/* ── I tuoi CV caricati ──────────────────────────────────────── */}
         <div className="space-y-3">
-          <SectionTitle>Il tuo CV principale</SectionTitle>
-          {profileRow ? (
-            <div className="glass-card rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold">{profileRow.data.personal_info.full_name}</p>
-                <p className="text-xs font-semibold" style={{ color: ACCENT }}>
-                  Punteggio: {computeCvScore(profileRow.data).total}/100
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <a
-                  href={`/profile/${profileRow.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200"
-                  style={{ background: ACCENT, color: "#000" }}
-                >
-                  Apri profilo ↗
-                </a>
-                <a
-                  href={`/tailor?profile=${profileRow.slug}`}
-                  className="px-5 py-2.5 rounded-xl border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/8 transition-all duration-200"
-                >
-                  Adatta a un annuncio
-                </a>
-                <PdfExportButton
-                  slug={profileRow.slug}
-                  label="Scarica PDF ↓"
-                  className="px-5 py-2.5 rounded-xl border border-white/10 text-sm font-semibold hover:bg-white/[0.06] transition-all duration-200"
-                />
-              </div>
-              <div className="pt-2 border-t border-white/10">
-                <DeleteProfileButton
-                  profileId={profileRow.id}
-                  label="Elimina profilo"
-                  confirmMessage="Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito. Anche i CV adattati collegati resteranno, ma senza un'origine."
-                />
-              </div>
+          <SectionTitle>I tuoi CV caricati ({primaryProfiles.length})</SectionTitle>
+          {primaryProfiles.length > 0 ? (
+            <div className="space-y-3">
+              {primaryProfiles.map((row) => (
+                <div key={row.id} className="glass-card rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold">{row.data.personal_info.full_name}</p>
+                      <p className="text-xs text-muted-foreground/60 mt-0.5">
+                        {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
+                    <p className="text-xs font-semibold" style={{ color: ACCENT }}>
+                      Punteggio: {computeCvScore(row.data).total}/100
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <a
+                      href={`/profile/${row.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200"
+                      style={{ background: ACCENT, color: "#000" }}
+                    >
+                      Apri profilo ↗
+                    </a>
+                    <a
+                      href={`/tailor?profile=${row.slug}`}
+                      className="px-5 py-2.5 rounded-xl border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/8 transition-all duration-200"
+                    >
+                      Adatta a un annuncio
+                    </a>
+                    <PdfExportButton
+                      slug={row.slug}
+                      label="Scarica PDF ↓"
+                      className="px-5 py-2.5 rounded-xl border border-white/10 text-sm font-semibold hover:bg-white/[0.06] transition-all duration-200"
+                    />
+                  </div>
+                  <div className="pt-2 border-t border-white/10">
+                    <DeleteProfileButton
+                      profileId={row.id}
+                      label="Elimina profilo"
+                      confirmMessage="Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito. Anche i CV adattati collegati resteranno, ma senza un'origine."
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="glass-card rounded-2xl p-6 text-center space-y-3">

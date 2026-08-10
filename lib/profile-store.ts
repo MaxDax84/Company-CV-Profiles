@@ -79,8 +79,12 @@ export async function getProfileBySlug(slug: string): Promise<ProfileSchema | nu
   return pending ? stripPII(pending) : null;
 }
 
-// Owner-scoped read (dashboard, PDF export, tailoring source) — returns the
-// full row including the real email/phone, since only the owner sees this.
+// Owner-scoped read (dashboard "dati anagrafici", PDF export, tailoring
+// source) — returns the full row including the real email/phone, since only
+// the owner sees this. A user can have several kind='primary' rows (every
+// CV they've ever uploaded and claimed — see getOwnedPrimaryProfiles for
+// the full list); this returns the MOST RECENT one, used wherever a single
+// "current" CV is needed (e.g. what /tailor tailors by default).
 export async function getOwnedProfileRow(
   supabase: SupabaseClient,
   userId: string,
@@ -91,8 +95,25 @@ export async function getOwnedProfileRow(
     .select("id, slug, data")
     .eq("user_id", userId)
     .eq("kind", kind)
+    .order("created_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
   return data as { id: string; slug: string; data: ProfileSchema } | null;
+}
+
+// Every CV a user has uploaded and claimed, newest first — shown as a list
+// on the account dashboard, the same way getOwnedTailoredProfiles works.
+export async function getOwnedPrimaryProfiles(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data, created_at")
+    .eq("user_id", userId)
+    .eq("kind", "primary")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
 }
 
 // Same as above, looked up by slug instead of kind — used by the PDF route,
@@ -212,12 +233,15 @@ export async function improveAndFinalizePendingProfile(
   return { slug, profile: improved };
 }
 
-export type ClaimError = "expired" | "already_has_profile";
+export type ClaimError = "expired" | "claim_failed";
 
-// Moves a pending KV preview into the caller's permanent Postgres record.
-// `supabase` must be a request-scoped, already-authenticated client (see
-// lib/supabase/server.ts) — the insert relies on RLS's `auth.uid() = user_id`
-// check, not on anything passed in here.
+// Moves a pending KV preview into the caller's permanent Postgres record, as
+// a new kind='primary' row — a user can claim as many CVs as they upload,
+// they all end up listed on the account dashboard (see
+// getOwnedPrimaryProfiles). `supabase` must be a request-scoped,
+// already-authenticated client (see lib/supabase/server.ts) — the insert
+// relies on RLS's `auth.uid() = user_id` check, not on anything passed in
+// here.
 export async function claimPendingProfile(
   supabase: SupabaseClient,
   userId: string,
@@ -225,27 +249,31 @@ export async function claimPendingProfile(
 ): Promise<{ slug: string } | { error: ClaimError }> {
   const claimRaw = await kv.get<string>(`claim:${claimToken}`);
   if (!claimRaw) return { error: "expired" };
-  const { slug } = typeof claimRaw === "string" ? JSON.parse(claimRaw) : claimRaw;
+  const { slug: pendingSlug } = typeof claimRaw === "string" ? JSON.parse(claimRaw) : claimRaw;
 
-  const profile = await getRawPendingProfile(slug);
+  const profile = await getRawPendingProfile(pendingSlug);
   if (!profile) return { error: "expired" };
 
-  const existing = await getOwnedProfileRow(supabase, userId, "primary");
-  if (existing) return { error: "already_has_profile" };
-
-  const { error: insertError } = await supabase
-    .from("profiles")
-    .insert({ user_id: userId, kind: "primary", slug, data: profile });
-  if (insertError) {
-    // Most likely the partial-unique-index race (two claims at once) —
-    // surface it the same way as the pre-check above.
-    return { error: "already_has_profile" };
+  // The pending slug was only checked for uniqueness among OTHER still-
+  // pending previews (see savePendingProfile) — it can still collide with
+  // an already-claimed profile in Postgres, e.g. claiming a second CV that
+  // happens to belong to someone with the same name as an earlier one.
+  // Retry with a suffix on a unique-constraint violation, same pattern as
+  // saveTailoredProfile.
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const slug = attempt === 0 ? pendingSlug : `${pendingSlug}-${attempt}`;
+    const { error: insertError } = await supabase
+      .from("profiles")
+      .insert({ user_id: userId, kind: "primary", slug, data: profile });
+    if (!insertError) {
+      await kv.del(`profile:${pendingSlug}`);
+      await kv.del(`claim:${claimToken}`);
+      return { slug };
+    }
+    if (insertError.code !== "23505") return { error: "claim_failed" };
   }
 
-  await kv.del(`profile:${slug}`);
-  await kv.del(`claim:${claimToken}`);
-
-  return { slug };
+  return { error: "claim_failed" };
 }
 
 export interface ResolveFromPdfResult {

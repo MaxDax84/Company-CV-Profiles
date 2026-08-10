@@ -20,9 +20,11 @@ const ACCENT = "#6366f1";
 interface TailorFormProps {
   credits: number;
   hasProfile: boolean;
+  sourceSlug: string | null;
+  sourceName: string | null;
 }
 
-export default function TailorForm({ credits, hasProfile }: TailorFormProps) {
+export default function TailorForm({ credits, hasProfile, sourceSlug, sourceName }: TailorFormProps) {
   const router = useRouter();
   const [jobSource, setJobSource] = useState<JobSource>("text");
   const [jobText, setJobText] = useState("");
@@ -61,6 +63,7 @@ export default function TailorForm({ credits, hasProfile }: TailorFormProps) {
     const formData = new FormData();
     formData.append("turnstileToken", turnstileToken!);
     formData.append("jobSource", jobSource);
+    if (sourceSlug) formData.append("sourceSlug", sourceSlug);
     if (jobSource === "text") formData.append("jobText", jobText.trim());
     if (jobSource === "url") formData.append("jobUrl", jobUrl.trim());
 
@@ -142,6 +145,12 @@ export default function TailorForm({ credits, hasProfile }: TailorFormProps) {
             <a href="/account" className="underline hover:text-foreground">account</a> o scrivici per aggiungerne.
           </p>
         </div>
+      ) : null}
+
+      {hasProfile && sourceName && (state === "idle" || state === "error") ? (
+        <p className="text-xs text-center text-muted-foreground/60">
+          Stai adattando: <span className="font-semibold text-foreground/80">{sourceName}</span>
+        </p>
       ) : null}
 
       {hasProfile && (state === "idle" || state === "error") ? (

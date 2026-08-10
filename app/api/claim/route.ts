@@ -28,8 +28,8 @@ export async function POST(req: NextRequest) {
         );
       }
       return NextResponse.json(
-        { error: "You already have a profile — delete it from your dashboard first." },
-        { status: 409 }
+        { error: "Could not save this profile to your account. Please try again." },
+        { status: 500 }
       );
     }
 

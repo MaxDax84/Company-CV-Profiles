@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getOwnedProfileRow, saveTailoredProfile } from "@/lib/profile-store";
+import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
@@ -49,8 +49,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid or missing jobSource." }, { status: 400 });
     }
 
-    // --- Resolve the source CV — always the caller's own claimed profile.
-    const sourceRow = await getOwnedProfileRow(supabase, user.id, "primary");
+    // --- Resolve the source CV — a specific one of the caller's own
+    // uploaded CVs if named (a user can have several, see /account), else
+    // their most recently uploaded one.
+    const sourceSlug = formData.get("sourceSlug");
+    let sourceRow = typeof sourceSlug === "string" && sourceSlug
+      ? await getOwnedProfileBySlug(supabase, user.id, sourceSlug)
+      : await getOwnedProfileRow(supabase, user.id, "primary");
+    // Only ever tailor an uploaded CV, never a previously-tailored one — a
+    // crafted sourceSlug pointing at a kind='tailored' row is treated as
+    // not found, same as any other invalid slug.
+    if (sourceRow && "kind" in sourceRow && sourceRow.kind !== "primary") {
+      sourceRow = null;
+    }
     if (!sourceRow) {
       return NextResponse.json({ error: "Generate your profile first." }, { status: 404 });
     }

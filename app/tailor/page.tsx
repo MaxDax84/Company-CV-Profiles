@@ -4,18 +4,29 @@ import TailorForm from "@/components/tailor-form";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
-import { getOwnedProfileRow } from "@/lib/profile-store";
+import { getOwnedProfileRow, getOwnedProfileBySlug } from "@/lib/profile-store";
 import { getCreditBalance } from "@/lib/credits";
 
-export default async function TailorPage() {
+interface Props {
+  searchParams: Promise<{ profile?: string }>;
+}
+
+export default async function TailorPage({ searchParams }: Props) {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
 
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { profile: requestedSlug } = await searchParams;
+
+  // A user can have several uploaded CVs (see /account) — if the link that
+  // brought them here named a specific one, tailor that one; otherwise fall
+  // back to their most recently uploaded CV.
   const [profileRow, credits] = await Promise.all([
-    getOwnedProfileRow(supabase, user.id, "primary"),
+    requestedSlug
+      ? getOwnedProfileBySlug(supabase, user.id, requestedSlug)
+      : getOwnedProfileRow(supabase, user.id, "primary"),
     getCreditBalance(supabase, user.id),
   ]);
 
@@ -35,7 +46,12 @@ export default async function TailorPage() {
 
       <div className="flex items-center justify-center px-6 py-24">
         <div className="max-w-2xl w-full">
-          <TailorForm credits={credits} hasProfile={!!profileRow} />
+          <TailorForm
+            credits={credits}
+            hasProfile={!!profileRow}
+            sourceSlug={profileRow?.slug ?? null}
+            sourceName={profileRow?.data.personal_info.full_name ?? null}
+          />
         </div>
       </div>
       </div>
