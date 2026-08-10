@@ -103,14 +103,14 @@ export async function getOwnedProfileBySlug(
   supabase: SupabaseClient,
   userId: string,
   slug: string
-): Promise<{ id: string; slug: string; data: ProfileSchema } | null> {
+): Promise<{ id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" } | null> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data")
+    .select("id, slug, data, kind")
     .eq("user_id", userId)
     .eq("slug", slug)
     .maybeSingle();
-  return data as { id: string; slug: string; data: ProfileSchema } | null;
+  return data as { id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" } | null;
 }
 
 // Saves a tailored (paid) output as a new, independent row owned by the

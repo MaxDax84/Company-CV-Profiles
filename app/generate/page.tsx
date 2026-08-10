@@ -23,6 +23,20 @@ const TEMPLATES: { id: TemplateStyle; name: string; accent: string; bg: string; 
   { id: "delta", name: "Delta", accent: "#c9a84c", bg: "#0a1628", demoSlug: "marco-ferretti-delta" },
 ];
 
+// A cached-hit response (same PDF already analyzed before) can come back in
+// well under a second, which used to make the "analyzing" screen flash by
+// too fast to read. These two constants decouple the step animation from
+// actual network timing: the analyzing screen always stays up for at least
+// MIN_ANALYZE_MS (a no-op for a genuinely slow first-time analysis, which
+// already takes longer than that), and the step interval is fast enough to
+// cycle through all three messages within that window.
+const STEP_INTERVAL_MS = 650;
+const MIN_ANALYZE_MS = 2200;
+
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
@@ -45,7 +59,7 @@ export default function GeneratePage() {
       setStepIndex(0);
       return;
     }
-    const id = setInterval(() => setStepIndex(i => i + 1), 3000);
+    const id = setInterval(() => setStepIndex(i => i + 1), STEP_INTERVAL_MS);
     return () => clearInterval(id);
   }, [state]);
 
@@ -61,7 +75,10 @@ export default function GeneratePage() {
     formData.append("turnstileToken", turnstileToken);
 
     try {
-      const res = await fetch("/api/parse-resume", { method: "POST", body: formData });
+      const [res] = await Promise.all([
+        fetch("/api/parse-resume", { method: "POST", body: formData }),
+        delay(MIN_ANALYZE_MS),
+      ]);
       let data;
       try {
         data = await res.json();
