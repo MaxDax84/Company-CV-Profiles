@@ -1,5 +1,5 @@
 import { Document, Page, View, Text, Link, StyleSheet } from "@react-pdf/renderer";
-import type { ProfileSchema } from "@/lib/schema";
+import type { ProfileSchema, ExperienceItem, EducationItem, Project } from "@/lib/schema";
 
 // Single, deliberately plain layout — one column, plain text flow, core
 // Helvetica only. ATS parsers read this far more reliably than the colorful
@@ -20,9 +20,14 @@ function hexToRgba(hex: string, alpha: number): string {
 }
 
 const styles = StyleSheet.create({
-  page: { fontFamily: "Helvetica", fontSize: 10, color: "#232323" },
-  topBar: { height: 6 },
-  body: { paddingTop: 26, paddingBottom: 36, paddingHorizontal: 42 },
+  // Margins live on the Page itself (not a wrapping View) — react-pdf only
+  // reapplies a View's own padding at the very start/end of its content, so
+  // a wrapping <View> loses its top/bottom inset on every page after the
+  // first once a section overflows. Page-level padding, by contrast, is
+  // correctly reapplied on every auto-generated page.
+  page: { fontFamily: "Helvetica", fontSize: 10, color: "#232323", paddingTop: 26, paddingBottom: 36, paddingHorizontal: 42 },
+  // Bleeds edge-to-edge on every page regardless of the Page's own padding.
+  topBar: { position: "absolute", top: 0, left: 0, right: 0, height: 6 },
   name: { fontSize: 23, fontFamily: "Helvetica-Bold", letterSpacing: 0.3, marginBottom: 3 },
   title: { fontSize: 12, fontFamily: "Helvetica", color: "#4a4a4a", marginBottom: 9 },
   contactLine: { fontSize: 9, color: "#5a5a5a", marginBottom: 2, lineHeight: 1.5 },
@@ -96,10 +101,53 @@ function ContactLine({ profile, accent }: { profile: ProfileSchema; accent: stri
   );
 }
 
+function ExperienceEntry({ exp, accent, accentSoft }: { exp: ExperienceItem; accent: string; accentSoft: string }) {
+  return (
+    <View style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
+      <View style={styles.entryHeaderRow}>
+        <Text style={styles.entryTitle}>{exp.role}</Text>
+        <Text style={[styles.entryDates, { color: accent }]}>{formatDateRange(exp.start_date, exp.end_date)}</Text>
+      </View>
+      <Text style={styles.entrySubtitle}>
+        {exp.company}{exp.location ? ` — ${exp.location}` : ""}
+      </Text>
+      {exp.description.map((d, j) => (
+        <Text key={j} style={styles.bullet}>• {d}</Text>
+      ))}
+      {exp.technologies.length > 0 && (
+        <Text style={styles.skillLine}>{exp.technologies.join(", ")}</Text>
+      )}
+    </View>
+  );
+}
+
+function EducationEntry({ ed, accent, accentSoft }: { ed: EducationItem; accent: string; accentSoft: string }) {
+  return (
+    <View style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
+      <View style={styles.entryHeaderRow}>
+        <Text style={styles.entryTitle}>{ed.degree}{ed.field ? ` — ${ed.field}` : ""}</Text>
+        <Text style={[styles.entryDates, { color: accent }]}>{ed.start_year} – {ed.end_year}</Text>
+      </View>
+      <Text style={styles.entrySubtitle}>{ed.institution}{ed.grade ? ` — ${ed.grade}` : ""}</Text>
+    </View>
+  );
+}
+
+function ProjectEntry({ p, accentSoft }: { p: Project; accentSoft: string }) {
+  return (
+    <View style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
+      <Text style={styles.entryTitle}>{p.title}</Text>
+      <Text style={styles.bullet}>{p.description}</Text>
+      {p.tags.length > 0 && <Text style={styles.skillLine}>{p.tags.join(", ")}</Text>}
+    </View>
+  );
+}
+
 function SkillsSection({ skills, labels, accent }: { skills: ProfileSchema["skills"]; labels: { title: string; hard: string; soft: string; tools: string }; accent: string }) {
   if (skills.hard.length === 0 && skills.soft.length === 0 && skills.tools.length === 0) return null;
   return (
-    <View style={styles.section}>
+    // Always short (a handful of lines) — never worth splitting across pages.
+    <View style={styles.section} wrap={false}>
       <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{labels.title}</Text>
       {skills.hard.length > 0 && (
         <Text style={styles.skillLine}><Text style={styles.skillLabel}>{labels.hard}: </Text>{skills.hard.join(", ")}</Text>
@@ -150,93 +198,82 @@ export function AtsResumeDocument({ profile }: { profile: ProfileSchema }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.topBar, { backgroundColor: accent }]} fixed />
-        <View style={styles.body}>
-          <Text style={[styles.name, { color: accent }]}>{personal_info.full_name}</Text>
-          <Text style={styles.title}>{personal_info.title}</Text>
-          <ContactLine profile={profile} accent={accent} />
 
-          {personal_info.bio && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.summary}</Text>
-              <Text style={styles.bio}>{personal_info.bio}</Text>
-            </View>
-          )}
+        <Text style={[styles.name, { color: accent }]}>{personal_info.full_name}</Text>
+        <Text style={styles.title}>{personal_info.title}</Text>
+        <ContactLine profile={profile} accent={accent} />
 
-          {experience.length > 0 && (
-            <View style={styles.section}>
+        {personal_info.bio && (
+          // Always short — never worth splitting across pages.
+          <View style={styles.section} wrap={false}>
+            <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.summary}</Text>
+            <Text style={styles.bio}>{personal_info.bio}</Text>
+          </View>
+        )}
+
+        {experience.length > 0 && (
+          <View style={styles.section}>
+            {/* Title glued to the first entry so it can never end up alone
+                at the bottom of a page with all its content pushed to the
+                next one — later entries can still flow independently. */}
+            <View wrap={false}>
               <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.experience}</Text>
-              {experience.map((exp, i) => (
-                <View key={i} style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
-                  <View style={styles.entryHeaderRow}>
-                    <Text style={styles.entryTitle}>{exp.role}</Text>
-                    <Text style={[styles.entryDates, { color: accent }]}>{formatDateRange(exp.start_date, exp.end_date)}</Text>
-                  </View>
-                  <Text style={styles.entrySubtitle}>
-                    {exp.company}{exp.location ? ` — ${exp.location}` : ""}
-                  </Text>
-                  {exp.description.map((d, j) => (
-                    <Text key={j} style={styles.bullet}>• {d}</Text>
-                  ))}
-                  {exp.technologies.length > 0 && (
-                    <Text style={styles.skillLine}>{exp.technologies.join(", ")}</Text>
-                  )}
-                </View>
-              ))}
+              <ExperienceEntry exp={experience[0]} accent={accent} accentSoft={accentSoft} />
             </View>
-          )}
+            {experience.slice(1).map((exp, i) => (
+              <ExperienceEntry key={i + 1} exp={exp} accent={accent} accentSoft={accentSoft} />
+            ))}
+          </View>
+        )}
 
-          {education.length > 0 && (
-            <View style={styles.section}>
+        {education.length > 0 && (
+          <View style={styles.section}>
+            <View wrap={false}>
               <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.education}</Text>
-              {education.map((ed, i) => (
-                <View key={i} style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
-                  <View style={styles.entryHeaderRow}>
-                    <Text style={styles.entryTitle}>{ed.degree}{ed.field ? ` — ${ed.field}` : ""}</Text>
-                    <Text style={[styles.entryDates, { color: accent }]}>{ed.start_year} – {ed.end_year}</Text>
-                  </View>
-                  <Text style={styles.entrySubtitle}>{ed.institution}{ed.grade ? ` — ${ed.grade}` : ""}</Text>
-                </View>
-              ))}
+              <EducationEntry ed={education[0]} accent={accent} accentSoft={accentSoft} />
             </View>
-          )}
+            {education.slice(1).map((ed, i) => (
+              <EducationEntry key={i + 1} ed={ed} accent={accent} accentSoft={accentSoft} />
+            ))}
+          </View>
+        )}
 
-          <SkillsSection
-            skills={skills}
-            labels={{ title: t.skills, hard: t.skillsHard, soft: t.skillsSoft, tools: t.skillsTools }}
-            accent={accent}
-          />
+        <SkillsSection
+          skills={skills}
+          labels={{ title: t.skills, hard: t.skillsHard, soft: t.skillsSoft, tools: t.skillsTools }}
+          accent={accent}
+        />
 
-          {certifications.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.certifications}</Text>
-              {certifications.map((c, i) => (
-                <Text key={i} style={styles.skillLine}>
-                  {c.name} — {c.issuer} ({c.year})
-                </Text>
-              ))}
-            </View>
-          )}
+        {certifications.length > 0 && (
+          // Capped at 4 short lines (see lib/parse-resume.ts) — never worth
+          // splitting across pages.
+          <View style={styles.section} wrap={false}>
+            <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.certifications}</Text>
+            {certifications.map((c, i) => (
+              <Text key={i} style={styles.skillLine}>
+                {c.name} — {c.issuer} ({c.year})
+              </Text>
+            ))}
+          </View>
+        )}
 
-          {projects.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.projects}</Text>
-              {projects.map((p, i) => (
-                <View key={i} style={[styles.entry, { borderLeftColor: accentSoft }]} wrap={false}>
-                  <Text style={styles.entryTitle}>{p.title}</Text>
-                  <Text style={styles.bullet}>{p.description}</Text>
-                  {p.tags.length > 0 && <Text style={styles.skillLine}>{p.tags.join(", ")}</Text>}
-                </View>
-              ))}
-            </View>
-          )}
+        {projects.length > 0 && (
+          // Capped at 2 entries (see lib/parse-resume.ts) — never worth
+          // splitting across pages.
+          <View style={styles.section} wrap={false}>
+            <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.projects}</Text>
+            {projects.map((p, i) => (
+              <ProjectEntry key={i} p={p} accentSoft={accentSoft} />
+            ))}
+          </View>
+        )}
 
-          {other && other.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.other}</Text>
-              <Text style={styles.skillLine}>{other.join(" • ")}</Text>
-            </View>
-          )}
-        </View>
+        {other && other.length > 0 && (
+          <View style={styles.section} wrap={false}>
+            <Text style={[styles.sectionTitle, { borderBottomColor: accent }]}>{t.other}</Text>
+            <Text style={styles.skillLine}>{other.join(" • ")}</Text>
+          </View>
+        )}
       </Page>
     </Document>
   );
