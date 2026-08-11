@@ -3,6 +3,7 @@ import Navigation from "@/components/navigation";
 import PdfExportButton from "@/components/pdf-export-button";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import EditPersonalInfoForm from "@/components/edit-personal-info-form";
+import EditableSlug from "@/components/editable-slug";
 import ChangePasswordForm from "@/components/change-password-form";
 import { LogoutButton, DeleteProfileButton, DeleteAccountButton } from "@/components/account-actions";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -144,6 +145,7 @@ export default async function AccountPage() {
                       Punteggio: {computeCvScore(row.data).total}/100
                     </p>
                   </div>
+                  <EditableSlug profileId={row.id} slug={row.slug} />
                   <div className="flex flex-wrap items-center gap-3">
                     <a
                       href={`/profile/${row.slug}`}
@@ -196,13 +198,16 @@ export default async function AccountPage() {
           {tailoredProfiles.length > 0 ? (
             <div className="space-y-3">
               {tailoredProfiles.map((row) => (
-                <div key={row.id} className="glass-card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
-                    <p className="text-xs text-muted-foreground/60 mt-0.5">
-                      {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
-                    </p>
+                <div key={row.id} className="glass-card rounded-2xl p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
+                      <p className="text-xs text-muted-foreground/60 mt-0.5">
+                        {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
                   </div>
+                  <EditableSlug profileId={row.id} slug={row.slug} />
                   <div className="flex flex-wrap items-center gap-2">
                     <a
                       href={`/profile/${row.slug}`}

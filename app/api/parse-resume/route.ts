@@ -46,6 +46,13 @@ export async function POST(req: NextRequest) {
     }
 
     const templateChoice = formData.get("template");
+    // The page's address is derived from this filename (see
+    // savePendingProfile) rather than the person's name, per the user's
+    // request — "name" here is only present on a real File (vs. a bare
+    // Blob), which is what a browser <input type="file"> upload always is.
+    const filenameBase = "name" in file && typeof file.name === "string"
+      ? file.name.replace(/\.pdf$/i, "")
+      : undefined;
     const arrayBuffer = await file.arrayBuffer();
 
     const resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
@@ -78,7 +85,7 @@ export async function POST(req: NextRequest) {
       profile.personal_info.social_links.linkedin = linkedinUrl;
     }
 
-    const { slug, claimToken } = await savePendingProfile(profile);
+    const { slug, claimToken } = await savePendingProfile(profile, filenameBase);
     await kv.set(`pdf-hash:${resolved.pdfHash}`, slug, { ex: PENDING_TTL_SECONDS });
 
     return NextResponse.json({

@@ -184,10 +184,17 @@ export async function saveTailoredProfile(
 // KV under a fresh, collision-free slug, alongside an unguessable claim
 // token. Slugs are human-readable and guessable — the claim token, not the
 // slug, is the actual credential a signup uses to take ownership.
+//
+// `slugSource` — when given (the uploaded PDF's own filename, minus its
+// extension) — takes priority over the person's name, so the page's address
+// matches the file the user actually uploaded. Falls back to the name, then
+// to a plain "profile", if that yields nothing usable (e.g. a filename with
+// no alphanumeric characters at all).
 export async function savePendingProfile(
-  profile: ProfileSchema
+  profile: ProfileSchema,
+  slugSource?: string
 ): Promise<{ slug: string; claimToken: string }> {
-  const baseSlug = toSlug(profile.personal_info.full_name) || "profile";
+  const baseSlug = toSlug(slugSource ?? "") || toSlug(profile.personal_info.full_name) || "profile";
   let slug = baseSlug;
   let attempt = 0;
   while (await kv.exists(`profile:${slug}`)) {
