@@ -45,12 +45,12 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
   if (!editing) {
     return (
       <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
-        <span className="truncate">/profile/{slug}</span>
+        <span className="truncate">{slug}</span>
         <button
           onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
           className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0"
         >
-          Modifica indirizzo
+          Modifica nome
         </button>
       </div>
     );
@@ -59,7 +59,6 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-muted-foreground/50 shrink-0">/profile/</span>
         <input
           value={value}
           onChange={e => setValue(e.target.value)}

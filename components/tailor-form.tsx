@@ -46,6 +46,12 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
     return () => clearInterval(id);
   }, [state]);
 
+  // The URL stays /tailor across idle → uploading → done/error, but the
+  // content underneath changes completely each time.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [state]);
+
   const { lang } = useLanguage();
   const t = translations[lang].tailor;
 

@@ -63,6 +63,14 @@ export default function GeneratePage() {
     return () => clearInterval(id);
   }, [state]);
 
+  // The URL never changes across idle → analyzing → scored → customizing →
+  // done, but the content underneath does completely — without this, the
+  // user stays scrolled wherever they were when they clicked a step-advance
+  // button, which can land them mid-air on totally different content.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [state]);
+
   // Phase 1: upload the CV, get it analyzed and scored — no template or
   // LinkedIn choice yet, those come after the user decides to proceed.
   async function handleAnalyze() {

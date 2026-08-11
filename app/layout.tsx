@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { LanguageProvider } from '@/components/language-provider'
+import ScrollToTop from '@/components/scroll-to-top'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased`}>
+        <ScrollToTop />
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
