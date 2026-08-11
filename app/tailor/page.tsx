@@ -50,7 +50,6 @@ export default async function TailorPage({ searchParams }: Props) {
             credits={credits}
             hasProfile={!!profileRow}
             sourceSlug={profileRow?.slug ?? null}
-            sourceName={profileRow?.data.personal_info.full_name ?? null}
           />
         </div>
       </div>

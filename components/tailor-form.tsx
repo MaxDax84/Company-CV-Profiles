@@ -21,10 +21,9 @@ interface TailorFormProps {
   credits: number;
   hasProfile: boolean;
   sourceSlug: string | null;
-  sourceName: string | null;
 }
 
-export default function TailorForm({ credits, hasProfile, sourceSlug, sourceName }: TailorFormProps) {
+export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFormProps) {
   const router = useRouter();
   const [jobSource, setJobSource] = useState<JobSource>("text");
   const [jobText, setJobText] = useState("");
@@ -147,9 +146,9 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, sourceName
         </div>
       ) : null}
 
-      {hasProfile && sourceName && (state === "idle" || state === "error") ? (
+      {hasProfile && sourceSlug && (state === "idle" || state === "error") ? (
         <p className="text-xs text-center text-muted-foreground/60">
-          Stai adattando: <span className="font-semibold text-foreground/80">{sourceName}</span>
+          Stai adattando: <span className="font-semibold text-foreground/80">/profile/{sourceSlug}</span>
         </p>
       ) : null}
 

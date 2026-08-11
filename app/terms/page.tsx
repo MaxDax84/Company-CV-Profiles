@@ -21,117 +21,117 @@ export default function TermsPage() {
           {lang === 'it' ? 'Termini di Servizio' : 'Terms of Service'}
         </h1>
         <p className="text-muted-foreground text-sm mb-12">
-          {lang === 'it' ? 'Ultimo aggiornamento: Marzo 2025' : 'Last updated: March 2025'}
+          {lang === 'it' ? 'Ultimo aggiornamento: Agosto 2026' : 'Last updated: August 2026'}
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed text-muted-foreground">
           {lang === 'it' ? (
             <>
               <p>
-                I presenti Termini di Servizio regolano il rapporto contrattuale tra{' '}
-                <strong className="text-foreground">BeOnWeb</strong>, gestito da Massimo Dassano
-                (di seguito &quot;Fornitore&quot;), e il cliente che acquista o utilizza i servizi
-                offerti tramite il sito <strong className="text-foreground">beonweb.it</strong>.
+                I presenti Termini di Servizio regolano l&apos;utilizzo della piattaforma{' '}
+                <strong className="text-foreground">BeOnWeb</strong>, gestita da Massimo Dassano
+                (di seguito &quot;Fornitore&quot;), da parte di chiunque acceda o utilizzi i servizi
+                offerti tramite il sito.
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Oggetto del Servizio</h3>
-                <p>
-                  BeOnWeb offre i seguenti servizi:
-                </p>
+                <h3 className="font-semibold text-foreground mb-2">1. Descrizione del Servizio</h3>
+                <p>BeOnWeb è una piattaforma che utilizza l&apos;intelligenza artificiale per:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>
-                    <strong className="text-foreground">Sito web professionale</strong> — progettazione
-                    e sviluppo di siti web personalizzati su dominio del cliente, secondo il piano
-                    acquistato (Starter, Complete).
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Generatore di profili CV</strong> — strumento
-                    gratuito che consente di caricare un CV in formato PDF e ottenere una pagina
-                    profilo pubblica su link condivisibile, senza dominio personale.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Manutenzione mensile</strong> — servizio
-                    opzionale di aggiornamento e assistenza tecnica continuativa sul sito realizzato.
-                  </li>
+                  <li>Analizzare un CV caricato in formato PDF e assegnargli un punteggio su criteri oggettivi (risultati misurabili, chiarezza, struttura ATS, competenze specifiche);</li>
+                  <li>Migliorarne i contenuti senza inventare informazioni non presenti nel documento originale;</li>
+                  <li>Generare una pagina web personale, pubblica e condivisibile, a partire dal CV;</li>
+                  <li>Generare un PDF ottimizzato per i sistemi di selezione automatica (ATS);</li>
+                  <li>Adattare il CV a uno specifico annuncio di lavoro fornito dall&apos;utente.</li>
                 </ul>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Prezzi e Pagamento</h3>
-                <p>
-                  I prezzi dei servizi sono quelli indicati nella sezione Prezzi del sito al momento
-                  dell&apos;ordine. Tutti i prezzi si intendono IVA inclusa ove applicabile.
-                  Il pagamento avviene secondo le modalità concordate al momento della conferma
-                  dell&apos;ordine. Il Fornitore si riserva il diritto di modificare i prezzi in
-                  qualsiasi momento; le modifiche non si applicano agli ordini già confermati.
+                <p className="mt-2">
+                  Il servizio è attualmente in fase beta ed è gratuito. Il Fornitore si riserva il
+                  diritto di introdurre in futuro funzionalità o crediti aggiuntivi a pagamento; in
+                  tal caso i presenti Termini saranno aggiornati con condizioni economiche specifiche
+                  prima dell&apos;attivazione di qualsiasi pagamento.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Tempi di Consegna</h3>
+                <h3 className="font-semibold text-foreground mb-2">2. Account e Crediti</h3>
                 <p>
-                  I tempi di consegna sono indicativi e comunicati al cliente in fase di avvio del
-                  progetto. Il Fornitore si impegna a rispettare le scadenze concordate, salvo cause
-                  di forza maggiore o ritardi imputabili al cliente (es. mancato invio di materiali,
-                  testi o immagini).
+                  L&apos;utilizzo di alcune funzionalità (salvataggio permanente del CV, download del
+                  PDF, adattamento a un annuncio) richiede la creazione di un account con email e
+                  password. Ogni nuovo account riceve un credito gratuito; il download del PDF e
+                  l&apos;adattamento a un annuncio consumano un credito ciascuno. L&apos;utente è
+                  responsabile della riservatezza delle proprie credenziali di accesso.
+                </p>
+                <p className="mt-2">
+                  L&apos;utente può eliminare in autonomia un singolo CV o l&apos;intero account, con
+                  effetto immediato e irreversibile, dalla pagina del proprio account.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Obblighi del Cliente</h3>
-                <p>Il cliente si impegna a:</p>
+                <h3 className="font-semibold text-foreground mb-2">3. Natura dei Contenuti Generati dall&apos;AI</h3>
+                <p>
+                  I contenuti generati o migliorati dall&apos;intelligenza artificiale (bio, pagina
+                  profilo, PDF, versioni adattate del CV) sono elaborati a partire esclusivamente dal
+                  materiale fornito dall&apos;utente: il sistema è progettato per non inventare
+                  esperienze, competenze, titoli o dati non presenti nel CV originale. Ciononostante,
+                  come per qualunque strumento basato su intelligenza artificiale, il Fornitore non
+                  garantisce l&apos;assenza totale di errori o imprecisioni. È responsabilità
+                  dell&apos;utente verificare l&apos;accuratezza del contenuto generato prima di
+                  utilizzarlo (es. per candidature di lavoro).
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">4. Obblighi dell&apos;Utente</h3>
+                <p>L&apos;utente si impegna a:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Fornire in modo tempestivo i materiali necessari alla realizzazione del progetto.</li>
-                  <li>Garantire di possedere tutti i diritti sui contenuti forniti (testi, immagini, loghi).</li>
-                  <li>Non utilizzare i servizi per scopi illeciti o contrari all&apos;ordine pubblico.</li>
-                  <li>Non caricare sul generatore di profili CV dati sensibili di terzi senza il loro consenso.</li>
+                  <li>Caricare esclusivamente il proprio CV, o un CV di terzi per il quale disponga del consenso esplicito degli stessi.</li>
+                  <li>Fornire informazioni veritiere nei dati anagrafici modificabili dall&apos;account.</li>
+                  <li>Non utilizzare il servizio per scopi illeciti, fraudolenti o contrari all&apos;ordine pubblico.</li>
+                  <li>Non tentare di eludere le misure anti-abuso del servizio (es. limiti di utilizzo, verifica anti-bot).</li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">5. Proprietà Intellettuale</h3>
                 <p>
-                  Il codice sorgente, i template e i componenti sviluppati da BeOnWeb rimangono di
-                  proprietà del Fornitore. Al cliente viene concessa una licenza d&apos;uso non
-                  esclusiva e non trasferibile sul sito realizzato per il suo progetto specifico.
-                  I contenuti forniti dal cliente (testi, immagini, marchi) restano di proprietà
-                  del cliente.
+                  Il codice sorgente, il design e i template del sito rimangono di proprietà del
+                  Fornitore. I contenuti del CV forniti dall&apos;utente, e la pagina profilo generata
+                  a partire da essi, restano di proprietà dell&apos;utente; il Fornitore non ne
+                  rivendica alcun diritto oltre a quanto necessario per erogare il servizio richiesto.
                 </p>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">6. Limitazione di Responsabilità</h3>
                 <p>
-                  Il Fornitore non è responsabile per interruzioni del servizio causate da terzi
-                  (provider di hosting, registrar di domini, fornitori di API). La responsabilità
-                  complessiva del Fornitore nei confronti del cliente non potrà in alcun caso superare
-                  l&apos;importo pagato per il servizio specifico oggetto della contestazione.
-                  Il Fornitore non è responsabile per danni indiretti, perdita di dati o mancato
-                  guadagno.
+                  Il servizio è fornito &quot;così com&apos;è&quot;. Il Fornitore non è responsabile
+                  per interruzioni causate da fornitori terzi (hosting, autenticazione, intelligenza
+                  artificiale), né per l&apos;esito di candidature o colloqui di lavoro basati sui
+                  contenuti generati. La responsabilità complessiva del Fornitore, ove applicabile,
+                  non potrà in alcun caso superare l&apos;importo eventualmente pagato dall&apos;utente
+                  per il servizio oggetto della contestazione. Il Fornitore non è responsabile per
+                  danni indiretti, perdita di dati o mancato guadagno.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Diritto di Recesso</h3>
+                <h3 className="font-semibold text-foreground mb-2">7. Sospensione e Cessazione</h3>
                 <p>
-                  Per i clienti consumatori (persone fisiche che acquistano al di fuori di attività
-                  professionale), si applica il diritto di recesso di 14 giorni ai sensi del D.Lgs.
-                  206/2005 (Codice del Consumo), a partire dalla data di conclusione del contratto.
-                  Il diritto di recesso non si applica qualora la prestazione sia già stata
-                  completata con il consenso espresso del consumatore prima della scadenza del
-                  periodo di recesso.
+                  Il Fornitore può sospendere o eliminare un account in caso di violazione dei
+                  presenti Termini, utilizzo illecito o abusivo del servizio. L&apos;utente può
+                  cessare l&apos;utilizzo del servizio ed eliminare il proprio account in qualsiasi
+                  momento, in autonomia.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Durata e Risoluzione</h3>
+                <h3 className="font-semibold text-foreground mb-2">8. Modifiche al Servizio e ai Termini</h3>
                 <p>
-                  I servizi una tantum (es. realizzazione sito) si concludono con la consegna del
-                  prodotto finito. Il servizio di manutenzione mensile ha durata mensile con rinnovo
-                  automatico, salvo disdetta comunicata con almeno 15 giorni di anticipo. Il
-                  Fornitore può sospendere o risolvere il contratto in caso di inadempimento del
-                  cliente o utilizzo illecito del servizio.
+                  Il Fornitore si riserva il diritto di modificare, sospendere o interrompere
+                  funzionalità del servizio, e di aggiornare i presenti Termini, in qualsiasi momento.
+                  Le modifiche sostanziali saranno comunicate tramite pubblicazione su questa pagina
+                  con indicazione della data di aggiornamento.
                 </p>
               </div>
 
@@ -163,104 +163,104 @@ export default function TermsPage() {
           ) : (
             <>
               <p>
-                These Terms of Service govern the contractual relationship between{' '}
-                <strong className="text-foreground">BeOnWeb</strong>, operated by Massimo Dassano
-                (the &quot;Provider&quot;), and any customer who purchases or uses the services
-                offered through <strong className="text-foreground">beonweb.it</strong>.
+                These Terms of Service govern the use of the{' '}
+                <strong className="text-foreground">BeOnWeb</strong> platform, operated by Massimo
+                Dassano (the &quot;Provider&quot;), by anyone who accesses or uses the services
+                offered through this website.
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Services</h3>
-                <p>BeOnWeb offers the following services:</p>
+                <h3 className="font-semibold text-foreground mb-2">1. Service Description</h3>
+                <p>BeOnWeb is a platform that uses artificial intelligence to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>
-                    <strong className="text-foreground">Professional website</strong> — design and
-                    development of a custom website on the client&apos;s domain, according to the
-                    purchased plan (Starter, Complete).
-                  </li>
-                  <li>
-                    <strong className="text-foreground">CV profile generator</strong> — a free tool
-                    that lets you upload a PDF CV and obtain a public profile page on a shareable
-                    link, without a personal domain.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Monthly maintenance</strong> — an optional
-                    ongoing support and update service for the website delivered.
-                  </li>
+                  <li>Analyze a PDF CV upload and score it against objective criteria (quantified results, clarity, ATS structure, specific skills);</li>
+                  <li>Improve its content without inventing information not present in the original document;</li>
+                  <li>Generate a personal, public, shareable web page from the CV;</li>
+                  <li>Generate a PDF optimized for Applicant Tracking Systems (ATS);</li>
+                  <li>Tailor the CV to a specific job posting provided by the user.</li>
                 </ul>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Pricing and Payment</h3>
-                <p>
-                  Prices are those listed in the Pricing section of the website at the time of
-                  order. All prices are inclusive of VAT where applicable. Payment terms are agreed
-                  at the time of order confirmation. The Provider reserves the right to change
-                  prices at any time; changes do not apply to already confirmed orders.
+                <p className="mt-2">
+                  The service is currently in beta and free of charge. The Provider reserves the
+                  right to introduce paid features or credits in the future; in that case these
+                  Terms will be updated with specific pricing conditions before any payment feature
+                  is activated.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Delivery</h3>
+                <h3 className="font-semibold text-foreground mb-2">2. Accounts and Credits</h3>
                 <p>
-                  Delivery timelines are indicative and communicated to the client at project kick-off.
-                  The Provider will make reasonable efforts to meet agreed deadlines, except in cases
-                  of force majeure or delays attributable to the client (e.g. failure to supply
-                  content, text, or images).
+                  Some features (permanently saving your CV, downloading the PDF, tailoring to a job
+                  posting) require creating an account with an email and password. Each new account
+                  receives one free credit; downloading a PDF and tailoring to a job posting each
+                  cost one credit. You are responsible for keeping your login credentials confidential.
+                </p>
+                <p className="mt-2">
+                  You can delete a single CV or your entire account yourself, with immediate and
+                  irreversible effect, from your account page.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Client Obligations</h3>
-                <p>The client agrees to:</p>
+                <h3 className="font-semibold text-foreground mb-2">3. Nature of AI-Generated Content</h3>
+                <p>
+                  Content generated or improved by AI (bio, profile page, PDF, tailored CV versions)
+                  is produced solely from material you provide: the system is designed not to invent
+                  experience, skills, qualifications, or facts absent from your original CV. That
+                  said, as with any AI-based tool, the Provider does not guarantee the complete
+                  absence of errors or inaccuracies. You are responsible for reviewing the accuracy
+                  of generated content before relying on it (e.g. for job applications).
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">4. User Obligations</h3>
+                <p>You agree to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Provide materials required for the project in a timely manner.</li>
-                  <li>Ensure they hold all rights to the content supplied (text, images, logos).</li>
-                  <li>Not use the services for unlawful or fraudulent purposes.</li>
-                  <li>Not upload third-party personal data to the CV generator without their consent.</li>
+                  <li>Only upload your own CV, or a third party&apos;s CV for which you have their explicit consent.</li>
+                  <li>Provide accurate information in the personal details editable from your account.</li>
+                  <li>Not use the service for unlawful, fraudulent, or improper purposes.</li>
+                  <li>Not attempt to circumvent the service&apos;s anti-abuse measures (e.g. usage limits, bot verification).</li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">5. Intellectual Property</h3>
                 <p>
-                  Source code, templates, and components developed by BeOnWeb remain the property
-                  of the Provider. The client is granted a non-exclusive, non-transferable licence
-                  to use the website delivered for their specific project. Content supplied by the
-                  client (text, images, trademarks) remains the property of the client.
+                  The website&apos;s source code, design, and templates remain the property of the
+                  Provider. CV content you supply, and the profile page generated from it, remain
+                  your property; the Provider claims no rights over them beyond what is needed to
+                  deliver the requested service.
                 </p>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">6. Limitation of Liability</h3>
                 <p>
-                  The Provider is not liable for service interruptions caused by third parties
-                  (hosting providers, domain registrars, API suppliers). The Provider&apos;s total
-                  liability to the client shall not exceed the amount paid for the specific service
-                  in dispute. The Provider is not liable for indirect damages, data loss, or loss
-                  of profit.
+                  The service is provided &quot;as is&quot;. The Provider is not liable for
+                  interruptions caused by third-party providers (hosting, authentication, AI), nor
+                  for the outcome of job applications or interviews based on generated content. The
+                  Provider&apos;s total liability, where applicable, shall not exceed any amount you
+                  paid for the specific service in dispute. The Provider is not liable for indirect
+                  damages, data loss, or loss of profit.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Right of Withdrawal</h3>
+                <h3 className="font-semibold text-foreground mb-2">7. Suspension and Termination</h3>
                 <p>
-                  Consumers (natural persons acting outside their professional capacity) have the
-                  right to withdraw from the contract within 14 days of its conclusion, in
-                  accordance with Italian Consumer Code (D.Lgs. 206/2005). The right of withdrawal
-                  does not apply where the service has already been fully performed with the
-                  consumer&apos;s express consent before the withdrawal period expires.
+                  The Provider may suspend or delete an account in the event of a breach of these
+                  Terms, or unlawful or abusive use of the service. You may stop using the service
+                  and delete your account at any time, on your own.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Duration and Termination</h3>
+                <h3 className="font-semibold text-foreground mb-2">8. Changes to the Service and Terms</h3>
                 <p>
-                  One-off services (e.g. website build) conclude upon delivery of the finished
-                  product. The monthly maintenance service renews automatically each month unless
-                  cancelled with at least 15 days&apos; notice. The Provider may suspend or
-                  terminate the contract in the event of client default or unlawful use of the
-                  service.
+                  The Provider reserves the right to modify, suspend, or discontinue features of the
+                  service, and to update these Terms, at any time. Material changes will be
+                  communicated by publishing them on this page with the revision date.
                 </p>
               </div>
 

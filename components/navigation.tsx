@@ -28,7 +28,16 @@ export default function Navigation() {
     { href: href('#services'), label: t.services },
   ]
 
-  const generateLabel = (t as { generate?: string }).generate ?? 'Try Free'
+  // /account and /tailor are only ever reached by an already-authenticated
+  // user with an existing profile — showing the generic "Try Free" CTA
+  // aimed at brand-new anonymous visitors is redundant there. Point at the
+  // account dashboard instead, the same context-appropriate link the
+  // profile page's own owner toolbar uses.
+  const isAccountContext = pathname.startsWith('/account') || pathname.startsWith('/tailor')
+  const generateLabel = isAccountContext
+    ? (lang === 'en' ? 'Your Account' : 'Il tuo account')
+    : (t as { generate?: string }).generate ?? 'Try Free'
+  const generateHref = isAccountContext ? '/account' : '/generate'
   const tailorLabel = (t as { tailorLink?: string }).tailorLink ?? 'Tailor to a Job'
 
   return (
@@ -63,7 +72,7 @@ export default function Navigation() {
             </a>
           ))}
           <a
-            href="/generate"
+            href={generateHref}
             className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
           >
             {generateLabel}
@@ -86,13 +95,16 @@ export default function Navigation() {
             {lang === 'en' ? 'IT' : 'EN'}
           </button>
 
-          {/* Get started button (desktop) */}
-          <a
-            href="/generate"
-            className="hidden md:inline-flex items-center px-4 py-1.5 rounded-lg bg-primary/15 border border-primary/30 hover:bg-primary/25 hover:border-primary/50 text-primary text-sm font-medium transition-all duration-200"
-          >
-            {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
-          </a>
+          {/* Get started button (desktop) — redundant with the "Il tuo
+              account" nav link above when already in an account context */}
+          {!isAccountContext && (
+            <a
+              href="/generate"
+              className="hidden md:inline-flex items-center px-4 py-1.5 rounded-lg bg-primary/15 border border-primary/30 hover:bg-primary/25 hover:border-primary/50 text-primary text-sm font-medium transition-all duration-200"
+            >
+              {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
+            </a>
+          )}
 
           {/* Mobile hamburger */}
           <button
@@ -119,7 +131,7 @@ export default function Navigation() {
             </a>
           ))}
           <a
-            href="/generate"
+            href={generateHref}
             className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
