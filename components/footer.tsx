@@ -12,9 +12,6 @@ export default function Footer() {
   return (
     <footer className="border-t border-border/50 bg-secondary/20">
       <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* Tagline — centered above the ribbon */}
-        <p className="text-sm text-muted-foreground text-center mb-8">{t.tagline}</p>
-
         {/* Ribbon: logo + nav + copyright */}
         <div className="border-t border-border/40 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Logo */}

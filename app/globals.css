@@ -4,27 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* BeOnWeb v2 — AI Career Platform: electric violet + cyan duotone */
-  --background: oklch(0.09 0.016 290);
+  /* BeOnWeb v2 — AI Career Platform: electric violet + cyan accents on a
+     deep petrol-green background (hue 200) — see privacy/homogeneity pass. */
+  --background: oklch(0.16 0.045 200);
   --foreground: oklch(0.96 0.006 250);
-  --card: oklch(0.14 0.018 290);
+  --card: oklch(0.21 0.045 200);
   --card-foreground: oklch(0.96 0.006 250);
-  --popover: oklch(0.14 0.018 290);
+  --popover: oklch(0.21 0.045 200);
   --popover-foreground: oklch(0.96 0.006 250);
   --primary: oklch(0.68 0.21 292);
-  --primary-foreground: oklch(0.09 0.016 290);
-  --secondary: oklch(0.17 0.016 290);
+  --primary-foreground: oklch(0.16 0.045 200);
+  --secondary: oklch(0.24 0.045 200);
   --secondary-foreground: oklch(0.90 0.006 250);
-  --muted: oklch(0.17 0.016 290);
-  --muted-foreground: oklch(0.60 0.012 270);
+  --muted: oklch(0.24 0.045 200);
+  --muted-foreground: oklch(0.65 0.025 200);
   --accent: oklch(0.68 0.21 292);
-  --accent-foreground: oklch(0.09 0.016 290);
+  --accent-foreground: oklch(0.16 0.045 200);
   --accent-cyan: oklch(0.78 0.13 195);
-  --accent-cyan-foreground: oklch(0.09 0.016 290);
+  --accent-cyan-foreground: oklch(0.16 0.045 200);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.96 0.006 250);
-  --border: oklch(0.26 0.02 290);
-  --input: oklch(0.17 0.016 290);
+  --border: oklch(0.32 0.045 200);
+  --input: oklch(0.24 0.045 200);
   --ring: oklch(0.68 0.21 292);
   --radius: 0.75rem;
 }
@@ -112,7 +113,7 @@
 
 /* Glass card — used across the redesigned marketing sections */
 .glass-card {
-  background: oklch(0.16 0.018 290 / 0.55);
+  background: oklch(0.23 0.045 200 / 0.55);
   border: 1px solid oklch(0.68 0.21 292 / 0.14);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);

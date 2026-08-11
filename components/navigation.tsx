@@ -87,6 +87,18 @@ export default function Navigation() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          {/* Log in — for a returning user with an existing account, not
+              already covered by the "Il tuo account" link shown when
+              isAccountContext is true (they're already signed in there). */}
+          {!isAccountContext && (
+            <a
+              href="/login"
+              className="hidden sm:inline-block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+            >
+              {lang === 'en' ? 'Log in' : 'Accedi'}
+            </a>
+          )}
+
           {/* Language toggle */}
           <button
             onClick={() => setLang(lang === 'en' ? 'it' : 'en')}
@@ -144,6 +156,15 @@ export default function Navigation() {
           >
             {tailorLabel}
           </a>
+          {!isAccountContext && (
+            <a
+              href="/login"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {lang === 'en' ? 'Log in' : 'Accedi'}
+            </a>
+          )}
         </div>
       )}
     </nav>

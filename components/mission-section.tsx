@@ -25,7 +25,7 @@ export default function MissionSection() {
       id="mission"
       ref={ref}
       className="relative py-12 md:py-20 overflow-hidden"
-      style={{ background: 'oklch(0.10 0.015 255)' }}
+      style={{ background: 'oklch(0.15 0.04 200)' }}
     >
       {/* Subtle grid overlay */}
       <div className="absolute inset-0 grid-overlay opacity-40" />
@@ -67,7 +67,7 @@ export default function MissionSection() {
                 visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10',
               )}
               style={{
-                background: 'oklch(0.13 0.015 255 / 0.8)',
+                background: 'oklch(0.21 0.045 200 / 0.8)',
                 transitionDelay: `${i * 80 + 150}ms`,
               }}
             >
