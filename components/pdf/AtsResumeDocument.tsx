@@ -57,44 +57,75 @@ const VARIANTS: Record<PdfTemplate, VariantConfig> = {
   },
 };
 
-function buildStyles(cfg: VariantConfig) {
+function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
+  const PAGE_PADDING_H = 42;
   return StyleSheet.create({
     // Margins live on the Page itself (not a wrapping View) — react-pdf only
     // reapplies a View's own padding at the very start/end of its content, so
     // a wrapping <View> loses its top/bottom inset on every page after the
     // first once a section overflows. Page-level padding, by contrast, is
     // correctly reapplied on every auto-generated page.
-    page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: cfg.useTopBar ? 26 : 34, paddingBottom: 36, paddingHorizontal: 42 },
+    page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: cfg.useTopBar ? 26 : 34, paddingBottom: 36, paddingHorizontal: PAGE_PADDING_H },
     // Bleeds edge-to-edge on every page regardless of the Page's own padding.
     topBar: { position: "absolute", top: 0, left: 0, right: 0, height: 6 },
-    header: { alignItems: cfg.headerAlign },
+    // Tinted band behind the name/title/contact block — bleeds to the page's
+    // physical edges by cancelling the Page's own horizontal padding, then
+    // re-applying it as the band's own padding so the text inside still
+    // lines up with the rest of the page's content.
+    header: {
+      alignItems: cfg.headerAlign,
+      backgroundColor: hexToRgba(accent, 0.06),
+      marginHorizontal: -PAGE_PADDING_H,
+      marginTop: cfg.useTopBar ? 0 : -10,
+      paddingHorizontal: PAGE_PADDING_H,
+      paddingTop: cfg.useTopBar ? 14 : 20,
+      paddingBottom: 16,
+      marginBottom: 6,
+    },
     name: { fontSize: 23, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, marginBottom: 3, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     title: { fontSize: 12, fontFamily: cfg.fontFamily, color: "#4a4a4a", marginBottom: 9, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     contactLine: { fontSize: 9, color: "#5a5a5a", marginBottom: 2, lineHeight: 1.5, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     section: { marginTop: 17 },
+    // Each variant carries a distinct colored treatment — a left tab +
+    // underline (classic), a filled band (modern), or a soft double rule
+    // (executive) — rather than one shared gray-border look.
     sectionTitle: {
       fontSize: cfg.sectionTitleStyle === "spaced" ? 10 : 10.5,
       fontFamily: cfg.fontFamilyBold,
       textTransform: "uppercase",
-      letterSpacing: cfg.sectionTitleStyle === "spaced" ? 2 : 1.3,
-      color: "#232323",
+      letterSpacing: cfg.sectionTitleStyle === "spaced" ? 1.6 : 1.3,
+      color: cfg.sectionTitleStyle === "spaced" ? accent : "#232323",
       marginBottom: 9,
-      paddingBottom: cfg.sectionTitleStyle === "underline" ? 4 : cfg.sectionTitleStyle === "rule-both" ? 3 : 0,
-      paddingTop: cfg.sectionTitleStyle === "rule-both" ? 3 : 0,
-      borderBottomWidth: cfg.sectionTitleStyle !== "spaced" ? 1.5 : 0,
-      borderBottomStyle: "solid",
-      borderBottomColor: "#e2e2e2",
-      borderTopWidth: cfg.sectionTitleStyle === "rule-both" ? 1 : 0,
-      borderTopStyle: "solid",
-      borderTopColor: "#e2e2e2",
+      ...(cfg.sectionTitleStyle === "underline" && {
+        paddingBottom: 4,
+        paddingLeft: 8,
+        borderBottomWidth: 1.5,
+        borderBottomColor: accent,
+        borderLeftWidth: 3,
+        borderLeftColor: accent,
+      }),
+      ...(cfg.sectionTitleStyle === "spaced" && {
+        alignSelf: "stretch",
+        backgroundColor: hexToRgba(accent, 0.1),
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 3,
+      }),
+      ...(cfg.sectionTitleStyle === "rule-both" && {
+        paddingVertical: 3,
+        borderTopWidth: 1,
+        borderTopColor: accentSoft,
+        borderBottomWidth: 1,
+        borderBottomColor: accentSoft,
+      }),
     },
     bio: { fontSize: 10, lineHeight: 1.55, color: "#333333" },
     entry: {
       marginBottom: 11,
       paddingLeft: cfg.entryMarker === "border" ? 11 : cfg.entryMarker === "dot" ? 12 : 0,
-      borderLeftWidth: cfg.entryMarker === "border" ? 2 : 0,
+      borderLeftWidth: cfg.entryMarker === "border" ? 2.5 : 0,
       borderLeftStyle: "solid",
-      borderLeftColor: "#e2e2e2",
+      borderLeftColor: accentSoft,
     },
     entryDot: { position: "absolute", left: 0, top: 3, width: 5, height: 5, borderRadius: 2.5 },
     entryHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
@@ -109,11 +140,35 @@ function buildStyles(cfg: VariantConfig) {
   });
 }
 
-function formatDateRange(start: string, end: string): string {
-  return `${start} – ${end === "present" || end.toLowerCase() === "present" ? "Present" : end}`;
+// The extraction prompt tells Claude to use JSON null for a missing
+// optional field — interpolated straight into a template literal, `null`
+// stringifies to the literal text "null" rather than disappearing the way
+// it would in JSX. Every date field passes through here (or formatYearRange
+// below) specifically to strip that out instead of printing it.
+function cleanDatePart(value: string | null | undefined): string {
+  if (!value) return "";
+  const trimmed = value.trim();
+  return trimmed.toLowerCase() === "null" ? "" : trimmed;
+}
+
+function formatDateRange(start: string | null | undefined, end: string | null | undefined): string {
+  const cleanStart = cleanDatePart(start);
+  const isPresent = typeof end === "string" && end.toLowerCase() === "present";
+  const cleanEnd = isPresent ? "Present" : cleanDatePart(end);
+  if (cleanStart && cleanEnd) return `${cleanStart} – ${cleanEnd}`;
+  return cleanStart || cleanEnd;
+}
+
+function formatYearRange(start: number | string | null | undefined, end: number | string | null | undefined): string {
+  const isPresent = end === "present";
+  const cleanStart = cleanDatePart(start != null ? String(start) : start);
+  const cleanEnd = isPresent ? "Present" : cleanDatePart(end != null ? String(end) : end);
+  if (cleanStart && cleanEnd) return `${cleanStart} – ${cleanEnd}`;
+  return cleanStart || cleanEnd;
 }
 
 function DateLabel({ text, accent, cfg, styles }: { text: string; accent: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
+  if (!text) return null;
   if (cfg.useDateChip) {
     return (
       <Text style={[styles.entryDatesChip, { color: accent, backgroundColor: hexToRgba(accent, 0.1) }]}>{text}</Text>
@@ -164,7 +219,7 @@ function ContactLine({ profile, accent, cfg, styles }: { profile: ProfileSchema;
 
 function ExperienceEntry({ exp, accent, accentSoft, cfg, styles }: { exp: ExperienceItem; accent: string; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
-    <View style={[styles.entry, { borderLeftColor: accentSoft, position: "relative" }]} wrap={false}>
+    <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <EntryMarker accent={accent} cfg={cfg} styles={styles} />
       <View style={styles.entryHeaderRow}>
         <Text style={styles.entryTitle}>{exp.role}</Text>
@@ -185,11 +240,11 @@ function ExperienceEntry({ exp, accent, accentSoft, cfg, styles }: { exp: Experi
 
 function EducationEntry({ ed, accent, accentSoft, cfg, styles }: { ed: EducationItem; accent: string; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
-    <View style={[styles.entry, { borderLeftColor: accentSoft, position: "relative" }]} wrap={false}>
+    <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <EntryMarker accent={accent} cfg={cfg} styles={styles} />
       <View style={styles.entryHeaderRow}>
         <Text style={styles.entryTitle}>{ed.degree}{ed.field ? ` — ${ed.field}` : ""}</Text>
-        <DateLabel text={`${ed.start_year} – ${ed.end_year}`} accent={accent} cfg={cfg} styles={styles} />
+        <DateLabel text={formatYearRange(ed.start_year, ed.end_year)} accent={accent} cfg={cfg} styles={styles} />
       </View>
       <Text style={styles.entrySubtitle}>{ed.institution}{ed.grade ? ` — ${ed.grade}` : ""}</Text>
     </View>
@@ -198,7 +253,7 @@ function EducationEntry({ ed, accent, accentSoft, cfg, styles }: { ed: Education
 
 function ProjectEntry({ p, accentSoft, cfg, styles }: { p: Project; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
-    <View style={[styles.entry, { borderLeftColor: accentSoft, position: "relative" }]} wrap={false}>
+    <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <Text style={styles.entryTitle}>{p.title}</Text>
       <Text style={styles.bullet}>{p.description}</Text>
       {p.tags.length > 0 && <Text style={styles.skillLine}>{p.tags.join(", ")}</Text>}
@@ -211,7 +266,7 @@ function SkillsSection({ skills, labels, accent, styles }: { skills: ProfileSche
   return (
     // Always short (a handful of lines) — never worth splitting across pages.
     <View style={styles.section} wrap={false}>
-      <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{labels.title}</Text>
+      <Text style={styles.sectionTitle}>{labels.title}</Text>
       {skills.hard.length > 0 && (
         <Text style={styles.skillLine}><Text style={styles.skillLabel}>{labels.hard}: </Text>{skills.hard.join(", ")}</Text>
       )}
@@ -257,7 +312,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
   const accent = profile.metadata.primary_color || FALLBACK_ACCENT;
   const accentSoft = hexToRgba(accent, 0.5);
   const cfg = VARIANTS[template];
-  const styles = buildStyles(cfg);
+  const styles = buildStyles(cfg, accent, accentSoft);
 
   return (
     <Document>
@@ -273,7 +328,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
         {personal_info.bio && (
           // Always short — never worth splitting across pages.
           <View style={styles.section} wrap={false}>
-            <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.summary}</Text>
+            <Text style={styles.sectionTitle}>{t.summary}</Text>
             <Text style={styles.bio}>{personal_info.bio}</Text>
           </View>
         )}
@@ -284,7 +339,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
                 at the bottom of a page with all its content pushed to the
                 next one — later entries can still flow independently. */}
             <View wrap={false}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.experience}</Text>
+              <Text style={styles.sectionTitle}>{t.experience}</Text>
               <ExperienceEntry exp={experience[0]} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
             </View>
             {experience.slice(1).map((exp, i) => (
@@ -296,7 +351,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
         {education.length > 0 && (
           <View style={styles.section}>
             <View wrap={false}>
-              <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.education}</Text>
+              <Text style={styles.sectionTitle}>{t.education}</Text>
               <EducationEntry ed={education[0]} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
             </View>
             {education.slice(1).map((ed, i) => (
@@ -316,7 +371,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
           // Capped at 4 short lines (see lib/parse-resume.ts) — never worth
           // splitting across pages.
           <View style={styles.section} wrap={false}>
-            <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.certifications}</Text>
+            <Text style={styles.sectionTitle}>{t.certifications}</Text>
             {certifications.map((c, i) => (
               <Text key={i} style={styles.skillLine}>
                 {c.name} — {c.issuer} ({c.year})
@@ -329,7 +384,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
           // Capped at 2 entries (see lib/parse-resume.ts) — never worth
           // splitting across pages.
           <View style={styles.section} wrap={false}>
-            <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.projects}</Text>
+            <Text style={styles.sectionTitle}>{t.projects}</Text>
             {projects.map((p, i) => (
               <ProjectEntry key={i} p={p} accentSoft={accentSoft} cfg={cfg} styles={styles} />
             ))}
@@ -338,7 +393,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
 
         {other && other.length > 0 && (
           <View style={styles.section} wrap={false}>
-            <Text style={[styles.sectionTitle, { borderBottomColor: accent, borderTopColor: accent }]}>{t.other}</Text>
+            <Text style={styles.sectionTitle}>{t.other}</Text>
             <Text style={styles.skillLine}>{other.join(" • ")}</Text>
           </View>
         )}

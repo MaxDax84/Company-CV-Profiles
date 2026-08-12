@@ -61,7 +61,7 @@ export default function Navigation() {
             <Globe className="w-4 h-4 text-primary" />
           </div>
           <span className="font-heading font-bold text-lg tracking-tight">
-            Go<span className="text-primary">On</span>Web
+            Job<span className="text-primary">ly</span>
           </span>
         </a>
 

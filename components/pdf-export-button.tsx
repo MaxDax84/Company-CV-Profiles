@@ -24,23 +24,42 @@ export default function PdfExportButton({ slug, label, className }: PdfExportBut
   return (
     <div className="w-full rounded-xl border border-black/10 bg-black/[0.02] p-3 space-y-2.5 text-left">
       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Scegli il template PDF</p>
-      <div className="space-y-1.5">
+      <div className="grid grid-cols-3 gap-2">
         {PDF_TEMPLATES.map(tpl => (
-          <label key={tpl.id} className="flex items-start gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name={`pdf-template-${slug}`}
-              checked={template === tpl.id}
-              onChange={() => setTemplate(tpl.id)}
-              className="mt-1"
-            />
-            <span>
-              <span className="block text-xs font-semibold text-foreground/80">{tpl.name}</span>
-              <span className="block text-[10px] text-muted-foreground/60">{tpl.description}</span>
-            </span>
-          </label>
+          <div
+            key={tpl.id}
+            onClick={() => setTemplate(tpl.id)}
+            className="rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200"
+            style={{ borderColor: template === tpl.id ? "#6366f1" : "rgba(15,23,42,0.08)" }}
+          >
+            <div className="relative h-16 overflow-hidden bg-white">
+              <iframe
+                src={`/pdf-preview/${tpl.id}`}
+                title={tpl.name}
+                tabIndex={-1}
+                className="animate-template-preview-scroll"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: 1200,
+                  height: 1697,
+                  border: "none",
+                  transform: "scale(0.16)",
+                  transformOrigin: "top left",
+                }}
+              />
+            </div>
+            <p
+              className="text-[10px] font-semibold text-center py-1"
+              style={{ background: template === tpl.id ? "#6366f120" : "transparent", color: template === tpl.id ? "#6366f1" : "#475569" }}
+            >
+              {tpl.name}
+            </p>
+          </div>
         ))}
       </div>
+      <p className="text-[10px] text-muted-foreground/60">{PDF_TEMPLATES.find(t => t.id === template)?.description}</p>
       <div className="flex gap-2 pt-1">
         <a
           href={`/api/pdf/${slug}?template=${template}`}

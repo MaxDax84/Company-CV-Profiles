@@ -20,7 +20,7 @@ export default function Footer() {
               <Globe className="w-3.5 h-3.5 text-primary" />
             </div>
             <span className="font-heading font-bold text-base tracking-tight">
-              Go<span className="text-primary">On</span>Web
+              Job<span className="text-primary">ly</span>
             </span>
           </div>
 
