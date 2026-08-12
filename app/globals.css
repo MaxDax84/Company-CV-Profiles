@@ -5,27 +5,30 @@
 
 :root {
   /* BeOnWeb v2 — AI Career Platform: electric violet + cyan accents on a
-     deep petrol-green background (hue 200) — see privacy/homogeneity pass. */
-  --background: oklch(0.16 0.045 200);
+     deep petrol-green background. Plain hex on purpose (not oklch) — the
+     oklch()-with-lab()-fallback pair Lightning CSS was emitting made the
+     actual rendered shade unpredictable across browsers/displays and kept
+     reading as flat black regardless of how the source value was tuned. */
+  --background: #0e2427;
   --foreground: oklch(0.96 0.006 250);
-  --card: oklch(0.21 0.045 200);
+  --card: #143035;
   --card-foreground: oklch(0.96 0.006 250);
-  --popover: oklch(0.21 0.045 200);
+  --popover: #143035;
   --popover-foreground: oklch(0.96 0.006 250);
   --primary: oklch(0.68 0.21 292);
-  --primary-foreground: oklch(0.16 0.045 200);
-  --secondary: oklch(0.24 0.045 200);
+  --primary-foreground: #0e2427;
+  --secondary: #17383d;
   --secondary-foreground: oklch(0.90 0.006 250);
-  --muted: oklch(0.24 0.045 200);
-  --muted-foreground: oklch(0.65 0.025 200);
+  --muted: #17383d;
+  --muted-foreground: #7fa8ac;
   --accent: oklch(0.68 0.21 292);
-  --accent-foreground: oklch(0.16 0.045 200);
+  --accent-foreground: #0e2427;
   --accent-cyan: oklch(0.78 0.13 195);
-  --accent-cyan-foreground: oklch(0.16 0.045 200);
+  --accent-cyan-foreground: #0e2427;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.96 0.006 250);
-  --border: oklch(0.32 0.045 200);
-  --input: oklch(0.24 0.045 200);
+  --border: #1d4247;
+  --input: #17383d;
   --ring: oklch(0.68 0.21 292);
   --radius: 0.75rem;
 }
@@ -95,6 +98,21 @@
   50%       { transform: translateY(-12px); }
 }
 
+/* Scrolls a scaled-down full-page iframe preview downward through its
+   content, holds briefly at the bottom, then snaps back to the top and
+   repeats — used for the /generate template gallery so each preview shows
+   more of the page without the user needing to hover/scroll it manually.
+   -997px is the exact unscaled distance needed to reveal the full 1697px
+   tall page within a 700px-tall (112px / 0.16 scale) visible window. */
+@keyframes template-preview-scroll {
+  0%   { transform: scale(0.16) translateY(0); }
+  85%  { transform: scale(0.16) translateY(-997px); }
+  100% { transform: scale(0.16) translateY(-997px); }
+}
+.animate-template-preview-scroll {
+  animation: template-preview-scroll 12s linear infinite;
+}
+
 /* ── Utility classes ── */
 
 .gradient-text {
@@ -113,7 +131,7 @@
 
 /* Glass card — used across the redesigned marketing sections */
 .glass-card {
-  background: oklch(0.23 0.045 200 / 0.55);
+  background: rgba(20, 48, 53, 0.55);
   border: 1px solid oklch(0.68 0.21 292 / 0.14);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { UploadCloud, Sparkles, Target, Download } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
@@ -10,6 +12,34 @@ import EditableSlug from "@/components/editable-slug";
 import ChangeEmailForm from "@/components/change-email-form";
 import ChangePasswordForm from "@/components/change-password-form";
 import { DeleteProfileButton, DeleteAccountButton } from "@/components/account-actions";
+
+const HOW_IT_WORKS = {
+  sectionLabel: "Come funziona",
+  title: "Dal CV al colloquio, in 4 passaggi",
+  subtitle: "Nessuna scrittura da zero. La nostra AI parte da quello che hai già scritto e lo rende più efficace — senza mai inventare qualcosa che non hai fatto.",
+  cards: [
+    {
+      icon: UploadCloud,
+      title: "Carica il tuo CV",
+      description: "Carica il PDF del tuo curriculum. In pochi secondi la nostra AI legge la tua esperienza e crea un profilo fedele a quello che hai scritto.",
+    },
+    {
+      icon: Sparkles,
+      title: "Ricevi il tuo punteggio",
+      description: "Il tuo CV riceve subito un punteggio su 4 criteri: risultati misurabili, chiarezza, struttura ATS e competenze specifiche. L'AI lo migliora senza stravolgerlo — stesso contenuto, alzando il punteggio, senza mai inventare nulla.",
+    },
+    {
+      icon: Target,
+      title: "Adatta il CV a un annuncio",
+      description: "Incolla il testo di un annuncio di lavoro: l'AI riscrive il tuo profilo per allinearlo a quella posizione, parola chiave per parola chiave, senza inventare nulla.",
+    },
+    {
+      icon: Download,
+      title: "Candidati con sicurezza",
+      description: "Scarica il PDF ottimizzato per i sistemi ATS oppure condividi la tua landing page personale — una pagina web dedicata al tuo profilo, pronta da allegare o linkare in ogni candidatura.",
+    },
+  ],
+};
 
 const ACCENT = "#6366f1";
 
@@ -35,9 +65,14 @@ const TABS = [
   { id: "cv", label: "I miei CV" },
   { id: "account", label: "Dati dell'account" },
   { id: "credits", label: "Crediti" },
+  { id: "how", label: "Come funziona" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
+
+function isTabId(value: string | null): value is TabId {
+  return TABS.some(t => t.id === value);
+}
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -48,7 +83,9 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger }: AccountTabsProps) {
-  const [tab, setTab] = useState<TabId>("cv");
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const [tab, setTab] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "cv");
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
 
@@ -74,7 +111,18 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
       {tab === "cv" && (
         <div className="space-y-10">
           <div className="space-y-3">
-            <SectionTitle>CV caricati ({primaryProfiles.length})</SectionTitle>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <SectionTitle>CV caricati ({primaryProfiles.length})</SectionTitle>
+              {primaryProfiles.length > 0 && (
+                <a
+                  href="/generate"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                  style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                >
+                  + Carica un nuovo CV
+                </a>
+              )}
+            </div>
             {primaryProfiles.length > 0 ? (
               <div className="space-y-3">
                 {primaryProfiles.map((row) => (
@@ -282,6 +330,36 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Tab: Come funziona ─────────────────────────────────────────── */}
+      {tab === "how" && (
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em]">
+              {HOW_IT_WORKS.sectionLabel}
+            </p>
+            <h2 className="font-heading text-2xl font-bold tracking-tight">{HOW_IT_WORKS.title}</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">{HOW_IT_WORKS.subtitle}</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {HOW_IT_WORKS.cards.map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="glass-card rounded-2xl p-6 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <p className="text-xs font-semibold" style={{ color: ACCENT }}>{String(i + 1).padStart(2, "0")}</p>
+                  </div>
+                  <h3 className="text-sm font-semibold">{card.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{card.description}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

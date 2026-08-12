@@ -24,8 +24,13 @@ export default function Navigation() {
   // On non-home pages, anchor links must include the path
   const href = (anchor: string) => isHome ? anchor : `/${anchor}`
 
+  // On /account, "Come funziona" opens as a tab inside the account page
+  // itself (see components/account-tabs.tsx) instead of navigating away to
+  // the homepage section — staying logged into the account view rather
+  // than bouncing out of it.
+  const isAccountPage = pathname.startsWith('/account')
   const links = [
-    { href: href('#services'), label: t.services },
+    { href: isAccountPage ? '/account?tab=how' : href('#services'), label: t.services },
   ]
 
   // /account and /tailor are only ever reached by an already-authenticated
@@ -33,7 +38,7 @@ export default function Navigation() {
   // aimed at brand-new anonymous visitors is redundant there. Point at the
   // account dashboard instead, the same context-appropriate link the
   // profile page's own owner toolbar uses.
-  const isAccountContext = pathname.startsWith('/account') || pathname.startsWith('/tailor')
+  const isAccountContext = isAccountPage || pathname.startsWith('/tailor')
   const generateLabel = isAccountContext
     ? (lang === 'en' ? 'Your Account' : 'Il tuo account')
     : (t as { generate?: string }).generate ?? 'Try Free'

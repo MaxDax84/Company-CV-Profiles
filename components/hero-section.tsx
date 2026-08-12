@@ -28,7 +28,7 @@ export default function HeroSection() {
         />
 
         {/* Subtle radial vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.15_0.04_200)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#0e2427_100%)]" />
       </div>
 
       {/* Content */}

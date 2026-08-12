@@ -193,24 +193,28 @@ export default function GeneratePage() {
         className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px] animate-glow-pulse pointer-events-none"
         style={{ background: "oklch(0.72 0.18 280 / 0.07)", animationDelay: "2.5s" }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.15_0.04_200)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#0e2427_100%)] pointer-events-none" />
 
       <div className="flex items-center justify-center px-6 py-24">
       <div className={`relative z-10 w-full space-y-10 transition-[max-width] duration-300 ${state === "done" ? "max-w-3xl" : "max-w-2xl"}`}>
 
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium">
-            <Sparkles className="w-3 h-3" />
-            {t.badge}
+        {/* Header — hidden once the profile is created, since it just
+            repeats the pitch right above the "Profilo creato!" success
+            panel, which has already made its own point by then. */}
+        {state !== "done" && (
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium">
+              <Sparkles className="w-3 h-3" />
+              {t.badge}
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
+              {t.title}
+            </h1>
+            <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
+              {t.subtitle}
+            </p>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
-            {t.title}
-          </h1>
-          <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
-            {t.subtitle}
-          </p>
-        </div>
+        )}
 
         {state !== "done" && (
           <StepProgress
@@ -430,6 +434,7 @@ export default function GeneratePage() {
                         src={`/profile/${tpl.demoSlug}`}
                         title={tpl.name}
                         tabIndex={-1}
+                        className="animate-template-preview-scroll"
                         style={{
                           position: "absolute",
                           top: 0,
