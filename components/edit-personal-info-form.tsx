@@ -67,7 +67,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
           <input
             value={values.full_name}
             onChange={e => setValues(v => ({ ...v, full_name: e.target.value }))}
-            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+            className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
           />
         </div>
         <div>
@@ -75,7 +75,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
           <input
             value={values.title}
             onChange={e => setValues(v => ({ ...v, title: e.target.value }))}
-            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+            className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
           />
         </div>
         <div>
@@ -83,7 +83,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
           <input
             value={values.location}
             onChange={e => setValues(v => ({ ...v, location: e.target.value }))}
-            className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+            className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
           />
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
         >
           Annulla
         </button>
-        {status === "error" && <p className="text-xs text-red-400">Errore, riprova.</p>}
+        {status === "error" && <p className="text-xs text-red-600">Errore, riprova.</p>}
       </div>
     </div>
   );

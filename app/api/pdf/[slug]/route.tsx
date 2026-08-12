@@ -5,16 +5,21 @@ import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
 import { hashPdf, rememberScore } from "@/lib/cv-score-memory";
-import { AtsResumeDocument } from "@/components/pdf/AtsResumeDocument";
+import { AtsResumeDocument, PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
 export const maxDuration = 15;
 
+function parseTemplate(value: string | null): PdfTemplate {
+  return PDF_TEMPLATES.some(t => t.id === value) ? (value as PdfTemplate) : "classic";
+}
+
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const template = parseTemplate(req.nextUrl.searchParams.get("template"));
 
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -41,7 +46,7 @@ export async function GET(
     throw err;
   }
 
-  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} />);
+  const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} />);
 
   // Remember this exact exported file's score by its content hash — if the
   // user later re-uploads this very PDF (e.g. to tailor it or re-check the

@@ -83,7 +83,7 @@ export default function ProfileResultPanel({
   return (
     <div
       className="rounded-3xl border border-primary/30 bg-primary/5 p-8 text-center space-y-5"
-      style={{ boxShadow: "0 0 40px oklch(0.65 0.25 264 / 0.10)" }}
+      style={{ boxShadow: "0 0 40px rgba(99, 102, 241, 0.14)" }}
     >
       <div className="text-4xl">✅</div>
       <div>
@@ -93,7 +93,7 @@ export default function ProfileResultPanel({
       <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
 
       {labels.valueTitle && labels.valueText && (
-        <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-1">
+        <div className="text-left rounded-2xl border border-black/10 bg-black/[0.02] p-4 space-y-1">
           <p className="text-xs font-semibold text-foreground/80">{labels.valueTitle}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">{labels.valueText}</p>
         </div>
@@ -120,14 +120,14 @@ export default function ProfileResultPanel({
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleCopyLink}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-black/10 bg-black/[0.03] text-foreground/80 transition-all hover:bg-black/[0.06]"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? labels.copyLinkDone : labels.copyLink}
             </button>
             <button
               onClick={handleShare}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-white/10 bg-white/[0.03] text-foreground/80 transition-all hover:bg-white/[0.06]"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-black/10 bg-black/[0.03] text-foreground/80 transition-all hover:bg-black/[0.06]"
             >
               <Share2 className="w-3.5 h-3.5" />
               {labels.share}

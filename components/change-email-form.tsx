@@ -44,7 +44,7 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="nuova-email@esempio.com"
-          className="flex-1 bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="flex-1 bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
         <button
           type="submit"
@@ -56,11 +56,11 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
         </button>
       </div>
       {status === "success" && (
-        <p className="text-xs text-green-400">
+        <p className="text-xs text-green-700">
           Controlla la tua nuova casella email per confermare il cambio.
         </p>
       )}
-      {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
+      {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
     </form>
   );
 }

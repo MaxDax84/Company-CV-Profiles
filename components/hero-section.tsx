@@ -15,20 +15,20 @@ export default function HeroSection() {
         {/* Grid */}
         <div className="absolute inset-0 grid-overlay" />
 
-        {/* Orb 1 — electric blue, top-right */}
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] animate-glow-pulse" />
+        {/* Orb 1 — indigo, top-right */}
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/12 rounded-full blur-[100px] animate-glow-pulse" />
 
-        {/* Orb 2 — purple, bottom-left */}
+        {/* Orb 2 — cyan, bottom-left */}
         <div
           className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px] animate-glow-pulse"
           style={{
-            background: 'oklch(0.72 0.18 280 / 0.08)',
+            background: 'rgba(8, 145, 178, 0.12)',
             animationDelay: '2.5s',
           }}
         />
 
         {/* Subtle radial vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#0e2427_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#ffffff_100%)]" />
       </div>
 
       {/* Content */}

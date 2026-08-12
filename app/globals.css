@@ -4,32 +4,32 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* BeOnWeb v2 — AI Career Platform: electric violet + cyan accents on a
-     deep petrol-green background. Plain hex on purpose (not oklch) — the
-     oklch()-with-lab()-fallback pair Lightning CSS was emitting made the
-     actual rendered shade unpredictable across browsers/displays and kept
-     reading as flat black regardless of how the source value was tuned. */
-  --background: #0e2427;
-  --foreground: oklch(0.96 0.006 250);
-  --card: #143035;
-  --card-foreground: oklch(0.96 0.006 250);
-  --popover: #143035;
-  --popover-foreground: oklch(0.96 0.006 250);
-  --primary: oklch(0.68 0.21 292);
-  --primary-foreground: #0e2427;
-  --secondary: #17383d;
-  --secondary-foreground: oklch(0.90 0.006 250);
-  --muted: #17383d;
-  --muted-foreground: #7fa8ac;
-  --accent: oklch(0.68 0.21 292);
-  --accent-foreground: #0e2427;
-  --accent-cyan: oklch(0.78 0.13 195);
-  --accent-cyan-foreground: #0e2427;
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.96 0.006 250);
-  --border: #1d4247;
-  --input: #17383d;
-  --ring: oklch(0.68 0.21 292);
+  /* BeOnWeb v3 — AI Career Platform: light, professional tech palette
+     (indigo brand + slate neutrals + darkened cyan) on a white background.
+     Plain hex on purpose (not oklch) — the oklch()-with-lab()-fallback pair
+     Lightning CSS was emitting made the actual rendered shade unpredictable
+     across browsers/displays on the previous dark theme. */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+  --accent-cyan: #0891b2;
+  --accent-cyan-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #6366f1;
   --radius: 0.75rem;
 }
 
@@ -118,9 +118,9 @@
 .gradient-text {
   background: linear-gradient(
     135deg,
-    oklch(0.78 0.13 195) 0%,
-    oklch(0.70 0.21 292) 55%,
-    oklch(0.78 0.13 195) 100%
+    #0891b2 0%,
+    #6366f1 55%,
+    #0891b2 100%
   );
   background-size: 200% 200%;
   animation: gradient-x 7s ease infinite;
@@ -131,8 +131,9 @@
 
 /* Glass card — used across the redesigned marketing sections */
 .glass-card {
-  background: rgba(20, 48, 53, 0.55);
-  border: 1px solid oklch(0.68 0.21 292 / 0.14);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -153,8 +154,8 @@
 /* Grid overlay helper */
 .grid-overlay {
   background-image:
-    linear-gradient(oklch(0.68 0.21 292 / 1) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.68 0.21 292 / 1) 1px, transparent 1px);
+    linear-gradient(#0f172a 1px, transparent 1px),
+    linear-gradient(90deg, #0f172a 1px, transparent 1px);
   background-size: 60px 60px;
-  opacity: 0.025;
+  opacity: 0.035;
 }

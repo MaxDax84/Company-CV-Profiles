@@ -11,6 +11,7 @@ import EditPersonalInfoForm from "@/components/edit-personal-info-form";
 import EditableSlug from "@/components/editable-slug";
 import ChangeEmailForm from "@/components/change-email-form";
 import ChangePasswordForm from "@/components/change-password-form";
+import RequestDomainForm from "@/components/request-domain-form";
 import { DeleteProfileButton, DeleteAccountButton } from "@/components/account-actions";
 
 const HOW_IT_WORKS = {
@@ -106,7 +107,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
             style={tab === id
               ? { background: ACCENT, color: "#000" }
-              : { background: "rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}
+              : { background: "rgba(15, 23, 42,0.03)", color: "rgba(15, 23, 42,0.6)", border: "1px solid rgba(15, 23, 42,0.08)" }}
           >
             {label}
           </button>
@@ -170,10 +171,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <PdfExportButton
                         slug={row.slug}
                         label="Scarica PDF ↓"
-                        className="px-5 py-2.5 rounded-xl border border-white/10 text-sm font-semibold hover:bg-white/[0.06] transition-all duration-200"
+                        className="px-5 py-2.5 rounded-xl border border-black/10 text-sm font-semibold hover:bg-black/[0.06] transition-all duration-200"
                       />
                     </div>
-                    <div className="pt-2 border-t border-white/10">
+                    <div className="pt-2 border-t border-black/10">
                       <DeleteProfileButton
                         profileId={row.id}
                         label="Elimina profilo"
@@ -225,7 +226,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <PdfExportButton
                         slug={row.slug}
                         label="PDF ↓"
-                        className="px-3 py-1.5 rounded-lg border border-white/10 text-xs font-semibold hover:bg-white/[0.06] transition-all duration-200"
+                        className="px-3 py-1.5 rounded-lg border border-black/10 text-xs font-semibold hover:bg-black/[0.06] transition-all duration-200"
                       />
                       <DeleteProfileButton profileId={row.id} label="Elimina" />
                     </div>
@@ -287,6 +288,16 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           </div>
 
           <div className="space-y-3">
+            <SectionTitle>Dominio personalizzato</SectionTitle>
+            <div className="glass-card rounded-2xl p-6 space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link GoOnWeb? Mandaci una richiesta, ti ricontattiamo per i dettagli.
+              </p>
+              <RequestDomainForm />
+            </div>
+          </div>
+
+          <div className="space-y-3">
             <SectionTitle>Zona pericolosa</SectionTitle>
             <div className="rounded-2xl p-6 border border-red-500/20 bg-red-500/[0.03] flex items-center justify-between gap-4 flex-wrap">
               <p className="text-xs text-muted-foreground max-w-sm">
@@ -325,7 +336,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           {ledger.length > 0 && (
             <div className="space-y-3">
               <SectionTitle>Storico</SectionTitle>
-              <div className="glass-card rounded-2xl divide-y divide-white/5">
+              <div className="glass-card rounded-2xl divide-y divide-black/5">
                 {ledger.map((entry) => (
                   <div key={entry.id} className="flex items-center justify-between px-5 py-3">
                     <div>
@@ -334,7 +345,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         {new Date(entry.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    <p className="text-sm font-semibold" style={{ color: entry.amount > 0 ? "#4ade80" : "#f87171" }}>
+                    <p className="text-sm font-semibold" style={{ color: entry.amount > 0 ? "#16a34a" : "#dc2626" }}>
                       {entry.amount > 0 ? `+${entry.amount}` : entry.amount}
                     </p>
                   </div>

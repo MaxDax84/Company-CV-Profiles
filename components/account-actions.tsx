@@ -61,12 +61,12 @@ export function DeleteProfileButton({ profileId, label = "Elimina profilo", conf
       <button
         onClick={handleDelete}
         disabled={status === "deleting"}
-        className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+        className="text-xs text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
       >
         {status === "deleting" ? "Eliminazione…" : label}
       </button>
       {status === "error" && (
-        <p className="text-xs text-red-400">Qualcosa è andato storto. Riprova.</p>
+        <p className="text-xs text-red-600">Qualcosa è andato storto. Riprova.</p>
       )}
     </div>
   );
@@ -106,12 +106,12 @@ export function DeleteAccountButton() {
       <button
         onClick={handleDelete}
         disabled={status === "deleting"}
-        className="text-xs font-semibold text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+        className="text-xs font-semibold text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
       >
         {status === "deleting" ? "Eliminazione account…" : "Elimina account permanentemente"}
       </button>
       {status === "error" && (
-        <p className="text-xs text-red-400">Qualcosa è andato storto. Riprova.</p>
+        <p className="text-xs text-red-600">Qualcosa è andato storto. Riprova.</p>
       )}
     </div>
   );

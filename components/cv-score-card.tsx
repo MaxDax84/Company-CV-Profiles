@@ -34,7 +34,7 @@ export default function CvScoreCard({ before, after, accentColor, labels, varian
   const delta = !isTeaser && before ? after.total - before.total : null;
 
   return (
-    <div className="text-left rounded-2xl border border-white/10 bg-white/[0.02] p-5 space-y-5">
+    <div className="text-left rounded-2xl border border-black/10 bg-black/[0.02] p-5 space-y-5">
       <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
         {labels.title}
       </p>
@@ -94,10 +94,10 @@ export default function CvScoreCard({ before, after, accentColor, labels, varian
                   {isTeaser ? `${displayVal}/25` : `${beforeVal !== undefined ? `${beforeVal} → ` : ""}${afterVal}/25`}
                 </span>
               </div>
-              <div className="relative h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="relative h-1.5 rounded-full bg-black/[0.06] overflow-hidden">
                 {!isTeaser && beforeVal !== undefined && (
                   <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-white/15"
+                    className="absolute inset-y-0 left-0 rounded-full bg-black/15"
                     style={{ width: `${(beforeVal / 25) * 100}%` }}
                   />
                 )}

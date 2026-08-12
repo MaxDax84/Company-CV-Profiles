@@ -88,7 +88,7 @@ export default function ServicesSection() {
         {(t as { wipNote?: string }).wipNote && (
           <div
             className={cn(
-              'mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-4 max-w-4xl mx-auto transition-all duration-700',
+              'mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.02] px-6 py-4 max-w-4xl mx-auto transition-all duration-700',
               visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
             )}
             style={{ transitionDelay: '550ms' }}

@@ -6,7 +6,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const ACCENT = "#6366f1";
 const inputClass =
-  "w-full px-4 py-3 rounded-xl bg-background border border-white/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
+  "w-full px-4 py-3 rounded-xl bg-background border border-black/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -107,7 +107,7 @@ export default function ResetPasswordForm() {
         />
       </div>
 
-      {error && <p className="text-sm text-red-400 text-center">{error}</p>}
+      {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
       <button
         type="submit"

@@ -43,14 +43,14 @@ export default function ChangePasswordForm() {
           placeholder="Nuova password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
         <input
           type="password"
           placeholder="Conferma password"
           value={confirm}
           onChange={e => setConfirm(e.target.value)}
-          className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
       </div>
       <div className="flex items-center gap-3">
@@ -62,8 +62,8 @@ export default function ChangePasswordForm() {
         >
           {status === "saving" ? "Aggiornamento…" : "Aggiorna password"}
         </button>
-        {status === "success" && <p className="text-xs text-green-400">Password aggiornata ✓</p>}
-        {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
+        {status === "success" && <p className="text-xs text-green-700">Password aggiornata ✓</p>}
+        {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
       </div>
     </form>
   );

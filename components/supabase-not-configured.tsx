@@ -12,8 +12,8 @@ export default function SupabaseNotConfigured() {
           <p className="font-heading text-lg font-bold">Account non ancora configurati</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Questa pagina richiede un progetto Supabase collegato. Crealo su supabase.com, esegui
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-xs">supabase/migrations/0001_init.sql</code>
-            e aggiungi le tre chiavi in <code className="px-1.5 py-0.5 rounded bg-white/10 text-xs">.env.local</code>.
+            <code className="mx-1 px-1.5 py-0.5 rounded bg-black/10 text-xs">supabase/migrations/0001_init.sql</code>
+            e aggiungi le tre chiavi in <code className="px-1.5 py-0.5 rounded bg-black/10 text-xs">.env.local</code>.
           </p>
         </div>
       </div>

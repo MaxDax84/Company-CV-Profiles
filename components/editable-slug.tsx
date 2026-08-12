@@ -62,7 +62,7 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
         <input
           value={value}
           onChange={e => setValue(e.target.value)}
-          className="flex-1 min-w-0 bg-white/[0.03] border border-white/10 rounded-lg px-2.5 py-1 text-xs outline-none focus:border-primary/50"
+          className="flex-1 min-w-0 bg-black/[0.03] border border-black/10 rounded-lg px-2.5 py-1 text-xs outline-none focus:border-primary/50"
         />
         <button
           onClick={handleSave}
@@ -78,7 +78,7 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
           Annulla
         </button>
       </div>
-      {status === "error" && <p className="text-xs text-red-400">{errorMsg}</p>}
+      {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
     </div>
   );
 }

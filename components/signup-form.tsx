@@ -6,7 +6,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const ACCENT = "#6366f1";
 const inputClass =
-  "w-full px-4 py-3 rounded-xl bg-background border border-white/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
+  "w-full px-4 py-3 rounded-xl bg-background border border-black/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -100,7 +100,7 @@ export default function SignupForm() {
   if (status === "claimFailed") {
     return (
       <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
-        <p className="text-sm text-amber-300 font-semibold">Account creato</p>
+        <p className="text-sm text-amber-700 font-semibold">Account creato</p>
         <p className="text-sm text-muted-foreground">{error}</p>
         <a
           href="/account"
@@ -144,7 +144,7 @@ export default function SignupForm() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-400 text-center">{error}</p>
+        <p className="text-sm text-red-600 text-center">{error}</p>
       )}
 
       <button
