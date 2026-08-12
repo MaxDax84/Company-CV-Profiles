@@ -69,7 +69,7 @@ export default function SignupForm() {
         if (res.ok) {
           setProgress(100);
           await delay(300);
-          router.push(`/profile/${claimed.slug}`);
+          router.push(`/${claimed.code}/${claimed.slug}`);
           return;
         }
         // Signup worked even if claiming failed (e.g. expired preview) —

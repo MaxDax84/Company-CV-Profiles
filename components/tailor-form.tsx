@@ -31,6 +31,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
@@ -88,6 +89,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
         throw new Error(data.error ?? "Errore sconosciuto");
       }
       setSlug(data.slug);
+      setCode(data.code);
       setProfile(data.profile);
       setState("done");
       router.refresh(); // re-fetch the server-rendered credit balance
@@ -103,6 +105,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   function handleReset() {
     setState("idle");
     setSlug(null);
+    setCode(null);
     setProfile(null);
     setJobText("");
     setJobUrl("");
@@ -154,7 +157,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
 
       {hasProfile && sourceSlug && (state === "idle" || state === "error") ? (
         <p className="text-xs text-center text-muted-foreground/60">
-          Stai adattando: <span className="font-semibold text-foreground/80">/profile/{sourceSlug}</span>
+          Stai adattando: <span className="font-semibold text-foreground/80">{sourceSlug}</span>
         </p>
       ) : null}
 
@@ -165,6 +168,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
       {hasProfile && state === "done" && slug && profile ? (
         <ProfileResultPanel
           slug={slug}
+          code={code ?? undefined}
           profile={profile}
           accentColor={accent}
           labels={t}

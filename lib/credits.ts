@@ -44,6 +44,21 @@ export async function getCreditBalance(supabase: SupabaseClient, userId: string)
   return data.credits as number;
 }
 
+// The account's permanent 7-digit code (see supabase/migrations/0004_profile_code.sql)
+// — one per account, assigned at signup, shared by every CV the user
+// claims. It's the real lookup key in a claimed profile's public URL
+// (/<code>/<slug>), so a rename of the slug never breaks an already-shared
+// link.
+export async function getAccountCode(supabase: SupabaseClient, userId: string): Promise<string> {
+  const { data, error } = await supabase
+    .from("account_credits")
+    .select("code")
+    .eq("user_id", userId)
+    .single();
+  if (error) throw error;
+  return data.code as string;
+}
+
 export interface CreditLedgerEntry {
   id: string;
   amount: number;

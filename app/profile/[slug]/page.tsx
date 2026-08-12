@@ -1,10 +1,7 @@
 import { notFound } from "next/navigation";
 import type { ProfileSchema, TemplateStyle } from "@/lib/schema";
 import { TemplateAlpha, TemplateBeta, TemplateGamma, TemplateDelta } from "@/components/templates";
-import { getProfileBySlug, getOwnedProfileBySlug } from "@/lib/profile-store";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/service";
-import OwnerToolbar from "@/components/owner-toolbar";
+import { getProfileBySlug } from "@/lib/profile-store";
 
 const TEMPLATE_MAP: Record<TemplateStyle, React.ComponentType<{ profile: ProfileSchema }>> = {
   alpha: TemplateAlpha,  // Inter · dark · timeline
@@ -17,35 +14,19 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// Null for anyone but the profile's own owner — a visitor opening the
-// shared link, or an anonymous/pending preview, never triggers this.
-async function getOwnerKind(slug: string): Promise<"primary" | "tailored" | null> {
-  if (!isSupabaseConfigured()) return null;
-  try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-    const row = await getOwnedProfileBySlug(supabase, user.id, slug);
-    return row?.kind ?? null;
-  } catch {
-    return null;
-  }
-}
-
-export default async function ProfilePage({ params }: Props) {
+// Only ever serves a still-pending (unclaimed) preview or a seeded demo/
+// showcase profile — both KV-only. A claimed profile's permanent address
+// is /<account-code>/<slug> (see app/[code]/[slug]/page.tsx), so there's
+// never an owner to show a toolbar for here.
+export default async function PendingProfilePage({ params }: Props) {
   const { slug } = await params;
-  const [profile, ownerKind] = await Promise.all([getProfileBySlug(slug), getOwnerKind(slug)]);
+  const profile = await getProfileBySlug(slug);
 
   if (!profile) notFound();
 
   const Template = TEMPLATE_MAP[profile.metadata.template] ?? TemplateAlpha;
 
-  return (
-    <>
-      {ownerKind && <OwnerToolbar slug={slug} kind={ownerKind} />}
-      <Template profile={profile} />
-    </>
-  );
+  return <Template profile={profile} />;
 }
 
 export async function generateMetadata({ params }: Props) {

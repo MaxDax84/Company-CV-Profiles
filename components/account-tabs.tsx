@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
-import { deriveProfileCode } from "@/lib/profile-code";
 import PdfExportButton from "@/components/pdf-export-button";
 import EditPersonalInfoForm from "@/components/edit-personal-info-form";
 import EditableSlug from "@/components/editable-slug";
@@ -25,6 +24,7 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 
 interface AccountTabsProps {
   userEmail: string;
+  accountCode: string;
   primaryProfiles: ProfileRow[];
   tailoredProfiles: ProfileRow[];
   credits: number;
@@ -47,7 +47,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, primaryProfiles, tailoredProfiles, credits, ledger }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger }: AccountTabsProps) {
   const [tab, setTab] = useState<TabId>("cv");
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
@@ -93,7 +93,7 @@ export default function AccountTabs({ userEmail, primaryProfiles, tailoredProfil
                     <EditableSlug profileId={row.id} slug={row.slug} />
                     <div className="flex flex-wrap items-center gap-3">
                       <a
-                        href={`/profile/${row.slug}`}
+                        href={`/${accountCode}/${row.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200"
@@ -154,7 +154,7 @@ export default function AccountTabs({ userEmail, primaryProfiles, tailoredProfil
                     <EditableSlug profileId={row.id} slug={row.slug} />
                     <div className="flex flex-wrap items-center gap-2">
                       <a
-                        href={`/profile/${row.slug}`}
+                        href={`/${accountCode}/${row.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
@@ -193,12 +193,10 @@ export default function AccountTabs({ userEmail, primaryProfiles, tailoredProfil
                 <p className="text-xs text-muted-foreground/60 mb-0.5">Email</p>
                 <p className="text-sm font-medium">{userEmail}</p>
               </div>
-              {profileRow && (
-                <div>
-                  <p className="text-xs text-muted-foreground/60 mb-0.5">Codice profilo</p>
-                  <p className="text-sm font-medium font-mono tracking-wide">{deriveProfileCode(profileRow.id)}</p>
-                </div>
-              )}
+              <div>
+                <p className="text-xs text-muted-foreground/60 mb-0.5">Codice account</p>
+                <p className="text-sm font-medium font-mono tracking-wide">{accountCode}</p>
+              </div>
               {profileRow && (
                 <EditPersonalInfoForm
                   fullName={profileRow.data.personal_info.full_name}
@@ -258,7 +256,7 @@ export default function AccountTabs({ userEmail, primaryProfiles, tailoredProfil
           </p>
 
           <div className="space-y-3">
-            <SectionTitle>Promozioni</SectionTitle>
+            <SectionTitle>Offerte per te</SectionTitle>
             <div className="glass-card rounded-2xl p-6 text-center">
               <p className="text-sm text-muted-foreground">Nessuna promozione attiva al momento.</p>
             </div>

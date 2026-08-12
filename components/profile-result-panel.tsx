@@ -21,6 +21,12 @@ export interface ProfileResultPanelLabels {
 
 interface ProfileResultPanelProps {
   slug: string;
+  // The account's permanent code — present once the profile is claimed
+  // (e.g. /tailor's result, saved straight to the caller's account), absent
+  // for a still-pending /generate preview (which uses /profile/<slug>
+  // instead, and never actually renders the link this feeds — see the
+  // claimSlot check below).
+  code?: string;
   profile: ProfileSchema;
   accentColor: string;
   labels: ProfileResultPanelLabels;
@@ -39,6 +45,7 @@ interface ProfileResultPanelProps {
 
 export default function ProfileResultPanel({
   slug,
+  code,
   profile,
   accentColor,
   labels,
@@ -48,9 +55,10 @@ export default function ProfileResultPanel({
   claimSlot,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
+  const path = code ? `/${code}/${slug}` : `/profile/${slug}`;
 
   function profileUrl() {
-    return typeof window !== "undefined" ? `${window.location.origin}/profile/${slug}` : "";
+    return typeof window !== "undefined" ? `${window.location.origin}${path}` : "";
   }
 
   async function handleCopyLink() {
@@ -100,7 +108,7 @@ export default function ProfileResultPanel({
       {!claimSlot && (
         <>
           <a
-            href={`/profile/${slug}`}
+            href={path}
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 hover:shadow-lg"

@@ -41,7 +41,7 @@ export default function LoginForm() {
         });
         const claimed = await res.json();
         if (res.ok) {
-          router.push(`/profile/${claimed.slug}`);
+          router.push(`/${claimed.code}/${claimed.slug}`);
           return;
         }
       } catch {
@@ -67,9 +67,14 @@ export default function LoginForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Password
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Password
+          </label>
+          <a href="/forgot-password" className="text-xs text-primary hover:underline">
+            Password dimenticata?
+          </a>
+        </div>
         <input
           type="password"
           required

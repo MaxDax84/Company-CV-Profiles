@@ -10,7 +10,8 @@ import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/se
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Shared slug/KV/Postgres plumbing used by /api/parse-resume, /api/claim,
-// /api/tailor-resume, and app/profile/[slug]/page.tsx.
+// /api/tailor-resume, app/profile/[slug]/page.tsx (pending previews and
+// seeded demo profiles), and app/[code]/[slug]/page.tsx (claimed profiles).
 
 // A just-generated-but-not-yet-registered profile lives in KV for a short
 // window — long enough for "generate, look at the preview, sign up" to
@@ -51,32 +52,44 @@ async function getRawPendingProfile(slug: string): Promise<ProfileSchema | null>
   return typeof raw === "string" ? JSON.parse(raw) : raw;
 }
 
-// Public-safe read: used by the public profile page and its metadata.
-// Checks the permanent (claimed) Postgres record first, falls back to a
-// still-pending KV preview, strips PII either way.
-//
-// Before Supabase is configured (or on any Postgres error), this falls
-// through to the KV check instead of throwing — the seeded demo/showcase
-// profiles (see /api/seed-demo) only ever live in KV and have no account
-// behind them, so they must keep working even with no Supabase project set
-// up yet.
+// Public-safe read for a still-pending preview or a seeded demo/showcase
+// profile — both only ever live in KV, never in Postgres. A *claimed*
+// profile is no longer reachable this way; its permanent public address is
+// /<account-code>/<slug> (see getProfileByAccountCode below).
 export async function getProfileBySlug(slug: string): Promise<ProfileSchema | null> {
-  if (isSupabaseConfigured()) {
-    try {
-      const service = createServiceSupabaseClient();
-      const { data } = await service
-        .from("profiles")
-        .select("data")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (data) return stripPII(data.data as ProfileSchema);
-    } catch (err) {
-      console.error("[getProfileBySlug] Postgres lookup failed, falling back to KV", err);
-    }
-  }
-
   const pending = await getRawPendingProfile(slug);
   return pending ? stripPII(pending) : null;
+}
+
+// Public-safe read for a claimed profile's permanent address:
+// /<account-code>/<slug>. The account code is looked up first (it's the
+// real, never-changing identity), then the specific CV by slug within that
+// one account — a slug only needs to be unique within its own account now,
+// not site-wide, so it must always be resolved together with the code.
+export async function getProfileByAccountCode(code: string, slug: string): Promise<ProfileSchema | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const service = createServiceSupabaseClient();
+    const { data: account } = await service
+      .from("account_credits")
+      .select("user_id")
+      .eq("code", code)
+      .maybeSingle();
+    if (!account) return null;
+
+    const { data } = await service
+      .from("profiles")
+      .select("data")
+      .eq("user_id", account.user_id)
+      .eq("slug", slug)
+      .maybeSingle();
+    if (!data) return null;
+
+    return stripPII(data.data as ProfileSchema);
+  } catch (err) {
+    console.error("[getProfileByAccountCode] Postgres lookup failed", err);
+    return null;
+  }
 }
 
 // Owner-scoped read (dashboard "dati anagrafici", PDF export, tailoring

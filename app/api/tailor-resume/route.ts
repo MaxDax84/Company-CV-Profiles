@@ -3,7 +3,7 @@ import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { spendCredits, CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
 
@@ -117,8 +117,9 @@ export async function POST(req: NextRequest) {
     tailored.metadata.generated_at = new Date().toISOString();
 
     const { slug } = await saveTailoredProfile(supabase, user.id, sourceRow.id, tailored);
+    const code = await getAccountCode(supabase, user.id);
 
-    return NextResponse.json({ slug, profile: tailored });
+    return NextResponse.json({ slug, code, profile: tailored });
   } catch (err) {
     console.error("[tailor-resume]", err);
     return NextResponse.json(

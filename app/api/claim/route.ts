@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { claimPendingProfile } from "@/lib/profile-store";
+import { getAccountCode } from "@/lib/credits";
 
 export const runtime = "nodejs";
 
@@ -33,7 +34,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ slug: result.slug });
+    const code = await getAccountCode(supabase, user.id);
+    return NextResponse.json({ slug: result.slug, code });
   } catch (err) {
     console.error("[claim]", err);
     return NextResponse.json(
