@@ -115,21 +115,30 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
 
   const accent = profile?.metadata.primary_color ?? ACCENT;
 
+  // The H1/subtitle follow the story as the user moves through the flow
+  // (idle/error → uploading), instead of showing the same pitch copy
+  // throughout — and are hidden once done, like /generate, since the result
+  // panel already makes its own point by then.
+  const headerTitle = state === "uploading" ? t.titleUploading : t.title;
+  const headerSubtitle = state === "uploading" ? t.subtitleUploading : t.subtitle;
+
   return (
     <div className="relative z-10 w-full space-y-10">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium">
-          <Sparkles className="w-3 h-3" />
-          {t.badge}
+      {state !== "done" && (
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-primary text-xs font-medium">
+            <Sparkles className="w-3 h-3" />
+            {t.badge}
+          </div>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
+            {headerTitle}
+          </h1>
+          <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
+            {headerSubtitle}
+          </p>
         </div>
-        <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
-          {t.title}
-        </h1>
-        <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
-          {t.subtitle}
-        </p>
-      </div>
+      )}
 
       {!hasProfile ? (
         <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center space-y-3">

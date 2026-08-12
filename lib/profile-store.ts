@@ -253,11 +253,16 @@ export async function improveAndFinalizePendingProfile(
   return { slug, profile: improved };
 }
 
-export type ClaimError = "expired" | "claim_failed";
+export type ClaimError = "expired" | "claim_failed" | "cv_limit_reached";
+
+// A user can claim several CVs (see getOwnedPrimaryProfiles), but not
+// unbounded — caps runaway storage/abuse and keeps the account dashboard's
+// CV list actually manageable to look at.
+export const MAX_PRIMARY_PROFILES_PER_USER = 4;
 
 // Moves a pending KV preview into the caller's permanent Postgres record, as
-// a new kind='primary' row — a user can claim as many CVs as they upload,
-// they all end up listed on the account dashboard (see
+// a new kind='primary' row — up to MAX_PRIMARY_PROFILES_PER_USER per
+// account, all ending up listed on the account dashboard (see
 // getOwnedPrimaryProfiles). `supabase` must be a request-scoped,
 // already-authenticated client (see lib/supabase/server.ts) — the insert
 // relies on RLS's `auth.uid() = user_id` check, not on anything passed in
@@ -273,6 +278,15 @@ export async function claimPendingProfile(
 
   const profile = await getRawPendingProfile(pendingSlug);
   if (!profile) return { error: "expired" };
+
+  const { count } = await supabase
+    .from("profiles")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("kind", "primary");
+  if ((count ?? 0) >= MAX_PRIMARY_PROFILES_PER_USER) {
+    return { error: "cv_limit_reached" };
+  }
 
   // The pending slug was only checked for uniqueness among OTHER still-
   // pending previews (see savePendingProfile) — it can still collide with

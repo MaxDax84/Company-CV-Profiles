@@ -17,7 +17,7 @@ export default function TermsPage() {
           {lang === 'it' ? '← Torna al sito' : '← Back to site'}
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+        <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">
           {lang === 'it' ? 'Termini di Servizio' : 'Terms of Service'}
         </h1>
         <p className="text-muted-foreground text-sm mb-12">

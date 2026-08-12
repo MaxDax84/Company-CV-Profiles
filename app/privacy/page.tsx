@@ -17,7 +17,7 @@ export default function PrivacyPage() {
           {lang === 'it' ? '← Torna al sito' : '← Back to site'}
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Privacy Policy</h1>
+        <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">Privacy Policy</h1>
         <p className="text-muted-foreground text-sm mb-12">
           {lang === 'it' ? 'Ultimo aggiornamento: Agosto 2026' : 'Last updated: August 2026'}
         </p>

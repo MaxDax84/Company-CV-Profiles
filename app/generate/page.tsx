@@ -181,6 +181,19 @@ export default function GeneratePage() {
   const canAnalyze = !!file && privacy && !!turnstileToken && state === "idle";
   const needsPrivacy = !!file && !privacy;
 
+  // The H1/subtitle follow the story as the user moves through the flow,
+  // instead of showing the same pitch copy at every step.
+  const headerTitle =
+    state === "analyzing" ? t.titleAnalyzing :
+    state === "scored" ? t.titleScored :
+    state === "customizing" ? t.titleCustomizing :
+    t.title;
+  const headerSubtitle =
+    state === "analyzing" ? t.subtitleAnalyzing :
+    state === "scored" ? t.subtitleScored :
+    state === "customizing" ? t.subtitleCustomizing :
+    t.subtitle;
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
@@ -207,11 +220,11 @@ export default function GeneratePage() {
               <Sparkles className="w-3 h-3" />
               {t.badge}
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
-              {t.title}
+            <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight" style={{ whiteSpace: "pre-line" }}>
+              {headerTitle}
             </h1>
             <p className="text-muted-foreground" style={{ whiteSpace: "pre-line" }}>
-              {t.subtitle}
+              {headerSubtitle}
             </p>
           </div>
         )}
@@ -405,8 +418,6 @@ export default function GeneratePage() {
         ) : state === "customizing" ? (
           /* ── Customizing state: LinkedIn + template, then create the page ── */
           <>
-            <p className="text-center font-semibold text-foreground">{t.customizeTitle}</p>
-
             {/* Template selector */}
             <div className="space-y-3">
               <p

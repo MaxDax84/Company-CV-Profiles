@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
           { status: 410 }
         );
       }
+      if (result.error === "cv_limit_reached") {
+        return NextResponse.json(
+          {
+            error: "Hai raggiunto il limite di 4 CV per account. Elimina uno dei CV esistenti per poterne aggiungere uno nuovo.",
+            code: "CV_LIMIT_REACHED",
+          },
+          { status: 409 }
+        );
+      }
       return NextResponse.json(
         { error: "Could not save this profile to your account. Please try again." },
         { status: 500 }

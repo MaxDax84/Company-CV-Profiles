@@ -43,6 +43,12 @@ const HOW_IT_WORKS = {
 
 const ACCENT = "#6366f1";
 
+// Must match MAX_PRIMARY_PROFILES_PER_USER in lib/profile-store.ts (the
+// actual enforcement point, at claim time) — kept as a separate constant
+// here rather than imported, since that file pulls in server-only/service-
+// role code that shouldn't end up in the client bundle.
+const MAX_CVS = 4;
+
 const LEDGER_REASON_LABELS: Record<string, string> = {
   welcome: "Credito di benvenuto",
   pdf_download: "Download PDF",
@@ -112,15 +118,21 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         <div className="space-y-10">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <SectionTitle>CV caricati ({primaryProfiles.length})</SectionTitle>
+              <SectionTitle>CV caricati ({primaryProfiles.length}/{MAX_CVS})</SectionTitle>
               {primaryProfiles.length > 0 && (
-                <a
-                  href="/generate"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                  style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
-                >
-                  + Carica un nuovo CV
-                </a>
+                primaryProfiles.length < MAX_CVS ? (
+                  <a
+                    href="/generate"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                    style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                  >
+                    + Carica un nuovo CV
+                  </a>
+                ) : (
+                  <span className="text-[11px] text-muted-foreground/60">
+                    Limite raggiunto — elimina un CV per aggiungerne uno nuovo
+                  </span>
+                )
               )}
             </div>
             {primaryProfiles.length > 0 ? (

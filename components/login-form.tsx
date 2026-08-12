@@ -17,6 +17,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [claimFailed, setClaimFailed] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,11 +45,34 @@ export default function LoginForm() {
           router.push(`/${claimed.code}/${claimed.slug}`);
           return;
         }
+        // Login succeeded even though claiming this specific CV failed
+        // (e.g. expired preview, or the 4-CV limit) — stop and show why
+        // instead of silently landing on the dashboard with no explanation.
+        setError(claimed.error ?? "Non è stato possibile salvare il profilo nel tuo account.");
+        setClaimFailed(true);
+        setLoading(false);
+        return;
       } catch {
-        // fall through to the dashboard below
+        // Network hiccup, not a real rejection — don't strand them on it.
       }
     }
     router.push("/account");
+  }
+
+  if (claimFailed) {
+    return (
+      <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
+        <p className="text-sm text-amber-300 font-semibold">Accesso effettuato</p>
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <a
+          href="/account"
+          className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+          style={{ background: ACCENT, color: "#000" }}
+        >
+          Vai al tuo account →
+        </a>
+      </div>
+    );
   }
 
   return (

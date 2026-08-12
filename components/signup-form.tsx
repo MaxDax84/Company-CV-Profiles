@@ -19,7 +19,7 @@ export default function SignupForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm" | "claimFailed">("idle");
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -72,11 +72,16 @@ export default function SignupForm() {
           router.push(`/${claimed.code}/${claimed.slug}`);
           return;
         }
-        // Signup worked even if claiming failed (e.g. expired preview) —
-        // send them to the dashboard rather than stranding them on an error.
-        setError(claimed.error ?? null);
+        // The account itself was created successfully even though claiming
+        // this specific CV failed (e.g. expired preview, or the 4-CV
+        // limit) — stop here instead of auto-redirecting, so the reason is
+        // actually readable instead of flashing by before navigation.
+        setError(claimed.error ?? "Non è stato possibile salvare il profilo nel tuo account.");
+        setStatus("claimFailed");
+        setProgress(0);
+        return;
       } catch {
-        // Same reasoning — don't block on a network hiccup during claim.
+        // Network hiccup, not a real rejection — don't strand them on it.
       }
     }
     setProgress(100);
@@ -88,6 +93,22 @@ export default function SignupForm() {
     return (
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center text-sm text-muted-foreground">
         Ti abbiamo inviato un'email di conferma — clicca il link per attivare l'account, poi torna qui per accedere.
+      </div>
+    );
+  }
+
+  if (status === "claimFailed") {
+    return (
+      <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
+        <p className="text-sm text-amber-300 font-semibold">Account creato</p>
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <a
+          href="/account"
+          className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+          style={{ background: ACCENT, color: "#000" }}
+        >
+          Vai al tuo account →
+        </a>
       </div>
     );
   }
