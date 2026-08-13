@@ -27,8 +27,12 @@ export default function HeroSection() {
           }}
         />
 
-        {/* Subtle radial vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#ffffff_100%)]" />
+        {/* Subtle radial vignette — var(--background) so it blends into
+            whichever theme is active instead of always fading to white */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse at center, transparent 40%, var(--background) 100%)' }}
+        />
       </div>
 
       {/* Content */}

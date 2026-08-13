@@ -20,9 +20,17 @@ export const metadata: Metadata = {
   },
 }
 
+// Runs before hydration so the .dark class is already set on first paint —
+// without this the page would flash light mode for a returning dark-mode
+// user, then flip once React mounts.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased`}>
         <ScrollToTop />
         <LanguageProvider>{children}</LanguageProvider>

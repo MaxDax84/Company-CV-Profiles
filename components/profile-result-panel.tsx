@@ -93,7 +93,7 @@ export default function ProfileResultPanel({
       <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
 
       {labels.valueTitle && labels.valueText && (
-        <div className="text-left rounded-2xl border border-black/10 bg-black/[0.02] p-4 space-y-1">
+        <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-4 space-y-1">
           <p className="text-xs font-semibold text-foreground/80">{labels.valueTitle}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">{labels.valueText}</p>
         </div>
@@ -120,14 +120,14 @@ export default function ProfileResultPanel({
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleCopyLink}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-black/10 bg-black/[0.03] text-foreground/80 transition-all hover:bg-black/[0.06]"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? labels.copyLinkDone : labels.copyLink}
             </button>
             <button
               onClick={handleShare}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-black/10 bg-black/[0.03] text-foreground/80 transition-all hover:bg-black/[0.06]"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
             >
               <Share2 className="w-3.5 h-3.5" />
               {labels.share}

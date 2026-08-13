@@ -108,7 +108,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
             style={tab === id
               ? { background: ACCENT, color: "#000" }
-              : { background: "rgba(15, 23, 42,0.03)", color: "rgba(15, 23, 42,0.6)", border: "1px solid rgba(15, 23, 42,0.08)" }}
+              : { background: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
           >
             {label}
           </button>
@@ -172,17 +172,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <PdfExportButton
                         slug={row.slug}
                         label="Scarica PDF ↓"
-                        className="px-5 py-2.5 rounded-xl border border-black/10 text-sm font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                        className="px-5 py-2.5 rounded-xl border border-foreground/10 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <a
                         href={`/api/cover-letter/${row.slug}`}
                         download
-                        className="px-5 py-2.5 rounded-xl border border-black/10 text-sm font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                        className="px-5 py-2.5 rounded-xl border border-foreground/10 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         Lettera di presentazione ↓
                       </a>
                     </div>
-                    <div className="pt-2 border-t border-black/10">
+                    <div className="pt-2 border-t border-foreground/10">
                       <DeleteProfileButton
                         profileId={row.id}
                         label="Elimina profilo"
@@ -234,12 +234,12 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <PdfExportButton
                         slug={row.slug}
                         label="PDF ↓"
-                        className="px-3 py-1.5 rounded-lg border border-black/10 text-xs font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <a
                         href={`/api/cover-letter/${row.slug}`}
                         download
-                        className="px-3 py-1.5 rounded-lg border border-black/10 text-xs font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         Lettera ↓
                       </a>
@@ -351,7 +351,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           {ledger.length > 0 && (
             <div className="space-y-3">
               <SectionTitle>Storico</SectionTitle>
-              <div className="glass-card rounded-2xl divide-y divide-black/5">
+              <div className="glass-card rounded-2xl divide-y divide-foreground/5">
                 {ledger.map((entry) => (
                   <div key={entry.id} className="flex items-center justify-between px-5 py-3">
                     <div>

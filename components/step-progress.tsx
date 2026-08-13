@@ -13,7 +13,7 @@ export default function StepProgress({ steps, accent }: { steps: Step[]; accent:
               className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-colors duration-300 shrink-0"
               style={step.done
                 ? { background: accent, borderColor: accent, color: "#000" }
-                : { borderColor: "rgba(15, 23, 42,0.15)", color: "rgba(15, 23, 42,0.4)" }}
+                : { borderColor: "var(--border)", color: "var(--muted-foreground)" }}
             >
               {step.done ? (
                 <svg width="10" height="10" viewBox="0 0 8 8" fill="none">
@@ -25,7 +25,7 @@ export default function StepProgress({ steps, accent }: { steps: Step[]; accent:
             </div>
             <span
               className="text-[11px] font-medium whitespace-nowrap transition-colors duration-300"
-              style={{ color: step.done ? accent : "rgba(15, 23, 42,0.4)" }}
+              style={{ color: step.done ? accent : "var(--muted-foreground)" }}
             >
               {step.label}
             </span>
@@ -33,7 +33,7 @@ export default function StepProgress({ steps, accent }: { steps: Step[]; accent:
           {i < steps.length - 1 && (
             <div
               className="flex-1 h-[2px] mx-3 rounded-full transition-colors duration-300"
-              style={{ background: step.done ? accent : "rgba(15, 23, 42,0.1)" }}
+              style={{ background: step.done ? accent : "var(--border)" }}
             />
           )}
         </div>

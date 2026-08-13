@@ -186,12 +186,12 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
             <PdfExportButton
               slug={slug}
               label={t.downloadPdf}
-              className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-black/10 bg-black/[0.03] text-foreground/80 transition-all hover:bg-black/[0.06]"
+              className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
             />
           }
           beforeAfter={
             profile.personal_info.bio_original ? (
-              <div className="text-left rounded-2xl border border-black/10 bg-black/[0.02] p-5 space-y-5">
+              <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 space-y-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
                   {t.beforeAfterTitle}
                 </p>
@@ -200,7 +200,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
                       {t.beforeLabel}
                     </p>
-                    <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-3 py-4 rounded-xl border border-black/10 bg-black/[0.02] text-center">
+                    <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-3 py-4 rounded-xl border border-foreground/10 bg-foreground/[0.02] text-center">
                       {profile.personal_info.bio_original}
                     </p>
                   </div>
@@ -232,7 +232,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                   <span
                     className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[10px] border transition-colors duration-300"
                     style={{
-                      borderColor: done || active ? "var(--primary)" : "rgba(15, 23, 42,0.15)",
+                      borderColor: done || active ? "var(--primary)" : "var(--border)",
                       background: done ? "var(--primary)" : "transparent",
                       color: done ? "#000" : "transparent",
                     }}
@@ -241,7 +241,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                   </span>
                   <span
                     className="transition-colors duration-300"
-                    style={{ color: done ? "var(--primary)" : active ? "rgba(15, 23, 42,0.85)" : "rgba(15, 23, 42,0.35)" }}
+                    style={{ color: done ? "var(--primary)" : active ? "var(--foreground)" : "var(--muted-foreground)" }}
                   >
                     {step}
                   </span>
@@ -264,11 +264,11 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                   key={src}
                   onClick={() => setJobSource(src)}
                   className={`py-2 px-3 rounded-xl text-xs font-semibold border cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-                    jobSource === src ? "" : "hover:border-black/25 hover:bg-black/[0.06] hover:text-foreground/80 hover:shadow-lg hover:shadow-black/20"
+                    jobSource === src ? "" : "hover:border-foreground/25 hover:bg-foreground/[0.06] hover:text-foreground/80 hover:shadow-lg hover:shadow-foreground/20"
                   }`}
                   style={jobSource === src
                     ? { borderColor: `${ACCENT}70`, background: `${ACCENT}15`, color: ACCENT }
-                    : { borderColor: "rgba(15, 23, 42,0.08)", color: "rgba(15, 23, 42,0.5)" }}
+                    : { borderColor: "var(--border)", color: "var(--muted-foreground)" }}
                 >
                   {src === "text" ? t.jobSourceText : t.jobSourceUrl}
                 </button>
@@ -282,12 +282,12 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                 placeholder={t.jobTextPlaceholder}
                 rows={6}
                 className="w-full rounded-2xl border px-4 py-3 text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none bg-transparent resize-none"
-                style={{ borderColor: jobText ? `${ACCENT}60` : "rgba(15, 23, 42,0.08)" }}
+                style={{ borderColor: jobText ? `${ACCENT}60` : "var(--border)" }}
               />
             ) : (
               <div
                 className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
-                style={{ borderColor: jobUrl ? `${ACCENT}60` : "rgba(15, 23, 42,0.08)" }}
+                style={{ borderColor: jobUrl ? `${ACCENT}60` : "var(--border)" }}
               >
                 <input
                   type="url"
@@ -320,7 +320,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                 <div
                   className="w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-150"
                   style={{
-                    borderColor: privacy ? "var(--primary)" : "rgba(15, 23, 42,0.2)",
+                    borderColor: privacy ? "var(--primary)" : "var(--border)",
                     background: privacy ? "var(--primary)" : "transparent",
                   }}
                 >
@@ -372,8 +372,8 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
               color: "rgba(251,191,36,0.9)",
               border: "1px solid rgba(251,191,36,0.3)",
             } : {
-              background: "rgba(15, 23, 42,0.06)",
-              color: "rgba(15, 23, 42,0.3)",
+              background: "var(--muted)",
+              color: "var(--muted-foreground)",
             }}
           >
             {!hasCredits ? "Crediti insufficienti" : hasJob ? t.ctaReady : t.ctaWaiting}

@@ -22,7 +22,7 @@ export default function PdfExportButton({ slug, label, className }: PdfExportBut
   }
 
   return (
-    <div className="w-full rounded-xl border border-black/10 bg-black/[0.02] p-3 space-y-2.5 text-left">
+    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/[0.02] p-3 space-y-2.5 text-left">
       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Scegli il template PDF</p>
       <div className="grid grid-cols-3 gap-2">
         {PDF_TEMPLATES.map(tpl => (

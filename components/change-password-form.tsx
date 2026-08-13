@@ -43,14 +43,14 @@ export default function ChangePasswordForm() {
           placeholder="Nuova password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
         <input
           type="password"
           placeholder="Conferma password"
           value={confirm}
           onChange={e => setConfirm(e.target.value)}
-          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
       </div>
       <div className="flex items-center gap-3">

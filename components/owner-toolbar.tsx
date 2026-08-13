@@ -34,7 +34,7 @@ export default function OwnerToolbar({ slug, kind }: OwnerToolbarProps) {
       <PdfExportButton
         slug={slug}
         label="Scarica PDF ↓"
-        className="font-semibold text-black transition-opacity hover:opacity-70"
+        className="font-semibold text-foreground transition-opacity hover:opacity-70"
       />
       {kind === "primary" && (
         <>

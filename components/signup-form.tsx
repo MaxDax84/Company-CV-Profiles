@@ -6,7 +6,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const ACCENT = "#6366f1";
 const inputClass =
-  "w-full px-4 py-3 rounded-xl bg-background border border-black/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
+  "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -155,7 +155,7 @@ export default function SignupForm() {
       >
         {status === "loading" && (
           <span
-            className="absolute inset-y-0 left-0 bg-black/15 transition-[width] duration-200 ease-out"
+            className="absolute inset-y-0 left-0 bg-foreground/15 transition-[width] duration-200 ease-out"
             style={{ width: `${progress}%` }}
           />
         )}

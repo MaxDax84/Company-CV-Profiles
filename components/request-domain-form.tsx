@@ -42,7 +42,7 @@ export default function RequestDomainForm() {
           value={desiredDomain}
           onChange={e => setDesiredDomain(e.target.value)}
           placeholder="es. mario-rossi.it"
-          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
       </div>
       <div>
@@ -52,7 +52,7 @@ export default function RequestDomainForm() {
           onChange={e => setNote(e.target.value)}
           rows={2}
           placeholder="Altri dettagli utili"
-          className="w-full bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 resize-none"
+          className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 resize-none"
         />
       </div>
       <button

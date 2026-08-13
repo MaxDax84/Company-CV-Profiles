@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import ThemeToggle from './theme-toggle'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
@@ -50,7 +51,7 @@ export default function Navigation() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border/60 shadow-lg shadow-black/20'
+          ? 'bg-background/80 backdrop-blur-md border-b border-border/60 shadow-lg shadow-foreground/20'
           : 'bg-transparent',
       )}
     >
@@ -112,6 +113,9 @@ export default function Navigation() {
             {lang === 'en' ? 'IT' : 'EN'}
           </button>
 
+          {/* Theme toggle */}
+          <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
+
           {/* Get started button (desktop) — redundant with the "Il tuo
               account" nav link above when already in an account context */}
           {!isAccountContext && (
@@ -170,6 +174,7 @@ export default function Navigation() {
               {lang === 'en' ? 'Log in' : 'Accedi'}
             </a>
           )}
+          <ThemeToggle className="self-start flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors" />
         </div>
       )}
     </nav>

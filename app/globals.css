@@ -31,6 +31,35 @@
   --input: #f1f5f9;
   --ring: #6366f1;
   --radius: 0.75rem;
+  --section-alt: #f5f3ff; /* tinted alternating-section background (mission-section.tsx) */
+}
+
+.dark {
+  /* Anthracite dark mode — same indigo/cyan brand accents as light mode,
+     cool-gray (not pure black/blue) neutrals so cards read as a distinct
+     surface from the page background. */
+  --background: #15171d;
+  --foreground: #e8eaef;
+  --card: #1c1f26;
+  --card-foreground: #e8eaef;
+  --popover: #1c1f26;
+  --popover-foreground: #e8eaef;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #22252c;
+  --secondary-foreground: #e8eaef;
+  --muted: #22252c;
+  --muted-foreground: #9aa1ae;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+  --accent-cyan: #22d3ee;
+  --accent-cyan-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #2a2d35;
+  --input: #22252c;
+  --ring: #6366f1;
+  --section-alt: #1a1a24;
 }
 
 @theme inline {
@@ -70,6 +99,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   html {
     scroll-behavior: smooth;
@@ -137,6 +167,11 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
+.dark .glass-card {
+  background: rgba(28, 31, 38, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
 
 .animate-glow-pulse {
   animation: glow-pulse 5s ease-in-out infinite;
@@ -158,4 +193,10 @@
     linear-gradient(90deg, #0f172a 1px, transparent 1px);
   background-size: 60px 60px;
   opacity: 0.035;
+}
+.dark .grid-overlay {
+  background-image:
+    linear-gradient(#e8eaef 1px, transparent 1px),
+    linear-gradient(90deg, #e8eaef 1px, transparent 1px);
+  opacity: 0.05;
 }

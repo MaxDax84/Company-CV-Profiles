@@ -284,7 +284,7 @@ export default function GeneratePage() {
                     />
                   )}
                   {profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
-                <div className="text-left rounded-2xl border border-black/10 bg-black/[0.02] p-5 space-y-5">
+                <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 space-y-5">
                   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
                     {t.beforeAfterTitle}
                   </p>
@@ -294,11 +294,11 @@ export default function GeneratePage() {
                       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
                         {t.beforeLabel}
                       </p>
-                      <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-black/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
+                      <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-foreground/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
                         {pdfThumbnail ? (
                           <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
                         ) : (
-                          <div className="aspect-[210/297] flex items-center justify-center bg-black/5 text-muted-foreground/30 text-xs">PDF</div>
+                          <div className="aspect-[210/297] flex items-center justify-center bg-foreground/5 text-muted-foreground/30 text-xs">PDF</div>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-1 text-center">
@@ -363,7 +363,7 @@ export default function GeneratePage() {
                     <span
                       className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[10px] border transition-colors duration-300"
                       style={{
-                        borderColor: done || active ? "var(--primary)" : "rgba(15, 23, 42,0.15)",
+                        borderColor: done || active ? "var(--primary)" : "var(--border)",
                         background: done ? "var(--primary)" : "transparent",
                         color: done ? "#000" : "transparent",
                       }}
@@ -372,7 +372,7 @@ export default function GeneratePage() {
                     </span>
                     <span
                       className="transition-colors duration-300"
-                      style={{ color: done ? "var(--primary)" : active ? "rgba(15, 23, 42,0.85)" : "rgba(15, 23, 42,0.35)" }}
+                      style={{ color: done ? "var(--primary)" : active ? "var(--foreground)" : "var(--muted-foreground)" }}
                     >
                       {step}
                     </span>
@@ -432,7 +432,7 @@ export default function GeneratePage() {
                     key={tpl.id}
                     className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
                     style={{
-                      borderColor: template === tpl.id ? tpl.accent : "rgba(15, 23, 42,0.08)",
+                      borderColor: template === tpl.id ? tpl.accent : "var(--border)",
                       boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
@@ -466,7 +466,7 @@ export default function GeneratePage() {
                     </div>
                     <div
                       onClick={() => setTemplate(tpl.id)}
-                      className="w-full p-3 bg-black/[0.03] space-y-1.5 text-left cursor-pointer hover:bg-black/[0.06] transition-colors"
+                      className="w-full p-3 bg-foreground/[0.03] space-y-1.5 text-left cursor-pointer hover:bg-foreground/[0.06] transition-colors"
                     >
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
                       <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
@@ -522,7 +522,7 @@ export default function GeneratePage() {
             >
               {isCreating ? (
                 <span className="inline-flex items-center justify-center gap-2">
-                  <span className="w-3.5 h-3.5 rounded-full border-2 border-black/25 border-t-black animate-spin" />
+                  <span className="w-3.5 h-3.5 rounded-full border-2 border-foreground/25 border-t-black animate-spin" />
                   {t.creatingNote}
                 </span>
               ) : t.ctaReady}
@@ -604,7 +604,7 @@ export default function GeneratePage() {
                   <div
                     className="w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-150"
                     style={{
-                      borderColor: privacy ? "var(--primary)" : "rgba(15, 23, 42,0.2)",
+                      borderColor: privacy ? "var(--primary)" : "var(--border)",
                       background: privacy ? "var(--primary)" : "transparent",
                     }}
                   >
@@ -656,8 +656,8 @@ export default function GeneratePage() {
                 color: "rgba(251,191,36,0.9)",
                 border: "1px solid rgba(251,191,36,0.3)",
               } : {
-                background: "rgba(15, 23, 42,0.06)",
-                color: "rgba(15, 23, 42,0.3)",
+                background: "var(--muted)",
+                color: "var(--muted-foreground)",
               }}
             >
               {file ? t.ctaAnalyze : t.ctaWaiting}
