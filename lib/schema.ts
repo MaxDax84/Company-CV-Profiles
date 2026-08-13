@@ -67,6 +67,8 @@ export interface Metadata {
   template: TemplateStyle;
   language: "it" | "en";
   generated_at: string;        // ISO 8601
+  target_company?: string;     // tailored profiles only — hiring company, if named in the job posting
+  target_role?: string;        // tailored profiles only — job title, if named in the job posting
 }
 
 // ─── Schema completo ───────────────────────────────────────────────────────

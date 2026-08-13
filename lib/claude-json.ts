@@ -149,6 +149,8 @@ export const PROFILE_JSON_SCHEMA_BLOCK = `{
     "primary_color": string,
     "template": "alpha" | "beta" | "gamma" | "delta",
     "language": "it" | "en",
-    "generated_at": string
+    "generated_at": string,
+    "target_company": string | undefined,
+    "target_role": string | undefined
   }
 }`;

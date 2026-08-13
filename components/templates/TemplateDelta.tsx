@@ -338,7 +338,7 @@ export default function TemplateDelta({ profile }: Props) {
                 {education.map((ed, i) => (
                   <div key={i} style={{ background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 10, padding: '20px 24px' }}>
                     <p className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
-                    <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
+                    <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
                 ))}

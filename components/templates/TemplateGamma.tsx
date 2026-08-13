@@ -324,7 +324,7 @@ export default function TemplateGamma({ profile }: Props) {
               <div className="gm-edu-grid">
                 {education.map((ed, i) => (
                   <div key={i} style={{ background: '#ffffff', border: `1px solid ${border}`, borderRadius: 10, padding: '20px 24px' }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
                     <p style={{ fontSize: 12, color: muted, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>

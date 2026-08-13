@@ -54,6 +54,7 @@ const LEDGER_REASON_LABELS: Record<string, string> = {
   welcome: "Credito di benvenuto",
   pdf_download: "Download PDF",
   tailor: "Adattamento a un annuncio",
+  cover_letter: "Lettera di presentazione",
   manual_grant: "Credito aggiunto manualmente",
 };
 
@@ -173,6 +174,13 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         label="Scarica PDF ↓"
                         className="px-5 py-2.5 rounded-xl border border-black/10 text-sm font-semibold hover:bg-black/[0.06] transition-all duration-200"
                       />
+                      <a
+                        href={`/api/cover-letter/${row.slug}`}
+                        download
+                        className="px-5 py-2.5 rounded-xl border border-black/10 text-sm font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                      >
+                        Lettera di presentazione ↓
+                      </a>
                     </div>
                     <div className="pt-2 border-t border-black/10">
                       <DeleteProfileButton
@@ -228,6 +236,13 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         label="PDF ↓"
                         className="px-3 py-1.5 rounded-lg border border-black/10 text-xs font-semibold hover:bg-black/[0.06] transition-all duration-200"
                       />
+                      <a
+                        href={`/api/cover-letter/${row.slug}`}
+                        download
+                        className="px-3 py-1.5 rounded-lg border border-black/10 text-xs font-semibold hover:bg-black/[0.06] transition-all duration-200"
+                      >
+                        Lettera ↓
+                      </a>
                       <DeleteProfileButton profileId={row.id} label="Elimina" />
                     </div>
                   </div>
@@ -323,7 +338,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF o 1 adattamento a un annuncio. Per aggiungerne, scrivici.
+            1 credito = 1 download PDF, 1 adattamento a un annuncio o 1 lettera di presentazione. Per aggiungerne, scrivici.
           </p>
 
           <div className="space-y-3">
@@ -341,6 +356,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   <div key={entry.id} className="flex items-center justify-between px-5 py-3">
                     <div>
                       <p className="text-sm">{LEDGER_REASON_LABELS[entry.reason] ?? entry.reason}</p>
+                      {entry.detail && (
+                        <p className="text-xs text-muted-foreground/70">{entry.detail}</p>
+                      )}
                       <p className="text-xs text-muted-foreground/50">
                         {new Date(entry.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                       </p>

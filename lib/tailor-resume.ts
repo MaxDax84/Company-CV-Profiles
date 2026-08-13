@@ -30,6 +30,8 @@ FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, email_obfusca
 
 LANGUAGE: write every piece of text you author (title, bio, description bullets) in the SAME LANGUAGE as the job posting, even if that differs from the source profile's language. Set metadata.language to that language's code ("it" or "en") — if the job posting is in neither language, default to "en".
 
+For metadata.target_company and metadata.target_role: if the job posting clearly names the hiring company and/or the job title, extract them verbatim. If either is not clearly stated (a job board listing with no company name, an anonymized posting, etc.), omit that field entirely — never guess or infer a plausible-sounding company or title.
+
 OUTPUT FORMAT:
 - Return ONLY a valid JSON object matching the schema below, no markdown, no explanation, no code fences.
 - The schema uses "| undefined" to mark optional fields. NEVER write the literal word "undefined" in your JSON output — use null or omit the field.

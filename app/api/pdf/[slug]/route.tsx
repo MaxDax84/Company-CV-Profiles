@@ -34,8 +34,11 @@ export async function GET(
     return NextResponse.json({ error: "Profile not found." }, { status: 404 });
   }
 
+  const templateLabel = PDF_TEMPLATES.find(t => t.id === template)?.name ?? template;
+  const detail = `${row.data.personal_info.full_name} · ${templateLabel}${row.kind === "tailored" ? " · versione adattata" : ""}`;
+
   try {
-    await spendCredits(supabase, CREDIT_COSTS.pdfDownload, "pdf_download");
+    await spendCredits(supabase, CREDIT_COSTS.pdfDownload, "pdf_download", detail);
   } catch (err) {
     if (err instanceof InsufficientCreditsError) {
       return NextResponse.json(

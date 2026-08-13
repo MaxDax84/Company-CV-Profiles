@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
     // --- Spend the credit before running Claude. Not refunded if the
     // tailoring call itself later fails — an accepted v1 gap (see project plan).
     try {
-      await spendCredits(supabase, CREDIT_COSTS.tailor, "tailor");
+      await spendCredits(supabase, CREDIT_COSTS.tailor, "tailor", sourceRow.data.personal_info.full_name);
     } catch (err) {
       if (err instanceof InsufficientCreditsError) {
         return NextResponse.json(

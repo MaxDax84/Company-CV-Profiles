@@ -46,12 +46,12 @@ const VARIANTS: Record<PdfTemplate, VariantConfig> = {
     useDateChip: false, sectionTitleStyle: "underline",
   },
   modern: {
-    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold", bullet: "–",
+    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold", bullet: "•",
     headerAlign: "flex-start", entryMarker: "dot", useTopBar: false,
     useDateChip: true, sectionTitleStyle: "spaced",
   },
   executive: {
-    fontFamily: "Times-Roman", fontFamilyBold: "Times-Bold", bullet: "—",
+    fontFamily: "Times-Roman", fontFamilyBold: "Times-Bold", bullet: "•",
     headerAlign: "center", entryMarker: "none", useTopBar: false,
     useDateChip: false, sectionTitleStyle: "rule-both",
   },
@@ -134,6 +134,14 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
     entryDatesChip: { fontSize: 8, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
     entrySubtitle: { fontSize: 9.5, color: "#555555", marginTop: 1, marginBottom: 5 },
     bullet: { fontSize: 9.5, lineHeight: 1.45, marginBottom: 2.5, color: "#333333" },
+    // Marker and text as separate fixed-width/flex columns (not one inline
+    // string) so a wrapped second line indents under the text, not back
+    // under the bullet — a hanging indent, same as the entry's own
+    // paddingLeft is achieved via borderLeft above. Still plain sequential
+    // text in the content stream, so ATS extraction order is unaffected.
+    bulletRow: { flexDirection: "row", marginBottom: 3.5 },
+    bulletMarker: { width: 13, fontSize: 9.5, lineHeight: 1.45, color: accentSoft },
+    bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.45, color: "#333333" },
     skillLine: { fontSize: 9.5, lineHeight: 1.65, color: "#333333" },
     skillLabel: { fontFamily: cfg.fontFamilyBold, color: "#232323" },
     link: { textDecoration: "none", fontFamily: cfg.fontFamilyBold },
@@ -229,7 +237,10 @@ function ExperienceEntry({ exp, accent, accentSoft, cfg, styles }: { exp: Experi
         {exp.company}{exp.location ? ` — ${exp.location}` : ""}
       </Text>
       {exp.description.map((d, j) => (
-        <Text key={j} style={styles.bullet}>{cfg.bullet} {d}</Text>
+        <View key={j} style={styles.bulletRow}>
+          <Text style={styles.bulletMarker}>{cfg.bullet}</Text>
+          <Text style={styles.bulletText}>{d}</Text>
+        </View>
       ))}
       {exp.technologies.length > 0 && (
         <Text style={styles.skillLine}>{exp.technologies.join(", ")}</Text>
@@ -243,7 +254,7 @@ function EducationEntry({ ed, accent, accentSoft, cfg, styles }: { ed: Education
     <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <EntryMarker accent={accent} cfg={cfg} styles={styles} />
       <View style={styles.entryHeaderRow}>
-        <Text style={styles.entryTitle}>{ed.degree}{ed.field ? ` — ${ed.field}` : ""}</Text>
+        <Text style={styles.entryTitle}>{[ed.degree, ed.field].filter(Boolean).join(" — ")}</Text>
         <DateLabel text={formatYearRange(ed.start_year, ed.end_year)} accent={accent} cfg={cfg} styles={styles} />
       </View>
       <Text style={styles.entrySubtitle}>{ed.institution}{ed.grade ? ` — ${ed.grade}` : ""}</Text>

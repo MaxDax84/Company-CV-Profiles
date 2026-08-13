@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const CREDIT_COSTS = {
   pdfDownload: 1,
   tailor: 1,
+  coverLetter: 1,
 } as const;
 
 export class InsufficientCreditsError extends Error {
@@ -22,9 +23,10 @@ export class InsufficientCreditsError extends Error {
 export async function spendCredits(
   supabase: SupabaseClient,
   amount: number,
-  reason: string = "usage"
+  reason: string = "usage",
+  detail?: string
 ): Promise<number> {
-  const { data, error } = await supabase.rpc("spend_credits", { p_amount: amount, p_reason: reason });
+  const { data, error } = await supabase.rpc("spend_credits", { p_amount: amount, p_reason: reason, p_detail: detail ?? null });
   if (error) {
     if (error.message.includes("insufficient_credits")) {
       throw new InsufficientCreditsError();
@@ -63,6 +65,7 @@ export interface CreditLedgerEntry {
   id: string;
   amount: number;
   reason: string;
+  detail: string | null;
   created_at: string;
 }
 
@@ -78,7 +81,7 @@ export async function getCreditLedger(
   try {
     const { data, error } = await supabase
       .from("credit_ledger")
-      .select("id, amount, reason, created_at")
+      .select("id, amount, reason, detail, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(limit);

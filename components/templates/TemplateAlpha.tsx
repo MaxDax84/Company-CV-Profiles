@@ -371,7 +371,7 @@ export default function TemplateAlpha({ profile }: Props) {
               <div className="edu-grid">
                 {education.map((ed, i) => (
                   <div key={i} style={{ background: card, border: `1px solid ${bdr}`, borderRadius: 10, padding: '20px 24px' }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: fg, margin: '0 0 4px' }}>{ed.degree}{ed.field ? ` — ${ed.field}` : ''}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: fg, margin: '0 0 4px' }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 13, color: v, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
                     <p style={{ fontSize: 12, color: mut, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
