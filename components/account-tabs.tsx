@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { UploadCloud, Sparkles, Target, Download } from "lucide-react";
+import { UploadCloud, Sparkles, Target, Download, ExternalLink, Mail } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
@@ -153,33 +153,37 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </p>
                     </div>
                     <EditableSlug profileId={row.id} slug={row.slug} />
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-start gap-2">
                       <a
                         href={`/${accountCode}/${row.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200"
+                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl font-semibold transition-all duration-200"
                         style={{ background: ACCENT, color: "#000" }}
                       >
-                        Apri profilo ↗
+                        <ExternalLink className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center">Apri profilo</span>
                       </a>
                       <a
                         href={`/tailor?profile=${row.slug}`}
-                        className="px-5 py-2.5 rounded-xl border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/8 transition-all duration-200"
+                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
                       >
-                        Adatta a un annuncio
+                        <Target className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center">Adatta a un annuncio</span>
                       </a>
                       <PdfExportButton
                         slug={row.slug}
-                        label="Scarica PDF ↓"
-                        className="px-5 py-2.5 rounded-xl border border-foreground/10 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                        label="Scarica PDF"
+                        icon={<Download className="w-4 h-4" />}
+                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <a
                         href={`/api/cover-letter/${row.slug}`}
                         download
-                        className="px-5 py-2.5 rounded-xl border border-foreground/10 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
-                        Lettera di presentazione ↓
+                        <Mail className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center">Lettera di presentazione</span>
                       </a>
                     </div>
                     <div className="pt-2 border-t border-foreground/10">

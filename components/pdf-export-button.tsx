@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 
 interface PdfExportButtonProps {
   slug: string;
   label: string;
+  icon?: ReactNode;
   className?: string;
 }
 
-export default function PdfExportButton({ slug, label, className }: PdfExportButtonProps) {
+export default function PdfExportButton({ slug, label, icon, className }: PdfExportButtonProps) {
   const [open, setOpen] = useState(false);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
 
   if (!open) {
     return (
       <button type="button" onClick={() => setOpen(true)} className={className}>
-        {label}
+        {icon}
+        {icon ? <span className="text-[10px] leading-tight text-center">{label}</span> : label}
       </button>
     );
   }
