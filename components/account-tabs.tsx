@@ -158,32 +158,32 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         href={`/${accountCode}/${row.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl font-semibold transition-all duration-200"
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl font-semibold transition-all duration-200"
                         style={{ background: ACCENT, color: "#000" }}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center">Apri profilo</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">Apri profilo</span>
                       </a>
                       <a
                         href={`/tailor?profile=${row.slug}`}
-                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
                       >
                         <Target className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center">Adatta a un annuncio</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">Adatta a un annuncio</span>
                       </a>
                       <PdfExportButton
                         slug={row.slug}
                         label="Scarica PDF"
                         icon={<Download className="w-4 h-4" />}
-                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <a
                         href={`/api/cover-letter/${row.slug}`}
                         download
-                        className="flex flex-col items-center gap-1 w-20 px-2 py-2.5 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         <Mail className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center">Lettera di presentazione</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">Lettera di presentazione</span>
                       </a>
                     </div>
                     <div className="pt-2 border-t border-foreground/10">

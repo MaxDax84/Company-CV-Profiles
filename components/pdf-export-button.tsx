@@ -18,7 +18,7 @@ export default function PdfExportButton({ slug, label, icon, className }: PdfExp
     return (
       <button type="button" onClick={() => setOpen(true)} className={className}>
         {icon}
-        {icon ? <span className="text-[10px] leading-tight text-center">{label}</span> : label}
+        {icon ? <span className="text-[10px] leading-tight text-center line-clamp-2">{label}</span> : label}
       </button>
     );
   }
