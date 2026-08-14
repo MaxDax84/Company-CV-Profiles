@@ -119,7 +119,7 @@ export async function fetchJobPostingText(input: string): Promise<JobPostingFetc
       res = await fetch(url, {
         redirect: "manual",
         signal: controller.signal,
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; BeOnWebBot/1.0)" },
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; JoblyBot/1.0)" },
       });
     } catch {
       return { ok: false, reason: "Couldn't reach that URL. Please paste the job description text instead." };

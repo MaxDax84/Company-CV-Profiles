@@ -274,7 +274,7 @@ export default function SherlockHolmesPage() {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <p className={sourceSerif.className} style={{ fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>221B Baker Street · London, England</p>
           <p className={sourceSerif.className} style={{ fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: amber, textDecoration: 'none' }}>BeOnWeb</Link>
+            Designed by <Link href="/" style={{ color: amber, textDecoration: 'none' }}>Jobly</Link>
           </p>
         </div>
       </footer>

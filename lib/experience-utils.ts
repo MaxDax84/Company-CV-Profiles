@@ -25,3 +25,17 @@ export function yearsOfExperience(experience: ProfileSchema["experience"]): stri
   const years = new Date().getFullYear() - earliest;
   return years >= 0 ? `${years}+` : null;
 }
+
+// "2018 – 2021", "2021", "Present", or "" (never a bare "–") depending on
+// which of start_year/end_year the source CV actually stated — a template
+// that instead interpolates `{start} – {end}` directly renders a dangling
+// dash the moment either side is missing, which reads as a data error.
+export function formatEducationYearRange(
+  start: number | undefined,
+  end: number | "present" | undefined
+): string {
+  const startStr = start != null ? String(start) : "";
+  const endStr = end === "present" ? "Present" : end != null ? String(end) : "";
+  if (startStr && endStr) return `${startStr} – ${endStr}`;
+  return startStr || endStr;
+}

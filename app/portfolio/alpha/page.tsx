@@ -146,7 +146,7 @@ const content = {
     contactHeading: "Let's talk",
     contactHeadingAccent: 'strategic finance.',
     contactSub: 'Available for CFO roles, financial advisory, and M&A projects.',
-    footerDisclaimer: '🎭 This is a demo page. Marco Bianchi is a fictional character created by BeOnWeb for illustrative purposes.',
+    footerDisclaimer: '🎭 This is a demo page. Marco Bianchi is a fictional character created by Jobly for illustrative purposes.',
     footerBy: 'Designed by',
   },
   it: {
@@ -271,7 +271,7 @@ const content = {
     contactHeading: 'Parliamo di',
     contactHeadingAccent: 'finanza strategica.',
     contactSub: 'Disponibile per ruoli CFO, advisory finanziario e progetti di M&A.',
-    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Marco Bianchi è un personaggio di fantasia creato da BeOnWeb a scopo illustrativo.',
+    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Marco Bianchi è un personaggio di fantasia creato da Jobly a scopo illustrativo.',
     footerBy: 'Progettato da',
   },
 }
@@ -582,7 +582,7 @@ export default function AlphaPage() {
             <p style={{ fontSize: 12, color: inkLight, margin: '0 0 8px', fontStyle: 'italic' }}>{c.footerDisclaimer}</p>
             <p style={{ fontSize: 12, color: inkLight, margin: '0 0 6px' }}>© 2025 Marco Bianchi · Milano</p>
             <p style={{ fontSize: 12, color: inkLight, margin: 0 }}>
-              {c.footerBy} <Link href="/" style={{ color: gold, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+              {c.footerBy} <Link href="/" style={{ color: gold, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
             </p>
           </div>
         </div>

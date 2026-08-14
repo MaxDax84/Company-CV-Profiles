@@ -250,7 +250,7 @@ export default function TonyStarkPage() {
       <footer style={{ background: midBg, borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
         <div className="ts-footer-inner">
           <span className={orbitron.className} style={{ fontSize: 10, color: '#1f2937', letterSpacing: '0.2em' }}>STARK INDUSTRIES CONFIDENTIAL</span>
-          <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>BeOnWeb</Link></p>
+          <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>Jobly</Link></p>
         </div>
       </footer>
     </div>

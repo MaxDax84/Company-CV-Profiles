@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
-import { yearsOfExperience } from '@/lib/experience-utils'
+import { yearsOfExperience, formatEducationYearRange } from '@/lib/experience-utils'
 
 const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
@@ -373,7 +373,7 @@ export default function TemplateAlpha({ profile }: Props) {
                   <div key={i} style={{ background: card, border: `1px solid ${bdr}`, borderRadius: 10, padding: '20px 24px' }}>
                     <p style={{ fontSize: 14, fontWeight: 600, color: fg, margin: '0 0 4px' }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 13, color: v, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
-                    <p style={{ fontSize: 12, color: mut, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                    <p style={{ fontSize: 12, color: mut, margin: 0 }}>{formatEducationYearRange(ed.start_year, ed.end_year)}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
                 ))}
               </div>
@@ -476,7 +476,7 @@ export default function TemplateAlpha({ profile }: Props) {
             <p style={{ fontSize: 12, color: mut, margin: '0 0 4px', opacity: 0.5 }}>© {new Date().getFullYear()} {p.full_name}</p>
             <p style={{ fontSize: 12, color: mut, margin: 0, opacity: 0.5 }}>
               {isIT ? 'Progettato da' : 'Designed by'}{' '}
-              <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+              <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
             </p>
           </div>
         </div>

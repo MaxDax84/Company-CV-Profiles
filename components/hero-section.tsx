@@ -78,7 +78,7 @@ export default function HeroSection() {
 
         {/* Concrete trust signals — each explains a "why", not just a label */}
         <div
-          className="mt-20 flex flex-wrap justify-center gap-3 sm:gap-4 animate-fade-in"
+          className="mt-10 flex flex-wrap justify-center gap-3 sm:gap-4 animate-fade-in"
           style={{ animationDelay: '0.48s' }}
         >
           {[

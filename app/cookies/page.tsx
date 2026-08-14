@@ -59,7 +59,7 @@ export default function CookiePage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">2. Cookie utilizzati da questo sito</h3>
                 <p>
-                  Il sito <strong className="text-foreground">BeOnWeb</strong> utilizza esclusivamente
+                  Il sito <strong className="text-foreground">Jobly</strong> utilizza esclusivamente
                   cookie tecnici / strettamente necessari, elencati di seguito:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -153,7 +153,7 @@ export default function CookiePage() {
           ) : (
             <>
               <p>
-                This policy explains how <strong className="text-foreground">BeOnWeb</strong> uses
+                This policy explains how <strong className="text-foreground">Jobly</strong> uses
                 cookies and similar technologies on this website, in accordance with Italian and EU law.
               </p>
 
@@ -182,7 +182,7 @@ export default function CookiePage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">2. Cookies used on this site</h3>
                 <p>
-                  <strong className="text-foreground">BeOnWeb</strong> only uses technical / strictly
+                  <strong className="text-foreground">Jobly</strong> only uses technical / strictly
                   necessary cookies, listed below:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -198,7 +198,7 @@ export default function CookiePage() {
                   </li>
                 </ul>
                 <p className="mt-3">
-                  <strong className="text-foreground">BeOnWeb does not use</strong>:
+                  <strong className="text-foreground">Jobly does not use</strong>:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Profiling or marketing cookies</li>

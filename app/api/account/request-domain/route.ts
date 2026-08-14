@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     });
 
     await transporter.sendMail({
-      from: `"GoOnWeb — Richieste dominio" <${process.env.GMAIL_USER}>`,
+      from: `"Jobly — Richieste dominio" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: user.email,
       subject: `Richiesta dominio personalizzato — ${user.email}`,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #ffffff; color: #0f172a; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0;">
           <h2 style="margin: 0 0 4px; color: #6366f1; font-size: 20px;">Richiesta dominio personalizzato</h2>
-          <p style="margin: 0 0 24px; color: #64748b; font-size: 14px;">Ricevuta dal pannello account di GoOnWeb</p>
+          <p style="margin: 0 0 24px; color: #64748b; font-size: 14px;">Ricevuta dal pannello account di Jobly</p>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
             <tr>
               <td style="padding: 8px 0; color: #64748b; font-size: 14px; width: 140px;">Account</td>

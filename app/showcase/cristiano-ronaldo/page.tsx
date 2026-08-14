@@ -197,7 +197,7 @@ export default function CristianoRonaldoPage() {
 
       <div style={{ borderTop: `1px solid ${navyBorder}`, padding: '16px 40px', textAlign: 'center' }}>
         <p style={{ fontSize: 11, color: '#1a2540', letterSpacing: '0.1em' }}>
-          Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
+          Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobly</Link>
         </p>
       </div>
     </div>

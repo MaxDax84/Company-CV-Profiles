@@ -65,7 +65,7 @@ export default function HermioneGrangerPage() {
       <div className="hg-header">
         <Link href="/showcase" className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.4)', textDecoration: 'none', letterSpacing: '0.2em' }}>← SHOWCASE</Link>
         <p className={`hg-header-title ${cinzel.className}`} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.3em', margin: 0 }}>THE LIFE OF HERMIONE JEAN GRANGER</p>
-        <p className={`hg-header-attr ${cinzel.className}`} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.15em', margin: 0 }}>BeOnWeb · Style Showcase</p>
+        <p className={`hg-header-attr ${cinzel.className}`} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', letterSpacing: '0.15em', margin: 0 }}>Jobly · Style Showcase</p>
       </div>
 
       {/* Content: centered book column */}
@@ -226,7 +226,7 @@ export default function HermioneGrangerPage() {
         <div className="hg-footer-row">
           <p className={cinzel.className} style={{ fontSize: 10, color: 'rgba(201,153,63,0.3)', margin: 0, letterSpacing: '0.2em' }}>MINISTRY OF MAGIC · OFFICIAL RECORD</p>
           <p className={garamond.className} style={{ fontSize: 13, color: 'rgba(201,153,63,0.4)', margin: 0, fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
+            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobly</Link>
           </p>
         </div>
       </div>

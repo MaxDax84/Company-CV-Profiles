@@ -12,9 +12,9 @@ const spaceGrotesk = Space_Grotesk({
 const inter = Inter({ subsets: ['latin'], variable: '--font-body' })
 
 export const metadata: Metadata = {
-  title: 'BeOnWeb | Più colloqui, con il CV che hai già',
+  title: 'Jobly | Più colloqui, con il CV che hai già',
   description:
-    'BeOnWeb usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.',
+    'Jobly usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.',
   icons: {
     icon: '/icon.svg',
   },

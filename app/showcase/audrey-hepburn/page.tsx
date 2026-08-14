@@ -60,7 +60,7 @@ export default function AudreyHepburnPage() {
       {/* Minimal header */}
       <div className="ah-header">
         <Link href="/showcase" className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', textDecoration: 'none', letterSpacing: '0.15em', fontStyle: 'italic' }}>← Showcase</Link>
-        <p className={cormorant.className} style={{ fontSize: 11, color: '#4b3e2e', letterSpacing: '0.4em', margin: 0, textTransform: 'uppercase' }}>BeOnWeb · Style Showcase</p>
+        <p className={cormorant.className} style={{ fontSize: 11, color: '#4b3e2e', letterSpacing: '0.4em', margin: 0, textTransform: 'uppercase' }}>Jobly · Style Showcase</p>
         <p className={`ah-header-date ${cormorant.className}`} style={{ fontSize: 12, color: '#4b3e2e', margin: 0, fontStyle: 'italic' }}>4 May 1929 – 20 January 1993</p>
       </div>
 
@@ -199,7 +199,7 @@ export default function AudreyHepburnPage() {
         <div className="ah-footer-row" style={{ marginTop: 80, paddingTop: 32, borderTop: `1px solid rgba(201,168,76,0.15)` }}>
           <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>4 May 1929 – 20 January 1993</p>
           <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>
-            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>BeOnWeb</Link>
+            Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobly</Link>
           </p>
         </div>
       </div>

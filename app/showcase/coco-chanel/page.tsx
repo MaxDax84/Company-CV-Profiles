@@ -134,7 +134,7 @@ export default function CocoChannelPage() {
 
         <div style={{ textAlign: 'center', marginTop: 48 }}>
           <p className={cormorant.className} style={{ fontSize: 14, color: '#c8bdb6', fontStyle: 'italic' }}>
-            Designed by <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+            Designed by <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
           </p>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Playfair_Display, Inter } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
-import { earliestStartYear } from '@/lib/experience-utils'
+import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700', '900'] })
 const inter    = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
@@ -339,7 +339,7 @@ export default function TemplateDelta({ profile }: Props) {
                   <div key={i} style={{ background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 10, padding: '20px 24px' }}>
                     <p className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
                     <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
-                    <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                    <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{formatEducationYearRange(ed.start_year, ed.end_year)}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
                 ))}
               </div>
@@ -435,7 +435,7 @@ export default function TemplateDelta({ profile }: Props) {
           </div>
           <p style={{ fontSize: 12, color: inkMid, margin: 0, opacity: 0.6 }}>
             {isIT ? 'Progettato da' : 'Designed by'}{' '}
-            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
           </p>
         </div>
       </section>

@@ -32,8 +32,8 @@ export interface EducationItem {
   institution: string;
   degree: string;              // "Laurea Magistrale", "Bachelor's"
   field?: string;              // "Computer Science"
-  start_year: number;
-  end_year: number | "present";
+  start_year?: number;
+  end_year?: number | "present";
   grade?: string;
 }
 

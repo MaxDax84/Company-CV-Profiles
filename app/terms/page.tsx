@@ -29,14 +29,14 @@ export default function TermsPage() {
             <>
               <p>
                 I presenti Termini di Servizio regolano l&apos;utilizzo della piattaforma{' '}
-                <strong className="text-foreground">BeOnWeb</strong>, gestita da Massimo Dassano
+                <strong className="text-foreground">Jobly</strong>, gestita da Massimo Dassano
                 (di seguito &quot;Fornitore&quot;), da parte di chiunque acceda o utilizzi i servizi
                 offerti tramite il sito.
               </p>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Descrizione del Servizio</h3>
-                <p>BeOnWeb è una piattaforma che utilizza l&apos;intelligenza artificiale per:</p>
+                <p>Jobly è una piattaforma che utilizza l&apos;intelligenza artificiale per:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Analizzare un CV caricato in formato PDF e assegnargli un punteggio su criteri oggettivi (risultati misurabili, chiarezza, struttura ATS, competenze specifiche);</li>
                   <li>Migliorarne i contenuti senza inventare informazioni non presenti nel documento originale;</li>
@@ -164,14 +164,14 @@ export default function TermsPage() {
             <>
               <p>
                 These Terms of Service govern the use of the{' '}
-                <strong className="text-foreground">BeOnWeb</strong> platform, operated by Massimo
+                <strong className="text-foreground">Jobly</strong> platform, operated by Massimo
                 Dassano (the &quot;Provider&quot;), by anyone who accesses or uses the services
                 offered through this website.
               </p>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Service Description</h3>
-                <p>BeOnWeb is a platform that uses artificial intelligence to:</p>
+                <p>Jobly is a platform that uses artificial intelligence to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Analyze a PDF CV upload and score it against objective criteria (quantified results, clarity, ATS structure, specific skills);</li>
                   <li>Improve its content without inventing information not present in the original document;</li>

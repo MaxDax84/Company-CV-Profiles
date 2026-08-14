@@ -1,5 +1,10 @@
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, View, Text, StyleSheet, Font } from "@react-pdf/renderer";
 import type { ProfileSchema } from "@/lib/schema";
+
+// react-pdf hyphenates long words at line-wrap points by default (splitting
+// mid-word, e.g. "argu-ment"). A cover letter is prose meant to be read
+// normally, not typeset copy — wrap whole words only.
+Font.registerHyphenationCallback((word) => [word]);
 
 const FALLBACK_ACCENT = "#4f46e5";
 
@@ -10,7 +15,7 @@ function buildStyles(accent: string) {
     name: { fontSize: 18, fontFamily: "Helvetica-Bold", color: accent, marginBottom: 3 },
     contactLine: { fontSize: 9, color: "#5a5a5a", marginBottom: 1.5 },
     date: { fontSize: 9.5, color: "#5a5a5a", marginTop: 24, marginBottom: 24 },
-    paragraph: { fontSize: 10.5, lineHeight: 1.6, color: "#232323", marginBottom: 14 },
+    paragraph: { fontSize: 10.5, lineHeight: 1.6, color: "#232323", marginBottom: 14, textAlign: "justify" },
   });
 }
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
-import { earliestStartYear } from '@/lib/experience-utils'
+import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
@@ -326,7 +326,7 @@ export default function TemplateGamma({ profile }: Props) {
                   <div key={i} style={{ background: '#ffffff', border: `1px solid ${border}`, borderRadius: 10, padding: '20px 24px' }}>
                     <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
-                    <p style={{ fontSize: 12, color: muted, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                    <p style={{ fontSize: 12, color: muted, margin: 0 }}>{formatEducationYearRange(ed.start_year, ed.end_year)}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
                 ))}
               </div>
@@ -422,7 +422,7 @@ export default function TemplateGamma({ profile }: Props) {
           </div>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', margin: 0 }}>
             {isIT ? 'Progettato da' : 'Designed by'}{' '}
-            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
           </p>
         </div>
       </section>

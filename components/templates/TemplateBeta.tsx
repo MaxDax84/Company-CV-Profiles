@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { DM_Serif_Display, DM_Sans } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
-import { earliestStartYear } from '@/lib/experience-utils'
+import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
 const serif = DM_Serif_Display({ subsets: ['latin'], weight: ['400'] })
 const sans  = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
@@ -339,7 +339,7 @@ export default function TemplateBeta({ profile }: Props) {
                   <div key={i} style={{ padding: '20px 24px', border: `1px solid ${border}`, borderRadius: 10, borderLeft: `3px solid ${accent}` }}>
                     <p style={{ fontSize: 14, fontWeight: 600, color: ink, margin: '0 0 4px' }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{ed.institution}</p>
-                    <p style={{ fontSize: 12, color: muted, margin: 0 }}>{ed.start_year} – {ed.end_year}{ed.grade ? ` · ${ed.grade}` : ''}</p>
+                    <p style={{ fontSize: 12, color: muted, margin: 0 }}>{formatEducationYearRange(ed.start_year, ed.end_year)}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
                 ))}
               </div>
@@ -435,7 +435,7 @@ export default function TemplateBeta({ profile }: Props) {
           </div>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
             {isIT ? 'Progettato da' : 'Designed by'}{' '}
-            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
           </p>
         </div>
       </section>

@@ -27,7 +27,7 @@ export const translations = {
       titleGradient: 'Your Career,',
       titleNormal: 'Elevated Online.',
       subtitle:
-        'BeOnWeb crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
+        'Jobly crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
       ctaPrimary: 'View Portfolio',
       ctaSecondary: 'Try Free →',
     },
@@ -35,7 +35,7 @@ export const translations = {
       sectionLabel: 'What We Offer',
       title: 'Everything You Need to Stand Out',
       subtitle:
-        'From first design to going live, BeOnWeb handles every detail of your professional online presence.',
+        'From first design to going live, Jobly handles every detail of your professional online presence.',
       cards: [
         {
           title: 'Custom Design',
@@ -316,7 +316,7 @@ export const translations = {
       },
     },
     mission: {
-      sectionLabel: 'Why BeOnWeb',
+      sectionLabel: 'Why Jobly',
       headline: 'You own it.',
       headlineAccent: 'Always.',
       subheadline: 'No subscriptions. No lock-in. No hostages.',
@@ -695,7 +695,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',
-      rights: '© 2025 BeOnWeb. Tutti i diritti riservati.',
+      rights: '© 2025 Jobly. Tutti i diritti riservati.',
     },
   },
 } as const

@@ -193,7 +193,7 @@ export default function DarthVaderPage() {
             Unauthorised access to this document is a capital offence.
           </p>
           <p style={{ fontSize: 11, color: dim, margin: 0 }}>
-            Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>BeOnWeb</Link>
+            Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>Jobly</Link>
           </p>
         </div>
       </div>

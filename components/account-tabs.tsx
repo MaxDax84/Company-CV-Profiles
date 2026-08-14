@@ -310,7 +310,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             <SectionTitle>Dominio personalizzato</SectionTitle>
             <div className="glass-card rounded-2xl p-6 space-y-3">
               <p className="text-xs text-muted-foreground">
-                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link GoOnWeb? Mandaci una richiesta, ti ricontattiamo per i dettagli.
+                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link Jobly? Mandaci una richiesta, ti ricontattiamo per i dettagli.
               </p>
               <RequestDomainForm />
             </div>

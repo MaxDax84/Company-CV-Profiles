@@ -149,7 +149,7 @@ const content = {
     contactHeading: 'Let\'s build something',
     contactHeadingAccent: 'together.',
     contactSub: 'Available for senior HR roles, advisory, and company culture projects.',
-    footerDisclaimer: '🎭 This is a demo page. Maria Rossi is a fictional character created by BeOnWeb for illustrative purposes.',
+    footerDisclaimer: '🎭 This is a demo page. Maria Rossi is a fictional character created by Jobly for illustrative purposes.',
     footerBy: 'Designed by',
   },
   it: {
@@ -281,7 +281,7 @@ const content = {
     contactHeading: 'Costruiamo qualcosa',
     contactHeadingAccent: 'insieme.',
     contactSub: 'Disponibile a conversazioni su ruoli HR senior, advisory e progetti di cultura aziendale.',
-    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Maria Rossi è un personaggio di fantasia creato da BeOnWeb a scopo illustrativo.',
+    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Maria Rossi è un personaggio di fantasia creato da Jobly a scopo illustrativo.',
     footerBy: 'Progettato da',
   },
 }
@@ -637,7 +637,7 @@ export default function GammaPage() {
             </p>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.18)', margin: '0 0 6px' }}>© 2025 Maria Rossi · Milano</p>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.18)', margin: 0 }}>
-              {c.footerBy} <Link href="/" style={{ color: em, textDecoration: 'none', fontWeight: 600 }}>BeOnWeb</Link>
+              {c.footerBy} <Link href="/" style={{ color: em, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
             </p>
           </div>
         </div>

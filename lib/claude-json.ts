@@ -122,8 +122,8 @@ export const PROFILE_JSON_SCHEMA_BLOCK = `{
     "institution": string,
     "degree": string,
     "field": string | undefined,
-    "start_year": number,
-    "end_year": number | "present",
+    "start_year": number | undefined,
+    "end_year": (number | "present") | undefined,
     "grade": string | undefined
   }],
   "certifications": [{
