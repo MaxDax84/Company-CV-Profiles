@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { Space_Mono } from 'next/font/google'
 

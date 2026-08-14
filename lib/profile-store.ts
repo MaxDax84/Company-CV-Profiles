@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { kv } from "./kv";
 import type { ProfileSchema, TemplateStyle } from "./schema";
 import { parseResume } from "./parse-resume";
@@ -56,17 +57,23 @@ async function getRawPendingProfile(slug: string): Promise<ProfileSchema | null>
 // profile — both only ever live in KV, never in Postgres. A *claimed*
 // profile is no longer reachable this way; its permanent public address is
 // /<account-code>/<slug> (see getProfileByAccountCode below).
-export async function getProfileBySlug(slug: string): Promise<ProfileSchema | null> {
+// cache() dedupes within a single request — both the page component and
+// generateMetadata call this for the same slug, and without it each render
+// paid for the KV read twice.
+export const getProfileBySlug = cache(async (slug: string): Promise<ProfileSchema | null> => {
   const pending = await getRawPendingProfile(slug);
   return pending ? stripPII(pending) : null;
-}
+});
 
 // Public-safe read for a claimed profile's permanent address:
 // /<account-code>/<slug>. The account code is looked up first (it's the
 // real, never-changing identity), then the specific CV by slug within that
 // one account — a slug only needs to be unique within its own account now,
 // not site-wide, so it must always be resolved together with the code.
-export async function getProfileByAccountCode(code: string, slug: string): Promise<ProfileSchema | null> {
+// cache()-wrapped for the same reason as getProfileBySlug above — the page
+// component and generateMetadata both call this with the same (code, slug),
+// which otherwise meant 2 extra Supabase round-trips per page view.
+export const getProfileByAccountCode = cache(async (code: string, slug: string): Promise<ProfileSchema | null> => {
   if (!isSupabaseConfigured()) return null;
   try {
     const service = createServiceSupabaseClient();
@@ -90,7 +97,7 @@ export async function getProfileByAccountCode(code: string, slug: string): Promi
     console.error("[getProfileByAccountCode] Postgres lookup failed", err);
     return null;
   }
-}
+});
 
 // Owner-scoped read (dashboard "dati anagrafici", PDF export, tailoring
 // source) — returns the full row including the real email/phone, since only

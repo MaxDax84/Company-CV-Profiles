@@ -11,7 +11,7 @@ export const translations = {
       tailorLink: 'Tailor to a Job',
     },
     trust: {
-      autoDelete: 'Auto-deleted after 48 hours',
+      autoDelete: 'Auto-deleted after 1 hour if unclaimed',
       deletable: 'Deletable anytime',
       noSharing: 'Never shared with third parties',
     },
@@ -170,7 +170,7 @@ export const translations = {
       doneNote: 'Your site is available at this link:',
       openProfile: 'Open profile ↗',
       generateAnother: 'Generate another',
-      doneExpiry: 'The profile will be available for 48 hours, then deleted automatically.',
+      doneExpiry: 'The profile will be available for 1 hour, then deleted automatically. Sign up for free so you don\'t lose it.',
       valueTitle: 'Why a web page, not just a PDF?',
       valueText: 'It is your digital business card: a professional link recruiters can open in one click on any device, always up to date, no heavy attachment to download.',
       beforeAfterTitle: 'What our AI improved',
@@ -248,7 +248,7 @@ export const translations = {
       timeoutErrorNote: 'The server took too long to respond — this can happen with a long CV or job posting. Please try again in a moment.',
       done: 'Tailored profile created!',
       doneNote: 'Your tailored site is available at this link:',
-      doneExpiry: 'The profile will be available for 48 hours, then deleted automatically.',
+      doneExpiry: 'The profile has been saved to your account, with no expiry.',
       openProfile: 'Open profile ↗',
       generateAnother: 'Tailor another',
       beforeAfterTitle: 'What changed for this job',
@@ -352,7 +352,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
-      rights: '© 2025 BeOnWeb. All rights reserved.',
+      rights: '© 2026 Jobly. All rights reserved.',
     },
   },
 
@@ -366,7 +366,7 @@ export const translations = {
       tailorLink: 'Adatta a un annuncio',
     },
     trust: {
-      autoDelete: 'Eliminato automaticamente dopo 48 ore',
+      autoDelete: 'Eliminato automaticamente dopo 1 ora se non registrato',
       deletable: 'Cancellabile in qualsiasi momento',
       noSharing: 'Mai condiviso con terze parti',
     },

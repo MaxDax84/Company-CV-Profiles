@@ -23,7 +23,11 @@ export async function generateCoverLetter(profile: ProfileSchema): Promise<strin
     body: JSON.stringify({
       model: "claude-sonnet-5",
       max_tokens: 2048,
-      system: SYSTEM_PROMPT,
+      // Array form + cache_control: identical prompt on every call. Note this
+      // one is short enough it may sit under Sonnet's 1024-token caching
+      // minimum today — harmless either way, and it activates for free if
+      // the prompt grows.
+      system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       output_config: { effort: "medium" },
       messages: [
         {

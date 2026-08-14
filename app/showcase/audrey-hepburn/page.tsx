@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { Playfair_Display, Cormorant_Garamond } from 'next/font/google'
 

@@ -77,12 +77,17 @@ export default function Navigation() {
               {link.label}
             </a>
           ))}
-          <a
-            href={generateHref}
-            className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
-          >
-            {generateLabel}
-          </a>
+          {/* Only shown in account context ("Il tuo account") — outside it,
+              the "Inizia Ora" pill button below is the single CTA to
+              /generate; this text link used to duplicate it. */}
+          {isAccountContext && (
+            <a
+              href={generateHref}
+              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
+            >
+              {generateLabel}
+            </a>
+          )}
           <a
             href="/tailor"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
@@ -101,7 +106,7 @@ export default function Navigation() {
               href="/login"
               className="hidden sm:inline-block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
-              {lang === 'en' ? 'Log in' : 'Accedi'}
+              {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
             </a>
           )}
 
@@ -171,7 +176,7 @@ export default function Navigation() {
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setMobileOpen(false)}
             >
-              {lang === 'en' ? 'Log in' : 'Accedi'}
+              {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
             </a>
           )}
           <ThemeToggle className="self-start flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors" />

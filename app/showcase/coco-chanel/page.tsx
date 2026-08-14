@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { Cormorant_Garamond, Montserrat } from 'next/font/google'
 

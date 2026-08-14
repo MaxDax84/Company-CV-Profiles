@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { EB_Garamond, Cinzel } from 'next/font/google'
 

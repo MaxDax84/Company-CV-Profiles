@@ -102,7 +102,10 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
     body: JSON.stringify({
       model: "claude-sonnet-5",
       max_tokens: 8192,
-      system: SYSTEM_PROMPT,
+      // Array form + cache_control: this system prompt is identical across
+      // every /tailor call — caching it cuts input-token cost and latency
+      // on every request after the first within the 5-minute window.
+      system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       // Adaptive thinking stays on (the default), but capped at "medium"
       // effort instead of the implicit "high" — cuts cost/latency on this
       // structured rewrite task while keeping the self-check reasoning that

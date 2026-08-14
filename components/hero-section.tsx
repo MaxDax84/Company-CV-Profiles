@@ -47,7 +47,7 @@ export default function HeroSection() {
 
         {/* Title */}
         <h1
-          className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] mb-6 animate-fade-in"
+          className="font-heading text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-6 animate-fade-in"
           style={{ animationDelay: '0.12s' }}
         >
           <span className="gradient-text">{t.titleGradient}</span>
@@ -57,7 +57,7 @@ export default function HeroSection() {
 
         {/* Subtitle */}
         <p
-          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in"
+          className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in"
           style={{ animationDelay: '0.24s' }}
         >
           {t.subtitle}

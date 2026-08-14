@@ -85,7 +85,10 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     body: JSON.stringify({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 8192,
-      system: SYSTEM_PROMPT,
+      // Array form + cache_control: this exact system prompt is identical
+      // across every /generate call — caching it cuts input-token cost and
+      // latency on every request after the first within the 5-minute window.
+      system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       messages: [
         {
           role: "user",
