@@ -14,9 +14,15 @@ import CreditConfirmModal from "@/components/credit-confirm-modal";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
+type Relevance = { score: number; reason: string };
 
 const JOB_TEXT_MIN = 200;
 const ACCENT = "#6366f1";
+// Below this, the job posting doesn't genuinely match the CV — the tailored
+// result will be honest (no invented skills/experience) but largely
+// unchanged from the source, so the user should know before spending a
+// credit on it.
+const RELEVANCE_WARNING_THRESHOLD = 40;
 
 interface TailorFormProps {
   credits: number;
@@ -38,6 +44,8 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const [checkingRelevance, setCheckingRelevance] = useState(false);
+  const [relevance, setRelevance] = useState<Relevance | null>(null);
   const turnstileRef = useRef<TurnstileHandle>(null);
 
   useEffect(() => {
@@ -62,6 +70,29 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   const hasCredits = credits > 0;
   const canGenerate = hasJob && hasCredits && privacy && !!turnstileToken && state !== "uploading";
   const needsPrivacy = hasJob && hasCredits && !privacy;
+
+  // Runs before the credit-confirm popup — a free, cheap Haiku check so the
+  // popup can warn when the job posting doesn't genuinely match this CV
+  // (see lib/relevance-check.ts). Fails open: if the check itself errors,
+  // just skip straight to the normal confirm popup rather than blocking.
+  async function handleGenerateClick() {
+    if (!canGenerate) return;
+    setCheckingRelevance(true);
+    try {
+      const formData = new FormData();
+      formData.append("jobSource", jobSource);
+      if (sourceSlug) formData.append("sourceSlug", sourceSlug);
+      if (jobSource === "text") formData.append("jobText", jobText.trim());
+      if (jobSource === "url") formData.append("jobUrl", jobUrl.trim());
+      const res = await fetch("/api/relevance-check", { method: "POST", body: formData });
+      setRelevance(res.ok ? await res.json() : null);
+    } catch {
+      setRelevance(null);
+    } finally {
+      setCheckingRelevance(false);
+      setConfirming(true);
+    }
+  }
 
   async function handleGenerate() {
     if (!canGenerate) return;
@@ -113,6 +144,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
     setJobUrl("");
     setError(null);
     setPrivacy(false);
+    setRelevance(null);
   }
 
   const accent = profile?.metadata.primary_color ?? ACCENT;
@@ -177,7 +209,16 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
       ) : null}
 
       {hasProfile && state === "done" && slug && profile ? (
-        <ProfileResultPanel
+        <>
+          {relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD && (
+            <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-center space-y-1">
+              <p className="font-semibold text-amber-700">Ho fatto del mio meglio, con onestà</p>
+              <p className="text-xs text-muted-foreground">
+                Questo annuncio si allinea poco al tuo CV, quindi non ho potuto scrivere competenze o esperienze che non sono realmente presenti. Il risultato potrebbe essere molto simile al profilo originale.
+              </p>
+            </div>
+          )}
+          <ProfileResultPanel
           slug={slug}
           code={code ?? undefined}
           profile={profile}
@@ -223,6 +264,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
             ) : undefined
           }
         />
+        </>
       ) : hasProfile && state === "uploading" ? (
         <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px rgba(99, 102, 241, 0.12)" }}>
           <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
@@ -363,8 +405,8 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
 
           {/* Generate button */}
           <button
-            onClick={() => setConfirming(true)}
-            disabled={!canGenerate}
+            onClick={handleGenerateClick}
+            disabled={!canGenerate || checkingRelevance}
             className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
             style={canGenerate ? {
               background: ACCENT,
@@ -379,7 +421,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
               color: "var(--muted-foreground)",
             }}
           >
-            {!hasCredits ? "Crediti insufficienti" : hasJob ? t.ctaReady : t.ctaWaiting}
+            {checkingRelevance ? "Verifico la pertinenza dell'annuncio…" : !hasCredits ? "Crediti insufficienti" : hasJob ? t.ctaReady : t.ctaWaiting}
           </button>
           {needsPrivacy && (
             <p className="text-xs text-center -mt-3" style={{ color: "rgba(251,191,36,0.8)" }}>
@@ -391,6 +433,11 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
               actionLabel="Adattare il CV a questo annuncio?"
               cost={1}
               balance={credits}
+              warning={
+                relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD
+                  ? `Pertinenza stimata bassa (${relevance.score}/100): ${relevance.reason} Il risultato non inventerà competenze o esperienze che non hai — potrebbe restare molto simile al CV originale.`
+                  : undefined
+              }
               onCancel={() => setConfirming(false)}
               onConfirm={() => {
                 setConfirming(false);

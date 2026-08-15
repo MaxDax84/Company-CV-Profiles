@@ -6,6 +6,8 @@ interface CreditConfirmModalProps {
   actionLabel: string;
   cost: number;
   balance: number;
+  /** Extra note shown above the cost line — e.g. a low job-relevance warning. */
+  warning?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -15,7 +17,7 @@ interface CreditConfirmModalProps {
 // spend_credits regardless of what this shows, so a `balance` that's a
 // render-cycle stale (same caveat the existing "Crediti esauriti" banners
 // already accept) is fine; this is a heads-up, not the source of truth.
-export default function CreditConfirmModal({ actionLabel, cost, balance, onConfirm, onCancel }: CreditConfirmModalProps) {
+export default function CreditConfirmModal({ actionLabel, cost, balance, warning, onConfirm, onCancel }: CreditConfirmModalProps) {
   const insufficient = balance < cost;
 
   return (
@@ -28,6 +30,11 @@ export default function CreditConfirmModal({ actionLabel, cost, balance, onConfi
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-sm font-semibold">{actionLabel}</p>
+        {warning && (
+          <p className="text-xs rounded-lg px-3 py-2 text-left" style={{ background: "rgba(251,191,36,0.1)", color: "rgba(180,130,10,0.95)", border: "1px solid rgba(251,191,36,0.3)" }}>
+            ⚠️ {warning}
+          </p>
+        )}
         <p className="text-sm text-muted-foreground">
           {insufficient
             ? `Non hai abbastanza crediti per questa azione — saldo attuale: ${balance}.`
