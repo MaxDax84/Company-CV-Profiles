@@ -5,7 +5,7 @@ import { parseResume } from "./parse-resume";
 import { improveResume } from "./improve-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import type { CvScoreBreakdown } from "./cv-score";
-import { normalizeScoreBefore } from "./cv-score";
+import { computeCvScore } from "./cv-score";
 import { hashPdf, getRememberedScore, rememberScore } from "./cv-score-memory";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -324,6 +324,10 @@ export interface ResolveFromPdfResult {
   cachedSlug: string | null;
   templateChanged: boolean;
   scoreBefore: CvScoreBreakdown | null;
+  // Not remembered across a cache hit (unlike scoreBefore) — a re-upload of
+  // an already-seen PDF just returns no suggestions rather than a stale or
+  // re-computed list. Rare edge case, not worth the extra cache plumbing.
+  suggestedTitles: string[];
 }
 
 // Extracts a profile from an uploaded PDF, reusing a cached extraction if
@@ -359,11 +363,11 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore ?? computeCvScore(cachedProfile), suggestedTitles: [] };
     }
   }
 
-  const { profile, scoreBefore } = await parseResume(buf);
+  const { profile, suggestedTitles } = await parseResume(buf);
 
   // Normalize apostrophes in name (e.g. D'Assano → Dassano)
   profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
@@ -374,10 +378,19 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  const finalScoreBefore = rememberedScore ?? normalizeScoreBefore(scoreBefore);
-  if (!rememberedScore && finalScoreBefore) {
+  // Deterministic, same formula as the "after" score (lib/cv-score.ts) —
+  // applied to this same freshly-extracted profile, not a separate subjective
+  // AI read of the raw PDF. Using two different measurements for "before" vs
+  // "after" was the actual bug behind scores dropping post-optimization: the
+  // AI's holistic judgment of the original document could rate a criterion
+  // higher than a strict per-bullet count later finds in the *structured,
+  // capped* profile — reading as if content had been removed, when nothing
+  // was ever lost. Computing both the same way makes the comparison honest:
+  // any "after" change now purely reflects what improveResume() actually did.
+  const finalScoreBefore = rememberedScore ?? computeCvScore(profile);
+  if (!rememberedScore) {
     await rememberScore(pdfHash, finalScoreBefore);
   }
 
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: finalScoreBefore };
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: finalScoreBefore, suggestedTitles };
 }

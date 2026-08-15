@@ -7,6 +7,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles } from "@/lib/profile-store";
 import { getCreditBalance, getCreditLedger, getAccountCode } from "@/lib/credits";
+import { getPaidDownloads } from "@/lib/paid-downloads";
 
 export default async function AccountPage() {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
@@ -15,12 +16,13 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [primaryProfiles, tailoredProfiles, credits, ledger, accountCode] = await Promise.all([
+  const [primaryProfiles, tailoredProfiles, credits, ledger, accountCode, paidDownloads] = await Promise.all([
     getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
     getCreditBalance(supabase, user.id),
     getCreditLedger(supabase, user.id),
     getAccountCode(supabase, user.id),
+    getPaidDownloads(supabase, user.id),
   ]);
 
   const memberSince = new Date(user.created_at).toLocaleDateString("it-IT", { year: "numeric", month: "long" });
@@ -46,6 +48,7 @@ export default async function AccountPage() {
           tailoredProfiles={tailoredProfiles}
           credits={credits}
           ledger={ledger}
+          paidDownloads={paidDownloads}
         />
       </div>
     </div>

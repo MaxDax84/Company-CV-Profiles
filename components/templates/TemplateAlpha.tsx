@@ -476,7 +476,7 @@ export default function TemplateAlpha({ profile }: Props) {
             <p style={{ fontSize: 12, color: mut, margin: '0 0 4px', opacity: 0.5 }}>© {new Date().getFullYear()} {p.full_name}</p>
             <p style={{ fontSize: 12, color: mut, margin: 0, opacity: 0.5 }}>
               {isIT ? 'Progettato da' : 'Designed by'}{' '}
-              <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
+              <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
             </p>
           </div>
         </div>

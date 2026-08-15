@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { UploadCloud, Sparkles, Target, Download, ExternalLink, Mail } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
+import type { PaidDownloadEntry } from "@/lib/paid-downloads";
+import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
@@ -23,24 +25,26 @@ const HOW_IT_WORKS = {
     {
       icon: UploadCloud,
       title: "Carica il tuo CV",
-      description: "Carica il PDF del tuo curriculum. In pochi secondi la nostra AI legge la tua esperienza e crea un profilo fedele a quello che hai scritto.",
+      description: "Carica il PDF del tuo curriculum. In pochi secondi la nostra AI lo legge, ti dà un punteggio su 4 criteri (risultati misurabili, chiarezza, struttura ATS, competenze specifiche) e ti suggerisce ruoli in linea con la tua esperienza.",
     },
     {
       icon: Sparkles,
-      title: "Ricevi il tuo punteggio",
-      description: "Il tuo CV riceve subito un punteggio su 4 criteri: risultati misurabili, chiarezza, struttura ATS e competenze specifiche. L'AI lo migliora senza stravolgerlo — stesso contenuto, alzando il punteggio, senza mai inventare nulla.",
+      title: "La tua pagina, ottimizzata",
+      description: "Generiamo subito la tua pagina profilo e la miglioriamo in automatico — bio riscritta, contenuto reso più efficace. Ricevi un nuovo punteggio che mostra il miglioramento, senza mai inventare nulla che non hai scritto.",
     },
     {
       icon: Target,
       title: "Adatta il CV a un annuncio",
-      description: "Incolla il testo di un annuncio di lavoro: l'AI riscrive il tuo profilo per allinearlo a quella posizione, parola chiave per parola chiave, senza inventare nulla.",
+      description: "Incolla il testo di un annuncio di lavoro: l'AI riscrive il tuo profilo per allinearlo il più possibile a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato — mai inventate.",
     },
     {
       icon: Download,
-      title: "Candidati con sicurezza",
-      description: "Scarica il PDF ottimizzato per i sistemi ATS oppure condividi la tua landing page personale — una pagina web dedicata al tuo profilo, pronta da allegare o linkare in ogni candidatura.",
+      title: "Scarica e candidati",
+      description: "Scarica il PDF ottimizzato per i sistemi ATS scegliendo tra 3 template, oppure condividi direttamente la tua pagina web in ogni candidatura.",
     },
   ],
+  wipBadge: "Work in progress",
+  wipNote: "Presto potrai anche dialogare con l'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio \"di quanto sono aumentate le revenue nell'ultimo anno fiscale? 15%? 30%?\" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.",
 };
 
 const ACCENT = "#6366f1";
@@ -68,10 +72,12 @@ interface AccountTabsProps {
   tailoredProfiles: ProfileRow[];
   credits: number;
   ledger: CreditLedgerEntry[];
+  paidDownloads: PaidDownloadEntry[];
 }
 
 const TABS = [
   { id: "cv", label: "I miei CV" },
+  { id: "downloads", label: "Download" },
   { id: "account", label: "Dati dell'account" },
   { id: "credits", label: "Crediti" },
   { id: "how", label: "Come funziona" },
@@ -91,12 +97,13 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads }: AccountTabsProps) {
   const searchParams = useSearchParams();
   const requestedTab = searchParams.get("tab");
   const [tab, setTab] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "cv");
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
+  const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
 
   return (
     <div className="space-y-8">
@@ -264,6 +271,48 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         </div>
       )}
 
+      {/* ── Tab: Download ──────────────────────────────────────────────── */}
+      {tab === "downloads" && (
+        <div className="space-y-3">
+          <SectionTitle>PDF generati ({paidDownloads.length})</SectionTitle>
+          <p className="text-xs text-muted-foreground/60">
+            Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.
+          </p>
+          {paidDownloads.length > 0 ? (
+            <div className="glass-card rounded-2xl divide-y divide-foreground/5">
+              {paidDownloads.map((dl) => {
+                const row = profilesById.get(dl.profile_id);
+                if (!row) return null;
+                const templateName = PDF_TEMPLATES.find(t => t.id === dl.template)?.name ?? dl.template;
+                return (
+                  <div key={dl.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
+                    <div>
+                      <p className="text-sm font-medium">{row.data.personal_info.full_name} · {templateName}</p>
+                      <p className="text-xs text-muted-foreground/50">
+                        Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
+                    <a
+                      href={`/api/pdf/${row.slug}?template=${dl.template}`}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                      style={{ background: `${ACCENT}20`, color: ACCENT }}
+                    >
+                      Riscarica ↓
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="glass-card rounded-2xl p-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Non hai ancora scaricato nessun PDF. Ogni PDF generato comparirà qui, riscaricabile gratis.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── Tab: Dati dell'account ─────────────────────────────────────── */}
       {tab === "account" && (
         <div className="space-y-10">
@@ -311,7 +360,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             <SectionTitle>Dominio personalizzato</SectionTitle>
             <div className="glass-card rounded-2xl p-6 space-y-3">
               <p className="text-xs text-muted-foreground">
-                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link Jobly? Mandaci una richiesta, ti ricontattiamo per i dettagli.
+                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link Jobli? Mandaci una richiesta, ti ricontattiamo per i dettagli.
               </p>
               <RequestDomainForm />
             </div>
@@ -405,6 +454,12 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 </div>
               );
             })}
+          </div>
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-1.5">
+            <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/15">
+              {HOW_IT_WORKS.wipBadge}
+            </span>
+            <p className="text-xs text-muted-foreground leading-relaxed">{HOW_IT_WORKS.wipNote}</p>
           </div>
         </div>
       )}

@@ -42,7 +42,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
                 src={`/pdf-preview/${tpl.id}`}
                 title={tpl.name}
                 tabIndex={-1}
-                className="animate-template-preview-scroll"
+                className="animate-template-preview-scroll pointer-events-none"
                 style={{
                   position: "absolute",
                   top: 0,

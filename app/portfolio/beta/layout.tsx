@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Sofia Conti — Strategy Advisor | Jobly Portfolio Demo',
-  description: 'Project Beta: a Jobly demo showcasing an editorial web CV for a Strategy & Management Consulting professional. Sofia Conti is a fictional character.',
+  title: 'Sofia Conti — Strategy Advisor | Jobli Portfolio Demo',
+  description: 'Project Beta: a Jobli demo showcasing an editorial web CV for a Strategy & Management Consulting professional. Sofia Conti is a fictional character.',
 }
 
 export default function BetaLayout({ children }: { children: React.ReactNode }) {

@@ -71,7 +71,7 @@ export default function Navigation() {
             <Globe className="w-4 h-4 text-primary" />
           </div>
           <span className="font-heading font-bold text-lg tracking-tight">
-            Job<span className="text-primary">ly</span>
+            Job<span className="text-primary">li</span>
           </span>
         </a>
 

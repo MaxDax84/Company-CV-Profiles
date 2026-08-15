@@ -3,6 +3,7 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 
 const ACCENT = "#6366f1";
 const inputClass =
@@ -27,9 +28,9 @@ export default function ResetPasswordForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (password.length < 8) {
+    if (!isPasswordValid(password)) {
       setStatus("error");
-      setError("La password deve avere almeno 8 caratteri.");
+      setError("La password non rispetta tutti i requisiti richiesti.");
       return;
     }
     if (password !== confirm) {
@@ -88,9 +89,10 @@ export default function ResetPasswordForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Almeno 8 caratteri"
+          placeholder="Crea una password sicura"
           className={inputClass}
         />
+        <PasswordRequirements password={password} />
       </div>
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
@@ -111,7 +113,7 @@ export default function ResetPasswordForm() {
 
       <button
         type="submit"
-        disabled={status === "saving"}
+        disabled={status === "saving" || !isPasswordValid(password)}
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ background: ACCENT, color: "#000", boxShadow: `0 4px 24px ${ACCENT}50` }}
       >

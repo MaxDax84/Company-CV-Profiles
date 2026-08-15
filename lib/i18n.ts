@@ -27,7 +27,7 @@ export const translations = {
       titleGradient: 'Your Career,',
       titleNormal: 'Elevated Online.',
       subtitle:
-        'Jobly crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
+        'Jobli crafts elegant, fully personalized web CVs — a modern alternative to the traditional résumé. Choose your colors, your style, your domain.',
       ctaPrimary: 'View Portfolio',
       ctaSecondary: 'Try Free →',
     },
@@ -35,7 +35,7 @@ export const translations = {
       sectionLabel: 'What We Offer',
       title: 'Everything You Need to Stand Out',
       subtitle:
-        'From first design to going live, Jobly handles every detail of your professional online presence.',
+        'From first design to going live, Jobli handles every detail of your professional online presence.',
       cards: [
         {
           title: 'Custom Design',
@@ -140,6 +140,8 @@ export const translations = {
       badge: 'Profile Generator',
       title: 'Your CV already tells your story.\nWe turn it into a website.',
       subtitle: 'No forms, no copy-paste.\nOur AI reads your CV and builds a professional profile ready to share.',
+      titleLoggedIn: 'Add another CV to your account.',
+      subtitleLoggedIn: 'Upload the PDF — we\'ll process it and save it straight to your account, alongside your other CVs.',
       titleAnalyzing: 'Reading your CV…',
       subtitleAnalyzing: 'Our AI is analyzing every section to calculate your score.',
       titleScored: 'Here is what we found',
@@ -174,6 +176,7 @@ export const translations = {
       valueTitle: 'Why a web page, not just a PDF?',
       valueText: 'It is your digital business card: a professional link recruiters can open in one click on any device, always up to date, no heavy attachment to download.',
       beforeAfterTitle: 'What our AI improved',
+      suggestedTitlesLabel: 'Job titles that fit your background',
       beforeLabel: 'Before (your CV)',
       afterLabel: 'After (your profile)',
       manageLinkTitle: 'Manage your profile',
@@ -316,7 +319,7 @@ export const translations = {
       },
     },
     mission: {
-      sectionLabel: 'Why Jobly',
+      sectionLabel: 'Why Jobli',
       headline: 'You own it.',
       headlineAccent: 'Always.',
       subheadline: 'No subscriptions. No lock-in. No hostages.',
@@ -352,7 +355,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
-      rights: '© 2026 Jobly. All rights reserved.',
+      rights: '© 2026 Jobli. All rights reserved.',
     },
   },
 
@@ -394,26 +397,26 @@ export const translations = {
         {
           title: 'Carica il tuo CV',
           description:
-            'Carica il PDF del tuo curriculum. In pochi secondi la nostra AI legge la tua esperienza e crea un profilo fedele a quello che hai scritto.',
+            'Carica il PDF del tuo curriculum. In pochi secondi la nostra AI lo legge, ti dà un punteggio su 4 criteri (risultati misurabili, chiarezza, struttura ATS, competenze specifiche) e ti suggerisce ruoli in linea con la tua esperienza.',
         },
         {
-          title: 'Ricevi il tuo punteggio',
+          title: 'La tua pagina, ottimizzata',
           description:
-            'Il tuo CV riceve subito un punteggio su 4 criteri: risultati misurabili, chiarezza, struttura ATS e competenze specifiche. L\'AI lo migliora senza stravolgerlo — stesso contenuto, alzando il punteggio, senza mai inventare nulla.',
+            'Generiamo subito la tua pagina profilo e la miglioriamo in automatico — bio riscritta, contenuto reso più efficace. Ricevi un nuovo punteggio che mostra il miglioramento, senza mai inventare nulla che non hai scritto.',
         },
         {
           title: 'Adatta il CV a un annuncio',
           description:
-            'Incolla il testo di un annuncio di lavoro: l\'AI riscrive il tuo profilo per allinearlo a quella posizione, parola chiave per parola chiave, senza inventare nulla.',
+            'Incolla il testo di un annuncio di lavoro: l\'AI riscrive il tuo profilo per allinearlo il più possibile a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato — mai inventate.',
         },
         {
-          title: 'Candidati con sicurezza',
+          title: 'Scarica e candidati',
           description:
-            'Scarica il PDF ottimizzato per i sistemi ATS oppure condividi la tua landing page personale — una pagina web dedicata al tuo profilo, pronta da allegare o linkare in ogni candidatura.',
+            'Scarica il PDF ottimizzato per i sistemi ATS scegliendo tra 3 template, oppure condividi direttamente la tua pagina web in ogni candidatura.',
         },
       ],
       wipBadge: 'Work in progress',
-      wipNote: 'Presto potrai anche dialogare con l\'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti, senza dover partire da un annuncio specifico.',
+      wipNote: 'Presto potrai anche dialogare con l\'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio "di quanto sono aumentate le revenue nell\'ultimo anno fiscale? 15%? 30%?" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.',
     },
     portfolio: {
       sectionLabel: 'Esempi',
@@ -484,6 +487,8 @@ export const translations = {
       badge: 'Generatore di profili',
       title: 'Il tuo CV racconta già la tua storia.\nNe facciamo un sito.',
       subtitle: 'Niente form, niente copia-incolla.\nLa nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
+      titleLoggedIn: 'Aggiungi un nuovo CV al tuo account.',
+      subtitleLoggedIn: 'Carica il PDF: lo elaboriamo e lo salviamo direttamente nel tuo account, insieme agli altri tuoi CV.',
       titleAnalyzing: 'Stiamo leggendo il tuo CV…',
       subtitleAnalyzing: 'La nostra AI analizza ogni sezione per calcolare il tuo punteggio.',
       titleScored: 'Ecco cosa abbiamo trovato',
@@ -517,6 +522,7 @@ export const translations = {
       valueTitle: 'Perché una pagina web, oltre al PDF?',
       valueText: 'È il tuo biglietto da visita digitale: un link professionale che i recruiter aprono in un clic da qualsiasi dispositivo, sempre aggiornato, senza allegati pesanti da scaricare — perfetto da inserire in una candidatura, nella bio LinkedIn o in una firma email.',
       beforeAfterTitle: 'Cosa ha migliorato la nostra AI',
+      suggestedTitlesLabel: 'Ruoli in linea con il tuo profilo',
       beforeLabel: 'Prima (il tuo CV)',
       afterLabel: 'Dopo (il tuo profilo)',
       manageLinkTitle: 'Gestisci il tuo profilo',
@@ -696,7 +702,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',
-      rights: '© 2025 Jobly. Tutti i diritti riservati.',
+      rights: '© 2025 Jobli. Tutti i diritti riservati.',
     },
   },
 } as const

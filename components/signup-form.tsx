@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 
 const ACCENT = "#6366f1";
 const inputClass =
@@ -38,6 +39,7 @@ export default function SignupForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isPasswordValid(password)) return;
     setStatus("loading");
     setError(null);
 
@@ -138,9 +140,10 @@ export default function SignupForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Almeno 8 caratteri"
+          placeholder="Crea una password sicura"
           className={inputClass}
         />
+        <PasswordRequirements password={password} />
       </div>
 
       {error && (
@@ -149,8 +152,8 @@ export default function SignupForm() {
 
       <button
         type="submit"
-        disabled={status === "loading"}
-        className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed relative overflow-hidden"
+        disabled={status === "loading" || !isPasswordValid(password)}
+        className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 relative overflow-hidden"
         style={{ background: ACCENT, color: "#000", boxShadow: `0 4px 24px ${ACCENT}50` }}
       >
         {status === "loading" && (

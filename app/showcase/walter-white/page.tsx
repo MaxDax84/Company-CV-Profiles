@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '700'] })
 const sans = IBM_Plex_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
-export const metadata: Metadata = { title: 'Walter White — Jobly Showcase' }
+export const metadata: Metadata = { title: 'Walter White — Jobli Showcase' }
 
 export default function WalterWhitePage() {
   const gray = '#374151'
@@ -177,7 +177,7 @@ export default function WalterWhitePage() {
             ALBUQUERQUE PUBLIC SCHOOLS · CONFIDENTIAL DOCUMENT
           </p>
           <p style={{ fontSize: 12, color: '#9ca3af' }}>
-            Designed by <Link href="/" style={{ color: gray, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
+            Designed by <Link href="/" style={{ color: gray, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
         </div>
       </div>

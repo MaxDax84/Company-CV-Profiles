@@ -4,6 +4,7 @@ import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { resolveProfileFromPdf, savePendingProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
 import { computeCvScore } from "@/lib/cv-score";
+import { NotAResumeError } from "@/lib/parse-resume";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
         profile: resolved.profile,
         claimToken,
         cvScore: { before: resolved.scoreBefore, after: computeCvScore(resolved.profile) },
+        suggestedTitles: resolved.suggestedTitles,
       });
     }
 
@@ -93,8 +95,15 @@ export async function POST(req: NextRequest) {
       profile,
       claimToken,
       cvScore: { before: resolved.scoreBefore, after: computeCvScore(profile) },
+      suggestedTitles: resolved.suggestedTitles,
     });
   } catch (err) {
+    if (err instanceof NotAResumeError) {
+      return NextResponse.json(
+        { error: "Il file caricato non sembra essere un CV. Carica un curriculum in formato PDF.", code: "NOT_A_RESUME" },
+        { status: 422 }
+      );
+    }
     console.error("[parse-resume]", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : String(err) },

@@ -1,22 +1,21 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 
-// Raw 0-25-per-criterion score Claude assigns to the SOURCE CV, before any
-// of the extraction/clarity improvements above are applied — only the model
-// can judge this honestly, since by the time we have a ProfileSchema the
-// content has already been normalized into our structure. The comparable
-// "after" score is computed deterministically from the final profile in
-// lib/cv-score.ts instead of trusting the model's arithmetic twice.
-export interface CvScoreBeforeRaw {
-  quantified_results: number;
-  clarity: number;
-  ats_structure: number;
-  specific_skills: number;
+// Thrown when the model itself flags the uploaded PDF as not being a CV at
+// all (see the is_resume check in SYSTEM_PROMPT) — a distinct error type so
+// the route can return a specific, actionable message instead of the
+// generic 500 a malformed-extraction failure would produce.
+export class NotAResumeError extends Error {
+  constructor() {
+    super("The uploaded file doesn't appear to be a CV/resume.");
+    this.name = "NotAResumeError";
+  }
 }
 
 const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extract information from a CV/resume PDF and return ONLY a valid JSON object matching the schema below.
 
 Rules:
+- FIRST, before anything else: decide whether this document is actually a CV/resume — a document describing one identifiable person's work experience, education, and/or skills for job-seeking purposes. It does not need to be a traditional format (career-change stories, portfolios with a bio, academic CVs all count), but it must clearly be about one person's professional background. If it is something else entirely (an invoice, a novel or book excerpt, a random article, a certificate, an unrelated form or contract, a blank/corrupted page, etc.), set a top-level "is_resume": false and return ONLY {"is_resume": false} — no other field, do not invent or force-fit a plausible-looking CV out of unrelated content. If it is a CV/resume, proceed with the full extraction below (you may omit "is_resume" in that case, or set it true).
 - Return ONLY the JSON object, no markdown, no explanation, no code fences.
 - Never hallucinate data that is not present in the document. Use null or omit optional fields if data is missing.
 - The schema below uses "| undefined" to mark optional fields. NEVER write the literal word "undefined" in your JSON output — it is not valid JSON. For a missing optional field, use null or omit the field entirely.
@@ -39,23 +38,13 @@ Rules:
 - For image_placeholder: assign "gradient-1" through "gradient-8" to each project sequentially.
 - For other: catch-all for anything relevant that doesn't fit the sections above — hobbies, sports, volunteering, non-professional collaborations, extra languages, interests. Max 8 short items (a few words each), same language as the CV. Omit the field entirely if there's nothing like this in the CV — do not invent generic filler.
 - Detect language from the CV content and set metadata.language to "it" or "en".
-- Additionally, evaluate the SOURCE CV as originally written (before any of the improvements you make above) on 4 criteria, each an integer from 0 to 25, in a top-level "cv_score_before" object:
-  - "quantified_results": what fraction of the CV's own bullet points/achievements already include a concrete number, percentage, or monetary value? 25 = nearly all do, 0 = none do.
-  - "clarity": how clear, concise, and professional is the CV's own summary/profile statement, if it has one? 25 = clear and well-scoped, 0 = missing, vague, or rambling.
-  - "ats_structure": does the CV have a clearly labeled, organized skills section (not skills only scattered inside paragraphs)? 25 = yes, cleanly categorized; 0 = no dedicated section at all.
-  - "specific_skills": how many concrete, specific hard skills or tools does the CV explicitly name (not vague soft-skill adjectives)? 25 = 10 or more distinct specific skills/tools; 0 = none.
-  Be strict and critical, not encouraging — judge against the standard of a highly polished, ATS-optimized, recruiter-ready CV, not against an average CV. Most real CVs, even genuinely good ones, should land in the 30-65 range on most criteria; reserve scores above 80 for the rare CV that is already close to exceptional on that specific criterion. Do not round up out of politeness — a vague or generic bio, a thin skills section, or bullets with no numbers should score low even if the CV is otherwise well-written.
+- Additionally, suggest 3 to 5 job titles this person is genuinely qualified for right now, in a top-level "suggested_titles" array of strings, same language as the CV. Ground every title strictly in the seniority, domain, and concrete skills/experience actually present in the CV — a plausible next step or lateral move, never an aspirational role the CV doesn't support (e.g. don't suggest "CTO" for someone with two years as a junior developer, and don't suggest a totally different domain the CV shows no evidence of). Order from closest/most obvious match to more exploratory. If the CV is too thin or unfocused to support even 3 honest suggestions, return fewer rather than padding with a weak guess.
 
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}
 
 Also include, as a sibling of "personal_info" at the top level (not nested inside it):
-"cv_score_before": {
-  "quantified_results": number,
-  "clarity": number,
-  "ats_structure": number,
-  "specific_skills": number
-}`;
+"suggested_titles": string[]`;
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -68,7 +57,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 
 export interface ParseResumeResult {
   profile: ProfileSchema;
-  scoreBefore: CvScoreBeforeRaw;
+  suggestedTitles: string[];
 }
 
 export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeResult> {
@@ -121,16 +110,20 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     content: { type: string; text: string }[];
   };
 
-  const parsed = extractProfileJson<ProfileSchema & { cv_score_before: CvScoreBeforeRaw }>(
+  const parsed = extractProfileJson<Partial<ProfileSchema> & { is_resume?: boolean; suggested_titles?: string[] }>(
     json,
     "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
   );
 
-  const { cv_score_before, ...profile } = parsed;
+  if (parsed.is_resume === false) {
+    throw new NotAResumeError();
+  }
+
+  const { suggested_titles, is_resume, ...profile } = parsed as ProfileSchema & { suggested_titles?: string[]; is_resume?: boolean };
 
   if (!profile.metadata?.generated_at) {
     profile.metadata.generated_at = new Date().toISOString();
   }
 
-  return { profile, scoreBefore: cv_score_before };
+  return { profile, suggestedTitles: suggested_titles ?? [] };
 }

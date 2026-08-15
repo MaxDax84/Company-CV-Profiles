@@ -33,7 +33,7 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
                 <p>
-                  Il titolare del trattamento è <strong className="text-foreground">Jobly</strong>,
+                  Il titolare del trattamento è <strong className="text-foreground">Jobli</strong>,
                   gestito da Massimo Dassano, con sede in Italia.
                   <br />
                   Email di contatto:{' '}
@@ -192,7 +192,7 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
                 <p>
-                  The data controller is <strong className="text-foreground">Jobly</strong>,
+                  The data controller is <strong className="text-foreground">Jobli</strong>,
                   operated by Massimo Dassano, based in Italy.
                   <br />
                   Contact email:{' '}

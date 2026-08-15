@@ -7,6 +7,7 @@ import type { CvScoreBreakdown } from "@/lib/cv-score";
 import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import { renderPdfThumbnail } from "@/lib/pdf-thumbnail";
+import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import Navigation from "@/components/navigation";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
@@ -41,18 +42,52 @@ export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
+  const [pdfThumbnailError, setPdfThumbnailError] = useState<string | null>(null);
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [claimToken, setClaimToken] = useState<string | null>(null);
   const [cvScore, setCvScore] = useState<{ before: CvScoreBreakdown | null; after: CvScoreBreakdown } | null>(null);
+  const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [claiming, setClaiming] = useState(false);
+  const [claimError, setClaimError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const turnstileRef = useRef<TurnstileHandle>(null);
+
+  // Someone already signed in (e.g. via "+ Carica un nuovo CV" from their
+  // account) doesn't need the "create a free account" pitch this page shows
+  // an anonymous visitor — they can save straight into the account they're
+  // already in. null while this check is in flight, so the claim CTA below
+  // waits for a definitive answer instead of flashing the wrong one first.
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user));
+  }, []);
+
+  async function handleProceedLoggedIn() {
+    if (!claimToken) return;
+    setClaiming(true);
+    setClaimError(null);
+    try {
+      const res = await fetch("/api/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ claimToken }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
+      window.location.href = "/account?tab=cv";
+    } catch (err) {
+      setClaimError(err instanceof Error ? err.message : "Errore sconosciuto");
+      setClaiming(false);
+    }
+  }
 
   useEffect(() => {
     if (state !== "analyzing") {
@@ -100,6 +135,7 @@ export default function GeneratePage() {
       setProfile(data.profile);
       setClaimToken(data.claimToken ?? null);
       setCvScore(data.cvScore ?? null);
+      setSuggestedTitles(data.suggestedTitles ?? []);
       setState("scored");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
@@ -145,8 +181,15 @@ export default function GeneratePage() {
   function loadFile(f: File) {
     setFile(f);
     setPdfThumbnail(null);
+    setPdfThumbnailError(null);
     // Best-effort — the upload flow doesn't depend on this succeeding.
-    renderPdfThumbnail(f).then(setPdfThumbnail).catch(() => {});
+    // The error is surfaced in the fallback box (not just console.error)
+    // because on mobile there's no devtools to read the console from —
+    // this is the only way to find out what actually failed there.
+    renderPdfThumbnail(f).then(setPdfThumbnail).catch((err) => {
+      console.error("[renderPdfThumbnail] failed", err);
+      setPdfThumbnailError(err instanceof Error ? err.message : String(err));
+    });
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -182,16 +225,22 @@ export default function GeneratePage() {
   const needsPrivacy = !!file && !privacy;
 
   // The H1/subtitle follow the story as the user moves through the flow,
-  // instead of showing the same pitch copy at every step.
+  // instead of showing the same pitch copy at every step. The idle-state
+  // pitch (t.title/t.subtitle) is written for a first-time anonymous
+  // visitor — swap it for account-aware copy once we know someone's already
+  // signed in, so the page reads as "add another CV" rather than a fresh
+  // sales pitch for an account they already have.
   const headerTitle =
     state === "analyzing" ? t.titleAnalyzing :
     state === "scored" ? t.titleScored :
     state === "customizing" ? t.titleCustomizing :
+    isLoggedIn ? t.titleLoggedIn :
     t.title;
   const headerSubtitle =
     state === "analyzing" ? t.subtitleAnalyzing :
     state === "scored" ? t.subtitleScored :
     state === "customizing" ? t.subtitleCustomizing :
+    isLoggedIn ? t.subtitleLoggedIn :
     t.subtitle;
 
   return (
@@ -254,7 +303,28 @@ export default function GeneratePage() {
             labels={t}
             onReset={handleReset}
             claimSlot={
-              claimToken ? (
+              claimToken && isLoggedIn === true ? (
+                // Already signed in (e.g. arrived here via "+ Carica un
+                // nuovo CV" from /account) — nothing to sign up for, just
+                // save this CV into the account they're already in.
+                <div className="text-left rounded-2xl border p-5 space-y-3" style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d` }}>
+                  <p className="text-sm font-semibold" style={{ color: selected.accent }}>
+                    Questa è solo un&apos;anteprima
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Procedi per salvare questo profilo nel tuo account.
+                  </p>
+                  {claimError && <p className="text-xs text-red-500">{claimError}</p>}
+                  <button
+                    onClick={handleProceedLoggedIn}
+                    disabled={claiming}
+                    className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all disabled:opacity-60"
+                    style={{ background: selected.accent, color: "#000" }}
+                  >
+                    {claiming ? "Salvataggio…" : "Procedi →"}
+                  </button>
+                </div>
+              ) : claimToken && isLoggedIn === false ? (
                 <div className="text-left rounded-2xl border p-5 space-y-3" style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d` }}>
                   <p className="text-sm font-semibold" style={{ color: selected.accent }}>
                     Questa è solo un&apos;anteprima
@@ -288,6 +358,24 @@ export default function GeneratePage() {
                       labels={t.cvScore}
                     />
                   )}
+                  {suggestedTitles.length > 0 && (
+                    <div className="text-left space-y-2">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
+                        {t.suggestedTitlesLabel}
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {suggestedTitles.map((title) => (
+                          <span
+                            key={title}
+                            className="px-3 py-1.5 rounded-full text-xs font-semibold"
+                            style={{ background: `${selected.accent}15`, color: selected.accent, border: `1px solid ${selected.accent}40` }}
+                          >
+                            {title}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {profile.personal_info.bio_original && profile.personal_info.bio_original !== profile.personal_info.bio && (
                 <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 space-y-5">
                   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
@@ -303,7 +391,12 @@ export default function GeneratePage() {
                         {pdfThumbnail ? (
                           <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
                         ) : (
-                          <div className="aspect-[210/297] flex items-center justify-center bg-foreground/5 text-muted-foreground/30 text-xs">PDF</div>
+                          <div className="aspect-[210/297] flex flex-col items-center justify-center gap-1 bg-foreground/5 text-muted-foreground/30 text-xs p-2 text-center">
+                            <span>PDF</span>
+                            {pdfThumbnailError && (
+                              <span className="text-[9px] text-muted-foreground/50 break-words">{pdfThumbnailError}</span>
+                            )}
+                          </div>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground/60 line-through decoration-muted-foreground/30 px-1 text-center">
@@ -338,6 +431,9 @@ export default function GeneratePage() {
                             border: "none",
                             transform: "scale(0.21667)",
                             transformOrigin: "top left",
+                            // A preview, not the real page — nothing inside it
+                            // (e.g. a LinkedIn link) should be clickable/tappable.
+                            pointerEvents: "none",
                           }}
                         />
                       </div>
@@ -399,6 +495,24 @@ export default function GeneratePage() {
                 variant="teaser"
               />
             )}
+            {suggestedTitles.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
+                  {t.suggestedTitlesLabel}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {suggestedTitles.map((title) => (
+                    <span
+                      key={title}
+                      className="px-3 py-1.5 rounded-full text-xs font-semibold"
+                      style={{ background: `${selected.accent}15`, color: selected.accent, border: `1px solid ${selected.accent}40` }}
+                    >
+                      {title}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
             <div
               className="rounded-3xl border p-8 text-center space-y-4"
               style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d`, boxShadow: `0 0 40px ${selected.accent}18` }}
@@ -411,12 +525,6 @@ export default function GeneratePage() {
                 style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
               >
                 {t.ctaProceed}
-              </button>
-              <button
-                onClick={handleReset}
-                className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-              >
-                {t.generateAnother}
               </button>
             </div>
           </div>
@@ -435,22 +543,22 @@ export default function GeneratePage() {
                 {TEMPLATES.map(tpl => (
                   <div
                     key={tpl.id}
-                    className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left"
+                    onClick={() => setTemplate(tpl.id)}
+                    className="group relative rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left cursor-pointer"
                     style={{
                       borderColor: template === tpl.id ? tpl.accent : "var(--border)",
                       boxShadow: template === tpl.id ? `0 0 16px ${tpl.accent}40, 0 0 0 1px ${tpl.accent}` : "none",
                     }}
                   >
                     <div
-                      onClick={() => setTemplate(tpl.id)}
-                      className="relative h-28 overflow-hidden cursor-pointer"
+                      className="relative h-28 overflow-hidden"
                       style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
                     >
                       <iframe
                         src={`/profile/${tpl.demoSlug}`}
                         title={tpl.name}
                         tabIndex={-1}
-                        className="animate-template-preview-scroll"
+                        className="animate-template-preview-scroll pointer-events-none"
                         style={{
                           position: "absolute",
                           top: 0,
@@ -470,21 +578,11 @@ export default function GeneratePage() {
                       </span>
                     </div>
                     <div
-                      onClick={() => setTemplate(tpl.id)}
-                      className="w-full p-3 bg-foreground/[0.03] space-y-1.5 text-left cursor-pointer hover:bg-foreground/[0.06] transition-colors"
+                      className="w-full p-3 bg-foreground/[0.03] space-y-1.5 text-left hover:bg-foreground/[0.06] transition-colors"
                     >
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
                       <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
                       <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
-                        <button
-                          onClick={e => { e.stopPropagation(); setTemplate(tpl.id); }}
-                          className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80 cursor-pointer"
-                          style={template === tpl.id
-                            ? { background: tpl.accent, color: "#000" }
-                            : { background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
-                        >
-                          {template === tpl.id ? "Scelto ✓" : "Seleziona"}
-                        </button>
                         <a
                           href={`/profile/${tpl.demoSlug}`}
                           target="_blank"

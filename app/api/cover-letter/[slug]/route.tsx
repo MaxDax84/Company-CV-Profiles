@@ -52,7 +52,7 @@ export async function GET(
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${slug}-lettera.pdf"`,
+      "Content-Disposition": `attachment; filename="JOBLI Lettera - ${slug}.pdf"`,
     },
   });
 }

@@ -13,7 +13,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm space-y-8">
           <div className="text-center space-y-2">
             <h1 className="font-heading text-2xl font-bold tracking-tight">Bentornato</h1>
-            <p className="text-sm text-muted-foreground">Accedi al tuo profilo Jobly.</p>
+            <p className="text-sm text-muted-foreground">Accedi al tuo profilo Jobli.</p>
           </div>
           <div className="glass-card rounded-2xl p-8">
             <Suspense fallback={null}>

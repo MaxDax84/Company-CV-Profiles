@@ -422,7 +422,7 @@ export default function TemplateGamma({ profile }: Props) {
           </div>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', margin: 0 }}>
             {isIT ? 'Progettato da' : 'Designed by'}{' '}
-            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
+            <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
         </div>
       </section>

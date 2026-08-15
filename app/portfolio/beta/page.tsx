@@ -119,7 +119,7 @@ const content = {
     contactHeading: 'Got a challenge',
     contactHeadingAccent: 'worth solving?',
     contactSub: 'Available for advisory, board advisory, and strategy projects across Italy and internationally.',
-    footerDisclaimer: '🎭 This is a demo page. Sofia Conti is a fictional character created by Jobly for illustrative purposes.',
+    footerDisclaimer: '🎭 This is a demo page. Sofia Conti is a fictional character created by Jobli for illustrative purposes.',
     footerBy: 'Designed by',
   },
   it: {
@@ -221,7 +221,7 @@ const content = {
     contactHeading: 'Hai una sfida',
     contactHeadingAccent: 'che vale la pena risolvere?',
     contactSub: 'Disponibile per advisory, board advisory e progetti di strategia in Italia e all\'estero.',
-    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Sofia Conti è un personaggio di fantasia creato da Jobly a scopo illustrativo.',
+    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Sofia Conti è un personaggio di fantasia creato da Jobli a scopo illustrativo.',
     footerBy: 'Progettato da',
   },
 }
@@ -495,7 +495,7 @@ export default function BetaPage() {
             <p style={{ fontSize: 12, color: muted, margin: '0 0 8px', fontStyle: 'italic' }}>{c.footerDisclaimer}</p>
             <p style={{ fontSize: 12, color: muted, margin: '0 0 4px' }}>© 2025 Sofia Conti · Milano</p>
             <p style={{ fontSize: 12, color: muted, margin: 0 }}>
-              {c.footerBy} <Link href="/" style={{ color: indigo, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
+              {c.footerBy} <Link href="/" style={{ color: indigo, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
             </p>
           </div>
         </div>

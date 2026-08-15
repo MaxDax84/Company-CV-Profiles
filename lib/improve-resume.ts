@@ -85,8 +85,39 @@ export async function improveResume(sourceProfile: ProfileSchema): Promise<Profi
   improved.other = sourceProfile.other;
   improved.metadata = sourceProfile.metadata;
   improved.experience = improved.experience.length === sourceProfile.experience.length
-    ? improved.experience.map((exp, i) => ({ ...sourceProfile.experience[i], description: exp.description }))
+    ? improved.experience.map((exp, i) => ({
+        ...sourceProfile.experience[i],
+        description: preserveBulletNumbers(sourceProfile.experience[i].description, exp.description),
+      }))
     : sourceProfile.experience;
 
   return improved;
+}
+
+const NUMBER_TOKEN = /\d+(?:[.,]\d+)?%?/g;
+
+function extractNumbers(text: string): string[] {
+  return text.match(NUMBER_TOKEN) ?? [];
+}
+
+// The prompt already says never to drop/alter a %, figure, or timeframe in
+// a bullet — but that's an instruction, not a guarantee, and a "lightly
+// tightened" rewrite can silently drop a number even when told not to. This
+// is what was actually causing "Risultati misurabili" (which counts bullets
+// containing a number) to regress after optimization even though nothing
+// was supposed to be removable: the AI rewrite, not a scoring mismatch (that
+// separate bug was already fixed — see the header comment in lib/cv-score.ts).
+// Per-bullet, per-source-number check: if the rewrite is missing even one
+// number the source bullet had, keep the original bullet instead of the
+// rewrite. Silent and conservative on purpose — this can only ever make the
+// output closer to the source, never further from it.
+function preserveBulletNumbers(sourceBullets: string[], improvedBullets: string[]): string[] {
+  if (improvedBullets.length !== sourceBullets.length) return sourceBullets;
+  return improvedBullets.map((bullet, i) => {
+    const sourceNumbers = extractNumbers(sourceBullets[i]);
+    if (sourceNumbers.length === 0) return bullet;
+    const bulletNumbers = extractNumbers(bullet);
+    const preserved = sourceNumbers.every((n) => bulletNumbers.includes(n));
+    return preserved ? bullet : sourceBullets[i];
+  });
 }

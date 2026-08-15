@@ -135,7 +135,7 @@ const content = {
     contactHeading: 'Let\'s build',
     contactHeadingAccent: 'something that scales.',
     contactSub: 'Available for CPO / VP Product roles, advisory, and fractional product leadership.',
-    footerDisclaimer: '🎭 This is a demo page. Luca Romano is a fictional character created by Jobly for illustrative purposes.',
+    footerDisclaimer: '🎭 This is a demo page. Luca Romano is a fictional character created by Jobli for illustrative purposes.',
     footerBy: 'Designed by',
     backLabel: '← Portfolio',
     navLinks: [['#about', 'Profile'], ['#experience', 'Experience'], ['#skills', 'Skills'], ['#contact', 'Contact']],
@@ -256,7 +256,7 @@ const content = {
     contactHeading: 'Costruiamo',
     contactHeadingAccent: 'qualcosa che scala.',
     contactSub: 'Disponibile per ruoli CPO / VP Product, advisory e product leadership frazionale.',
-    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Luca Romano è un personaggio di fantasia creato da Jobly a scopo illustrativo.',
+    footerDisclaimer: '🎭 Questa è una pagina dimostrativa. Luca Romano è un personaggio di fantasia creato da Jobli a scopo illustrativo.',
     footerBy: 'Progettato da',
     backLabel: '← Portfolio',
     navLinks: [['#about', 'Profilo'], ['#experience', 'Esperienza'], ['#skills', 'Competenze'], ['#contact', 'Contatti']],
@@ -629,7 +629,7 @@ export default function DeltaPage() {
             <p style={{ fontSize: 11, color: mut, margin: '0 0 8px', fontStyle: 'italic', opacity: 0.7 }}>{c.footerDisclaimer}</p>
             <p style={{ fontSize: 12, color: mut, margin: '0 0 4px', opacity: 0.5 }}>© 2025 Luca Romano · Milano</p>
             <p style={{ fontSize: 12, color: mut, margin: 0, opacity: 0.5 }}>
-              {c.footerBy} <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>Jobly</Link>
+              {c.footerBy} <Link href="/" style={{ color: v, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
             </p>
           </div>
         </div>

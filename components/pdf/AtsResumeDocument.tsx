@@ -9,12 +9,12 @@ import type { ProfileSchema, ExperienceItem, EducationItem, Project } from "@/li
 // don't affect ATS parsing, no matter which variant is picked.
 const FALLBACK_ACCENT = "#4f46e5";
 
-export type PdfTemplate = "classic" | "modern" | "executive";
+export type PdfTemplate = "ats-core" | "executive" | "creative-tech";
 
 export const PDF_TEMPLATES: { id: PdfTemplate; name: string; description: string }[] = [
-  { id: "classic", name: "Classico", description: "Helvetica, barra colorata, sezioni sottolineate" },
-  { id: "modern", name: "Moderno", description: "Helvetica, date in pillola, marcatori a puntino" },
-  { id: "executive", name: "Executive", description: "Times, intestazione centrata, righe doppie" },
+  { id: "ats-core", name: "ATS Core", description: "Helvetica, bianco/nero, solo linee sottili — il massimo della compatibilità" },
+  { id: "executive", name: "Executive", description: "Times per i titoli, blu notte istituzionale, margini ampi" },
+  { id: "creative-tech", name: "Creative Tech", description: "Helvetica, testata d'impatto, competenze in tag colorati" },
 ];
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -28,83 +28,108 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+type StdFont = "Helvetica" | "Helvetica-Bold" | "Times-Roman" | "Times-Bold";
+
 interface VariantConfig {
-  fontFamily: "Helvetica" | "Times-Roman";
-  fontFamilyBold: "Helvetica-Bold" | "Times-Bold";
+  // Body text always uses fontFamily/fontFamilyBold. Name + section titles
+  // use headerFontFamily/headerFontFamilyBold — same as body for two of the
+  // three variants, but "executive" pairs a serif header with a sans body.
+  fontFamily: StdFont;
+  fontFamilyBold: StdFont;
+  headerFontFamily: StdFont;
+  headerFontFamilyBold: StdFont;
   bullet: string;
   headerAlign: "flex-start" | "center";
-  entryMarker: "border" | "dot" | "none";
-  useTopBar: boolean;
+  entryMarker: "dot" | "none";
   useDateChip: boolean;
-  sectionTitleStyle: "underline" | "rule-both" | "spaced";
+  sectionTitleStyle: "rule-simple" | "rule-both" | "tag";
+  // "ats-core" and "executive" use a fixed, non-personalized accent (pure
+  // neutral grayscale / institutional navy per the brief) instead of the
+  // CV's own suggested color — only "creative-tech" stays personalized.
+  fixedAccent?: string;
+  // Header keeps a tinted background band for two variants; "ats-core"
+  // stays flat white with a hairline rule instead, per its "bianco e nero,
+  // solo linee sottili" spec.
+  headerBand: boolean;
+  skillStyle: "line" | "tags";
+  spacing: "normal" | "generous";
 }
 
 const VARIANTS: Record<PdfTemplate, VariantConfig> = {
-  classic: {
-    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold", bullet: "•",
-    headerAlign: "flex-start", entryMarker: "border", useTopBar: true,
-    useDateChip: false, sectionTitleStyle: "underline",
-  },
-  modern: {
-    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold", bullet: "•",
-    headerAlign: "flex-start", entryMarker: "dot", useTopBar: false,
-    useDateChip: true, sectionTitleStyle: "spaced",
+  "ats-core": {
+    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold",
+    headerFontFamily: "Helvetica", headerFontFamilyBold: "Helvetica-Bold",
+    bullet: "•", headerAlign: "flex-start", entryMarker: "none",
+    useDateChip: false, sectionTitleStyle: "rule-simple",
+    fixedAccent: "#2b2b2b", headerBand: false, skillStyle: "line", spacing: "normal",
   },
   executive: {
-    fontFamily: "Times-Roman", fontFamilyBold: "Times-Bold", bullet: "•",
-    headerAlign: "center", entryMarker: "none", useTopBar: false,
+    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold",
+    headerFontFamily: "Times-Roman", headerFontFamilyBold: "Times-Bold",
+    bullet: "—", headerAlign: "center", entryMarker: "none",
     useDateChip: false, sectionTitleStyle: "rule-both",
+    fixedAccent: "#16233f", headerBand: true, skillStyle: "line", spacing: "generous",
+  },
+  "creative-tech": {
+    fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold",
+    headerFontFamily: "Helvetica", headerFontFamilyBold: "Helvetica-Bold",
+    bullet: "•", headerAlign: "flex-start", entryMarker: "dot",
+    useDateChip: true, sectionTitleStyle: "tag",
+    headerBand: true, skillStyle: "tags", spacing: "normal",
   },
 };
 
+function resolveAccent(profile: ProfileSchema, cfg: VariantConfig): string {
+  return cfg.fixedAccent ?? profile.metadata.primary_color ?? FALLBACK_ACCENT;
+}
+
 function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
-  const PAGE_PADDING_H = 42;
+  const generous = cfg.spacing === "generous";
+  const PAGE_PADDING_H = generous ? 54 : 42;
+  const RULE_GRAY = "#a3a3a3";
   return StyleSheet.create({
     // Margins live on the Page itself (not a wrapping View) — react-pdf only
     // reapplies a View's own padding at the very start/end of its content, so
     // a wrapping <View> loses its top/bottom inset on every page after the
     // first once a section overflows. Page-level padding, by contrast, is
     // correctly reapplied on every auto-generated page.
-    page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: cfg.useTopBar ? 26 : 34, paddingBottom: 36, paddingHorizontal: PAGE_PADDING_H },
-    // Bleeds edge-to-edge on every page regardless of the Page's own padding.
-    topBar: { position: "absolute", top: 0, left: 0, right: 0, height: 6 },
+    page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: generous ? 40 : 34, paddingBottom: generous ? 44 : 36, paddingHorizontal: PAGE_PADDING_H },
     // Tinted band behind the name/title/contact block — bleeds to the page's
     // physical edges by cancelling the Page's own horizontal padding, then
     // re-applying it as the band's own padding so the text inside still
-    // lines up with the rest of the page's content.
+    // lines up with the rest of the page's content. "ats-core" skips the
+    // tint entirely and gets a hairline rule below instead.
     header: {
       alignItems: cfg.headerAlign,
-      backgroundColor: hexToRgba(accent, 0.06),
+      backgroundColor: cfg.headerBand ? hexToRgba(accent, 0.06) : "transparent",
       marginHorizontal: -PAGE_PADDING_H,
-      marginTop: cfg.useTopBar ? 0 : -10,
+      marginTop: -10,
       paddingHorizontal: PAGE_PADDING_H,
-      paddingTop: cfg.useTopBar ? 14 : 20,
-      paddingBottom: 16,
-      marginBottom: 6,
+      paddingTop: generous ? 26 : 20,
+      paddingBottom: generous ? 22 : 16,
+      marginBottom: cfg.headerBand ? 6 : 14,
+      ...(!cfg.headerBand && { borderBottomWidth: 1, borderBottomColor: RULE_GRAY }),
     },
-    name: { fontSize: 23, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, marginBottom: 3, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    title: { fontSize: 12, fontFamily: cfg.fontFamily, color: "#4a4a4a", marginBottom: 9, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    name: { fontSize: generous ? 25 : 23, fontFamily: cfg.headerFontFamilyBold, letterSpacing: 0.3, marginBottom: 3, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    title: { fontSize: 12, fontFamily: cfg.headerFontFamily, color: "#4a4a4a", marginBottom: 9, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     contactLine: { fontSize: 9, color: "#5a5a5a", marginBottom: 2, lineHeight: 1.5, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    section: { marginTop: 17 },
-    // Each variant carries a distinct colored treatment — a left tab +
-    // underline (classic), a filled band (modern), or a soft double rule
-    // (executive) — rather than one shared gray-border look.
+    section: { marginTop: generous ? 22 : 17 },
+    // Each variant carries a distinct treatment — a plain thin rule
+    // (ats-core), a soft double rule (executive), or a filled tag-like
+    // band (creative-tech) — rather than one shared look.
     sectionTitle: {
-      fontSize: cfg.sectionTitleStyle === "spaced" ? 10 : 10.5,
-      fontFamily: cfg.fontFamilyBold,
+      fontSize: cfg.sectionTitleStyle === "tag" ? 10 : 10.5,
+      fontFamily: cfg.headerFontFamilyBold,
       textTransform: "uppercase",
-      letterSpacing: cfg.sectionTitleStyle === "spaced" ? 1.6 : 1.3,
-      color: cfg.sectionTitleStyle === "spaced" ? accent : "#232323",
+      letterSpacing: cfg.sectionTitleStyle === "tag" ? 1.6 : 1.3,
+      color: cfg.sectionTitleStyle === "tag" ? accent : "#232323",
       marginBottom: 9,
-      ...(cfg.sectionTitleStyle === "underline" && {
+      ...(cfg.sectionTitleStyle === "rule-simple" && {
         paddingBottom: 4,
-        paddingLeft: 8,
-        borderBottomWidth: 1.5,
-        borderBottomColor: accent,
-        borderLeftWidth: 3,
-        borderLeftColor: accent,
+        borderBottomWidth: 1,
+        borderBottomColor: RULE_GRAY,
       }),
-      ...(cfg.sectionTitleStyle === "spaced" && {
+      ...(cfg.sectionTitleStyle === "tag" && {
         alignSelf: "stretch",
         backgroundColor: hexToRgba(accent, 0.1),
         paddingVertical: 5,
@@ -121,11 +146,8 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
     },
     bio: { fontSize: 10, lineHeight: 1.55, color: "#333333" },
     entry: {
-      marginBottom: 11,
-      paddingLeft: cfg.entryMarker === "border" ? 11 : cfg.entryMarker === "dot" ? 12 : 0,
-      borderLeftWidth: cfg.entryMarker === "border" ? 2.5 : 0,
-      borderLeftStyle: "solid",
-      borderLeftColor: accentSoft,
+      marginBottom: generous ? 13 : 11,
+      paddingLeft: cfg.entryMarker === "dot" ? 12 : 0,
     },
     entryDot: { position: "absolute", left: 0, top: 3, width: 5, height: 5, borderRadius: 2.5 },
     entryHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
@@ -136,14 +158,19 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
     bullet: { fontSize: 9.5, lineHeight: 1.45, marginBottom: 2.5, color: "#333333" },
     // Marker and text as separate fixed-width/flex columns (not one inline
     // string) so a wrapped second line indents under the text, not back
-    // under the bullet — a hanging indent, same as the entry's own
-    // paddingLeft is achieved via borderLeft above. Still plain sequential
-    // text in the content stream, so ATS extraction order is unaffected.
+    // under the bullet. Still plain sequential text in the content stream,
+    // so ATS extraction order is unaffected.
     bulletRow: { flexDirection: "row", marginBottom: 3.5 },
     bulletMarker: { width: 13, fontSize: 9.5, lineHeight: 1.45, color: accentSoft },
     bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.45, color: "#333333" },
     skillLine: { fontSize: 9.5, lineHeight: 1.65, color: "#333333" },
     skillLabel: { fontFamily: cfg.fontFamilyBold, color: "#232323" },
+    // "creative-tech" only — small pill chips for skills/tools instead of a
+    // comma-joined line. Each chip is still its own plain <Text> node in
+    // normal document order, so ATS extraction reads the same words in the
+    // same order it would from a plain line — only the visual wrapper differs.
+    tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 2, marginBottom: 4 },
+    tag: { fontSize: 8.5, fontFamily: cfg.fontFamilyBold, color: accent, backgroundColor: hexToRgba(accent, 0.1), borderRadius: 8, paddingHorizontal: 7, paddingVertical: 3 },
     link: { textDecoration: "none", fontFamily: cfg.fontFamilyBold },
   });
 }
@@ -190,6 +217,17 @@ function EntryMarker({ accent, cfg, styles }: { accent: string; cfg: VariantConf
   return <View style={[styles.entryDot, { backgroundColor: accent }]} />;
 }
 
+function TagRow({ items, styles }: { items: string[]; styles: ReturnType<typeof buildStyles> }) {
+  if (items.length === 0) return null;
+  return (
+    <View style={styles.tagRow}>
+      {items.map((item, i) => (
+        <Text key={i} style={styles.tag}>{item}</Text>
+      ))}
+    </View>
+  );
+}
+
 function ContactLine({ profile, accent, cfg, styles }: { profile: ProfileSchema; accent: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   const { email, phone, email_obfuscated, phone_obfuscated, location, social_links } = profile.personal_info;
   // Real, non-obfuscated contact info — this PDF is downloaded privately and
@@ -225,7 +263,7 @@ function ContactLine({ profile, accent, cfg, styles }: { profile: ProfileSchema;
   );
 }
 
-function ExperienceEntry({ exp, accent, accentSoft, cfg, styles }: { exp: ExperienceItem; accent: string; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
+function ExperienceEntry({ exp, accent, cfg, styles }: { exp: ExperienceItem; accent: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
     <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <EntryMarker accent={accent} cfg={cfg} styles={styles} />
@@ -243,13 +281,15 @@ function ExperienceEntry({ exp, accent, accentSoft, cfg, styles }: { exp: Experi
         </View>
       ))}
       {exp.technologies.length > 0 && (
-        <Text style={styles.skillLine}>{exp.technologies.join(", ")}</Text>
+        cfg.skillStyle === "tags"
+          ? <TagRow items={exp.technologies} styles={styles} />
+          : <Text style={styles.skillLine}>{exp.technologies.join(", ")}</Text>
       )}
     </View>
   );
 }
 
-function EducationEntry({ ed, accent, accentSoft, cfg, styles }: { ed: EducationItem; accent: string; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
+function EducationEntry({ ed, accent, cfg, styles }: { ed: EducationItem; accent: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
     <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <EntryMarker accent={accent} cfg={cfg} styles={styles} />
@@ -262,18 +302,36 @@ function EducationEntry({ ed, accent, accentSoft, cfg, styles }: { ed: Education
   );
 }
 
-function ProjectEntry({ p, accentSoft, cfg, styles }: { p: Project; accentSoft: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
+function ProjectEntry({ p, cfg, styles }: { p: Project; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   return (
     <View style={[styles.entry, { position: "relative" }]} wrap={false}>
       <Text style={styles.entryTitle}>{p.title}</Text>
       <Text style={styles.bullet}>{p.description}</Text>
-      {p.tags.length > 0 && <Text style={styles.skillLine}>{p.tags.join(", ")}</Text>}
+      {p.tags.length > 0 && (
+        cfg.skillStyle === "tags"
+          ? <TagRow items={p.tags} styles={styles} />
+          : <Text style={styles.skillLine}>{p.tags.join(", ")}</Text>
+      )}
     </View>
   );
 }
 
-function SkillsSection({ skills, labels, accent, styles }: { skills: ProfileSchema["skills"]; labels: { title: string; hard: string; soft: string; tools: string }; accent: string; styles: ReturnType<typeof buildStyles> }) {
+function SkillsSection({ skills, labels, cfg, styles }: { skills: ProfileSchema["skills"]; labels: { title: string; hard: string; soft: string; tools: string }; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
   if (skills.hard.length === 0 && skills.soft.length === 0 && skills.tools.length === 0) return null;
+  if (cfg.skillStyle === "tags") {
+    // Tools grouped in with hard skills — the visual distinction between
+    // "technical" and "tool" chips isn't worth a third labeled row here.
+    const chips = [...skills.hard, ...skills.tools];
+    return (
+      <View style={styles.section} wrap={false}>
+        <Text style={styles.sectionTitle}>{labels.title}</Text>
+        <TagRow items={chips} styles={styles} />
+        {skills.soft.length > 0 && (
+          <Text style={styles.skillLine}><Text style={styles.skillLabel}>{labels.soft}: </Text>{skills.soft.join(", ")}</Text>
+        )}
+      </View>
+    );
+  }
   return (
     // Always short (a handful of lines) — never worth splitting across pages.
     <View style={styles.section} wrap={false}>
@@ -317,19 +375,17 @@ const LABELS_BY_LANG: Record<"it" | "en", Labels> = {
   },
 };
 
-export function AtsResumeDocument({ profile, template = "classic" }: { profile: ProfileSchema; template?: PdfTemplate }) {
+export function AtsResumeDocument({ profile, template = "ats-core" }: { profile: ProfileSchema; template?: PdfTemplate }) {
   const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
   const { personal_info, experience, education, certifications, skills, projects, other } = profile;
-  const accent = profile.metadata.primary_color || FALLBACK_ACCENT;
-  const accentSoft = hexToRgba(accent, 0.5);
   const cfg = VARIANTS[template];
+  const accent = resolveAccent(profile, cfg);
+  const accentSoft = hexToRgba(accent, 0.5);
   const styles = buildStyles(cfg, accent, accentSoft);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {cfg.useTopBar && <View style={[styles.topBar, { backgroundColor: accent }]} fixed />}
-
         <View style={styles.header}>
           <Text style={[styles.name, { color: accent }]}>{personal_info.full_name}</Text>
           <Text style={styles.title}>{personal_info.title}</Text>
@@ -351,10 +407,10 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
                 next one — later entries can still flow independently. */}
             <View wrap={false}>
               <Text style={styles.sectionTitle}>{t.experience}</Text>
-              <ExperienceEntry exp={experience[0]} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
+              <ExperienceEntry exp={experience[0]} accent={accent} cfg={cfg} styles={styles} />
             </View>
             {experience.slice(1).map((exp, i) => (
-              <ExperienceEntry key={i + 1} exp={exp} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
+              <ExperienceEntry key={i + 1} exp={exp} accent={accent} cfg={cfg} styles={styles} />
             ))}
           </View>
         )}
@@ -363,10 +419,10 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
           <View style={styles.section}>
             <View wrap={false}>
               <Text style={styles.sectionTitle}>{t.education}</Text>
-              <EducationEntry ed={education[0]} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
+              <EducationEntry ed={education[0]} accent={accent} cfg={cfg} styles={styles} />
             </View>
             {education.slice(1).map((ed, i) => (
-              <EducationEntry key={i + 1} ed={ed} accent={accent} accentSoft={accentSoft} cfg={cfg} styles={styles} />
+              <EducationEntry key={i + 1} ed={ed} accent={accent} cfg={cfg} styles={styles} />
             ))}
           </View>
         )}
@@ -374,7 +430,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
         <SkillsSection
           skills={skills}
           labels={{ title: t.skills, hard: t.skillsHard, soft: t.skillsSoft, tools: t.skillsTools }}
-          accent={accent}
+          cfg={cfg}
           styles={styles}
         />
 
@@ -397,7 +453,7 @@ export function AtsResumeDocument({ profile, template = "classic" }: { profile: 
           <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>{t.projects}</Text>
             {projects.map((p, i) => (
-              <ProjectEntry key={i} p={p} accentSoft={accentSoft} cfg={cfg} styles={styles} />
+              <ProjectEntry key={i} p={p} cfg={cfg} styles={styles} />
             ))}
           </View>
         )}

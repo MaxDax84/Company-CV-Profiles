@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 
 export default function ChangePasswordForm() {
   const [password, setPassword] = useState("");
@@ -11,9 +12,9 @@ export default function ChangePasswordForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (password.length < 8) {
+    if (!isPasswordValid(password)) {
       setStatus("error");
-      setErrorMsg("La password deve avere almeno 8 caratteri.");
+      setErrorMsg("La password non rispetta tutti i requisiti richiesti.");
       return;
     }
     if (password !== confirm) {
@@ -38,13 +39,16 @@ export default function ChangePasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div className="grid sm:grid-cols-2 gap-3">
-        <input
-          type="password"
-          placeholder="Nuova password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
-        />
+        <div>
+          <input
+            type="password"
+            placeholder="Nuova password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
+          />
+          <PasswordRequirements password={password} />
+        </div>
         <input
           type="password"
           placeholder="Conferma password"
@@ -56,7 +60,7 @@ export default function ChangePasswordForm() {
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={status === "saving"}
+          disabled={status === "saving" || !isPasswordValid(password)}
           className="px-4 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50"
           style={{ background: "#6366f1", color: "#000" }}
         >

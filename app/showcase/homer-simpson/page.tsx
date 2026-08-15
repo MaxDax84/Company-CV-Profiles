@@ -247,7 +247,7 @@ export default function HomerSimpsonPage() {
         <div className="hs-footer" style={{ background: blue }}>
           <span className={lilita.className} style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>🍩 SPRINGFIELD, USA</span>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, fontWeight: 800 }}>
-            Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>Jobly</Link>
+            Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>Jobli</Link>
           </p>
         </div>
       </div>

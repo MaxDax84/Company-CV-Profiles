@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Jobly v3 — AI Career Platform: light, professional tech palette
+  /* Jobli v3 — AI Career Platform: light, professional tech palette
      (indigo brand + slate neutrals + darkened cyan) on a white background.
      Plain hex on purpose (not oklch) — the oklch()-with-lab()-fallback pair
      Lightning CSS was emitting made the actual rendered shade unpredictable

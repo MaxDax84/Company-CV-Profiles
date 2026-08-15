@@ -9,7 +9,7 @@ export default function HeroSection() {
   const t = translations[lang].hero
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pb-16 md:pb-24">
       {/* Background layers */}
       <div className="absolute inset-0">
         {/* Grid */}

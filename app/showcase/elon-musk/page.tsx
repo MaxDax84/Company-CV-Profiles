@@ -118,7 +118,7 @@ export default function ElonMuskPage() {
               Austin, Texas<br />x.com/@elonmusk
             </p>
             <p style={{ fontSize: 11, color: '#1f2937', margin: '12px 0 0' }}>
-              Designed by <Link href="/" style={{ color: blue, textDecoration: 'none' }}>Jobly</Link>
+              Designed by <Link href="/" style={{ color: blue, textDecoration: 'none' }}>Jobli</Link>
             </p>
           </div>
         </aside>
