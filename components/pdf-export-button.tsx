@@ -2,16 +2,19 @@
 
 import { useState, type ReactNode } from "react";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
+import CreditConfirmModal from "@/components/credit-confirm-modal";
 
 interface PdfExportButtonProps {
   slug: string;
   label: string;
   icon?: ReactNode;
   className?: string;
+  credits: number;
 }
 
-export default function PdfExportButton({ slug, label, icon, className }: PdfExportButtonProps) {
+export default function PdfExportButton({ slug, label, icon, className, credits }: PdfExportButtonProps) {
   const [open, setOpen] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
 
   if (!open) {
@@ -63,15 +66,14 @@ export default function PdfExportButton({ slug, label, icon, className }: PdfExp
       </div>
       <p className="text-[10px] text-muted-foreground/60">{PDF_TEMPLATES.find(t => t.id === template)?.description}</p>
       <div className="flex gap-2 pt-1">
-        <a
-          href={`/api/pdf/${slug}?template=${template}`}
-          download
-          onClick={() => setOpen(false)}
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
           className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
           style={{ background: "#6366f1", color: "#000" }}
         >
           Scarica
-        </a>
+        </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
@@ -80,6 +82,19 @@ export default function PdfExportButton({ slug, label, icon, className }: PdfExp
           Annulla
         </button>
       </div>
+      {confirming && (
+        <CreditConfirmModal
+          actionLabel="Scaricare il PDF?"
+          cost={1}
+          balance={credits}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            window.location.href = `/api/pdf/${slug}?template=${template}`;
+            setConfirming(false);
+            setOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

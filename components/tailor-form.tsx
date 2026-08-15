@@ -10,6 +10,7 @@ import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-wi
 import ProfileResultPanel from "@/components/profile-result-panel";
 import PdfExportButton from "@/components/pdf-export-button";
 import StepProgress from "@/components/step-progress";
+import CreditConfirmModal from "@/components/credit-confirm-modal";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
@@ -36,6 +37,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
   const turnstileRef = useRef<TurnstileHandle>(null);
 
   useEffect(() => {
@@ -186,6 +188,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
             <PdfExportButton
               slug={slug}
               label={t.downloadPdf}
+              credits={credits}
               className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
             />
           }
@@ -360,7 +363,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
 
           {/* Generate button */}
           <button
-            onClick={handleGenerate}
+            onClick={() => setConfirming(true)}
             disabled={!canGenerate}
             className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
             style={canGenerate ? {
@@ -382,6 +385,18 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
             <p className="text-xs text-center -mt-3" style={{ color: "rgba(251,191,36,0.8)" }}>
               {t.needPrivacyNote}
             </p>
+          )}
+          {confirming && (
+            <CreditConfirmModal
+              actionLabel="Adattare il CV a questo annuncio?"
+              cost={1}
+              balance={credits}
+              onCancel={() => setConfirming(false)}
+              onConfirm={() => {
+                setConfirming(false);
+                handleGenerate();
+              }}
+            />
           )}
         </>
       ) : null}

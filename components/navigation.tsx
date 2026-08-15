@@ -51,7 +51,11 @@ export default function Navigation() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border/60 shadow-lg shadow-foreground/20'
+          // No blur below md: a `position: fixed` bar with backdrop-filter
+          // forces the browser to recompute the blur every scroll frame —
+          // one of the most common real-world mobile scroll-jank causes.
+          // A near-opaque background reads as solid without it.
+          ? 'bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-border/60 shadow-lg shadow-foreground/20'
           : 'bg-transparent',
       )}
     >
@@ -145,7 +149,7 @@ export default function Navigation() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-md border-b border-border/60 px-6 py-5 flex flex-col gap-5">
+        <div className="md:hidden bg-background/95 border-b border-border/60 px-6 py-5 flex flex-col gap-5">
           {links.map((link) => (
             <a
               key={link.href}

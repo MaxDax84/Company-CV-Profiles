@@ -201,12 +201,17 @@ export default function GeneratePage() {
 
       {/* Background */}
       <div className="absolute inset-0 grid-overlay" />
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/12 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
+      <div className="hidden md:block absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/12 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
       <div
-        className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px] animate-glow-pulse pointer-events-none"
+        className="hidden md:block absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px] animate-glow-pulse pointer-events-none"
         style={{ background: "rgba(8, 145, 178, 0.10)", animationDelay: "2.5s" }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#ffffff_100%)] pointer-events-none" />
+      {/* var(--background), not a hardcoded white, so this doesn't leave a
+          white halo over the page in dark mode */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 40%, var(--background) 100%)" }}
+      />
 
       <div className="flex items-center justify-center px-6 py-24">
       <div className={`relative z-10 w-full space-y-10 transition-[max-width] duration-300 ${state === "done" ? "max-w-3xl" : "max-w-2xl"}`}>

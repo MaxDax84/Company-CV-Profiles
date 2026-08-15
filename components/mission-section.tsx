@@ -32,7 +32,7 @@ export default function MissionSection() {
 
       {/* Accent orb */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
+        className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
         style={{ background: 'rgba(99, 102, 241, 0.08)' }}
       />
 

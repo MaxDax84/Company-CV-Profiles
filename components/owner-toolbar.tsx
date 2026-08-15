@@ -3,6 +3,7 @@ import PdfExportButton from "@/components/pdf-export-button";
 interface OwnerToolbarProps {
   slug: string;
   kind: "primary" | "tailored";
+  credits: number;
 }
 
 // Shown only to the profile's own owner (see app/profile/[slug]/page.tsx) —
@@ -20,7 +21,7 @@ interface OwnerToolbarProps {
 // The color is a solid, saturated indigo specifically because it must read
 // clearly over any of the four templates' backgrounds — near-black (Alpha),
 // white (Beta), dark green (Gamma), or navy (Delta).
-export default function OwnerToolbar({ slug, kind }: OwnerToolbarProps) {
+export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps) {
   return (
     <div
       className="fixed top-0 left-0 right-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 text-xs sm:text-sm"
@@ -34,6 +35,7 @@ export default function OwnerToolbar({ slug, kind }: OwnerToolbarProps) {
       <PdfExportButton
         slug={slug}
         label="Scarica PDF ↓"
+        credits={credits}
         className="font-semibold text-foreground transition-opacity hover:opacity-70"
       />
       {kind === "primary" && (

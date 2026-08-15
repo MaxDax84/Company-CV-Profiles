@@ -4,6 +4,7 @@ import { TemplateAlpha, TemplateBeta, TemplateGamma, TemplateDelta } from "@/com
 import { getProfileByAccountCode, getOwnedProfileBySlug } from "@/lib/profile-store";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
+import { getCreditBalance } from "@/lib/credits";
 import OwnerToolbar from "@/components/owner-toolbar";
 
 const TEMPLATE_MAP: Record<TemplateStyle, React.ComponentType<{ profile: ProfileSchema }>> = {
@@ -22,14 +23,16 @@ interface Props {
 // needed here: ownership only depends on whether the *currently signed-in*
 // user owns a profile with this slug, same check regardless of whose code
 // got them to this page.
-async function getOwnerKind(slug: string): Promise<"primary" | "tailored" | null> {
+async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored"; credits: number } | null> {
   if (!isSupabaseConfigured()) return null;
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
     const row = await getOwnedProfileBySlug(supabase, user.id, slug);
-    return row?.kind ?? null;
+    if (!row) return null;
+    const credits = await getCreditBalance(supabase, user.id);
+    return { kind: row.kind, credits };
   } catch {
     return null;
   }
@@ -37,7 +40,7 @@ async function getOwnerKind(slug: string): Promise<"primary" | "tailored" | null
 
 export default async function AccountProfilePage({ params }: Props) {
   const { code, slug } = await params;
-  const [profile, ownerKind] = await Promise.all([getProfileByAccountCode(code, slug), getOwnerKind(slug)]);
+  const [profile, ownerInfo] = await Promise.all([getProfileByAccountCode(code, slug), getOwnerInfo(slug)]);
 
   if (!profile) notFound();
 
@@ -45,7 +48,7 @@ export default async function AccountProfilePage({ params }: Props) {
 
   return (
     <>
-      {ownerKind && <OwnerToolbar slug={slug} kind={ownerKind} />}
+      {ownerInfo && <OwnerToolbar slug={slug} kind={ownerInfo.kind} credits={ownerInfo.credits} />}
       <Template profile={profile} />
     </>
   );

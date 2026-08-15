@@ -7,6 +7,7 @@ import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
+import CoverLetterButton from "@/components/cover-letter-button";
 import EditPersonalInfoForm from "@/components/edit-personal-info-form";
 import EditableSlug from "@/components/editable-slug";
 import ChangeEmailForm from "@/components/change-email-form";
@@ -175,16 +176,16 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         slug={row.slug}
                         label="Scarica PDF"
                         icon={<Download className="w-4 h-4" />}
+                        credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
-                      <a
-                        href={`/api/cover-letter/${row.slug}`}
-                        download
+                      <CoverLetterButton
+                        slug={row.slug}
+                        label="Lettera di presentazione"
+                        icon={<Mail className="w-4 h-4" />}
+                        credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      >
-                        <Mail className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center line-clamp-2">Lettera di presentazione</span>
-                      </a>
+                      />
                     </div>
                     <div className="pt-2 border-t border-foreground/10">
                       <DeleteProfileButton
@@ -238,15 +239,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <PdfExportButton
                         slug={row.slug}
                         label="PDF ↓"
+                        credits={credits}
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
-                      <a
-                        href={`/api/cover-letter/${row.slug}`}
-                        download
+                      <CoverLetterButton
+                        slug={row.slug}
+                        label="Lettera ↓"
+                        credits={credits}
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      >
-                        Lettera ↓
-                      </a>
+                      />
                       <DeleteProfileButton profileId={row.id} label="Elimina" />
                     </div>
                   </div>

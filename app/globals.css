@@ -172,6 +172,20 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
+/* backdrop-filter is a real scroll-jank source on mobile GPUs, especially
+   with several .glass-card instances stacked in a list (e.g. the account
+   dashboard's CV cards) — drop the blur below the md breakpoint and raise
+   opacity instead so the card still reads as a distinct solid surface. */
+@media (max-width: 767px) {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .dark .glass-card {
+    background: rgba(28, 31, 38, 0.94);
+  }
+}
 
 .animate-glow-pulse {
   animation: glow-pulse 5s ease-in-out infinite;

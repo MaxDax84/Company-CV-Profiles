@@ -92,7 +92,7 @@ export default function ContactSection() {
   return (
     <section id="contact" ref={ref} className="relative py-12 md:py-16 overflow-hidden">
       {/* Orb */}
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="hidden md:block absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
