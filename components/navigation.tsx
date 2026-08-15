@@ -50,13 +50,18 @@ export default function Navigation() {
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        // Always solid on mobile — the transparent-until-scrolled state let
+        // page text visibly scroll underneath and overlap the nav items
+        // (reported bug). Desktop keeps the transparent-at-top-of-page
+        // effect, which blends with the hero and doesn't have this problem.
+        'bg-background/95 border-b border-border/60',
         scrolled
           // No blur below md: a `position: fixed` bar with backdrop-filter
           // forces the browser to recompute the blur every scroll frame —
           // one of the most common real-world mobile scroll-jank causes.
           // A near-opaque background reads as solid without it.
-          ? 'bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-border/60 shadow-lg shadow-foreground/20'
-          : 'bg-transparent',
+          ? 'md:bg-background/80 md:backdrop-blur-md shadow-lg shadow-foreground/20'
+          : 'md:bg-transparent md:border-transparent',
       )}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
