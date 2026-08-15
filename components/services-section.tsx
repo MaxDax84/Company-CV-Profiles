@@ -15,11 +15,18 @@ export default function ServicesSection() {
   const t = translations[lang].services
 
   useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    // See components/mission-section.tsx for why: a fast scroll can cross a
+    // narrow, no-margin trigger zone between two observer callbacks and
+    // never register, leaving the section stuck at opacity-0.
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true) },
-      { threshold: 0.15 },
+      { threshold: 0, rootMargin: '200px 0px 200px 0px' },
     )
-    if (ref.current) observer.observe(ref.current)
+    observer.observe(el)
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) setVisible(true)
     return () => observer.disconnect()
   }, [])
 

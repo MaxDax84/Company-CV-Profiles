@@ -12,11 +12,30 @@ export default function MissionSection() {
   const t = translations[lang].mission
 
   useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    // threshold: 0.1 with no rootMargin meant a fast scroll (common on
+    // mobile, especially flinging past this section) could cross the
+    // trigger zone between two observer callbacks and never register as
+    // intersecting — the section stayed stuck at opacity-0 until a slower
+    // scroll happened to land inside that narrow window. A generous
+    // rootMargin gives the crossing much more room to be caught, and
+    // threshold: 0 fires on the first pixel of overlap instead of waiting
+    // for 10% of the section to already be in view.
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true) },
-      { threshold: 0.1 },
+      { threshold: 0, rootMargin: '200px 0px 200px 0px' },
     )
-    if (ref.current) observer.observe(ref.current)
+    observer.observe(el)
+
+    // Safety net for the case where the section is already on/near screen
+    // by the time this effect runs (e.g. a short viewport, or the browser
+    // restoring a mid-page scroll position) — don't rely on the observer's
+    // first callback alone.
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) setVisible(true)
+
     return () => observer.disconnect()
   }, [])
 
