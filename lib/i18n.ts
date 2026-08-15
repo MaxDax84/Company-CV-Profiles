@@ -672,17 +672,18 @@ export const translations = {
         {
           icon: '🎯',
           title: 'Ottimizzato per gli ATS',
-          description: 'I sistemi di selezione automatica leggono il tuo CV prima di un recruiter umano. Strutturiamo contenuti e parole chiave per superare quel primo filtro.',
-        },
-        {
-          icon: '💬',
-          title: 'L\'AI ti fa le domande giuste',
-          description: 'Se un risultato manca di un numero o di un dato concreto, te lo chiediamo — invece di inventarlo o lasciarlo vago.',
+          description: 'I sistemi di selezione automatica leggono il tuo CV prima di un recruiter umano. Strutturiamo contenuti e parole chiave per aiutarti a superare quel primo filtro.',
         },
         {
           icon: '⚡',
           title: 'Pronto in ogni formato',
           description: 'Pagina web da condividere, PDF da allegare: lo stesso profilo, pronto per ogni candidatura.',
+        },
+        {
+          icon: '💬',
+          title: 'L\'AI ti fa le domande giuste',
+          description: 'Se un risultato manca di un numero o di un dato concreto, te lo chiediamo — invece di inventarlo o lasciarlo vago.',
+          badge: 'Work in progress',
         },
       ],
       note: 'Non ti aiutiamo a sembrare qualcun altro. Ti aiutiamo a raccontare meglio ',

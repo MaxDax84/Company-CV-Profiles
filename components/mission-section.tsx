@@ -97,7 +97,14 @@ export default function MissionSection() {
               >
                 {pillar.icon}
               </div>
-              <h3 className="text-base font-semibold mb-2">{pillar.title}</h3>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-base font-semibold">{pillar.title}</h3>
+                {(pillar as { badge?: string }).badge && (
+                  <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan text-[9px] font-bold uppercase tracking-wider">
+                    {(pillar as { badge?: string }).badge}
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed">{pillar.description}</p>
             </div>
           ))}
