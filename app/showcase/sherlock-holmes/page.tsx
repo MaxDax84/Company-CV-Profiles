@@ -1,10 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Libre_Baskerville, Source_Serif_4 } from 'next/font/google'
+import { Libre_Baskerville, Crimson_Pro } from 'next/font/google'
 
 const baskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'] })
-const sourceSerif = Source_Serif_4({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
+// Source_Serif_4 dropped: Google's CDN started 404ing its v14 font files
+// (stale hashes in this Next.js version's bundled font metadata), which
+// broke the ENTIRE production build, not just this page — next/font/google
+// resolves at build time, so one bad font file fails the whole deploy.
+const sourceSerif = Crimson_Pro({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
 
 const amber = '#b8860b'
 const amberLight = '#d4a017'
