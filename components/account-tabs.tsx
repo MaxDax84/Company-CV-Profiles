@@ -51,6 +51,7 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 const TABS = [
   { id: "dashboard", label: "Riepilogo", title: "Dashboard", icon: LayoutDashboard },
   { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
+  { id: "adapted", label: "CV Adattati", title: "CV adattati alle offerte", icon: Target },
   { id: "downloads", label: "Download", title: "Download", icon: Download },
   { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
 ] as const;
@@ -322,56 +323,60 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             )}
           </div>
 
-          <div className="space-y-3">
-            <SectionTitle>CV adattati alle offerte ({tailoredProfiles.length})</SectionTitle>
-            {tailoredProfiles.length > 0 ? (
-              <div className="space-y-3">
-                {tailoredProfiles.map((row) => (
-                  <div key={row.id} className="glass-card rounded-2xl p-5 space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
-                        <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+        </div>
+      )}
+
+      {/* ── Tab: CV Adattati ──────────────────────────────────────────── */}
+      {tab === "adapted" && (
+        <div className="space-y-3">
+          <SectionTitle>CV adattati alle offerte ({tailoredProfiles.length})</SectionTitle>
+          {tailoredProfiles.length > 0 ? (
+            <div className="space-y-3">
+              {tailoredProfiles.map((row) => (
+                <div key={row.id} className="glass-card rounded-2xl p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
+                      <p className="text-xs text-muted-foreground/60 mt-0.5">
+                        {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                      {(row.data.metadata.target_role || row.data.metadata.target_company) && (
+                        <p className="text-xs mt-1" style={{ color: ACCENT }}>
+                          Adattato per: {[row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" · ")}
                         </p>
-                        {(row.data.metadata.target_role || row.data.metadata.target_company) && (
-                          <p className="text-xs mt-1" style={{ color: ACCENT }}>
-                            Adattato per: {[row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" · ")}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <EditableSlug profileId={row.id} slug={row.slug} />
-                    <div className="flex flex-wrap items-center gap-2">
-                      <PdfExportButton
-                        slug={row.slug}
-                        label="PDF ↓"
-                        credits={credits}
-                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      />
-                      <CoverLetterButton
-                        slug={row.slug}
-                        label="Lettera ↓"
-                        credits={credits}
-                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      />
-                      <DeleteProfileButton
-                        profileId={row.id}
-                        label="Elimina"
-                        confirmMessage="Sei sicuro? Questo CV adattato verrà eliminato definitivamente."
-                      />
+                      )}
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="glass-card rounded-2xl p-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Nessun CV adattato ancora. Ogni volta che adatti il tuo CV a un annuncio, comparirà qui.
-                </p>
-              </div>
-            )}
-          </div>
+                  <EditableSlug profileId={row.id} slug={row.slug} />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <PdfExportButton
+                      slug={row.slug}
+                      label="PDF ↓"
+                      credits={credits}
+                      className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                    />
+                    <CoverLetterButton
+                      slug={row.slug}
+                      label="Lettera ↓"
+                      credits={credits}
+                      className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                    />
+                    <DeleteProfileButton
+                      profileId={row.id}
+                      label="Elimina"
+                      confirmMessage="Sei sicuro? Questo CV adattato verrà eliminato definitivamente."
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="glass-card rounded-2xl p-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Nessun CV adattato ancora. Ogni volta che adatti il tuo CV a un annuncio, comparirà qui.
+              </p>
+            </div>
+          )}
         </div>
       )}
 

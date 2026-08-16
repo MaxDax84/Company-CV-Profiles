@@ -4,7 +4,7 @@ import TailorForm from "@/components/tailor-form";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
-import { getOwnedProfileRow, getOwnedProfileBySlug } from "@/lib/profile-store";
+import { getOwnedProfileRow, getOwnedProfileBySlug, getOwnedPrimaryProfiles } from "@/lib/profile-store";
 import { getCreditBalance } from "@/lib/credits";
 
 interface Props {
@@ -22,11 +22,14 @@ export default async function TailorPage({ searchParams }: Props) {
 
   // A user can have several uploaded CVs (see /account) — if the link that
   // brought them here named a specific one, tailor that one; otherwise fall
-  // back to their most recently uploaded CV.
-  const [profileRow, credits] = await Promise.all([
+  // back to their most recently uploaded CV. The full list is also fetched
+  // so the form can offer a "pick a different one" selector, in case the
+  // wrong CV got selected on the way in.
+  const [profileRow, primaryProfiles, credits] = await Promise.all([
     requestedSlug
       ? getOwnedProfileBySlug(supabase, user.id, requestedSlug)
       : getOwnedProfileRow(supabase, user.id, "primary"),
+    getOwnedPrimaryProfiles(supabase, user.id),
     getCreditBalance(supabase, user.id),
   ]);
 
@@ -53,6 +56,7 @@ export default async function TailorPage({ searchParams }: Props) {
             credits={credits}
             hasProfile={!!profileRow}
             sourceSlug={profileRow?.slug ?? null}
+            availableProfiles={primaryProfiles.map(p => ({ slug: p.slug, fullName: p.data.personal_info.full_name }))}
           />
         </div>
       </div>

@@ -46,6 +46,10 @@ interface ProfileResultPanelProps {
   // — hides the "Apri profilo"/copy-link/share block, which would otherwise
   // point at a URL that 404s.
   hideWebPageActions?: boolean;
+  // /tailor replaces this with its own "vai ai CV adattati" link in
+  // extraActions instead — "adatta un altro" competing right next to
+  // download buttons for the CV just produced was the wrong second action.
+  hideGenerateAnother?: boolean;
 }
 
 export default function ProfileResultPanel({
@@ -59,6 +63,7 @@ export default function ProfileResultPanel({
   extraActions,
   claimSlot,
   hideWebPageActions,
+  hideGenerateAnother,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
   const path = code ? `/${code}/${slug}` : `/profile/${slug}`;
@@ -151,7 +156,7 @@ export default function ProfileResultPanel({
           makes sense there; offering to throw the preview away and start
           over right next to it was just noise. Still shown once the profile
           is permanently saved (e.g. /tailor's own done state). */}
-      {!claimSlot && (
+      {!claimSlot && !hideGenerateAnother && (
         <button
           onClick={onReset}
           className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"

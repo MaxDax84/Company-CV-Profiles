@@ -29,9 +29,10 @@ interface TailorFormProps {
   credits: number;
   hasProfile: boolean;
   sourceSlug: string | null;
+  availableProfiles: { slug: string; fullName: string }[];
 }
 
-export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFormProps) {
+export default function TailorForm({ credits, hasProfile, sourceSlug, availableProfiles }: TailorFormProps) {
   const router = useRouter();
   // "url" first/default — pasting a link is the faster path, and its
   // failure mode (can't read the page) already has a clear recovery: it
@@ -210,9 +211,26 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
       ) : null}
 
       {hasProfile && sourceSlug && (state === "idle" || state === "error") ? (
-        <p className="text-xs text-center text-muted-foreground/60">
-          Stai adattando: <span className="font-semibold text-foreground/80">{sourceSlug}</span>
-        </p>
+        availableProfiles.length > 1 ? (
+          <div className="text-xs text-center text-muted-foreground/60 flex items-center justify-center gap-2 flex-wrap">
+            <span>Stai adattando:</span>
+            <select
+              value={sourceSlug}
+              onChange={(e) => router.push(`/tailor?profile=${e.target.value}`)}
+              className="font-semibold text-foreground/80 bg-transparent border border-foreground/10 rounded-lg px-2 py-1 outline-none focus:border-primary/50 cursor-pointer"
+            >
+              {availableProfiles.map((p) => (
+                <option key={p.slug} value={p.slug}>{p.fullName}</option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <p className="text-xs text-center text-muted-foreground/60">
+            Stai adattando: <span className="font-semibold text-foreground/80">
+              {availableProfiles.find(p => p.slug === sourceSlug)?.fullName ?? sourceSlug}
+            </span>
+          </p>
+        )
       ) : null}
 
       {hasProfile && (state === "idle" || state === "error") ? (
@@ -237,6 +255,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
           labels={t}
           onReset={handleReset}
           hideWebPageActions
+          hideGenerateAnother
           extraActions={
             <div className="space-y-2">
               <PdfExportButton
@@ -251,6 +270,13 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                 credits={credits}
                 className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
               />
+              <a
+                href="/account?tab=adapted"
+                className="block w-full py-2.5 px-4 text-xs font-semibold text-center transition-colors"
+                style={{ color: ACCENT }}
+              >
+                Vai ai CV adattati →
+              </a>
             </div>
           }
           beforeAfter={
