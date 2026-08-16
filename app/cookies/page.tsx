@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/language-provider'
+import { SUPPORT_EMAIL } from '@/lib/contact'
 
 export default function CookiePage() {
   const { lang } = useLanguage()
@@ -138,8 +139,8 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">6. Contatti</h3>
                 <p>
                   Per qualsiasi domanda relativa alla presente Cookie Policy, scrivere a{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   .
                 </p>
@@ -257,8 +258,8 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">6. Contact</h3>
                 <p>
                   For any questions about this Cookie Policy, write to{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   .
                 </p>

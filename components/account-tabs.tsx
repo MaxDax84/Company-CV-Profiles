@@ -73,19 +73,26 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 
 // Commercial sections — the ones used often — stay as visible tabs. Account
 // settings (rarely touched) moved into a separate drawer, see SETTINGS_ICON
-// button below, instead of competing for space in this row.
+// button below, instead of competing for space in this row. "label" is the
+// short tab-button text; "title" is the fuller section heading shown above
+// the tab row (see AccountShell) — deliberately different for "dashboard"
+// (button reads "Riepilogo", section heading reads "Dashboard").
 const TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "cv", label: "I miei CV", icon: FileText },
-  { id: "downloads", label: "Download", icon: Download },
-  { id: "credits", label: "Crediti", icon: Wallet },
-  { id: "how", label: "Come funziona", icon: HelpCircle },
+  { id: "dashboard", label: "Riepilogo", title: "Dashboard", icon: LayoutDashboard },
+  { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
+  { id: "downloads", label: "Download", title: "Download", icon: Download },
+  { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
+  { id: "how", label: "Come funziona", title: "Come funziona", icon: HelpCircle },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
 
 export function isTabId(value: string | null): value is TabId {
   return TABS.some(t => t.id === value);
+}
+
+export function getTabTitle(tab: TabId): string {
+  return TABS.find(t => t.id === tab)?.title ?? "";
 }
 
 interface AccountTabsProps {

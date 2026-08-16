@@ -15,10 +15,13 @@ const WEB_TEMPLATES: { id: string; name: string; accent: string; bg: string; dem
 
 // Horizontal, native-scroll strip — no custom drag/velocity JS needed, a
 // plain overflow-x-auto + touch already tracks the finger 1:1 on mobile and
-// responds to trackpad/shift-wheel on desktop.
+// responds to trackpad/shift-wheel on desktop. Centered on desktop (md+),
+// where all the cards comfortably fit with no overflow; left-aligned below
+// that so mobile's genuine overflow stays scrollable — centering a row that
+// actually overflows can make browsers clip the very first card unreachable.
 function ScrollRow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 justify-start md:justify-center [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {children}
     </div>
   )
@@ -57,77 +60,49 @@ function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
   )
 }
 
-// Static, non-interactive mockups (not screenshots) — deliberately plain
-// skeleton blocks that mirror each PDF variant's real visual traits from
-// components/pdf/AtsResumeDocument.tsx (neutral vs. serif-navy vs.
-// colorful-tags), so this stays honest about what the PDF actually looks
-// like without needing an image-generation pipeline.
-function PdfMockupCard({ id, name }: { id: 'ats-core' | 'executive' | 'creative-tech'; name: string }) {
-  const isExecutive = id === 'executive'
-  const isCreative = id === 'creative-tech'
-  const accent = isExecutive ? '#16233f' : isCreative ? '#7c3aed' : '#2b2b2b'
-
+// Live preview of /pdf-preview/[template] — the same plain-HTML mirror
+// (real demo content: Marco Ferretti, full bullets) already used for the
+// small template picker in components/pdf-export-button.tsx. An earlier
+// version of this card was a hand-drawn abstract mockup (grey bars, no real
+// text) so it never actually read as a CV — this is an iframe after all,
+// same as the web-template cards above, just of a static, non-scrolling
+// HTML page rather than a live product page.
+function PdfTemplateCard({ id, name, accent }: { id: 'ats-core' | 'executive' | 'creative-tech'; name: string; accent: string }) {
   return (
-    <div className="shrink-0 snap-center w-[190px]">
-      <div
-        className="aspect-[210/297] rounded-lg overflow-hidden bg-white p-4 flex flex-col gap-2.5"
-        style={{ border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+    <div
+      className="shrink-0 snap-center w-[220px] rounded-xl overflow-hidden relative"
+      style={{ height: 310, border: `2px solid ${accent}`, boxShadow: `0 0 20px ${accent}30`, background: '#ffffff' }}
+    >
+      <iframe
+        src={`/pdf-preview/${id}`}
+        title={name}
+        tabIndex={-1}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: 1200,
+          height: 1697,
+          border: 'none',
+          transform: 'scale(0.1833)',
+          transformOrigin: 'top left',
+          pointerEvents: 'none',
+        }}
+      />
+      <p
+        className="absolute bottom-0 left-0 right-0 text-xs font-semibold text-center py-1.5"
+        style={{ background: `${accent}e6`, color: '#fff' }}
       >
-        <div
-          className={isExecutive ? 'text-center' : ''}
-          style={{
-            background: isCreative || isExecutive ? `${accent}0f` : 'transparent',
-            margin: '-16px -16px 4px',
-            padding: '16px 16px 10px',
-            borderBottom: !isCreative && !isExecutive ? '1px solid #ccc' : 'none',
-          }}
-        >
-          <div
-            style={{
-              height: 8,
-              width: isExecutive ? '55%' : '65%',
-              margin: isExecutive ? '0 auto' : 0,
-              background: accent,
-              borderRadius: 1,
-              fontFamily: isExecutive ? 'Georgia, serif' : undefined,
-            }}
-          />
-          <div style={{ height: 4, width: isExecutive ? '35%' : '40%', margin: isExecutive ? '5px auto 0' : '5px 0 0', background: '#bbb', borderRadius: 1 }} />
-        </div>
-
-        {[100, 90, 95, 70].map((w, i) => (
-          <div key={i} style={{ height: 3, width: `${w}%`, background: '#ddd', borderRadius: 1 }} />
-        ))}
-
-        <div style={{ height: 4, width: '30%', background: accent, opacity: 0.5, borderRadius: 1, marginTop: 4 }} />
-        {[100, 85, 92].map((w, i) => (
-          <div key={i} style={{ height: 3, width: `${w}%`, background: '#ddd', borderRadius: 1 }} />
-        ))}
-
-        {isCreative ? (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {[24, 30, 20, 26].map((w, i) => (
-              <div key={i} style={{ height: 8, width: w, background: `${accent}22`, border: `1px solid ${accent}55`, borderRadius: 6 }} />
-            ))}
-          </div>
-        ) : (
-          <>
-            <div style={{ height: 4, width: '25%', background: accent, opacity: 0.5, borderRadius: 1, marginTop: 4 }} />
-            {[95, 80].map((w, i) => (
-              <div key={i} style={{ height: 3, width: `${w}%`, background: '#ddd', borderRadius: 1 }} />
-            ))}
-          </>
-        )}
-      </div>
-      <p className="text-xs font-semibold text-center mt-2">{name}</p>
+        {name}
+      </p>
     </div>
   )
 }
 
-const PDF_MOCKUPS: { id: 'ats-core' | 'executive' | 'creative-tech'; name: string }[] = [
-  { id: 'ats-core', name: 'Pragmatico' },
-  { id: 'executive', name: 'Executive' },
-  { id: 'creative-tech', name: 'Creative Tech' },
+const PDF_TEMPLATE_CARDS: { id: 'ats-core' | 'executive' | 'creative-tech'; name: string; accent: string }[] = [
+  { id: 'ats-core', name: 'Pragmatico', accent: '#2b2b2b' },
+  { id: 'executive', name: 'Executive', accent: '#16233f' },
+  { id: 'creative-tech', name: 'Creative Tech', accent: '#7c3aed' },
 ]
 
 export default function TemplateShowcaseSection() {
@@ -155,8 +130,8 @@ export default function TemplateShowcaseSection() {
             <p className="text-muted-foreground text-sm md:text-base">{t.pdfSubtitle}</p>
           </div>
           <ScrollRow>
-            {PDF_MOCKUPS.map((m) => (
-              <PdfMockupCard key={m.id} id={m.id} name={m.name} />
+            {PDF_TEMPLATE_CARDS.map((tpl) => (
+              <PdfTemplateCard key={tpl.id} id={tpl.id} name={tpl.name} accent={tpl.accent} />
             ))}
           </ScrollRow>
         </div>

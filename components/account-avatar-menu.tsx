@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { LayoutDashboard, Settings, HelpCircle, Mail, LogOut } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
+import { SUPPORT_EMAIL } from "@/lib/contact";
 
 interface AccountAvatarMenuProps {
   avatarUrl: string | null;
@@ -43,7 +44,10 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
     { icon: LayoutDashboard, label: "Dashboard", href: "/account?tab=dashboard" },
     { icon: Settings, label: "Account", href: "/account/settings" },
     { icon: HelpCircle, label: "FAQ", href: "/faq" },
-    { icon: Mail, label: "Contatti / Supporto", href: "/#contact" },
+    // Opens the user's email client, addressed to the same support email
+    // shown on the legal pages (lib/contact.ts is the single source of
+    // truth both places read from).
+    { icon: Mail, label: "Contatti / Supporto", href: `mailto:${SUPPORT_EMAIL}` },
   ];
 
   return (

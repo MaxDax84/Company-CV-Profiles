@@ -129,17 +129,11 @@ export default function Navigation() {
               {link.label}
             </a>
           ))}
-          {/* Only shown in account context ("Il tuo account") — outside it,
-              the "Inizia Ora" pill button below is the single CTA to
-              /generate; this text link used to duplicate it. */}
-          {isAccountContext && (
-            <a
-              href={generateHref}
-              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors duration-200"
-            >
-              {generateLabel}
-            </a>
-          )}
+          {/* "Il tuo account" text link removed while logged in — the
+              avatar dropdown (top-right) already covers that entry point,
+              so this would just be a redundant second way to the same
+              place. generateLabel/generateHref are still used by the
+              mobile menu button below. */}
         </div>
 
         {/* Right side */}

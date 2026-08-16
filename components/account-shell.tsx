@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
-import AccountTabs, { isTabId, type TabId } from "@/components/account-tabs";
+import AccountTabs, { isTabId, getTabTitle, type TabId } from "@/components/account-tabs";
 
 type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
 
@@ -32,8 +32,10 @@ export default function AccountShell({ userEmail, accountCode, memberSince, prim
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">Il tuo account</h1>
-        <p className="text-sm text-muted-foreground mt-1">Membro da {memberSince}</p>
+        <h1 className="font-heading text-2xl font-bold tracking-tight">{getTabTitle(tab)}</h1>
+        {tab === "dashboard" && (
+          <p className="text-sm text-muted-foreground mt-1">Membro da {memberSince}</p>
+        )}
       </div>
 
       <AccountTabs

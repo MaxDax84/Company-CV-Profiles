@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/language-provider'
+import { SUPPORT_EMAIL } from '@/lib/contact'
 
 export default function PrivacyPage() {
   const { lang } = useLanguage()
@@ -37,8 +38,8 @@ export default function PrivacyPage() {
                   gestito da Massimo Dassano, con sede in Italia.
                   <br />
                   Email di contatto:{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                 </p>
               </div>
@@ -153,8 +154,8 @@ export default function PrivacyPage() {
                 <p className="mt-2">
                   Per esercitare i diritti non disponibili in autonomia dalla pagina del tuo account,
                   scrivere a{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   . Il titolare risponderà entro 30 giorni dalla richiesta.
                 </p>
@@ -196,8 +197,8 @@ export default function PrivacyPage() {
                   operated by Massimo Dassano, based in Italy.
                   <br />
                   Contact email:{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                 </p>
               </div>
@@ -302,8 +303,8 @@ export default function PrivacyPage() {
                 </ul>
                 <p className="mt-2">
                   To exercise rights not available directly from your account page, write to{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   . We will respond within 30 days.
                 </p>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/language-provider'
+import { SUPPORT_EMAIL } from '@/lib/contact'
 
 export default function TermsPage() {
   const { lang } = useLanguage()
@@ -148,8 +149,8 @@ export default function TermsPage() {
                 <h3 className="font-semibold text-foreground mb-2">10. Contatti</h3>
                 <p>
                   Per qualsiasi richiesta relativa ai presenti Termini, scrivere a{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   .
                 </p>
@@ -277,8 +278,8 @@ export default function TermsPage() {
                 <h3 className="font-semibold text-foreground mb-2">10. Contact</h3>
                 <p>
                   For any enquiries regarding these Terms, write to{' '}
-                  <a href="mailto:massimo.dassano@gmail.com" className="text-primary hover:underline">
-                    massimo.dassano@gmail.com
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
+                    {SUPPORT_EMAIL}
                   </a>
                   .
                 </p>
