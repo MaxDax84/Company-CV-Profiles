@@ -12,7 +12,6 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 interface AccountShellProps {
   userEmail: string;
   accountCode: string;
-  memberSince: string;
   primaryProfiles: ProfileRow[];
   tailoredProfiles: ProfileRow[];
   credits: number;
@@ -24,7 +23,7 @@ interface AccountShellProps {
 // drawer here — reached via the avatar dropdown in the global nav (see
 // components/account-avatar-menu.tsx), so this shell only owns which
 // commercial tab is showing.
-export default function AccountShell({ userEmail, accountCode, memberSince, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads }: AccountShellProps) {
+export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads }: AccountShellProps) {
   const searchParams = useSearchParams();
   const requestedTab = searchParams.get("tab");
   const [tab, setTab] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "dashboard");
@@ -33,9 +32,6 @@ export default function AccountShell({ userEmail, accountCode, memberSince, prim
     <div className="space-y-10">
       <div>
         <h1 className="font-heading text-2xl font-bold tracking-tight">{getTabTitle(tab)}</h1>
-        {tab === "dashboard" && (
-          <p className="text-sm text-muted-foreground mt-1">Membro da {memberSince}</p>
-        )}
       </div>
 
       <AccountTabs

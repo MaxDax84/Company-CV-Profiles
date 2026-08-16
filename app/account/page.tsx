@@ -24,8 +24,6 @@ export default async function AccountPage() {
     getPaidDownloads(supabase, user.id),
   ]);
 
-  const memberSince = new Date(user.created_at).toLocaleDateString("it-IT", { year: "numeric", month: "long" });
-
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
@@ -35,7 +33,6 @@ export default async function AccountPage() {
         <AccountShell
           userEmail={user.email ?? ""}
           accountCode={accountCode}
-          memberSince={memberSince}
           primaryProfiles={primaryProfiles}
           tailoredProfiles={tailoredProfiles}
           credits={credits}

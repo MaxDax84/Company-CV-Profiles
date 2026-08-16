@@ -7,7 +7,6 @@ import { translations } from '@/lib/i18n'
 export default function Footer() {
   const { lang } = useLanguage()
   const t = translations[lang].footer
-  const nav = translations[lang].nav
 
   return (
     <footer className="border-t border-border/50 bg-secondary/20">
@@ -26,17 +25,6 @@ export default function Footer() {
 
           {/* Nav links */}
           <div className="flex items-center gap-6 flex-wrap justify-center">
-            {[
-              { href: '#services', label: nav.services },
-            ].map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
             <a href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               {lang === 'en' ? 'Terms of Service' : 'Termini di Servizio'}
             </a>

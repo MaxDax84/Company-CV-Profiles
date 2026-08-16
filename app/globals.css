@@ -143,6 +143,22 @@
   animation: template-preview-scroll 12s linear infinite;
 }
 
+/* Same idea, different numbers — used by the homepage's web-template
+   showcase cards (components/template-showcase-section.tsx), which sit at
+   a different scale/box size than the /generate picker above. -1300px is a
+   moderate, deliberately conservative scroll distance: real profile pages
+   vary a lot in length by template and content, and undershooting (never
+   reaching the experience section) is a smaller problem than overshooting
+   into blank space past a shorter page's end. */
+@keyframes showcase-web-scroll {
+  0%   { transform: scale(0.1833) translateY(0); }
+  85%  { transform: scale(0.1833) translateY(-1300px); }
+  100% { transform: scale(0.1833) translateY(-1300px); }
+}
+.animate-showcase-web-scroll {
+  animation: showcase-web-scroll 14s linear infinite;
+}
+
 /* ── Utility classes ── */
 
 .gradient-text {

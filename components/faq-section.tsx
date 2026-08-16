@@ -28,6 +28,10 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
     a: 'Gli ATS (Applicant Tracking System) sono i software che le aziende usano per leggere e filtrare i CV prima che arrivino a un recruiter umano. Un CV con struttura chiara, testo selezionabile e parole chiave pertinenti ha più probabilità di superare questo primo filtro automatico.',
   },
   {
+    q: 'Quanto conta il layout di un CV?',
+    a: 'Meno di quanto si pensi. Un layout elaborato non ti fa guadagnare punti — ma può farti perdere informazioni: colonne multiple, tabelle, caselle di testo o grafiche possono confondere un ATS al punto da leggere i dati nel campo sbagliato, saltare intere sezioni o mescolare l\'ordine del testo. Per questo i nostri template PDF sono volutamente semplici ed essenziali: colonna singola, struttura lineare, niente elementi grafici che rischiano di essere letti male. A fare davvero la differenza per farti notare è il contenuto: come sono scritte le informazioni, quali parole chiave usi, quanto sono concreti i risultati che racconti — non l\'estetica della pagina.',
+  },
+  {
     q: 'Posso scaricare il mio CV in PDF?',
     a: 'Sì, puoi scegliere tra 3 template ottimizzati per gli ATS. Il primo download di ogni combinazione CV+template costa 1 credito; puoi poi riscaricarlo quante volte vuoi gratis dalla sezione Download del tuo account.',
   },
@@ -62,7 +66,8 @@ function AccordionItem({ q, a }: { q: string; a: string }) {
 export default function FaqSection({ compact = false }: { compact?: boolean }) {
   return (
     <section id="faq" className={compact ? '' : 'relative py-16 md:py-20 overflow-hidden'}>
-      <div className="max-w-3xl mx-auto px-6">
+      {!compact && <div className="absolute inset-0 grid-overlay" />}
+      <div className="relative z-10 max-w-3xl mx-auto px-6">
         {!compact && (
           <div className="text-center mb-10">
             <h2 className="font-heading text-2xl md:text-3xl font-bold tracking-tight mb-2">Domande frequenti</h2>

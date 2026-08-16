@@ -32,6 +32,9 @@ export default async function AccountSettingsPage() {
             ← Torna alla dashboard
           </a>
           <h1 className="font-heading text-2xl font-bold tracking-tight mt-2">Impostazioni account</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Membro da {new Date(user.created_at).toLocaleDateString("it-IT", { year: "numeric", month: "long" })}
+          </p>
         </div>
 
         <AccountSettingsView

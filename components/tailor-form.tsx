@@ -32,7 +32,11 @@ interface TailorFormProps {
 
 export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFormProps) {
   const router = useRouter();
-  const [jobSource, setJobSource] = useState<JobSource>("text");
+  // "url" first/default — pasting a link is the faster path, and its
+  // failure mode (can't read the page) already has a clear recovery: it
+  // shows an error and auto-switches to "text" for the user (see the
+  // JOB_FETCH_FAILED handling below).
+  const [jobSource, setJobSource] = useState<JobSource>("url");
   const [jobText, setJobText] = useState("");
   const [jobUrl, setJobUrl] = useState("");
   const [privacy, setPrivacy] = useState(false);
@@ -304,7 +308,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
               {t.stepJob}
             </p>
             <div className="grid grid-cols-2 gap-2">
-              {(["text", "url"] as const).map(src => (
+              {(["url", "text"] as const).map(src => (
                 <button
                   key={src}
                   onClick={() => setJobSource(src)}
