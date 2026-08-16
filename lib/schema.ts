@@ -69,6 +69,7 @@ export interface Metadata {
   generated_at: string;        // ISO 8601
   target_company?: string;     // tailored profiles only — hiring company, if named in the job posting
   target_role?: string;        // tailored profiles only — job title, if named in the job posting
+  suggested_titles?: string[]; // job titles this person is qualified for, from extraction — shown per-CV in the account
 }
 
 // ─── Schema completo ───────────────────────────────────────────────────────

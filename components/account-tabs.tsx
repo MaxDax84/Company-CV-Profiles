@@ -161,6 +161,24 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </p>
                     </div>
                     <EditableSlug profileId={row.id} slug={row.slug} />
+                    {row.data.metadata.suggested_titles && row.data.metadata.suggested_titles.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+                          Ruoli in linea con questo CV
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {row.data.metadata.suggested_titles.map((title) => (
+                            <span
+                              key={title}
+                              className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                              style={{ background: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                            >
+                              {title}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex flex-wrap items-start gap-2">
                       <a
                         href={`/${accountCode}/${row.slug}`}

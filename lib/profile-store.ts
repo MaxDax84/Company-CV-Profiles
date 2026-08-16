@@ -324,9 +324,9 @@ export interface ResolveFromPdfResult {
   cachedSlug: string | null;
   templateChanged: boolean;
   scoreBefore: CvScoreBreakdown | null;
-  // Not remembered across a cache hit (unlike scoreBefore) — a re-upload of
-  // an already-seen PDF just returns no suggestions rather than a stale or
-  // re-computed list. Rare edge case, not worth the extra cache plumbing.
+  // Persisted on profile.metadata.suggested_titles (see below), so it
+  // survives both a cache hit and, once claimed, permanent storage — shown
+  // per-CV on the account dashboard, not just on the just-generated preview.
   suggestedTitles: string[];
 }
 
@@ -363,11 +363,12 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore ?? computeCvScore(cachedProfile), suggestedTitles: [] };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore ?? computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
     }
   }
 
   const { profile, suggestedTitles } = await parseResume(buf);
+  profile.metadata.suggested_titles = suggestedTitles;
 
   // Normalize apostrophes in name (e.g. D'Assano → Dassano)
   profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
