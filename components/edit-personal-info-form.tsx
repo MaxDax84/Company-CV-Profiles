@@ -41,7 +41,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
             <p className="text-sm font-medium">{fullName}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground/60 mb-0.5">Ruolo</p>
+            <p className="text-xs text-muted-foreground/60 mb-0.5">Ruolo Attuale</p>
             <p className="text-sm font-medium">{title || "—"}</p>
           </div>
           <div>
@@ -71,7 +71,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
           />
         </div>
         <div>
-          <label className="text-xs text-muted-foreground/60 mb-1 block">Ruolo</label>
+          <label className="text-xs text-muted-foreground/60 mb-1 block">Ruolo Attuale</label>
           <input
             value={values.title}
             onChange={e => setValues(v => ({ ...v, title: e.target.value }))}

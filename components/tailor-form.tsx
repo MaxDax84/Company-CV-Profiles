@@ -9,6 +9,7 @@ import { translations } from "@/lib/i18n";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
 import PdfExportButton from "@/components/pdf-export-button";
+import CoverLetterButton from "@/components/cover-letter-button";
 import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 
@@ -46,6 +47,10 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
+  // A dedicated popup instead of the generic bottom-of-form error text —
+  // that text sat below the fold often enough that this specific failure
+  // (common, since many job boards actively block scrapers) went unnoticed.
+  const [jobFetchFailedOpen, setJobFetchFailedOpen] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [checkingRelevance, setCheckingRelevance] = useState(false);
@@ -121,7 +126,9 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
       if (!res.ok) {
         if (data.code === "JOB_FETCH_FAILED") {
           setJobSource("text");
-          throw new Error(t.jobFetchFailedNote);
+          setJobFetchFailedOpen(true);
+          setState("idle");
+          return;
         }
         throw new Error(data.error ?? "Errore sconosciuto");
       }
@@ -229,13 +236,22 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
           accentColor={accent}
           labels={t}
           onReset={handleReset}
+          hideWebPageActions
           extraActions={
-            <PdfExportButton
-              slug={slug}
-              label={t.downloadPdf}
-              credits={credits}
-              className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
-            />
+            <div className="space-y-2">
+              <PdfExportButton
+                slug={slug}
+                label={t.downloadPdf}
+                credits={credits}
+                className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
+              />
+              <CoverLetterButton
+                slug={slug}
+                label={t.downloadCoverLetter}
+                credits={credits}
+                className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
+              />
+            </div>
           }
           beforeAfter={
             profile.personal_info.bio_original ? (
@@ -448,6 +464,26 @@ export default function TailorForm({ credits, hasProfile, sourceSlug }: TailorFo
                 handleGenerate();
               }}
             />
+          )}
+          {jobFetchFailedOpen && (
+            <div
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+              onClick={() => setJobFetchFailedOpen(false)}
+            >
+              <div
+                className="relative w-full max-w-sm rounded-2xl border border-border bg-background p-6 shadow-2xl text-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <p className="text-sm text-foreground leading-relaxed mb-4">{t.jobFetchFailedNote}</p>
+                <button
+                  onClick={() => setJobFetchFailedOpen(false)}
+                  className="w-full py-2.5 rounded-xl font-semibold text-sm"
+                  style={{ background: ACCENT, color: "#000" }}
+                >
+                  Ho capito
+                </button>
+              </div>
+            </div>
           )}
         </>
       ) : null}

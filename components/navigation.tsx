@@ -66,17 +66,15 @@ export default function Navigation() {
   // On non-home pages, anchor links must include the path
   const href = (anchor: string) => isHome ? anchor : `/${anchor}`
 
-  // On /account, "Come funziona" opens as a tab inside the account page
-  // itself (see components/account-tabs.tsx) instead of navigating away to
-  // the homepage section — staying logged into the account view rather
-  // than bouncing out of it.
-  const isAccountPage = pathname.startsWith('/account')
+  // "Come funziona" always points at the homepage section now — the
+  // account area no longer has its own copy of that content (removed as
+  // redundant, see components/account-tabs.tsx).
   // "Inizia Ora" lives only as the single pill button on the right (after
   // the theme toggle) — not duplicated here as a text link too.
   const links = [
     { href: isHome ? '#' : '/', label: t.home },
     { href: href('#mission'), label: t.mission },
-    { href: isAccountPage ? '/account?tab=how' : href('#services'), label: t.services },
+    { href: href('#services'), label: t.services },
   ]
 
   // A signed-in visitor (anywhere on the site, not just on /account or

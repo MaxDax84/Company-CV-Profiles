@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
+import Footer from "@/components/footer";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import AccountShell from "@/components/account-shell";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -40,6 +41,7 @@ export default async function AccountPage() {
           paidDownloads={paidDownloads}
         />
       </div>
+      <Footer />
     </div>
   );
 }

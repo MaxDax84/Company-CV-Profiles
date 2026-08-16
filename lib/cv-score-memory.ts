@@ -1,22 +1,28 @@
 import { kv } from "./kv";
-import type { CvScoreBreakdown } from "./cv-score";
+import type { ProfileSchema } from "./schema";
 
 // Keyed by the exact PDF's content hash, so re-uploading the identical file
 // — whether an original source CV or one of our own exported PDFs — always
-// returns the same score instead of a fresh, inherently variable AI
-// judgment. No TTL: once a document has been scored, that score is
-// permanent, unlike the short-lived "pending profile" KV entries.
+// resolves to the exact same extracted data instead of a fresh extraction
+// pass that could genuinely differ. No TTL: once a document has been read,
+// that reading is permanent, unlike the short-lived "pending profile" KV
+// entries (see lib/profile-store.ts).
 //
-// Versioned (v2): the scoring logic itself changed twice in one night (the
-// "before" score stopped being a separate subjective AI judgment, then
-// improveResume() got a deterministic guard against silently dropping
-// numbers from bullets). A score remembered under the OLD logic is wrong
-// relative to what current code computes — and being permanent, it kept
-// resurfacing on every re-test of the same PDF, which is exactly what looked
-// like "the score keeps dropping after optimization" even after the actual
-// bug was fixed. Bump this suffix whenever the scoring formula changes
-// again, so stale entries are silently bypassed instead of manually purged.
-const SCORE_MEMORY_PREFIX = "cv-score-memory:v2:";
+// This used to remember only the computed SCORE, not the profile itself.
+// That was the real cause behind a second, subtler round of "score drops
+// after optimization" reports: the remembered "before" score could be
+// pinned to an OLDER extraction of the same PDF, while "after" reflected a
+// freshly re-extracted profile from a NEW parseResume() call once the
+// short-lived pending-cache had expired — two genuinely different
+// extractions (Claude's reading of a CV isn't perfectly deterministic
+// run-to-run), scored honestly but not comparably. Remembering the whole
+// profile instead — and always deriving the score fresh from it with
+// computeCvScore() — makes "before" and "after" mathematically guaranteed
+// to start from identical data whenever the same file resurfaces, and also
+// means a formula change (like the v2 bump this replaced) never needs its
+// own cache-versioning scheme: there's no separately-cached number to go
+// stale, only a profile to re-score on demand.
+const PROFILE_MEMORY_PREFIX = "cv-profile-memory:";
 
 // Web Crypto works in both edge and Node runtimes, so this stays usable from
 // both /api/parse-resume (edge) and /api/pdf/[slug] (Node).
@@ -27,12 +33,12 @@ export async function hashPdf(data: ArrayBuffer | Uint8Array): Promise<string> {
     .join("");
 }
 
-export async function getRememberedScore(pdfHash: string): Promise<CvScoreBreakdown | null> {
-  const raw = await kv.get<string>(`${SCORE_MEMORY_PREFIX}${pdfHash}`);
+export async function getRememberedProfile(pdfHash: string): Promise<ProfileSchema | null> {
+  const raw = await kv.get<string>(`${PROFILE_MEMORY_PREFIX}${pdfHash}`);
   if (!raw) return null;
   return typeof raw === "string" ? JSON.parse(raw) : raw;
 }
 
-export async function rememberScore(pdfHash: string, score: CvScoreBreakdown): Promise<void> {
-  await kv.set(`${SCORE_MEMORY_PREFIX}${pdfHash}`, JSON.stringify(score));
+export async function rememberProfile(pdfHash: string, profile: ProfileSchema): Promise<void> {
+  await kv.set(`${PROFILE_MEMORY_PREFIX}${pdfHash}`, JSON.stringify(profile));
 }

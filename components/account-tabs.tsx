@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import {
-  UploadCloud, Sparkles, Target, Download, ExternalLink, Mail,
-  LayoutDashboard, FileText, Wallet, HelpCircle,
+  UploadCloud, Target, Download, ExternalLink, Mail, X,
+  LayoutDashboard, FileText, Wallet,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
@@ -13,36 +14,6 @@ import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
-
-const HOW_IT_WORKS = {
-  sectionLabel: "Come funziona",
-  title: "Dal CV al colloquio, in 4 passaggi",
-  subtitle: "Nessuna scrittura da zero. La nostra AI parte da quello che hai già scritto e lo rende più efficace — senza mai inventare qualcosa che non hai fatto.",
-  cards: [
-    {
-      icon: UploadCloud,
-      title: "Carica il tuo CV",
-      description: "Carica il PDF del tuo curriculum. In pochi secondi la nostra AI lo legge, ti dà un punteggio su 4 criteri (risultati misurabili, chiarezza, struttura ATS, competenze specifiche) e ti suggerisce ruoli in linea con la tua esperienza.",
-    },
-    {
-      icon: Sparkles,
-      title: "La tua pagina, ottimizzata",
-      description: "Generiamo subito la tua pagina profilo e la miglioriamo in automatico — bio riscritta, contenuto reso più efficace. Ricevi un nuovo punteggio che mostra il miglioramento, senza mai inventare nulla che non hai scritto.",
-    },
-    {
-      icon: Target,
-      title: "Adatta il CV a un annuncio",
-      description: "Incolla il testo di un annuncio di lavoro: l'AI riscrive il tuo profilo per allinearlo il più possibile a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato — mai inventate.",
-    },
-    {
-      icon: Download,
-      title: "Scarica e candidati",
-      description: "Scarica il PDF ottimizzato per i sistemi ATS scegliendo tra 3 template, oppure condividi direttamente la tua pagina web in ogni candidatura.",
-    },
-  ],
-  wipBadge: "Work in progress",
-  wipNote: "Presto potrai anche dialogare con l'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio \"di quanto sono aumentate le revenue nell'ultimo anno fiscale? 15%? 30%?\" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.",
-};
 
 const ACCENT = "#6366f1";
 
@@ -82,7 +53,6 @@ const TABS = [
   { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
   { id: "downloads", label: "Download", title: "Download", icon: Download },
   { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
-  { id: "how", label: "Come funziona", title: "Come funziona", icon: HelpCircle },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
@@ -119,6 +89,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, tab, setTab }: AccountTabsProps) {
+  const [limitModalOpen, setLimitModalOpen] = useState(false);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
@@ -247,9 +218,13 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     + Carica un nuovo CV
                   </a>
                 ) : (
-                  <span className="text-[11px] text-muted-foreground/60">
-                    Limite raggiunto — elimina un CV per aggiungerne uno nuovo
-                  </span>
+                  <button
+                    onClick={() => setLimitModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                    style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                  >
+                    + Carica un nuovo CV
+                  </button>
                 )
               )}
             </div>
@@ -359,19 +334,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
                           {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
+                        {(row.data.metadata.target_role || row.data.metadata.target_company) && (
+                          <p className="text-xs mt-1" style={{ color: ACCENT }}>
+                            Adattato per: {[row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <EditableSlug profileId={row.id} slug={row.slug} />
                     <div className="flex flex-wrap items-center gap-2">
-                      <a
-                        href={`/${accountCode}/${row.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                        style={{ background: `${ACCENT}20`, color: ACCENT }}
-                      >
-                        Apri ↗
-                      </a>
                       <PdfExportButton
                         slug={row.slug}
                         label="PDF ↓"
@@ -384,7 +355,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         credits={credits}
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
-                      <DeleteProfileButton profileId={row.id} label="Elimina" />
+                      <DeleteProfileButton
+                        profileId={row.id}
+                        label="Elimina"
+                        confirmMessage="Sei sicuro? Questo CV adattato verrà eliminato definitivamente."
+                      />
                     </div>
                   </div>
                 ))}
@@ -492,42 +467,26 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         </div>
       )}
 
-      {/* ── Tab: Come funziona ─────────────────────────────────────────── */}
-      {tab === "how" && (
-        <div className="space-y-8">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em]">
-              {HOW_IT_WORKS.sectionLabel}
+      {/* Shown instead of navigating to /generate once MAX_CVS is reached —
+          keeps the button itself always present/clickable rather than
+          swapping it for disabled-looking text. */}
+      {limitModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setLimitModalOpen(false)}>
+          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setLimitModalOpen(false)}
+              aria-label="Chiudi"
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <p className="text-sm font-semibold mb-2">Limite di {MAX_CVS} CV raggiunto</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Per caricarne uno nuovo, elimina prima uno dei CV esistenti qui sotto.
             </p>
-            <h2 className="font-heading text-2xl font-bold tracking-tight">{HOW_IT_WORKS.title}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">{HOW_IT_WORKS.subtitle}</p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {HOW_IT_WORKS.cards.map((card, i) => {
-              const Icon = card.icon;
-              return (
-                <div key={card.title} className="glass-card rounded-2xl p-6 space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                      <Icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <p className="text-xs font-semibold" style={{ color: ACCENT }}>{String(i + 1).padStart(2, "0")}</p>
-                  </div>
-                  <h3 className="text-sm font-semibold">{card.title}</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{card.description}</p>
-                </div>
-              );
-            })}
-          </div>
-          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-1.5">
-            <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/15">
-              {HOW_IT_WORKS.wipBadge}
-            </span>
-            <p className="text-xs text-muted-foreground leading-relaxed">{HOW_IT_WORKS.wipNote}</p>
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
   const ITEMS = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/account?tab=dashboard" },
     { icon: Settings, label: "Account", href: "/account/settings" },
-    { icon: HelpCircle, label: "FAQ", href: "/faq" },
+    { icon: HelpCircle, label: "FAQ", href: "/#faq" },
     // Opens the user's email client, addressed to the same support email
     // shown on the legal pages (lib/contact.ts is the single source of
     // truth both places read from).

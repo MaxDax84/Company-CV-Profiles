@@ -28,7 +28,7 @@ WHAT YOU MAY REWRITE — more freely than a light copy-edit, as long as every fa
 
 FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, email_obfuscated, phone_obfuscated, email, phone, location, social_links; every experience's company/start_date/end_date/location; all of "education"; all of "certifications"; each project's "url" and "image_placeholder"; metadata.primary_color and metadata.template (copy them through unchanged from the source).
 
-LANGUAGE: write every piece of text you author (title, bio, description bullets) in the SAME LANGUAGE as the job posting, even if that differs from the source profile's language. Set metadata.language to that language's code ("it" or "en") — if the job posting is in neither language, default to "en".
+LANGUAGE: write every piece of text you author (title, bio, description bullets) in the SAME LANGUAGE as the SOURCE PROFILE — do not switch language just because the job posting happens to be written in a different one. The one exception: if the job posting explicitly states that applications/CVs must be submitted in a specific language (e.g. "please apply in English", "CV in inglese richiesto"), and that required language differs from the source profile's, write in that required language instead. Set metadata.language to whichever language you actually wrote in ("it" or "en").
 
 For metadata.target_company and metadata.target_role: if the job posting clearly names the hiring company and/or the job title, extract them verbatim. If either is not clearly stated (a job board listing with no company name, an anonymized posting, etc.), omit that field entirely — never guess or infer a plausible-sounding company or title.
 

@@ -4,8 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { hasPaidDownload, recordPaidDownload } from "@/lib/paid-downloads";
-import { computeCvScore } from "@/lib/cv-score";
-import { hashPdf, rememberScore } from "@/lib/cv-score-memory";
+import { hashPdf, rememberProfile } from "@/lib/cv-score-memory";
 import { AtsResumeDocument, PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
@@ -60,12 +59,13 @@ export async function GET(
 
   const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} />);
 
-  // Remember this exact exported file's score by its content hash — if the
-  // user later re-uploads this very PDF (e.g. to tailor it or re-check the
-  // score), they get the same number back instead of a fresh, and likely
-  // lower under our strict rubric, AI judgment of an already-optimized CV.
+  // Remember this exact exported file's profile by its content hash — if
+  // the user later re-uploads this very PDF (e.g. to tailor it or re-check
+  // the score), it resolves straight to this same data (same score,
+  // instantly, no extraction call) instead of a fresh, possibly slightly
+  // different re-reading of an already-optimized CV.
   const pdfHash = await hashPdf(buffer);
-  await rememberScore(pdfHash, computeCvScore(row.data));
+  await rememberProfile(pdfHash, row.data);
 
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {

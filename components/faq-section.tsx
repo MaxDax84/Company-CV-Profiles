@@ -37,7 +37,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: 'Posso adattare il mio CV a un annuncio di lavoro specifico?',
-    a: 'Sì. Incolli il testo dell\'annuncio e l\'AI riscrive il tuo profilo per allinearlo il più possibile a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato. Se il CV non è pertinente all\'annuncio te lo segnaliamo prima di procedere.',
+    a: 'Sì. Incolli il testo dell\'annuncio e l\'AI riscrive il tuo profilo per allinearlo il più possibile a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato. Se il CV non è pertinente all\'annuncio te lo segnaliamo prima di procedere. Il CV adattato mantiene la lingua originale del tuo CV, a meno che l\'annuncio non richieda esplicitamente una lingua diversa per la candidatura.',
   },
   {
     q: 'Come cancello il mio account?',

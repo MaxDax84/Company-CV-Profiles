@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
@@ -24,9 +24,19 @@ interface AccountShellProps {
 // components/account-avatar-menu.tsx), so this shell only owns which
 // commercial tab is showing.
 export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads }: AccountShellProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const requestedTab = searchParams.get("tab");
-  const [tab, setTab] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "dashboard");
+  const [tab, setTabState] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "dashboard");
+
+  // Mirrors the active tab into the URL (?tab=...) so refreshing the page —
+  // or sharing/bookmarking the link — lands back on the same section
+  // instead of always resetting to the default. replace, not push: switching
+  // tabs isn't a "new page" for back-button purposes.
+  const setTab = useCallback((next: TabId) => {
+    setTabState(next);
+    router.replace(`/account?tab=${next}`, { scroll: false });
+  }, [router]);
 
   return (
     <div className="space-y-10">

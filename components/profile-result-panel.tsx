@@ -41,6 +41,11 @@ interface ProfileResultPanelProps {
   // /tailor never renders this — its result is already saved to the
   // caller's own (already-authenticated) account.
   claimSlot?: ReactNode;
+  // /tailor's result never gets a public web page (job-adapted CVs are
+  // PDF/cover-letter only, see lib/profile-store.ts getProfileByAccountCode)
+  // — hides the "Apri profilo"/copy-link/share block, which would otherwise
+  // point at a URL that 404s.
+  hideWebPageActions?: boolean;
 }
 
 export default function ProfileResultPanel({
@@ -53,6 +58,7 @@ export default function ProfileResultPanel({
   beforeAfter,
   extraActions,
   claimSlot,
+  hideWebPageActions,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
   const path = code ? `/${code}/${slug}` : `/profile/${slug}`;
@@ -105,7 +111,7 @@ export default function ProfileResultPanel({
           copying, or sharing this link is premature: it's unclaimed and
           will expire, so these actions only appear once there's no
           claimSlot to fill (i.e. the profile is already permanently saved). */}
-      {!claimSlot && (
+      {!claimSlot && !hideWebPageActions && (
         <>
           <a
             href={path}
@@ -140,12 +146,19 @@ export default function ProfileResultPanel({
 
       {claimSlot}
 
-      <button
-        onClick={onReset}
-        className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-      >
-        {labels.generateAnother}
-      </button>
+      {/* Hidden while there's a claimSlot to fill (still a pending, unclaimed
+          preview) — "Procedi"/"Crea account" is the one and only action that
+          makes sense there; offering to throw the preview away and start
+          over right next to it was just noise. Still shown once the profile
+          is permanently saved (e.g. /tailor's own done state). */}
+      {!claimSlot && (
+        <button
+          onClick={onReset}
+          className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+        >
+          {labels.generateAnother}
+        </button>
+      )}
     </div>
   );
 }

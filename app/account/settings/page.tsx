@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
+import Footer from "@/components/footer";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import AccountSettingsView from "@/components/account-settings-view";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -45,6 +46,7 @@ export default async function AccountSettingsPage() {
           profileRow={profileRow}
         />
       </div>
+      <Footer />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { improveResume } from "./improve-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import type { CvScoreBreakdown } from "./cv-score";
 import { computeCvScore } from "./cv-score";
-import { hashPdf, getRememberedScore, rememberScore } from "./cv-score-memory";
+import { hashPdf, getRememberedProfile, rememberProfile } from "./cv-score-memory";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -86,11 +86,15 @@ export const getProfileByAccountCode = cache(async (code: string, slug: string):
 
     const { data } = await service
       .from("profiles")
-      .select("data")
+      .select("data, kind")
       .eq("user_id", account.user_id)
       .eq("slug", slug)
       .maybeSingle();
     if (!data) return null;
+    // Tailored (job-adapted) profiles never get a public web page — only
+    // the PDF/cover-letter output, listed in the account's "CV adattati"
+    // section. Treat one exactly like a slug that doesn't exist.
+    if (data.kind === "tailored") return null;
 
     return stripPII(data.data as ProfileSchema);
   } catch (err) {
@@ -341,17 +345,20 @@ export interface ResolveFromPdfResult {
 // upload after that point correctly falls through to a fresh extraction
 // rather than trying to reuse someone's now-owned account data.
 //
-// The SCORE, unlike the extraction cache, is remembered permanently by PDF
-// hash (see lib/cv-score-memory.ts) — re-uploading the exact same file must
-// always show the same score, whether that's minutes or months later, and
-// whether it's an original CV or one of our own already-optimized exports
-// (which get their score remembered at export time, in /api/pdf/[slug]).
+// The EXTRACTED PROFILE, unlike the short-lived pending cache above, is
+// remembered permanently by PDF hash (see lib/cv-score-memory.ts) —
+// re-uploading the exact same file must always resolve to the exact same
+// extracted data, whether that's minutes or months later, and whether it's
+// an original CV or one of our own already-optimized exports (which get
+// remembered at export time, in /api/pdf/[slug]). The score itself is
+// always derived fresh from that profile with computeCvScore() — never
+// separately cached — so "before" and "after" are mathematically
+// guaranteed to start from identical data every time.
 export async function resolveProfileFromPdf(
   buf: ArrayBuffer,
   templateChoice: unknown
 ): Promise<ResolveFromPdfResult> {
   const pdfHash = await hashPdf(buf);
-  const rememberedScore = await getRememberedScore(pdfHash);
 
   const cachedSlug = await kv.get<string>(`pdf-hash:${pdfHash}`);
   if (cachedSlug) {
@@ -363,15 +370,33 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: rememberedScore ?? computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
     }
   }
 
-  const { profile, suggestedTitles } = await parseResume(buf);
-  profile.metadata.suggested_titles = suggestedTitles;
-
-  // Normalize apostrophes in name (e.g. D'Assano → Dassano)
-  profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
+  // Permanent memory, independent of the pending cache above: if this exact
+  // file was ever read before, reuse that extraction verbatim instead of
+  // asking Claude to re-read it. Extraction isn't perfectly deterministic
+  // run-to-run, so without this, a "before" score computed from an older
+  // reading of this same file could genuinely differ from an "after" score
+  // computed post-improvement on a brand new reading — a real mismatch,
+  // just not one caused by anything actually being lost. Also skips a paid
+  // extraction call entirely on a repeat upload.
+  const remembered = await getRememberedProfile(pdfHash);
+  let profile: ProfileSchema;
+  let suggestedTitles: string[];
+  if (remembered) {
+    profile = remembered;
+    suggestedTitles = remembered.metadata.suggested_titles ?? [];
+  } else {
+    const parsed = await parseResume(buf);
+    profile = parsed.profile;
+    suggestedTitles = parsed.suggestedTitles;
+    profile.metadata.suggested_titles = suggestedTitles;
+    // Normalize apostrophes in name (e.g. D'Assano → Dassano)
+    profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
+    await rememberProfile(pdfHash, profile);
+  }
 
   // User's choice always wins over the AI suggestion
   if (isTemplateStyle(templateChoice)) {
@@ -379,19 +404,5 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  // Deterministic, same formula as the "after" score (lib/cv-score.ts) —
-  // applied to this same freshly-extracted profile, not a separate subjective
-  // AI read of the raw PDF. Using two different measurements for "before" vs
-  // "after" was the actual bug behind scores dropping post-optimization: the
-  // AI's holistic judgment of the original document could rate a criterion
-  // higher than a strict per-bullet count later finds in the *structured,
-  // capped* profile — reading as if content had been removed, when nothing
-  // was ever lost. Computing both the same way makes the comparison honest:
-  // any "after" change now purely reflects what improveResume() actually did.
-  const finalScoreBefore = rememberedScore ?? computeCvScore(profile);
-  if (!rememberedScore) {
-    await rememberScore(pdfHash, finalScoreBefore);
-  }
-
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: finalScoreBefore, suggestedTitles };
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: computeCvScore(profile), suggestedTitles };
 }

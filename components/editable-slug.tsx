@@ -44,20 +44,28 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
 
   if (!editing) {
     return (
-      <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
-        <span className="truncate">{slug}</span>
-        <button
-          onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
-          className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0"
-        >
-          Modifica nome
-        </button>
+      <div className="space-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+          Nome del CV caricato come PDF:
+        </p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
+          <span className="truncate">{slug}</span>
+          <button
+            onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
+            className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0"
+          >
+            Modifica nome
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-1.5">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+        Nome del CV caricato come PDF:
+      </p>
       <div className="flex items-center gap-2">
         <input
           value={value}

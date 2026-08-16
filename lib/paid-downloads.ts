@@ -4,18 +4,26 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 // supabase/migrations/0006_paid_downloads.sql) — a PDF re-render costs us
 // nothing (react-pdf, no Claude call), so once a (profile, template) pair
 // has been paid for once, every later request for it is free.
+//
+// Every query here logs its error instead of swallowing it silently — the
+// migration creating this table went unapplied on the live project for a
+// while without anyone noticing, because a missing table just made these
+// functions degrade to "nothing is ever remembered" (hasPaidDownload always
+// false, so every download kept getting charged) with no visible signal
+// anywhere that something was wrong.
 
 export async function hasPaidDownload(
   supabase: SupabaseClient,
   profileId: string,
   template: string
 ): Promise<boolean> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("paid_downloads")
     .select("id")
     .eq("profile_id", profileId)
     .eq("template", template)
     .maybeSingle();
+  if (error) console.error("[hasPaidDownload]", error);
   return data != null;
 }
 
@@ -28,12 +36,13 @@ export async function recordPaidDownload(
   // onConflict ignore: a race between two near-simultaneous first downloads
   // of the same (profile, template) should never surface a duplicate-key
   // error to the user — the unique index already guarantees only one row.
-  await supabase
+  const { error } = await supabase
     .from("paid_downloads")
     .upsert(
       { user_id: userId, profile_id: profileId, template },
       { onConflict: "profile_id,template", ignoreDuplicates: true }
     );
+  if (error) console.error("[recordPaidDownload]", error);
 }
 
 export interface PaidDownloadEntry {
@@ -49,10 +58,11 @@ export async function getPaidDownloads(
   supabase: SupabaseClient,
   userId: string
 ): Promise<PaidDownloadEntry[]> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("paid_downloads")
     .select("id, profile_id, template, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
+  if (error) console.error("[getPaidDownloads]", error);
   return (data ?? []) as PaidDownloadEntry[];
 }
