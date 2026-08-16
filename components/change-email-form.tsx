@@ -34,10 +34,6 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div>
-        <p className="text-xs text-muted-foreground/60 mb-0.5">Email attuale</p>
-        <p className="text-sm font-medium">{currentEmail}</p>
-      </div>
       <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="email"

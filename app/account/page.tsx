@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import SupabaseNotConfigured from "@/components/supabase-not-configured";
-import AccountTabs from "@/components/account-tabs";
-import { LogoutButton } from "@/components/account-actions";
+import AccountShell from "@/components/account-shell";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles } from "@/lib/profile-store";
@@ -32,18 +31,11 @@ export default async function AccountPage() {
       <Navigation />
       <div className="absolute inset-0 grid-overlay" />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-6 py-32 space-y-10">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-heading text-2xl font-bold tracking-tight">Il tuo account</h1>
-            <p className="text-sm text-muted-foreground mt-1">Membro da {memberSince}</p>
-          </div>
-          <LogoutButton />
-        </div>
-
-        <AccountTabs
+      <div className="relative z-10 max-w-3xl mx-auto px-6 py-32">
+        <AccountShell
           userEmail={user.email ?? ""}
           accountCode={accountCode}
+          memberSince={memberSince}
           primaryProfiles={primaryProfiles}
           tailoredProfiles={tailoredProfiles}
           credits={credits}

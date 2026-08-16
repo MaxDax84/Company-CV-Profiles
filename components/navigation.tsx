@@ -6,12 +6,14 @@ import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import { createBrowserSupabaseClient } from '@/lib/supabase/browser'
 import ThemeToggle from './theme-toggle'
+import AccountAvatarMenu from './account-avatar-menu'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { lang, setLang } = useLanguage()
+  const { lang } = useLanguage()
   const t = translations[lang].nav
   const pathname = usePathname()
   const isHome = pathname === '/'
@@ -22,6 +24,45 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  // The account/logged-in nav treatment used to be inferred purely from the
+  // current path (isAccountContext = on /account or /tailor) — which meant
+  // a signed-in visitor navigating anywhere else (e.g. clicking "Missione"
+  // back to the homepage) saw the nav revert to the anonymous "Accedi/
+  // Registrati" + "Inizia Ora" state, as if they'd been logged out, even
+  // though their session was still perfectly valid. Checking the real
+  // Supabase session fixes that everywhere, not just on the two pages that
+  // happened to hint at it via URL.
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [avatarLabel, setAvatarLabel] = useState('')
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient()
+
+    async function loadUser() {
+      const { data } = await supabase.auth.getUser()
+      setIsLoggedIn(!!data.user)
+      if (data.user) {
+        setAvatarLabel(data.user.email ?? '')
+        const { data: settings } = await supabase
+          .from('account_settings')
+          .select('avatar_url')
+          .eq('user_id', data.user.id)
+          .maybeSingle()
+        setAvatarUrl((settings?.avatar_url as string | undefined) ?? null)
+      }
+    }
+    loadUser()
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user)
+      if (!session?.user) {
+        setAvatarUrl(null)
+        setAvatarLabel('')
+      }
+    })
+    return () => sub.subscription.unsubscribe()
+  }, [])
+
   // On non-home pages, anchor links must include the path
   const href = (anchor: string) => isHome ? anchor : `/${anchor}`
 
@@ -30,19 +71,19 @@ export default function Navigation() {
   // the homepage section — staying logged into the account view rather
   // than bouncing out of it.
   const isAccountPage = pathname.startsWith('/account')
+  // "Inizia Ora" lives only as the single pill button on the right (after
+  // the theme toggle) — not duplicated here as a text link too.
   const links = [
     { href: isHome ? '#' : '/', label: t.home },
     { href: href('#mission'), label: t.mission },
     { href: isAccountPage ? '/account?tab=how' : href('#services'), label: t.services },
-    { href: href('#cta'), label: lang === 'en' ? 'Get Started' : 'Inizia Ora' },
   ]
 
-  // /account and /tailor are only ever reached by an already-authenticated
-  // user with an existing profile — showing the generic "Try Free" CTA
-  // aimed at brand-new anonymous visitors is redundant there. Point at the
-  // account dashboard instead, the same context-appropriate link the
-  // profile page's own owner toolbar uses.
-  const isAccountContext = isAccountPage || pathname.startsWith('/tailor')
+  // A signed-in visitor (anywhere on the site, not just on /account or
+  // /tailor) sees the account-aware nav treatment — showing the generic
+  // "Try Free" CTA aimed at brand-new anonymous visitors would be redundant
+  // once they already have an account.
+  const isAccountContext = isLoggedIn === true
   const generateLabel = isAccountContext
     ? (lang === 'en' ? 'Your Account' : 'Il tuo account')
     : (t as { generate?: string }).generate ?? 'Try Free'
@@ -115,19 +156,15 @@ export default function Navigation() {
             </a>
           )}
 
-          {/* Language toggle */}
-          <button
-            onClick={() => setLang(lang === 'en' ? 'it' : 'en')}
-            className="text-xs font-semibold px-2.5 py-1 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 tracking-wide"
-          >
-            {lang === 'en' ? 'IT' : 'EN'}
-          </button>
+          {/* Language toggle — hidden for now (re-enable later), left the
+              useLanguage()/lang plumbing itself untouched. */}
 
           {/* Theme toggle */}
           <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
 
-          {/* Get started button (desktop) — redundant with the "Il tuo
-              account" nav link above when already in an account context */}
+          {/* Get started button (desktop) — the single "Inizia Ora", always
+              right after the theme toggle. Hidden once signed in, since the
+              account nav link above already covers that case. */}
           {!isAccountContext && (
             <a
               href="/generate"
@@ -135,6 +172,15 @@ export default function Navigation() {
             >
               {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
             </a>
+          )}
+
+          {/* Avatar + account dropdown — rightmost element, replaces the
+              old settings-gear icon that used to live inside the account
+              page itself. Shown on every page once signed in, not just
+              /account, since it's real session state (see isLoggedIn
+              above), not a path guess. */}
+          {isAccountContext && (
+            <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
           )}
 
           {/* Mobile hamburger */}

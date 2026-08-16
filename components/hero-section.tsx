@@ -68,17 +68,23 @@ export default function HeroSection() {
           {t.subtitle}
         </p>
 
-        {/* CTAs */}
+        {/* CTA — the single "start" action on the homepage now (the nav's
+            own copy of this button was removed as redundant), so it gets a
+            soft pulsing halo behind it to draw the eye instead of relying on
+            size alone. */}
         <div
           className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
           style={{ animationDelay: '0.36s' }}
         >
-          <button
-            onClick={() => setModalOpen(true)}
-            className="px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
-          >
-            {t.ctaPrimary}
-          </button>
+          <div className="relative inline-block">
+            <div className="absolute inset-0 rounded-2xl bg-primary/50 blur-xl animate-glow-pulse pointer-events-none" />
+            <button
+              onClick={() => setModalOpen(true)}
+              className="relative px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+            >
+              {t.ctaPrimary}
+            </button>
+          </div>
         </div>
 
         <HowItWorksModal

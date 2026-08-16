@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { UploadCloud, Sparkles, Target, Download, ExternalLink, Mail } from "lucide-react";
+import {
+  UploadCloud, Sparkles, Target, Download, ExternalLink, Mail,
+  LayoutDashboard, FileText, Wallet, HelpCircle,
+} from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
@@ -10,12 +11,8 @@ import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
-import EditPersonalInfoForm from "@/components/edit-personal-info-form";
 import EditableSlug from "@/components/editable-slug";
-import ChangeEmailForm from "@/components/change-email-form";
-import ChangePasswordForm from "@/components/change-password-form";
-import RequestDomainForm from "@/components/request-domain-form";
-import { DeleteProfileButton, DeleteAccountButton } from "@/components/account-actions";
+import { DeleteProfileButton } from "@/components/account-actions";
 
 const HOW_IT_WORKS = {
   sectionLabel: "Come funziona",
@@ -63,7 +60,33 @@ const LEDGER_REASON_LABELS: Record<string, string> = {
   manual_grant: "Credito aggiunto manualmente",
 };
 
+// Same 3-band read as the /generate score card (see lib/score-comments.ts)
+// collapsed to a single traffic-light color for a compact badge — red
+// clearly-below-target, amber approaching it, green at-or-above.
+function scoreBadgeColor(score: number): string {
+  if (score < 50) return "#ef4444";
+  if (score < 75) return "#f59e0b";
+  return "#22c55e";
+}
+
 type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
+
+// Commercial sections — the ones used often — stay as visible tabs. Account
+// settings (rarely touched) moved into a separate drawer, see SETTINGS_ICON
+// button below, instead of competing for space in this row.
+const TABS = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "cv", label: "I miei CV", icon: FileText },
+  { id: "downloads", label: "Download", icon: Download },
+  { id: "credits", label: "Crediti", icon: Wallet },
+  { id: "how", label: "Come funziona", icon: HelpCircle },
+] as const;
+
+export type TabId = (typeof TABS)[number]["id"];
+
+export function isTabId(value: string | null): value is TabId {
+  return TABS.some(t => t.id === value);
+}
 
 interface AccountTabsProps {
   userEmail: string;
@@ -73,20 +96,11 @@ interface AccountTabsProps {
   credits: number;
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
-}
-
-const TABS = [
-  { id: "cv", label: "I miei CV" },
-  { id: "downloads", label: "Download" },
-  { id: "account", label: "Dati dell'account" },
-  { id: "credits", label: "Crediti" },
-  { id: "how", label: "Come funziona" },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
-
-function isTabId(value: string | null): value is TabId {
-  return TABS.some(t => t.id === value);
+  // Owned by AccountShell — account settings are now their own page (see
+  // app/account/settings/page.tsx), reached via the avatar dropdown in the
+  // global nav, so this component only needs the commercial tab itself.
+  tab: TabId;
+  setTab: (tab: TabId) => void;
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -97,31 +111,118 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads }: AccountTabsProps) {
-  const searchParams = useSearchParams();
-  const requestedTab = searchParams.get("tab");
-  const [tab, setTab] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "cv");
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, tab, setTab }: AccountTabsProps) {
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
 
   return (
     <div className="space-y-8">
-      {/* Tab switcher */}
+      {/* Tab switcher — the settings-drawer trigger that used to live here
+          (a gear icon) moved to the avatar dropdown in the global nav (see
+          components/account-avatar-menu.tsx), reachable from every page. */}
       <div className="flex flex-wrap gap-2">
-        {TABS.map(({ id, label }) => (
+        {TABS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setTab(id)}
-            className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
             style={tab === id
               ? { background: ACCENT, color: "#000" }
               : { background: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
           >
-            {label}
+            <Icon className="w-4 h-4" />
+            <span className="hidden sm:inline">{label}</span>
           </button>
         ))}
       </div>
+
+      {/* ── Tab: Dashboard ─────────────────────────────────────────────── */}
+      {tab === "dashboard" && (
+        <div className="space-y-8">
+          <div
+            className="rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6"
+            style={{ background: `linear-gradient(135deg, ${ACCENT}18, ${ACCENT}05)`, border: `1px solid ${ACCENT}30` }}
+          >
+            <div>
+              <p className="text-sm text-muted-foreground/70 mb-1">Bentornato,</p>
+              <h2 className="font-heading text-2xl font-bold tracking-tight">
+                {profileRow?.data.personal_info.full_name ?? userEmail}
+              </h2>
+              <p className="text-sm mt-2">
+                <span className="font-bold" style={{ color: ACCENT }}>{credits}</span>
+                <span className="text-muted-foreground"> credit{credits === 1 ? "o" : "i"} disponibil{credits === 1 ? "e" : "i"}</span>
+              </p>
+            </div>
+            {primaryProfiles.length < MAX_CVS && (
+              <a
+                href="/generate"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: "#000" }}
+              >
+                <UploadCloud className="w-4 h-4" />
+                Carica un nuovo CV
+              </a>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <SectionTitle>CV recenti</SectionTitle>
+              {primaryProfiles.length > 0 && (
+                <button onClick={() => setTab("cv")} className="text-xs font-semibold" style={{ color: ACCENT }}>
+                  Vedi tutti →
+                </button>
+              )}
+            </div>
+            {primaryProfiles.length > 0 ? (
+              <div className="space-y-2">
+                {primaryProfiles.slice(0, 3).map((row) => {
+                  const score = computeCvScore(row.data).total;
+                  return (
+                    <div key={row.id} className="glass-card rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold truncate">{row.data.personal_info.full_name}</p>
+                        <p className="text-xs text-muted-foreground/60">
+                          {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span
+                          className="text-xs font-bold px-2.5 py-1 rounded-full"
+                          style={{ color: scoreBadgeColor(score), background: `${scoreBadgeColor(score)}18` }}
+                        >
+                          {score}/100
+                        </span>
+                        <a
+                          href={`/${accountCode}/${row.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg hover:bg-foreground/[0.06] transition-colors"
+                          aria-label="Apri profilo"
+                        >
+                          <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="glass-card rounded-2xl p-6 text-center space-y-3">
+                <p className="text-sm text-muted-foreground">Non hai ancora un profilo.</p>
+                <a
+                  href="/generate"
+                  className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+                  style={{ background: ACCENT, color: "#000" }}
+                >
+                  Carica il tuo CV →
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Tab: I miei CV ─────────────────────────────────────────────── */}
       {tab === "cv" && (
@@ -156,8 +257,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
-                      <p className="text-xs font-semibold" style={{ color: ACCENT }}>
-                        Punteggio: {computeCvScore(row.data).total}/100
+                      <p
+                        className="text-xs font-bold px-2.5 py-1 rounded-full"
+                        style={{ color: scoreBadgeColor(computeCvScore(row.data).total), background: `${scoreBadgeColor(computeCvScore(row.data).total)}18` }}
+                      >
+                        {computeCvScore(row.data).total}/100
                       </p>
                     </div>
                     <EditableSlug profileId={row.id} slug={row.slug} />
@@ -331,71 +435,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         </div>
       )}
 
-      {/* ── Tab: Dati dell'account ─────────────────────────────────────── */}
-      {tab === "account" && (
-        <div className="space-y-10">
-          <div className="space-y-3">
-            <SectionTitle>Dati anagrafici</SectionTitle>
-            <div className="glass-card rounded-2xl p-6 grid sm:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-muted-foreground/60 mb-0.5">Email</p>
-                <p className="text-sm font-medium">{userEmail}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground/60 mb-0.5">Codice account</p>
-                <p className="text-sm font-medium font-mono tracking-wide">{accountCode}</p>
-              </div>
-              {profileRow && (
-                <EditPersonalInfoForm
-                  fullName={profileRow.data.personal_info.full_name}
-                  title={profileRow.data.personal_info.title}
-                  location={profileRow.data.personal_info.location ?? ""}
-                />
-              )}
-            </div>
-            {profileRow && (
-              <p className="text-xs text-muted-foreground/50">
-                Nome, ruolo e località arrivano dal tuo CV, ma puoi correggerli qui in qualsiasi momento.
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            <SectionTitle>Email di riferimento</SectionTitle>
-            <div className="glass-card rounded-2xl p-6">
-              <ChangeEmailForm currentEmail={userEmail} />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <SectionTitle>Password</SectionTitle>
-            <div className="glass-card rounded-2xl p-6">
-              <ChangePasswordForm />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <SectionTitle>Dominio personalizzato</SectionTitle>
-            <div className="glass-card rounded-2xl p-6 space-y-3">
-              <p className="text-xs text-muted-foreground">
-                Vuoi la tua pagina su un dominio tuo (es. mario-rossi.it) invece del link Jobli? Mandaci una richiesta, ti ricontattiamo per i dettagli.
-              </p>
-              <RequestDomainForm />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <SectionTitle>Zona pericolosa</SectionTitle>
-            <div className="rounded-2xl p-6 border border-red-500/20 bg-red-500/[0.03] flex items-center justify-between gap-4 flex-wrap">
-              <p className="text-xs text-muted-foreground max-w-sm">
-                Elimina definitivamente il tuo account: profilo, CV adattati e crediti verranno cancellati senza possibilità di recupero.
-              </p>
-              <DeleteAccountButton />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ── Tab: Crediti ───────────────────────────────────────────────── */}
       {tab === "credits" && (
         <div className="space-y-8">
@@ -481,6 +520,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           </div>
         </div>
       )}
+
     </div>
   );
 }

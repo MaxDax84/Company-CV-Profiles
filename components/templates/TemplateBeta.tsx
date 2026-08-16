@@ -2,12 +2,18 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { DM_Serif_Display, DM_Sans } from 'next/font/google'
+import { DM_Serif_Display, Inter } from 'next/font/google'
 import type { ProfileSchema } from '@/lib/schema'
 import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
 const serif = DM_Serif_Display({ subsets: ['latin'], weight: ['400'] })
-const sans  = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+// DM_Sans dropped: Google's CDN started 404ing its font files (same class
+// of failure as Source_Serif_4 on the sherlock-holmes showcase — see that
+// fix's comment) — this one bites harder since the new homepage template
+// showcase eagerly loads every web template's live preview, including this
+// one, right on page load. Inter is already proven working elsewhere in
+// this app (app/layout.tsx and several showcase pages).
+const sans  = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
 function useScrolled(threshold = 50) {
   const [scrolled, setScrolled] = useState(false)
