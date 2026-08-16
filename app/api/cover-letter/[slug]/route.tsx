@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { generateCoverLetter } from "@/lib/cover-letter";
+import { getRememberedCoverLetter, rememberCoverLetter } from "@/lib/cover-letters";
 import { CoverLetterDocument } from "@/components/pdf/CoverLetterDocument";
 
 // Calls Claude to write the letter, then renders the PDF — same headroom as
@@ -29,24 +30,33 @@ export async function GET(
     return NextResponse.json({ error: "Profile not found." }, { status: 404 });
   }
 
-  const { target_company, target_role } = row.data.metadata;
-  const detail = target_role || target_company
-    ? `${row.data.personal_info.full_name} · ${[target_role, target_company].filter(Boolean).join(" — ")}`
-    : `${row.data.personal_info.full_name} · lettera generica`;
+  // Re-rendering a PDF from an already-written letter is free (react-pdf,
+  // no Claude call) — so only the first request for a given profile ever
+  // pays a credit or costs us a generation call. Later ones reuse the
+  // exact same cached text.
+  let letterText = await getRememberedCoverLetter(supabase, row.id);
+  if (!letterText) {
+    const { target_company, target_role } = row.data.metadata;
+    const detail = target_role || target_company
+      ? `${row.data.personal_info.full_name} · ${[target_role, target_company].filter(Boolean).join(" — ")}`
+      : `${row.data.personal_info.full_name} · lettera generica`;
 
-  try {
-    await spendCredits(supabase, CREDIT_COSTS.coverLetter, "cover_letter", detail);
-  } catch (err) {
-    if (err instanceof InsufficientCreditsError) {
-      return NextResponse.json(
-        { error: "Not enough credits to generate a cover letter.", code: "INSUFFICIENT_CREDITS" },
-        { status: 402 }
-      );
+    try {
+      await spendCredits(supabase, CREDIT_COSTS.coverLetter, "cover_letter", detail);
+    } catch (err) {
+      if (err instanceof InsufficientCreditsError) {
+        return NextResponse.json(
+          { error: "Not enough credits to generate a cover letter.", code: "INSUFFICIENT_CREDITS" },
+          { status: 402 }
+        );
+      }
+      throw err;
     }
-    throw err;
+
+    letterText = await generateCoverLetter(row.data);
+    await rememberCoverLetter(supabase, user.id, row.id, letterText);
   }
 
-  const letterText = await generateCoverLetter(row.data);
   const buffer = await renderToBuffer(<CoverLetterDocument profile={row.data} letterText={letterText} />);
 
   return new NextResponse(buffer as unknown as BodyInit, {
