@@ -56,7 +56,7 @@ export default async function TailorPage({ searchParams }: Props) {
             credits={credits}
             hasProfile={!!profileRow}
             sourceSlug={profileRow?.slug ?? null}
-            availableProfiles={primaryProfiles.map(p => ({ slug: p.slug, fullName: p.data.personal_info.full_name }))}
+            availableProfiles={primaryProfiles.map(p => ({ slug: p.slug }))}
           />
         </div>
       </div>

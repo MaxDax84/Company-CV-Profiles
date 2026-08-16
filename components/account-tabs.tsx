@@ -334,16 +334,28 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             <div className="space-y-3">
               {tailoredProfiles.map((row) => (
                 <div key={row.id} className="glass-card rounded-2xl p-5 space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
-                      <p className="text-xs text-muted-foreground/60 mt-0.5">
-                        {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
-                      </p>
-                      {(row.data.metadata.target_role || row.data.metadata.target_company) && (
-                        <p className="text-xs mt-1" style={{ color: ACCENT }}>
-                          Adattato per: {[row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" · ")}
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="space-y-2.5">
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                          Titolo nel CV adattato
                         </p>
+                        <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
+                        <p className="text-xs text-muted-foreground/60 mt-0.5">
+                          Creato il {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                      </div>
+                      {(row.data.metadata.target_role || row.data.metadata.target_company) && (
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                            Annuncio a cui è stato adattato
+                          </p>
+                          <p className="text-xs font-medium" style={{ color: ACCENT }}>
+                            {row.data.metadata.target_role}
+                            {row.data.metadata.target_role && row.data.metadata.target_company ? " presso " : ""}
+                            {row.data.metadata.target_company}
+                          </p>
+                        </div>
                       )}
                     </div>
                   </div>

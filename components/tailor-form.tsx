@@ -29,7 +29,7 @@ interface TailorFormProps {
   credits: number;
   hasProfile: boolean;
   sourceSlug: string | null;
-  availableProfiles: { slug: string; fullName: string }[];
+  availableProfiles: { slug: string }[];
 }
 
 export default function TailorForm({ credits, hasProfile, sourceSlug, availableProfiles }: TailorFormProps) {
@@ -220,15 +220,13 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
               className="font-semibold text-foreground/80 bg-transparent border border-foreground/10 rounded-lg px-2 py-1 outline-none focus:border-primary/50 cursor-pointer"
             >
               {availableProfiles.map((p) => (
-                <option key={p.slug} value={p.slug}>{p.fullName}</option>
+                <option key={p.slug} value={p.slug}>{p.slug}</option>
               ))}
             </select>
           </div>
         ) : (
           <p className="text-xs text-center text-muted-foreground/60">
-            Stai adattando: <span className="font-semibold text-foreground/80">
-              {availableProfiles.find(p => p.slug === sourceSlug)?.fullName ?? sourceSlug}
-            </span>
+            Stai adattando: <span className="font-semibold text-foreground/80">{sourceSlug}</span>
           </p>
         )
       ) : null}
