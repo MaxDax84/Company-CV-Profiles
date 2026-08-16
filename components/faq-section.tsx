@@ -45,25 +45,35 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
 ]
 
-function AccordionItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false)
+function AccordionItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boolean; onToggle: () => void }) {
   return (
     <div className="glass-card rounded-2xl overflow-hidden">
       <button
-        onClick={() => setOpen(v => !v)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
       >
         <span className="text-sm font-semibold">{q}</span>
-        <ChevronDown className={`w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      {open && (
-        <p className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">{a}</p>
-      )}
+      {/* grid-template-rows 0fr->1fr is the standard trick for animating to
+          "auto" height smoothly — a plain max-height transition either cuts
+          off longer answers or leaves a jump at the end of the animation. */}
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-out"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <p className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">{a}</p>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default function FaqSection({ compact = false }: { compact?: boolean }) {
+  // Only one open at a time — index into FAQ_ITEMS, or null when all closed.
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
   return (
     <section id="faq" className={compact ? '' : 'relative py-16 md:py-20 overflow-hidden'}>
       {!compact && <div className="absolute inset-0 grid-overlay" />}
@@ -75,8 +85,14 @@ export default function FaqSection({ compact = false }: { compact?: boolean }) {
           </div>
         )}
         <div className="space-y-3">
-          {FAQ_ITEMS.map((item) => (
-            <AccordionItem key={item.q} q={item.q} a={item.a} />
+          {FAQ_ITEMS.map((item, i) => (
+            <AccordionItem
+              key={item.q}
+              q={item.q}
+              a={item.a}
+              isOpen={openIndex === i}
+              onToggle={() => setOpenIndex((prev) => (prev === i ? null : i))}
+            />
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 
@@ -20,12 +20,20 @@ const PDF_TEMPLATE_CARDS: { id: 'ats-core' | 'executive' | 'creative-tech'; name
   { id: 'creative-tech', name: 'Creative Tech', accent: '#7c3aed' },
 ]
 
-function WebTemplateCard({ tpl, width }: { tpl: (typeof WEB_TEMPLATES)[number]; width: number }) {
-  const height = width * 1.41
+// Card box stays the original, compact size — only the content INSIDE zooms
+// in (see CROP_SCALE below), instead of blowing up the whole card. Left-
+// aligned crop (transformOrigin "top left"): at this scale the box only
+// shows the left ~520px-wide slice of the 1200px source page, which is
+// exactly where the name/header/opening lines live.
+const CARD_WIDTH = 220
+const CARD_HEIGHT = 310
+const CROP_SCALE = 0.4
+
+function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
   return (
     <div
       className="rounded-xl overflow-hidden relative"
-      style={{ width, height, border: `2px solid ${tpl.accent}`, boxShadow: `0 8px 28px ${tpl.accent}35`, background: tpl.bg }}
+      style={{ width: CARD_WIDTH, height: CARD_HEIGHT, border: `2px solid ${tpl.accent}`, boxShadow: `0 8px 28px ${tpl.accent}35`, background: tpl.bg }}
     >
       <div className="absolute top-0 left-0 right-0 h-5 flex items-center gap-1.5 px-2 z-10" style={{ background: 'rgba(0,0,0,0.35)' }}>
         <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
@@ -33,11 +41,14 @@ function WebTemplateCard({ tpl, width }: { tpl: (typeof WEB_TEMPLATES)[number]; 
         <span className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
       </div>
       {/* Live preview, not the real page — nothing inside should be tappable
-          (same "glass" treatment as the /generate template picker). */}
+          (same "glass" treatment as the /generate template picker). Content
+          taller than the visible box auto-scrolls slowly to also reveal the
+          experience/education sections, not just the hero. */}
       <iframe
         src={`/profile/${tpl.demoSlug}`}
         title={tpl.name}
         tabIndex={-1}
+        className="animate-showcase-web-scroll"
         style={{
           position: 'absolute',
           top: 20,
@@ -45,7 +56,6 @@ function WebTemplateCard({ tpl, width }: { tpl: (typeof WEB_TEMPLATES)[number]; 
           width: 1200,
           height: 4000,
           border: 'none',
-          transform: `scale(${width / 1200})`,
           transformOrigin: 'top left',
           pointerEvents: 'none',
         }}
@@ -57,13 +67,13 @@ function WebTemplateCard({ tpl, width }: { tpl: (typeof WEB_TEMPLATES)[number]; 
 // Live preview of /pdf-preview/[template] — the same plain-HTML mirror
 // (real demo content: Marco Ferretti, full bullets) already used for the
 // small template picker in components/pdf-export-button.tsx. Genuine DOM
-// text inside an iframe, so scaling the card up keeps it perfectly sharp —
-// not a raster screenshot that would blur when enlarged.
-function PdfTemplateCard({ tpl, width }: { tpl: (typeof PDF_TEMPLATE_CARDS)[number]; width: number }) {
+// text inside an iframe, so zooming in keeps it perfectly sharp — not a
+// raster screenshot that would blur when enlarged.
+function PdfTemplateCard({ tpl }: { tpl: (typeof PDF_TEMPLATE_CARDS)[number] }) {
   return (
     <div
       className="rounded-xl overflow-hidden relative bg-white"
-      style={{ width, height: width * 1.41, border: `2px solid ${tpl.accent}`, boxShadow: `0 8px 28px ${tpl.accent}35` }}
+      style={{ width: CARD_WIDTH, height: CARD_HEIGHT, border: `2px solid ${tpl.accent}`, boxShadow: `0 8px 28px ${tpl.accent}35` }}
     >
       <iframe
         src={`/pdf-preview/${tpl.id}`}
@@ -76,7 +86,7 @@ function PdfTemplateCard({ tpl, width }: { tpl: (typeof PDF_TEMPLATE_CARDS)[numb
           width: 1200,
           height: 1697,
           border: 'none',
-          transform: `scale(${width / 1200})`,
+          transform: `scale(${CROP_SCALE})`,
           transformOrigin: 'top left',
           pointerEvents: 'none',
         }}
@@ -91,84 +101,60 @@ function PdfTemplateCard({ tpl, width }: { tpl: (typeof PDF_TEMPLATE_CARDS)[numb
   )
 }
 
-// Shared by both rows: all cards always visible and centered as a group,
-// the active one scaled way up (legible) with the rest as small side
-// "peek" thumbnails. Clicking a side card, or a left/right swipe/wheel
-// gesture anywhere on the row, makes it the active one. Deliberately NOT a
-// scrolling carousel (cards never move off-screen) — an earlier version
-// used native horizontal scroll with padding sized to center one card at a
-// time, which meant the other cards sat scrolled out of view.
-function Coverflow<T>({
-  items,
-  renderCard,
-  defaultActive = 0,
-  activeWidth,
-  sideWidth,
-}: {
-  items: T[]
-  renderCard: (item: T, width: number) => React.ReactNode
-  defaultActive?: number
-  activeWidth: { mobile: number; tablet: number; desktop: number }
-  sideWidth: { mobile: number; tablet: number; desktop: number }
-}) {
-  const [active, setActive] = useState(defaultActive)
-  const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop')
-  const touchStartX = useRef<number | null>(null)
-  const wheelLock = useRef(false)
+// Compact, uniform-size cards in a native horizontal scroll row (drag/swipe/
+// wheel all work for free). Clicking a card smoothly scrolls it to the
+// center via scrollIntoView — no custom width/position math needed for
+// that, the browser already does it well. A lightweight scroll listener
+// just tracks which card is nearest-center to give it a subtle highlight.
+function Carousel<T>({ items, renderCard, keyOf }: { items: T[]; renderCard: (item: T) => React.ReactNode; keyOf: (item: T) => string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [centered, setCentered] = useState(0)
+  const rafRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
-    const update = () => setBreakpoint(window.innerWidth < 640 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop')
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
+    const container = containerRef.current
+    if (!container) return
+    const updateCentered = () => {
+      const mid = container.scrollLeft + container.clientWidth / 2
+      let closest = 0
+      let closestDist = Infinity
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return
+        const dist = Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid)
+        if (dist < closestDist) { closestDist = dist; closest = i }
+      })
+      setCentered(closest)
+    }
+    updateCentered()
+    const onScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(updateCentered)
+    }
+    container.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      container.removeEventListener('scroll', onScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
   }, [])
-
-  const shift = useCallback((direction: 1 | -1) => {
-    setActive((prev) => Math.min(items.length - 1, Math.max(0, prev + direction)))
-  }, [items.length])
-
-  function onWheel(e: React.WheelEvent) {
-    if (wheelLock.current) return
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0
-    if (Math.abs(delta) < 15) return
-    wheelLock.current = true
-    shift(delta > 0 ? 1 : -1)
-    setTimeout(() => { wheelLock.current = false }, 350)
-  }
-
-  function onTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.touches[0].clientX
-  }
-  function onTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current === null) return
-    const delta = e.changedTouches[0].clientX - touchStartX.current
-    if (Math.abs(delta) > 40) shift(delta < 0 ? 1 : -1)
-    touchStartX.current = null
-  }
 
   return (
     <div
-      className="flex items-center justify-center gap-3 sm:gap-5 py-6"
-      onWheel={onWheel}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      ref={containerRef}
+      className="flex items-center gap-5 overflow-x-auto snap-x snap-mandatory py-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      style={{ paddingLeft: `calc(50% - ${CARD_WIDTH / 2}px)`, paddingRight: `calc(50% - ${CARD_WIDTH / 2}px)` }}
     >
-      {items.map((item, i) => {
-        const isActive = i === active
-        const width = isActive ? activeWidth[breakpoint] : sideWidth[breakpoint]
-        return (
-          <button
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            onClick={() => setActive(i)}
-            aria-label="Metti in evidenza"
-            className="shrink-0 transition-[width] duration-300 ease-out cursor-pointer"
-            style={{ opacity: isActive ? 1 : 0.55, zIndex: isActive ? 10 : 1 }}
-          >
-            {renderCard(item, width)}
-          </button>
-        )
-      })}
+      {items.map((item, i) => (
+        <div
+          key={keyOf(item)}
+          ref={(el) => { cardRefs.current[i] = el }}
+          onClick={() => cardRefs.current[i]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })}
+          className="shrink-0 snap-center cursor-pointer transition-transform duration-300 ease-out"
+          style={{ transform: `scale(${i === centered ? 1.08 : 1})` }}
+        >
+          {renderCard(item)}
+        </div>
+      ))}
     </div>
   )
 }
@@ -186,13 +172,7 @@ export default function TemplateShowcaseSection() {
             <h2 className="font-heading text-2xl md:text-3xl font-bold tracking-tight mb-2">{t.webTitle}</h2>
             <p className="text-muted-foreground text-sm md:text-base">{t.webSubtitle}</p>
           </div>
-          <Coverflow
-            items={WEB_TEMPLATES}
-            defaultActive={0}
-            activeWidth={{ mobile: 220, tablet: 380, desktop: 520 }}
-            sideWidth={{ mobile: 55, tablet: 85, desktop: 115 }}
-            renderCard={(tpl, width) => <WebTemplateCard tpl={tpl} width={width} />}
-          />
+          <Carousel items={WEB_TEMPLATES} keyOf={(tpl) => tpl.id} renderCard={(tpl) => <WebTemplateCard tpl={tpl} />} />
         </div>
 
         <div>
@@ -200,13 +180,7 @@ export default function TemplateShowcaseSection() {
             <h2 className="font-heading text-2xl md:text-3xl font-bold tracking-tight mb-2">{t.pdfTitle}</h2>
             <p className="text-muted-foreground text-sm md:text-base">{t.pdfSubtitle}</p>
           </div>
-          <Coverflow
-            items={PDF_TEMPLATE_CARDS}
-            defaultActive={1}
-            activeWidth={{ mobile: 260, tablet: 440, desktop: 620 }}
-            sideWidth={{ mobile: 55, tablet: 90, desktop: 120 }}
-            renderCard={(tpl, width) => <PdfTemplateCard tpl={tpl} width={width} />}
-          />
+          <Carousel items={PDF_TEMPLATE_CARDS} keyOf={(tpl) => tpl.id} renderCard={(tpl) => <PdfTemplateCard tpl={tpl} />} />
         </div>
       </div>
     </section>
