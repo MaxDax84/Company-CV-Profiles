@@ -1,12 +1,17 @@
 'use client'
 
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
+import HowItWorksModal from './how-it-works-modal'
 
 export default function HeroSection() {
   const { lang } = useLanguage()
   const t = translations[lang].hero
+  const [modalOpen, setModalOpen] = useState(false)
+  const router = useRouter()
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pb-16 md:pb-24">
@@ -68,13 +73,19 @@ export default function HeroSection() {
           className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
           style={{ animationDelay: '0.36s' }}
         >
-          <a
-            href="/generate"
+          <button
+            onClick={() => setModalOpen(true)}
             className="px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}
-          </a>
+          </button>
         </div>
+
+        <HowItWorksModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onProceed={() => router.push('/generate')}
+        />
 
         {/* Concrete trust signals — each explains a "why", not just a label */}
         <div

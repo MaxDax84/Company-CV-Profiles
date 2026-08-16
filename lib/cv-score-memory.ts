@@ -6,7 +6,17 @@ import type { CvScoreBreakdown } from "./cv-score";
 // returns the same score instead of a fresh, inherently variable AI
 // judgment. No TTL: once a document has been scored, that score is
 // permanent, unlike the short-lived "pending profile" KV entries.
-const SCORE_MEMORY_PREFIX = "cv-score-memory:";
+//
+// Versioned (v2): the scoring logic itself changed twice in one night (the
+// "before" score stopped being a separate subjective AI judgment, then
+// improveResume() got a deterministic guard against silently dropping
+// numbers from bullets). A score remembered under the OLD logic is wrong
+// relative to what current code computes — and being permanent, it kept
+// resurfacing on every re-test of the same PDF, which is exactly what looked
+// like "the score keeps dropping after optimization" even after the actual
+// bug was fixed. Bump this suffix whenever the scoring formula changes
+// again, so stale entries are silently bypassed instead of manually purged.
+const SCORE_MEMORY_PREFIX = "cv-score-memory:v2:";
 
 // Web Crypto works in both edge and Node runtimes, so this stays usable from
 // both /api/parse-resume (edge) and /api/pdf/[slug] (Node).

@@ -12,9 +12,9 @@ const FALLBACK_ACCENT = "#4f46e5";
 export type PdfTemplate = "ats-core" | "executive" | "creative-tech";
 
 export const PDF_TEMPLATES: { id: PdfTemplate; name: string; description: string }[] = [
-  { id: "ats-core", name: "ATS Core", description: "Helvetica, bianco/nero, solo linee sottili — il massimo della compatibilità" },
-  { id: "executive", name: "Executive", description: "Times per i titoli, blu notte istituzionale, margini ampi" },
-  { id: "creative-tech", name: "Creative Tech", description: "Helvetica, testata d'impatto, competenze in tag colorati" },
+  { id: "ats-core", name: "Pragmatico", description: "Essenziale e diretto, va dritto al punto" },
+  { id: "executive", name: "Executive", description: "Elegante e autorevole, pensato per la leadership" },
+  { id: "creative-tech", name: "Creative Tech", description: "Moderno e d'impatto, per profili innovativi" },
 ];
 
 function hexToRgba(hex: string, alpha: number): string {

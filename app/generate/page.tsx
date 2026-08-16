@@ -387,7 +387,7 @@ export default function GeneratePage() {
                       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
                         {t.beforeLabel}
                       </p>
-                      <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-foreground/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)" }}>
+                      <div className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden border border-foreground/10" style={{ filter: "grayscale(0.5) contrast(0.92) brightness(0.92)", touchAction: "none" }}>
                         {pdfThumbnail ? (
                           <img src={pdfThumbnail} alt="CV originale" className="w-full h-auto block" />
                         ) : (
@@ -411,7 +411,7 @@ export default function GeneratePage() {
                       </p>
                       <div
                         className="w-full max-w-[260px] mx-auto rounded-xl overflow-hidden relative"
-                        style={{ height: 368, border: `2px solid ${selected.accent}`, boxShadow: `0 0 24px ${selected.accent}35`, background: selected.bg }}
+                        style={{ height: 368, border: `2px solid ${selected.accent}`, boxShadow: `0 0 24px ${selected.accent}35`, background: selected.bg, touchAction: "none" }}
                       >
                         <div className="absolute top-0 left-0 right-0 h-6 flex items-center gap-1.5 px-2.5 z-10" style={{ background: "rgba(0,0,0,0.35)" }}>
                           <span className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
@@ -494,24 +494,6 @@ export default function GeneratePage() {
                 labels={t.cvScore}
                 variant="teaser"
               />
-            )}
-            {suggestedTitles.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 text-center">
-                  {t.suggestedTitlesLabel}
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {suggestedTitles.map((title) => (
-                    <span
-                      key={title}
-                      className="px-3 py-1.5 rounded-full text-xs font-semibold"
-                      style={{ background: `${selected.accent}15`, color: selected.accent, border: `1px solid ${selected.accent}40` }}
-                    >
-                      {title}
-                    </span>
-                  ))}
-                </div>
-              </div>
             )}
             <div
               className="rounded-3xl border p-8 text-center space-y-4"

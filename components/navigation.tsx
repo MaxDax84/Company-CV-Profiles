@@ -31,7 +31,10 @@ export default function Navigation() {
   // than bouncing out of it.
   const isAccountPage = pathname.startsWith('/account')
   const links = [
+    { href: isHome ? '#' : '/', label: t.home },
+    { href: href('#mission'), label: t.mission },
     { href: isAccountPage ? '/account?tab=how' : href('#services'), label: t.services },
+    { href: href('#cta'), label: lang === 'en' ? 'Get Started' : 'Inizia Ora' },
   ]
 
   // /account and /tailor are only ever reached by an already-authenticated
@@ -44,7 +47,6 @@ export default function Navigation() {
     ? (lang === 'en' ? 'Your Account' : 'Il tuo account')
     : (t as { generate?: string }).generate ?? 'Try Free'
   const generateHref = isAccountContext ? '/account' : '/generate'
-  const tailorLabel = (t as { tailorLink?: string }).tailorLink ?? 'Tailor to a Job'
 
   return (
     <nav
@@ -97,12 +99,6 @@ export default function Navigation() {
               {generateLabel}
             </a>
           )}
-          <a
-            href="/tailor"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-          >
-            {tailorLabel}
-          </a>
         </div>
 
         {/* Right side */}
@@ -171,13 +167,6 @@ export default function Navigation() {
             onClick={() => setMobileOpen(false)}
           >
             {generateLabel}
-          </a>
-          <a
-            href="/tailor"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            onClick={() => setMobileOpen(false)}
-          >
-            {tailorLabel}
           </a>
           {!isAccountContext && (
             <a

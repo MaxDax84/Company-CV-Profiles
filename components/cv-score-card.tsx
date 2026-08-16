@@ -1,4 +1,5 @@
 import type { CvScoreBreakdown } from "@/lib/cv-score";
+import { getScoreComment, ATS_TARGET_SCORE } from "@/lib/score-comments";
 
 interface CvScoreCardProps {
   before: CvScoreBreakdown | null;
@@ -17,7 +18,6 @@ interface CvScoreCardProps {
     specificSkills: string;
     beforeLabel: string;
     afterLabel: string;
-    claim?: string;
   };
 }
 
@@ -45,9 +45,10 @@ export default function CvScoreCard({ before, after, accentColor, labels, varian
             {current.total}
             <span className="text-lg text-muted-foreground/40 font-semibold">/100</span>
           </p>
-          {labels.claim && (
-            <p className="text-sm font-medium px-2" style={{ color: accentColor }}>{labels.claim}</p>
-          )}
+          <p className="text-sm font-medium px-2" style={{ color: accentColor }}>{getScoreComment(current.total)}</p>
+          <p className="text-xs text-muted-foreground/60 px-2">
+            Soglia tipica per superare i filtri ATS: <span className="font-semibold" style={{ color: accentColor }}>{ATS_TARGET_SCORE}/100</span>
+          </p>
         </div>
       ) : (
         /* Big before -> after totals */

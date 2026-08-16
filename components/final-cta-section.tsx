@@ -1,15 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import HowItWorksModal from './how-it-works-modal'
 
 export default function FinalCtaSection() {
   const [visible, setVisible] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
   const ref = useRef<HTMLElement>(null)
   const { lang } = useLanguage()
   const t = translations[lang].finalCta
+  const router = useRouter()
 
   useEffect(() => {
     const el = ref.current
@@ -28,7 +32,7 @@ export default function FinalCtaSection() {
   }, [])
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden">
+    <section id="cta" ref={ref} className="relative py-24 md:py-32 overflow-hidden">
       <div
         className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
         style={{ background: 'rgba(99, 102, 241, 0.10)' }}
@@ -46,14 +50,20 @@ export default function FinalCtaSection() {
           {t.subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/generate"
+          <button
+            onClick={() => setModalOpen(true)}
             className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}
-          </a>
+          </button>
         </div>
       </div>
+
+      <HowItWorksModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onProceed={() => router.push('/generate')}
+      />
     </section>
   )
 }

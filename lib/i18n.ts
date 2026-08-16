@@ -3,6 +3,8 @@ export type Language = 'en' | 'it'
 export const translations = {
   en: {
     nav: {
+      home: 'Home',
+      mission: 'Mission',
       services: 'Services',
       portfolio: 'Portfolio',
       pricing: 'Pricing',
@@ -53,6 +55,12 @@ export const translations = {
             'Career evolving? We keep your profile up to date. Up to 3 content updates per month, so your page is always accurate.',
         },
       ],
+    },
+    templateShowcase: {
+      webTitle: 'Your CV, as a web page',
+      webSubtitle: 'Pick one of 4 styles for the shareable page recruiters actually open.',
+      pdfTitle: 'Your CV, as a PDF',
+      pdfSubtitle: '3 ATS-safe layouts, ready to attach to any application.',
     },
     portfolio: {
       sectionLabel: 'Our Work',
@@ -154,7 +162,7 @@ export const translations = {
       stepEmail: '3 · Your email (optional)',
       emailPlaceholder: 'you@email.com',
       emailHint: 'Get a personal link by email to edit or delete your profile later — no account needed.',
-      stepTemplate: '4 · Choose a template (scroll to preview each one)',
+      stepTemplate: 'Choose your template',
       dragHere: 'Drag your CV here (in PDF)',
       dragOr: 'or click to select a file',
       dragLimit: 'Max 10 MB · PDF only',
@@ -215,7 +223,6 @@ export const translations = {
         specificSkills: 'Specific skills',
         beforeLabel: 'Before',
         afterLabel: 'After',
-        claim: 'This is just the starting point — your CV still has plenty of room to grow.',
       },
     },
     tailor: {
@@ -361,6 +368,8 @@ export const translations = {
 
   it: {
     nav: {
+      home: 'Home',
+      mission: 'Missione',
       services: 'Come funziona',
       portfolio: 'Esempi',
       pricing: 'Prezzi',
@@ -386,7 +395,7 @@ export const translations = {
       titleNormal: 'non solo un CV più bello.',
       subtitle:
         'Carica il tuo CV: la nostra AI lo trasforma in un profilo pronto da condividere, lo adatta all\'annuncio a cui ti candidi e ti aiuta a rafforzarlo con numeri e risultati veri — senza inventare nulla.',
-      ctaPrimary: 'Carica il tuo CV →',
+      ctaPrimary: 'Inizia Ora →',
     },
     services: {
       sectionLabel: 'Come funziona',
@@ -417,6 +426,12 @@ export const translations = {
       ],
       wipBadge: 'Work in progress',
       wipNote: 'Presto potrai anche dialogare con l\'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio "di quanto sono aumentate le revenue nell\'ultimo anno fiscale? 15%? 30%?" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.',
+    },
+    templateShowcase: {
+      webTitle: 'Il tuo CV, come pagina web',
+      webSubtitle: 'Scegli uno tra 4 stili per la pagina condivisibile che i recruiter apriranno davvero.',
+      pdfTitle: 'Il tuo CV, in PDF',
+      pdfSubtitle: '3 layout a prova di ATS, pronti da allegare a qualsiasi candidatura.',
     },
     portfolio: {
       sectionLabel: 'Esempi',
@@ -501,7 +516,7 @@ export const translations = {
       stepEmail: '3 · La tua email (opzionale)',
       emailPlaceholder: 'tu@email.com',
       emailHint: 'Ricevi via email un link personale per modificare o eliminare il profilo in futuro — non serve un account.',
-      stepTemplate: 'Scegli il template (scorri su ciascuno o clicca su "Preview")',
+      stepTemplate: 'Scegli il template',
       dragHere: 'Trascina qui il tuo CV (in PDF)',
       dragOr: 'oppure clicca per selezionare il file',
       dragLimit: 'Max 10 MB · solo PDF',
@@ -561,7 +576,6 @@ export const translations = {
         specificSkills: 'Competenze specifiche',
         beforeLabel: 'Prima',
         afterLabel: 'Dopo',
-        claim: 'Questo è solo il punto di partenza — il tuo CV ha ancora molto margine di crescita.',
       },
     },
     tailor: {
@@ -698,7 +712,7 @@ export const translations = {
     finalCta: {
       title: 'Pronto a ottenere più colloqui?',
       subtitle: 'Carica il tuo CV e scoprilo trasformato in pochi minuti — gratis, in fase beta.',
-      ctaPrimary: 'Carica il tuo CV →',
+      ctaPrimary: 'Inizia Ora →',
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',
