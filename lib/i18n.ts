@@ -384,11 +384,11 @@ export const translations = {
       noSharing: 'Mai condiviso con terze parti',
     },
     steps: {
-      cv: 'CV',
+      cv: 'Carica CV',
       job: 'Annuncio',
       ready: 'Pronto',
-      score: 'Punteggio',
-      page: 'Profilo digitale',
+      score: 'Analisi ATS',
+      page: 'Link privato',
     },
     hero: {
       badge: 'AI Career Profiler & ATS Optimizer',
@@ -500,7 +500,7 @@ export const translations = {
       ],
     },
     generate: {
-      badge: 'Generatore di profili',
+      badge: 'Da CV a pagina Web',
       title: 'Il tuo CV racconta già la tua storia.\nNe facciamo un sito.',
       subtitle: 'Niente form, niente copia-incolla.\nLa nostra AI legge il tuo CV e crea un profilo professionale pronto da condividere.',
       titleLoggedIn: 'Aggiungi un nuovo CV al tuo account.',

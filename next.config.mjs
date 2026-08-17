@@ -19,6 +19,18 @@ const nextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         ],
       },
+      {
+        // Overrides the blanket DENY above: both of these ARE meant to be
+        // framed, but only by this same site — the homepage's template
+        // showcase (components/template-showcase-section.tsx) and the PDF
+        // template picker (components/pdf-export-button.tsx) embed them in
+        // <iframe>s for live previews. DENY silently blank them; SAMEORIGIN
+        // keeps third-party framing blocked while allowing our own.
+        source: '/(profile|pdf-preview)/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        ],
+      },
     ]
   },
 }

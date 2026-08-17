@@ -1,16 +1,13 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Shield, Target, Unlock, Link as LinkIcon } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
-import HowItWorksModal from './how-it-works-modal'
 
 export default function HeroSection() {
   const { lang } = useLanguage()
   const t = translations[lang].hero
-  const [modalOpen, setModalOpen] = useState(false)
   const router = useRouter()
 
   return (
@@ -79,7 +76,7 @@ export default function HeroSection() {
           <div className="relative inline-block">
             <div className="absolute inset-0 rounded-2xl bg-primary/50 blur-xl animate-glow-pulse pointer-events-none" />
             <button
-              onClick={() => setModalOpen(true)}
+              onClick={() => router.push('/generate')}
               className="relative px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
             >
               {t.ctaPrimary}
@@ -87,26 +84,22 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <HowItWorksModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onProceed={() => router.push('/generate')}
-        />
-
         {/* Concrete trust signals — each explains a "why", not just a label */}
         <div
           className="mt-10 flex flex-wrap justify-center gap-3 sm:gap-4 animate-fade-in"
           style={{ animationDelay: '0.48s' }}
         >
           {[
-            lang === 'en' ? 'Built from your real CV — never invented' : 'Ottimizzato per ATS e recruiter',
-            lang === 'en' ? 'Optimized to pass ATS filters' : 'Si adatta a ogni offerta a cui ti candidi',
-            lang === 'en' ? '1 free credit to get started' : 'Anche come pagina web, condivisibile con un click',
-          ].map((label) => (
+            { icon: Shield, label: lang === 'en' ? 'Built from your real CV — never invented' : 'Zero invenzioni, solo la tua vera storia' },
+            { icon: Target, label: lang === 'en' ? 'Optimized to pass ATS filters' : 'Progettato per superare i filtri ATS' },
+            { icon: Unlock, label: lang === 'en' ? '1 free credit to get started' : 'Primo CV ottimizzato gratis' },
+            { icon: LinkIcon, label: lang === 'en' ? 'Includes a personal web page' : 'Pagina web personale inclusa' },
+          ].map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="glass-card rounded-full px-4 py-2 text-xs sm:text-sm text-muted-foreground"
+              className="glass-card rounded-full pl-3 pr-4 py-2 flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground"
             >
+              <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
               {label}
             </div>
           ))}
