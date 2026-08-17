@@ -391,7 +391,7 @@ export const translations = {
       page: 'Profilo digitale',
     },
     hero: {
-      badge: 'Piattaforma AI per dare un boost alla tua carriera',
+      badge: 'AI Career Profiler & ATS Optimizer',
       titleGradient: 'Più colloqui,',
       titleNormal: 'non un CV più bello.',
       subtitle:
