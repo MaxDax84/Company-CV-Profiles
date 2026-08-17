@@ -5,6 +5,7 @@ import { Send, CheckCircle2, AlertCircle, Paperclip, X } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import TurnstileWidget, { type TurnstileHandle } from '@/components/turnstile-widget'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
@@ -26,6 +27,8 @@ export default function ContactSection() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
   const [fileError, setFileError] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileHandle>(null)
 
   useEffect(() => {
     const el = ref.current
@@ -63,7 +66,7 @@ export default function ContactSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!privacyAccepted) return
+    if (!privacyAccepted || !turnstileToken) return
     setStatus('sending')
 
     const formData = new FormData()
@@ -72,6 +75,7 @@ export default function ContactSection() {
     formData.append('message', message)
     if (file) formData.append('attachment', file)
     if (existingSite.trim()) formData.append('existingSite', existingSite.trim())
+    formData.append('turnstileToken', turnstileToken)
 
     try {
       const res = await fetch('/api/contact', { method: 'POST', body: formData })
@@ -90,6 +94,9 @@ export default function ContactSection() {
       }
     } catch {
       setStatus('error')
+    } finally {
+      turnstileRef.current?.reset()
+      setTurnstileToken(null)
     }
   }
 
@@ -303,6 +310,15 @@ export default function ContactSection() {
                     </label>
                   </div>
 
+                  {/* Bot check */}
+                  <div className="flex justify-center">
+                    <TurnstileWidget
+                      ref={turnstileRef}
+                      onVerify={setTurnstileToken}
+                      language={lang === 'it' ? 'it' : 'en'}
+                    />
+                  </div>
+
                   {status === 'error' && (
                     <div className="flex items-center gap-2 text-destructive text-sm">
                       <AlertCircle className="w-4 h-4" />
@@ -312,7 +328,7 @@ export default function ContactSection() {
 
                   <button
                     type="submit"
-                    disabled={status === 'sending' || !privacyAccepted}
+                    disabled={status === 'sending' || !privacyAccepted || !turnstileToken}
                     className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === 'sending' ? (

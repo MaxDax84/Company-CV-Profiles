@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { contactRatelimit, getClientIp } from '@/lib/rate-limit'
+import { verifyTurnstile } from '@/lib/turnstile'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -13,7 +15,26 @@ function escapeHtml(text: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const clientIp = getClientIp(req)
+  const { success, reset } = await contactRatelimit.limit(clientIp)
+  if (!success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again in a bit.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil((reset - Date.now()) / 1000)) } }
+    )
+  }
+
   const formData = await req.formData()
+
+  const turnstileToken = formData.get('turnstileToken')
+  const captchaOk = await verifyTurnstile(
+    typeof turnstileToken === 'string' ? turnstileToken : null,
+    clientIp
+  )
+  if (!captchaOk) {
+    return NextResponse.json({ error: 'Captcha verification failed. Please try again.' }, { status: 403 })
+  }
+
   const name = (formData.get('name') as string | null)?.trim() ?? ''
   const email = (formData.get('email') as string | null)?.trim() ?? ''
   const message = (formData.get('message') as string | null)?.trim() ?? ''

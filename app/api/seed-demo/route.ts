@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
 import type { ProfileSchema } from "@/lib/schema";
 
@@ -116,7 +116,17 @@ const DEMO_DELTA: ProfileSchema = {
   metadata: { ...DEMO_PROFILE.metadata, template: "delta", primary_color: "#c9a84c" },
 }
 
-export async function GET() {
+// One-off seeding endpoint (populates the permanent KV demo profiles the
+// homepage/generate showcase read from — see components/template-showcase-section.tsx).
+// Was reachable by anyone with no auth at all; gated behind a secret query
+// param now since it doesn't need to be publicly triggerable, only re-run by
+// hand on the rare occasion the demo content changes.
+export async function GET(req: NextRequest) {
+  const secret = req.nextUrl.searchParams.get("secret");
+  if (!process.env.SEED_DEMO_SECRET || secret !== process.env.SEED_DEMO_SECRET) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
+
   await Promise.all([
     kv.set("profile:marco-ferretti",       JSON.stringify(DEMO_PROFILE)),
     kv.set("profile:marco-ferretti-beta",  JSON.stringify(DEMO_BETA)),

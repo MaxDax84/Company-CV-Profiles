@@ -242,6 +242,14 @@ export async function savePendingProfile(
 // human-readable/guessable, so authorizing this by slug alone would let
 // anyone who can guess another user's slug trigger AI calls against their
 // still-unclaimed preview before they sign up.
+//
+// The claim token itself isn't single-use here (it's still needed later by
+// claimPendingProfile at signup) — but the AI call it triggers must only
+// ever run once per token, or the same Turnstile-verified upload could be
+// replayed against this route to rack up unlimited real Claude calls within
+// the token's 1h TTL. A separate `improved:` KV flag makes the improve step
+// itself idempotent: a repeat call just reapplies the template choice to the
+// already-improved profile instead of asking Claude to improve it again.
 export async function improveAndFinalizePendingProfile(
   claimToken: string,
   template?: TemplateStyle
@@ -253,7 +261,11 @@ export async function improveAndFinalizePendingProfile(
   const pending = await getRawPendingProfile(slug);
   if (!pending) return null;
 
-  const improved = await improveResume(pending);
+  const alreadyImproved = await kv.get(`improved:${claimToken}`);
+  const improved = alreadyImproved ? pending : await improveResume(pending);
+  if (!alreadyImproved) {
+    await kv.set(`improved:${claimToken}`, "1", { ex: PENDING_TTL_SECONDS });
+  }
 
   if (template && isTemplateStyle(template)) {
     improved.metadata.template = template;

@@ -23,6 +23,16 @@ export const improveProfileRatelimit = new Ratelimit({
   prefix: "ratelimit:improve-profile",
 });
 
+// Contact form: no Claude call, but it does send a real email (with an
+// attachment) through our own Gmail account on every request — without a
+// cap, a script could spam/flood that inbox and risk the account getting
+// flagged for abuse.
+export const contactRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(5, "1 h"),
+  prefix: "ratelimit:contact",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
