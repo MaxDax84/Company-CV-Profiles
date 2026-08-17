@@ -1,11 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { DM_Serif_Display, DM_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/dm-serif-display/400.css'
+import '@fontsource/dm-serif-display/400-italic.css'
+import '@fontsource/dm-sans/300.css'
+import '@fontsource/dm-sans/400.css'
+import '@fontsource/dm-sans/500.css'
+import '@fontsource/dm-sans/600.css'
+import '@fontsource/dm-sans/700.css'
 import { useLanguage } from '@/components/language-provider'
 
-const serif = DM_Serif_Display({ subsets: ['latin'], weight: ['400'], style: ['normal', 'italic'] })
-const sans = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const SERIF_FONT = "'DM Serif Display', serif"
+const SANS_FONT = "'DM Sans', sans-serif"
 
 const indigo = '#4f46e5'
 const indigoLight = '#818cf8'
@@ -231,7 +238,7 @@ export default function BetaPage() {
   const c = content[lang]
 
   return (
-    <div className={sans.className} style={{ background: bg, color: ink, overflowX: 'hidden' }}>
+    <div style={{ fontFamily: SANS_FONT, background: bg, color: ink, overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
@@ -303,7 +310,7 @@ export default function BetaPage() {
       {/* NAVBAR */}
       <nav className="sc-nav">
         <div className="sc-nav-inner">
-          <a href="#top" className={serif.className} style={{ fontSize: 18, color: ink, textDecoration: 'none', fontStyle: 'italic' }}>SC</a>
+          <a href="#top" style={{ fontFamily: SERIF_FONT, fontSize: 18, color: ink, textDecoration: 'none', fontStyle: 'italic' }}>SC</a>
           <div className="sc-nav-links">
             {c.navLinks.map(([href, label]) => (
               <a key={href} href={href} className="sc-nav-link">{label}</a>
@@ -330,7 +337,7 @@ export default function BetaPage() {
               <p style={{ fontSize: 12, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
                 {c.role}
               </p>
-              <h1 className={serif.className} style={{ fontSize: 'clamp(3rem, 8vw, 8.5rem)', color: ink, lineHeight: 0.88, margin: '0 0 36px', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+              <h1 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(3rem, 8vw, 8.5rem)', color: ink, lineHeight: 0.88, margin: '0 0 36px', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
                 Sofia <em style={{ color: indigo }}>Conti</em>
               </h1>
               <p style={{ fontSize: 'clamp(1rem, 1.6vw, 1.18rem)', color: sub, maxWidth: 720, lineHeight: 1.8, margin: 0, fontWeight: 300 }}>
@@ -357,7 +364,7 @@ export default function BetaPage() {
           <div style={{ borderTop: `1px solid ${border}`, paddingTop: 32, display: 'flex', gap: 48, flexWrap: 'wrap' }}>
             {c.heroStats.map(([v, l]) => (
               <div key={l}>
-                <p className={serif.className} style={{ fontSize: 28, color: indigo, margin: '0 0 2px', fontStyle: 'italic' }}>{v}</p>
+                <p style={{ fontFamily: SERIF_FONT, fontSize: 28, color: indigo, margin: '0 0 2px', fontStyle: 'italic' }}>{v}</p>
                 <p style={{ fontSize: 12, color: muted, margin: 0, fontWeight: 500 }}>{l}</p>
               </div>
             ))}
@@ -371,7 +378,7 @@ export default function BetaPage() {
           {/* Left: text on white */}
           <div style={{ padding: '80px 56px 80px 40px', background: bgAlt, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>{c.aboutLabel}</p>
-            <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', color: ink, lineHeight: 1.2, margin: '0 0 28px' }}>
+            <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', color: ink, lineHeight: 1.2, margin: '0 0 28px' }}>
               {c.aboutHeading}<br /><em>{c.aboutHeadingLine2}</em><br />{c.aboutHeadingLine3}
             </h2>
             <p style={{ fontSize: 15, color: sub, lineHeight: 1.85, margin: '0 0 20px', fontWeight: 300 }}>{c.about1}</p>
@@ -400,10 +407,10 @@ export default function BetaPage() {
       <section id="work" style={{ padding: '100px 40px', background: bg }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 12px' }}>{c.workLabel}</p>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 8px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 8px' }}>
             {c.workHeading}
           </h2>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 52px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 52px' }}>
             <em style={{ color: indigo }}>{c.workHeadingAccent}</em>
           </h2>
 
@@ -434,7 +441,7 @@ export default function BetaPage() {
       <section id="expertise" style={{ padding: '100px 40px', background: bgAlt }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>{c.expertiseLabel}</p>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 52px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: ink, lineHeight: 1.1, margin: '0 0 52px' }}>
             {c.expertiseHeading} <em style={{ color: indigo }}>{c.expertiseHeadingAccent}</em>
           </h2>
           <div className="exp-grid">
@@ -468,7 +475,7 @@ export default function BetaPage() {
         <div className="numbers-row" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: 'rgba(255,255,255,0.05)', borderRadius: 16, overflow: 'hidden' }}>
           {c.numbersRow.map(({ value, label }) => (
             <div key={label} style={{ padding: '40px 32px', textAlign: 'center', background: 'rgba(0,0,0,0.12)' }}>
-              <p className={serif.className} style={{ fontSize: 44, color: '#fff', margin: '0 0 8px', lineHeight: 1, fontStyle: 'italic' }}>{value}</p>
+              <p style={{ fontFamily: SERIF_FONT, fontSize: 44, color: '#fff', margin: '0 0 8px', lineHeight: 1, fontStyle: 'italic' }}>{value}</p>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', margin: 0 }}>{label}</p>
             </div>
           ))}
@@ -479,7 +486,7 @@ export default function BetaPage() {
       <section id="contact" style={{ padding: '100px 40px', background: bg, textAlign: 'center' }}>
         <div style={{ maxWidth: 620, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: indigo, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 24px' }}>{c.contactLabel}</p>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', color: ink, lineHeight: 1.1, margin: '0 0 16px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', color: ink, lineHeight: 1.1, margin: '0 0 16px' }}>
             {c.contactHeading}<br /><em style={{ color: indigo }}>{c.contactHeadingAccent}</em>
           </h2>
           <p style={{ fontSize: 16, color: sub, margin: '0 0 48px', lineHeight: 1.75, fontWeight: 300 }}>{c.contactSub}</p>

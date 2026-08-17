@@ -1,9 +1,18 @@
 import Link from 'next/link'
-import { Special_Elite, Lora } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/special-elite/400.css'
+import '@fontsource/lora/400.css'
+import '@fontsource/lora/400-italic.css'
+import '@fontsource/lora/500.css'
+import '@fontsource/lora/500-italic.css'
+import '@fontsource/lora/600.css'
+import '@fontsource/lora/600-italic.css'
+import '@fontsource/lora/700.css'
+import '@fontsource/lora/700-italic.css'
 import type { Metadata } from 'next'
 
-const specialElite = Special_Elite({ subsets: ['latin'], weight: ['400'] })
-const lora = Lora({ subsets: ['latin'], weight: ['400', '500', '600', '700'], style: ['normal', 'italic'] })
+const SPECIAL_ELITE_FONT = "'Special Elite', cursive, sans-serif"
+const LORA_FONT = "'Lora', serif"
 
 export const metadata: Metadata = { title: 'Forrest Gump — Jobli Showcase' }
 
@@ -14,7 +23,7 @@ export default function ForrestGumpPage() {
   const rust = '#b45309'
 
   return (
-    <div className={lora.className} style={{ minHeight: '100vh', background: cream, color: '#3d2b1f' }}>
+    <div style={{ fontFamily: LORA_FONT, minHeight: '100vh', background: cream, color: '#3d2b1f' }}>
       {/* Paper texture top stripe */}
       <div style={{ height: 8, background: `repeating-linear-gradient(90deg, ${brown}, ${tan} 40px, ${brown} 80px)` }} />
 
@@ -25,10 +34,10 @@ export default function ForrestGumpPage() {
 
         {/* Handwritten-style header */}
         <div style={{ textAlign: 'center', padding: '48px 0 40px' }}>
-          <div className={specialElite.className} style={{ fontSize: 13, letterSpacing: '0.2em', color: rust, marginBottom: 16, textTransform: 'uppercase' }}>
+          <div style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 13, letterSpacing: '0.2em', color: rust, marginBottom: 16, textTransform: 'uppercase' }}>
             Résumé of One
           </div>
-          <h1 className={specialElite.className} style={{ fontSize: 'clamp(3rem, 8vw, 5.5rem)', color: brown, margin: 0, lineHeight: 1, letterSpacing: '0.02em' }}>
+          <h1 style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 'clamp(3rem, 8vw, 5.5rem)', color: brown, margin: 0, lineHeight: 1, letterSpacing: '0.02em' }}>
             Forrest Gump
           </h1>
           <div style={{ width: 120, height: 2, background: `linear-gradient(90deg, transparent, ${tan}, transparent)`, margin: '20px auto' }} />
@@ -48,7 +57,7 @@ export default function ForrestGumpPage() {
           {/* Sidebar */}
           <div>
             <div style={{ marginBottom: 28 }}>
-              <p className={specialElite.className} style={{ fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
                 PERSONAL
               </p>
               {[
@@ -67,7 +76,7 @@ export default function ForrestGumpPage() {
             </div>
 
             <div style={{ marginBottom: 28 }}>
-              <p className={specialElite.className} style={{ fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
                 EDUCATION
               </p>
               <div>
@@ -81,7 +90,7 @@ export default function ForrestGumpPage() {
             </div>
 
             <div>
-              <p className={specialElite.className} style={{ fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 12, letterSpacing: '0.1em' }}>
                 AWARDS
               </p>
               {[
@@ -99,7 +108,7 @@ export default function ForrestGumpPage() {
           {/* Main content */}
           <div>
             <section style={{ marginBottom: 32 }}>
-              <p className={specialElite.className} style={{ fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 16, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 16, letterSpacing: '0.1em' }}>
                 ABOUT ME
               </p>
               <p style={{ fontSize: 15, lineHeight: 1.9, color: '#5c3d2e', fontWeight: 400 }}>
@@ -111,7 +120,7 @@ export default function ForrestGumpPage() {
             </section>
 
             <section style={{ marginBottom: 32 }}>
-              <p className={specialElite.className} style={{ fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 16, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, borderBottom: `1px solid ${tan}50`, paddingBottom: 6, marginBottom: 16, letterSpacing: '0.1em' }}>
                 EXPERIENCE
               </p>
               {[
@@ -149,7 +158,7 @@ export default function ForrestGumpPage() {
                 <div key={title} style={{ marginBottom: 20, paddingBottom: 20, borderBottom: `1px dashed ${tan}50` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                     <p style={{ fontWeight: 600, fontSize: 15, color: brown, margin: 0 }}>{title}</p>
-                    <p className={specialElite.className} style={{ fontSize: 12, color: rust, margin: 0 }}>{years}</p>
+                    <p style={{ fontFamily: SPECIAL_ELITE_FONT, fontSize: 12, color: rust, margin: 0 }}>{years}</p>
                   </div>
                   <p style={{ fontSize: 13, color: tan, margin: '0 0 8px', fontStyle: 'italic' }}>{org}</p>
                   <p style={{ fontSize: 14, color: '#5c3d2e', margin: 0, lineHeight: 1.7 }}>{desc}</p>

@@ -32,6 +32,10 @@
   --ring: #6366f1;
   --radius: 0.75rem;
   --section-alt: #f5f3ff; /* tinted alternating-section background (mission-section.tsx) */
+  /* Self-hosted via @fontsource (see app/layout.tsx) instead of next/font's
+     `variable` option — same two custom properties, just set directly. */
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
 }
 
 .dark {
@@ -63,8 +67,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-body), 'Inter Fallback';
-  --font-heading: var(--font-heading), 'Space Grotesk Fallback';
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);

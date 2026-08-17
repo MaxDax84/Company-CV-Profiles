@@ -1,8 +1,20 @@
 import Link from 'next/link'
-import { Playfair_Display, Cormorant_Garamond } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/playfair-display/400.css'
+import '@fontsource/playfair-display/400-italic.css'
+import '@fontsource/playfair-display/700.css'
+import '@fontsource/playfair-display/700-italic.css'
+import '@fontsource/playfair-display/900.css'
+import '@fontsource/playfair-display/900-italic.css'
+import '@fontsource/cormorant-garamond/300.css'
+import '@fontsource/cormorant-garamond/300-italic.css'
+import '@fontsource/cormorant-garamond/400.css'
+import '@fontsource/cormorant-garamond/400-italic.css'
+import '@fontsource/cormorant-garamond/600.css'
+import '@fontsource/cormorant-garamond/600-italic.css'
 
-const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700', '900'], style: ['normal', 'italic'] })
-const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
+const PLAYFAIR_FONT = "'Playfair Display', serif"
+const CORMORANT_FONT = "'Cormorant Garamond', serif"
 
 const gold = '#c9a84c'
 const darkBg = '#0a0907'
@@ -19,7 +31,7 @@ const films = [
 
 export default function AudreyHepburnPage() {
   return (
-    <div className={cormorant.className} style={{ background: darkBg, color: '#e8e0d0', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: CORMORANT_FONT, background: darkBg, color: '#e8e0d0', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         .ah-pull-quote {
@@ -59,21 +71,21 @@ export default function AudreyHepburnPage() {
 
       {/* Minimal header */}
       <div className="ah-header">
-        <Link href="/showcase" className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', textDecoration: 'none', letterSpacing: '0.15em', fontStyle: 'italic' }}>← Showcase</Link>
-        <p className={cormorant.className} style={{ fontSize: 11, color: '#4b3e2e', letterSpacing: '0.4em', margin: 0, textTransform: 'uppercase' }}>Jobli · Style Showcase</p>
-        <p className={`ah-header-date ${cormorant.className}`} style={{ fontSize: 12, color: '#4b3e2e', margin: 0, fontStyle: 'italic' }}>4 May 1929 – 20 January 1993</p>
+        <Link href="/showcase" style={{ fontFamily: CORMORANT_FONT, fontSize: 13, color: '#4b3e2e', textDecoration: 'none', letterSpacing: '0.15em', fontStyle: 'italic' }}>← Showcase</Link>
+        <p style={{ fontFamily: CORMORANT_FONT, fontSize: 11, color: '#4b3e2e', letterSpacing: '0.4em', margin: 0, textTransform: 'uppercase' }}>Jobli · Style Showcase</p>
+        <p className="ah-header-date" style={{ fontFamily: CORMORANT_FONT, fontSize: 12, color: '#4b3e2e', margin: 0, fontStyle: 'italic' }}>4 May 1929 – 20 January 1993</p>
       </div>
 
       {/* ── OPENING — full-bleed typographic title ── */}
       <section className="ah-hero" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.06), transparent 60%)`, pointerEvents: 'none' }} />
-        <p className={cormorant.className} style={{ fontSize: 12, letterSpacing: '0.6em', color: gold, textTransform: 'uppercase', margin: '0 0 32px' }}>
+        <p style={{ fontFamily: CORMORANT_FONT, fontSize: 12, letterSpacing: '0.6em', color: gold, textTransform: 'uppercase', margin: '0 0 32px' }}>
           Actress · Humanitarian · Style Icon
         </p>
-        <h1 className={playfair.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 0.9, margin: '0 0 0', color: '#ffffff', letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 0.9, margin: '0 0 0', color: '#ffffff', letterSpacing: '-0.02em' }}>
           Audrey
         </h1>
-        <h1 className={playfair.className} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, fontStyle: 'italic', lineHeight: 0.9, color: gold, letterSpacing: '-0.01em', margin: '0 0 48px' }}>
+        <h1 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, fontStyle: 'italic', lineHeight: 0.9, color: gold, letterSpacing: '-0.01em', margin: '0 0 48px' }}>
           Hepburn
         </h1>
         <div style={{ width: 1, height: 80, background: `linear-gradient(to bottom, ${gold}, transparent)`, margin: '0 auto' }} />
@@ -84,32 +96,32 @@ export default function AudreyHepburnPage() {
 
         {/* Opening quote — editorial pull style */}
         <div className="ah-pull-quote" style={{ borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}`, padding: '40px 80px', margin: '0 -80px 64px', textAlign: 'center' }}>
-          <p className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontWeight: 400, fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontWeight: 400, fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5 }}>
             &ldquo;Nothing is impossible — the word itself says I&rsquo;m possible.&rdquo;
           </p>
         </div>
 
         {/* Biography — drop cap first paragraph */}
         <section id="biography">
-          <p className={cormorant.className} style={{ fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Biography</p>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Biography</p>
 
           {/* Drop cap effect */}
-          <p className={cormorant.className} style={{ fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginBottom: 24, fontWeight: 300 }}>
-            <span className={playfair.className} style={{ float: 'left', fontSize: '4.5em', lineHeight: 0.75, paddingRight: 12, paddingTop: 10, color: gold, fontWeight: 900 }}>B</span>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginBottom: 24, fontWeight: 300 }}>
+            <span style={{ fontFamily: PLAYFAIR_FONT, float: 'left', fontSize: '4.5em', lineHeight: 0.75, paddingRight: 12, paddingTop: 10, color: gold, fontWeight: 900 }}>B</span>
             orn Audrey Kathleen Ruston in Brussels on 4 May 1929, she survived the Nazi occupation of the Netherlands as a child — an experience that permanently shaped her profound empathy for those the world had abandoned. She came of age in wartime, watching, hungry, and learning.
           </p>
-          <p className={cormorant.className} style={{ fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginBottom: 24, fontWeight: 300 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginBottom: 24, fontWeight: 300 }}>
             She trained in ballet — Amsterdam first, then London — before the theatre claimed her. A chance encounter in Monte Carlo, where novelist Colette spotted her and insisted she play the lead in the Broadway production of <em>Gigi</em>, changed everything. By 1953, Roman Holiday had made her the most luminous face in Hollywood.
           </p>
 
           {/* Pull quote mid-article */}
           <div className="ah-pull-quote" style={{ margin: '40px -80px', padding: '36px 80px', background: parchment, borderLeft: `3px solid ${gold}` }}>
-            <p className={playfair.className} style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.55 }}>
+            <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.55 }}>
               &ldquo;She survived a war. Then she conquered Hollywood. Then she gave it all up — for children she would never meet.&rdquo;
             </p>
           </div>
 
-          <p className={cormorant.className} style={{ fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginTop: 40, marginBottom: 0, fontWeight: 300 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 21, lineHeight: 1.85, color: '#9c8870', marginTop: 40, marginBottom: 0, fontWeight: 300 }}>
             In her final years, Hepburn devoted herself entirely to UNICEF. She traveled to Ethiopia, Sudan, Bangladesh, Vietnam, and Somalia — places that the cameras had left. She sat with dying children, held their hands, and put her face to their suffering until the world was forced to look.
           </p>
         </section>
@@ -123,24 +135,24 @@ export default function AudreyHepburnPage() {
 
         {/* Filmography — editorial numbered list */}
         <section id="films">
-          <p className={cormorant.className} style={{ fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 48px' }}>Selected Filmography</p>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 48px' }}>Selected Filmography</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {films.map((f, i) => (
               <div key={f.title} style={{ display: 'grid', gridTemplateColumns: '48px 1fr', gap: 32, paddingBottom: 40, marginBottom: 40, borderBottom: i < films.length - 1 ? `1px solid rgba(201,168,76,0.12)` : 'none' }}>
                 {/* Number */}
                 <div style={{ paddingTop: 6 }}>
-                  <p className={playfair.className} style={{ fontSize: 36, fontWeight: 900, color: 'rgba(201,168,76,0.2)', margin: 0, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</p>
+                  <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 36, fontWeight: 900, color: 'rgba(201,168,76,0.2)', margin: 0, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</p>
                 </div>
                 {/* Content */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 6, flexWrap: 'wrap' }}>
-                    <p className={playfair.className} style={{ fontSize: 22, fontWeight: 700, color: '#ffffff', margin: 0 }}>{f.title}</p>
-                    <p className={cormorant.className} style={{ fontSize: 14, color: gold, margin: 0, fontStyle: 'italic', letterSpacing: '0.1em' }}>{f.year}</p>
+                    <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 22, fontWeight: 700, color: '#ffffff', margin: 0 }}>{f.title}</p>
+                    <p style={{ fontFamily: CORMORANT_FONT, fontSize: 14, color: gold, margin: 0, fontStyle: 'italic', letterSpacing: '0.1em' }}>{f.year}</p>
                   </div>
-                  <p className={cormorant.className} style={{ fontSize: 16, color: 'rgba(201,168,76,0.6)', margin: '0 0 10px', fontStyle: 'italic' }}>as {f.role}</p>
-                  <p className={cormorant.className} style={{ fontSize: 19, color: '#9c8870', margin: '0 0 10px', lineHeight: 1.7, fontWeight: 300 }}>{f.note}</p>
-                  <p className={cormorant.className} style={{ fontSize: 14, color: gold, margin: 0, letterSpacing: '0.05em' }}>{f.award}</p>
+                  <p style={{ fontFamily: CORMORANT_FONT, fontSize: 16, color: 'rgba(201,168,76,0.6)', margin: '0 0 10px', fontStyle: 'italic' }}>as {f.role}</p>
+                  <p style={{ fontFamily: CORMORANT_FONT, fontSize: 19, color: '#9c8870', margin: '0 0 10px', lineHeight: 1.7, fontWeight: 300 }}>{f.note}</p>
+                  <p style={{ fontFamily: CORMORANT_FONT, fontSize: 14, color: gold, margin: 0, letterSpacing: '0.05em' }}>{f.award}</p>
                 </div>
               </div>
             ))}
@@ -156,16 +168,16 @@ export default function AudreyHepburnPage() {
 
         {/* Awards — inline editorial block, not cards */}
         <section id="awards">
-          <p className={cormorant.className} style={{ fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Awards & Honours</p>
-          <p className={playfair.className} style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.9rem)', fontWeight: 700, color: '#ffffff', lineHeight: 1.3, marginBottom: 28 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Awards & Honours</p>
+          <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.4rem, 2.5vw, 1.9rem)', fontWeight: 700, color: '#ffffff', lineHeight: 1.3, marginBottom: 28 }}>
             One of only 17 people in history to achieve the EGOT.
           </p>
-          <p className={cormorant.className} style={{ fontSize: 20, color: '#9c8870', lineHeight: 1.85, marginBottom: 32, fontWeight: 300 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 20, color: '#9c8870', lineHeight: 1.85, marginBottom: 32, fontWeight: 300 }}>
             Academy Award (1953, <em>Roman Holiday</em>) · Tony Award (1954, <em>Ondine</em>) · Grammy Award (1993) · Emmy Award (1993) — and the Presidential Medal of Freedom, awarded just months before her death. She received the Jean Hersholt Humanitarian Award from the Academy of Motion Picture Arts and Sciences. The EGOT arrived as an afterthought. Hepburn had long since stopped counting.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {['Academy Award', 'Tony Award', 'Grammy Award', 'Emmy Award', 'BAFTA Award', 'Presidential Medal of Freedom'].map(a => (
-              <span key={a} className={cormorant.className} style={{ fontSize: 14, padding: '6px 16px', border: `1px solid ${borderGold}`, borderRadius: 99, color: gold, letterSpacing: '0.08em', fontStyle: 'italic' }}>{a}</span>
+              <span key={a} style={{ fontFamily: CORMORANT_FONT, fontSize: 14, padding: '6px 16px', border: `1px solid ${borderGold}`, borderRadius: 99, color: gold, letterSpacing: '0.08em', fontStyle: 'italic' }}>{a}</span>
             ))}
           </div>
         </section>
@@ -179,26 +191,26 @@ export default function AudreyHepburnPage() {
 
         {/* Humanitarian — full-width pull quote + text */}
         <section id="humanitarian">
-          <p className={cormorant.className} style={{ fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Humanitarian Legacy</p>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 11, letterSpacing: '0.5em', color: gold, textTransform: 'uppercase', margin: '0 0 28px' }}>Humanitarian Legacy</p>
 
           <div className="ah-pull-quote" style={{ margin: '0 -80px 48px', padding: '40px 80px', borderTop: `1px solid ${borderGold}`, borderBottom: `1px solid ${borderGold}` }}>
-            <p className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5, textAlign: 'center' }}>
+            <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.3rem, 2.5vw, 2rem)', fontStyle: 'italic', color: '#e8e0d0', margin: 0, lineHeight: 1.5, textAlign: 'center' }}>
               &ldquo;She gave up cinema to save children. And she never once looked back.&rdquo;
             </p>
           </div>
 
-          <p className={cormorant.className} style={{ fontSize: 21, color: '#9c8870', lineHeight: 1.85, marginBottom: 24, fontWeight: 300 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 21, color: '#9c8870', lineHeight: 1.85, marginBottom: 24, fontWeight: 300 }}>
             UNICEF Goodwill Ambassador from 1988 until her death on 20 January 1993. Ethiopia, Sudan, El Salvador, Bangladesh, Vietnam, Somalia. She sat with children no headline would cover and brought the world's cameras after her. The Presidential Medal of Freedom followed in 1992 — her last year of strength.
           </p>
-          <p className={cormorant.className} style={{ fontSize: 21, color: '#9c8870', lineHeight: 1.85, fontWeight: 300 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 21, color: '#9c8870', lineHeight: 1.85, fontWeight: 300 }}>
             The Audrey Hepburn Children's Fund continues her work. She left no memoir, no autobiography. She left only the photographs of the places she went — and the faces of the children she refused to forget.
           </p>
         </section>
 
         {/* Footer */}
         <div className="ah-footer-row" style={{ marginTop: 80, paddingTop: 32, borderTop: `1px solid rgba(201,168,76,0.15)` }}>
-          <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>4 May 1929 – 20 January 1993</p>
-          <p className={cormorant.className} style={{ fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>4 May 1929 – 20 January 1993</p>
+          <p style={{ fontFamily: CORMORANT_FONT, fontSize: 13, color: '#4b3e2e', fontStyle: 'italic', margin: 0 }}>
             Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobli</Link>
           </p>
         </div>

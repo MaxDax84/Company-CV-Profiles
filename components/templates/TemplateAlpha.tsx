@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx for why, not just here)
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import type { ProfileSchema } from '@/lib/schema'
 import { yearsOfExperience, formatEducationYearRange } from '@/lib/experience-utils'
-
-const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
 
 // ── Scroll hooks (same as delta) ──────────────────────────────────────────
 function useScrolled(threshold = 50) {
@@ -119,7 +122,7 @@ export default function TemplateAlpha({ profile }: Props) {
   const contactIn = useInView()
 
   return (
-    <div className={inter.className} style={{ background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: "'Inter', sans-serif", background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

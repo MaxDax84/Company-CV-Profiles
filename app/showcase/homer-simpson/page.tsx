@@ -1,8 +1,13 @@
 import Link from 'next/link'
-import { Lilita_One, Nunito } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/lilita-one/400.css'
+import '@fontsource/nunito/400.css'
+import '@fontsource/nunito/600.css'
+import '@fontsource/nunito/700.css'
+import '@fontsource/nunito/800.css'
 
-const lilita = Lilita_One({ subsets: ['latin'], weight: ['400'] })
-const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800'] })
+const LILITA_FONT = "'Lilita One', cursive, sans-serif"
+const NUNITO_FONT = "'Nunito', sans-serif"
 
 const yellow = '#fbbf24'
 const blue = '#1d4ed8'
@@ -13,7 +18,7 @@ const panelRadius = 0
 
 export default function HomerSimpsonPage() {
   return (
-    <div className={nunito.className} style={{ background: '#f8fafc', color: '#111827', minHeight: '100vh' }}>
+    <div style={{ fontFamily: NUNITO_FONT, background: '#f8fafc', color: '#111827', minHeight: '100vh' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         .panel {
@@ -102,7 +107,7 @@ export default function HomerSimpsonPage() {
             <div style={{ fontSize: 64, lineHeight: 1 }}>🍩</div>
             <div>
               <p style={{ fontSize: 10, fontWeight: 800, color: blue, letterSpacing: '0.25em', margin: '0 0 4px' }}>SPRINGFIELD NUCLEAR POWER PLANT · EMPLOYEE PROFILE</p>
-              <h1 className={lilita.className} style={{ fontSize: 'clamp(1.6rem, 4vw, 2.8rem)', color: blue, margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
+              <h1 style={{ fontFamily: LILITA_FONT, fontSize: 'clamp(1.6rem, 4vw, 2.8rem)', color: blue, margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
                 HOMER J. SIMPSON
               </h1>
               <p style={{ fontWeight: 800, color: '#92400e', margin: '4px 0 0', fontSize: 15 }}>Nuclear Safety Inspector · Sector 7-G · Springfield, USA</p>
@@ -123,7 +128,7 @@ export default function HomerSimpsonPage() {
           {/* Bio panel */}
           <div className="panel hs-bio-panel" style={{ background: 'white', borderRadius: 0, border: 'none' }}>
             <span className="panel-num">02</span>
-            <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 16, marginTop: 8 }}>The Springfield Story</h2>
+            <h2 style={{ fontFamily: LILITA_FONT, fontSize: 26, color: blue, marginBottom: 16, marginTop: 8 }}>The Springfield Story</h2>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: '#374151', marginBottom: 16 }}>
               Born <strong>May 12, 1956</strong> in Springfield — a city in a state nobody can identify. Son of Abe and Mona Simpson. Attended Springfield High School and graduated, somewhat miraculously, despite losing significant brain function to a crayon lodged in his nasal cavity.
             </p>
@@ -141,7 +146,7 @@ export default function HomerSimpsonPage() {
           {/* Stats panel */}
           <div className="panel hs-stats-panel" style={{ background: yellow, border: 'none' }}>
             <span className="panel-num">03</span>
-            <h2 className={lilita.className} style={{ fontSize: 22, color: blue, marginBottom: 20, marginTop: 8 }}>By the Numbers</h2>
+            <h2 style={{ fontFamily: LILITA_FONT, fontSize: 22, color: blue, marginBottom: 20, marginTop: 8 }}>By the Numbers</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
                 ['🍩', '∞', 'Donuts consumed'],
@@ -154,7 +159,7 @@ export default function HomerSimpsonPage() {
               ].map(([icon, val, label]) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'white', border: `2px solid ${blue}`, padding: '8px 12px' }}>
                   <span style={{ fontSize: 18 }}>{icon}</span>
-                  <span className={lilita.className} style={{ fontSize: 20, color: blue, minWidth: 36 }}>{val}</span>
+                  <span style={{ fontFamily: LILITA_FONT, fontSize: 20, color: blue, minWidth: 36 }}>{val}</span>
                   <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 700 }}>{label}</span>
                 </div>
               ))}
@@ -165,7 +170,7 @@ export default function HomerSimpsonPage() {
         {/* ROW 2: Adventures (full width, 3 cols) */}
         <div className="panel hs-adventures-outer" style={{ border: 'none', borderBottom: panelBorder, background: '#fff7ed' }}>
           <span className="panel-num">04</span>
-          <h2 className={lilita.className} style={{ fontSize: 26, color: orange, marginBottom: 28, marginTop: 8 }}>Adventures & Side Jobs</h2>
+          <h2 style={{ fontFamily: LILITA_FONT, fontSize: 26, color: orange, marginBottom: 28, marginTop: 8 }}>Adventures & Side Jobs</h2>
           <p style={{ fontSize: 13, fontWeight: 800, color: '#9a3412', letterSpacing: '0.1em', marginBottom: 20 }}>
             HOMER HAS DONE IT ALL. USUALLY BY ACCIDENT.
           </p>
@@ -180,7 +185,7 @@ export default function HomerSimpsonPage() {
             ].map((a) => (
               <div key={a.title} style={{ padding: '20px', border: panelBorder, margin: '-1px 0 0 -1px', background: 'white' }}>
                 <div style={{ fontSize: 28, marginBottom: 8 }}>{a.emoji}</div>
-                <p className={lilita.className} style={{ fontSize: 15, color: blue, margin: '0 0 4px' }}>{a.title}</p>
+                <p style={{ fontFamily: LILITA_FONT, fontSize: 15, color: blue, margin: '0 0 4px' }}>{a.title}</p>
                 <p style={{ fontSize: 10, color: '#9ca3af', fontWeight: 800, letterSpacing: '0.08em', margin: '0 0 8px' }}>{a.org}</p>
                 <p style={{ fontSize: 13, color: '#374151', margin: 0, lineHeight: 1.6 }}>{a.desc}</p>
               </div>
@@ -194,7 +199,7 @@ export default function HomerSimpsonPage() {
           {/* Skills */}
           <div className="panel hs-skills-panel" style={{ background: blue, border: 'none' }}>
             <span className="panel-num" style={{ color: 'rgba(255,255,255,0.3)' }}>05</span>
-            <h2 className={lilita.className} style={{ fontSize: 22, color: yellow, marginBottom: 24, marginTop: 8 }}>Skill Assessment</h2>
+            <h2 style={{ fontFamily: LILITA_FONT, fontSize: 22, color: yellow, marginBottom: 24, marginTop: 8 }}>Skill Assessment</h2>
             {[['Eating', 99, yellow], ['Sleeping', 97, yellow], ['TV Watching', 95, yellow], ['Bowling', 63, orange], ['Parenting', 52, orange], ['Nuclear Safety', 8, red]].map(([skill, pct, color]) => (
               <div key={skill as string} style={{ marginBottom: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -211,7 +216,7 @@ export default function HomerSimpsonPage() {
           {/* Family */}
           <div className="panel hs-family-panel" style={{ background: 'white', border: 'none' }}>
             <span className="panel-num">06</span>
-            <h2 className={lilita.className} style={{ fontSize: 26, color: blue, marginBottom: 28, marginTop: 8 }}>742 Evergreen Terrace</h2>
+            <h2 style={{ fontFamily: LILITA_FONT, fontSize: 26, color: blue, marginBottom: 28, marginTop: 8 }}>742 Evergreen Terrace</h2>
             <div className="hs-family-grid">
               {[
                 { emoji: '💙', name: 'Marge Simpson', tag: 'WIFE', desc: 'The heart of the family. Impossibly patient. Still in love with Homer after 35 years — nobody knows how.', color: blue },
@@ -223,7 +228,7 @@ export default function HomerSimpsonPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                     <span style={{ fontSize: 28 }}>{m.emoji}</span>
                     <div>
-                      <p className={lilita.className} style={{ fontSize: 14, color: m.color, margin: 0 }}>{m.name}</p>
+                      <p style={{ fontFamily: LILITA_FONT, fontSize: 14, color: m.color, margin: 0 }}>{m.name}</p>
                       <p style={{ fontSize: 9, fontWeight: 800, color: '#9ca3af', letterSpacing: '0.2em', margin: 0 }}>{m.tag}</p>
                     </div>
                   </div>
@@ -237,7 +242,7 @@ export default function HomerSimpsonPage() {
         {/* ROW 4: Full-width quote panel */}
         <div className="panel" style={{ background: yellow, padding: '48px 40px', border: 'none', borderBottom: panelBorder, textAlign: 'center' }}>
           <span className="panel-num">07</span>
-          <p className={lilita.className} style={{ fontSize: 'clamp(1.5rem, 5vw, 4rem)', color: blue, margin: '0 0 16px', lineHeight: 1.1 }}>
+          <p style={{ fontFamily: LILITA_FONT, fontSize: 'clamp(1.5rem, 5vw, 4rem)', color: blue, margin: '0 0 16px', lineHeight: 1.1 }}>
             &ldquo;To alcohol! The cause of — and solution to — all of life&apos;s problems.&rdquo;
           </p>
           <p style={{ fontSize: 14, color: '#92400e', fontWeight: 800, margin: 0, letterSpacing: '0.1em' }}>— HOMER J. SIMPSON</p>
@@ -245,7 +250,7 @@ export default function HomerSimpsonPage() {
 
         {/* Footer */}
         <div className="hs-footer" style={{ background: blue }}>
-          <span className={lilita.className} style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>🍩 SPRINGFIELD, USA</span>
+          <span style={{ fontFamily: LILITA_FONT, fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>🍩 SPRINGFIELD, USA</span>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, fontWeight: 800 }}>
             Designed by <Link href="/" style={{ color: yellow, textDecoration: 'none' }}>Jobli</Link>
           </p>

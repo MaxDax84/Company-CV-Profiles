@@ -1,8 +1,13 @@
 import Link from 'next/link'
-import { Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import type { Metadata } from 'next'
 
-const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const INTER_FONT = "'Inter', sans-serif"
 
 export const metadata: Metadata = { title: 'Leonardo DiCaprio — Jobli Showcase' }
 
@@ -14,7 +19,7 @@ export default function LeonardoDiCaprioPage() {
   const border = '#1e3545'
 
   return (
-    <div className={inter.className} style={{ minHeight: '100vh', background: bg, color: '#e2ece9' }}>
+    <div style={{ fontFamily: INTER_FONT, minHeight: '100vh', background: bg, color: '#e2ece9' }}>
 
       {/* Top accent bar */}
       <div style={{ height: 3, background: `linear-gradient(90deg, ${teal}, ${tealLight}, ${teal})` }} />

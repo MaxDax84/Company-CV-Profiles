@@ -2,18 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { DM_Serif_Display, Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx) — was next/font/google, dropped for the
+// same reliability reason noted below for DM_Sans (any Google-fetched font
+// could 404 on a given build, not just that one).
+import '@fontsource/dm-serif-display/400.css'
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import type { ProfileSchema } from '@/lib/schema'
 import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
-const serif = DM_Serif_Display({ subsets: ['latin'], weight: ['400'] })
-// DM_Sans dropped: Google's CDN started 404ing its font files (same class
-// of failure as Source_Serif_4 on the sherlock-holmes showcase — see that
-// fix's comment) — this one bites harder since the new homepage template
-// showcase eagerly loads every web template's live preview, including this
-// one, right on page load. Inter is already proven working elsewhere in
-// this app (app/layout.tsx and several showcase pages).
-const sans  = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const SERIF_FONT = "'DM Serif Display', serif"
+const SANS_FONT = "'Inter', sans-serif"
 
 function useScrolled(threshold = 50) {
   const [scrolled, setScrolled] = useState(false)
@@ -76,7 +78,7 @@ export default function TemplateBeta({ profile }: Props) {
   const contactIn = useInView()
 
   return (
-    <div className={sans.className} style={{ background: white, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: SANS_FONT, background: white, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
@@ -168,7 +170,7 @@ export default function TemplateBeta({ profile }: Props) {
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
 
-          <h1 className={`${serif.className} sb-hero-h1`} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, color: ink, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
+          <h1 className="sb-hero-h1" style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 400, color: ink, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
             {p.full_name.split(' ')[0]}{' '}
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
@@ -225,7 +227,7 @@ export default function TemplateBeta({ profile }: Props) {
               <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>
                 {isIT ? 'Profilo' : 'Profile'}
               </p>
-              <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 400, color: ink, lineHeight: 1.2, margin: '0 0 24px' }}>
+              <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 400, color: ink, lineHeight: 1.2, margin: '0 0 24px' }}>
                 {isIT ? <>Chi sono.<br /><span style={{ color: accent }}>In breve.</span></> : <>About me.<br /><span style={{ color: accent }}>In short.</span></>}
               </h2>
               <p style={{ fontSize: 15, color: muted, lineHeight: 1.85, fontWeight: 300 }}>{p.bio}</p>
@@ -267,7 +269,7 @@ export default function TemplateBeta({ profile }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
             {isIT ? 'Esperienza' : 'Experience'}
           </p>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 400, color: ink, lineHeight: 1.15, margin: '0 0 48px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 400, color: ink, lineHeight: 1.15, margin: '0 0 48px' }}>
             {isIT ? <>Dove sono stato.<br /><span style={{ color: accent }}>Cosa ho costruito.</span></> : <>Where I&apos;ve been.<br /><span style={{ color: accent }}>What I&apos;ve built.</span></>}
           </h2>
           {experience.map((exp, i) => (
@@ -314,7 +316,7 @@ export default function TemplateBeta({ profile }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
             {isIT ? 'Competenze' : 'Skills'}
           </p>
-          <h2 className={serif.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 400, color: ink, margin: '0 0 40px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 400, color: ink, margin: '0 0 40px' }}>
             {isIT ? 'Il toolkit.' : 'The toolkit.'}
           </h2>
           <div className="sb-expertise-grid">
@@ -422,7 +424,7 @@ export default function TemplateBeta({ profile }: Props) {
           ref={contactIn.ref}
           style={{ maxWidth: 600, margin: '0 auto', padding: '0 24px', transition: 'opacity 0.7s, transform 0.7s', opacity: contactIn.inView ? 1 : 0, transform: contactIn.inView ? 'translateY(0)' : 'translateY(28px)' }}
         >
-          <h2 className={serif.className} style={{ fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 400, color: white, lineHeight: 1.1, margin: '0 0 16px' }}>
+          <h2 style={{ fontFamily: SERIF_FONT, fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 400, color: white, lineHeight: 1.1, margin: '0 0 16px' }}>
             {isIT ? <>Parliamo.<br /><span style={{ color: accent }}>Sono disponibile.</span></> : <>Let&apos;s talk.<br /><span style={{ color: accent }}>I&apos;m available.</span></>}
           </h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', margin: '0 0 48px', lineHeight: 1.75, fontWeight: 300 }}>

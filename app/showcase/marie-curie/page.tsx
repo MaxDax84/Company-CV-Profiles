@@ -1,9 +1,21 @@
 import Link from 'next/link'
-import { Crimson_Pro, Source_Sans_3 } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/crimson-pro/300.css'
+import '@fontsource/crimson-pro/300-italic.css'
+import '@fontsource/crimson-pro/400.css'
+import '@fontsource/crimson-pro/400-italic.css'
+import '@fontsource/crimson-pro/600.css'
+import '@fontsource/crimson-pro/600-italic.css'
+import '@fontsource/crimson-pro/700.css'
+import '@fontsource/crimson-pro/700-italic.css'
+import '@fontsource/source-sans-3/300.css'
+import '@fontsource/source-sans-3/400.css'
+import '@fontsource/source-sans-3/600.css'
+import '@fontsource/source-sans-3/700.css'
 import type { Metadata } from 'next'
 
-const crimson = Crimson_Pro({ subsets: ['latin'], weight: ['300', '400', '600', '700'], style: ['normal', 'italic'] })
-const sourceSans = Source_Sans_3({ subsets: ['latin'], weight: ['300', '400', '600', '700'] })
+const CRIMSON_FONT = "'Crimson Pro', serif"
+const SOURCE_SANS_FONT = "'Source Sans 3', sans-serif"
 
 export const metadata: Metadata = { title: 'Marie Curie — Jobli Showcase' }
 
@@ -14,7 +26,7 @@ export default function MarieCuriePage() {
   const ink = '#1a1a2e'
 
   return (
-    <div className={sourceSans.className} style={{ minHeight: '100vh', background: white, color: ink }}>
+    <div style={{ fontFamily: SOURCE_SANS_FONT, minHeight: '100vh', background: white, color: ink }}>
 
       {/* Academic header stripe */}
       <div style={{ background: bordeaux, color: white, padding: '0' }}>
@@ -24,7 +36,7 @@ export default function MarieCuriePage() {
               <p style={{ fontSize: 10, letterSpacing: '0.35em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', margin: '0 0 12px', fontWeight: 600 }}>
                 Curriculum Vitae Academici
               </p>
-              <h1 className={crimson.className} style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', fontWeight: 700, margin: 0, lineHeight: 1, color: white }}>
+              <h1 style={{ fontFamily: CRIMSON_FONT, fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', fontWeight: 700, margin: 0, lineHeight: 1, color: white }}>
                 Maria Skłodowska-Curie
               </h1>
               <p style={{ margin: '10px 0 0', fontSize: 14, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.05em' }}>
@@ -55,7 +67,7 @@ export default function MarieCuriePage() {
             {/* Biography */}
             <section style={{ marginBottom: 40, borderBottom: '1px solid #e8e0e4', paddingBottom: 40 }}>
               <p style={{ fontSize: 10, letterSpacing: '0.2em', color: bordeaux, textTransform: 'uppercase', fontWeight: 700, marginBottom: 14 }}>Research Profile</p>
-              <p className={crimson.className} style={{ fontSize: 19, lineHeight: 1.85, color: '#3d2030', fontWeight: 300 }}>
+              <p style={{ fontFamily: CRIMSON_FONT, fontSize: 19, lineHeight: 1.85, color: '#3d2030', fontWeight: 300 }}>
                 Pioneering physicist and chemist; the first person — and only woman to date — to win the Nobel Prize
                 twice, in two distinct scientific disciplines. Conducted groundbreaking research into radioactivity,
                 coined the very term. Discovered two new elements: polonium and radium. Opened the first mobile
@@ -93,7 +105,7 @@ export default function MarieCuriePage() {
                     <p style={{ fontSize: 12, color: '#9a7080', margin: 0, whiteSpace: 'nowrap' }}>{dates}</p>
                   </div>
                   <p style={{ fontSize: 13, color: bordeaux, margin: '2px 0 6px', fontWeight: 600 }}>{inst}</p>
-                  <p className={crimson.className} style={{ fontSize: 16, color: '#6b4050', margin: 0, lineHeight: 1.6, fontWeight: 300 }}>{note}</p>
+                  <p style={{ fontFamily: CRIMSON_FONT, fontSize: 16, color: '#6b4050', margin: 0, lineHeight: 1.6, fontWeight: 300 }}>{note}</p>
                 </div>
               ))}
             </section>
@@ -109,10 +121,10 @@ export default function MarieCuriePage() {
                 ['1921', 'Radium Research', 'Donated 1g radium (gift from US) to continue research. International recognition tour.'],
               ].map(([year, title, desc]) => (
                 <div key={title} style={{ display: 'grid', gridTemplateColumns: '52px 1fr', gap: 16, paddingBottom: 14, marginBottom: 14, borderBottom: '1px solid #f5eeef' }}>
-                  <span className={crimson.className} style={{ fontSize: 13, color: bordeaux, fontStyle: 'italic', paddingTop: 2 }}>{year}</span>
+                  <span style={{ fontFamily: CRIMSON_FONT, fontSize: 13, color: bordeaux, fontStyle: 'italic', paddingTop: 2 }}>{year}</span>
                   <div>
                     <p style={{ fontWeight: 700, fontSize: 14, color: ink, margin: '0 0 2px' }}>{title}</p>
-                    <p className={crimson.className} style={{ fontSize: 16, color: '#6b4050', margin: 0, lineHeight: 1.5, fontWeight: 300 }}>{desc}</p>
+                    <p style={{ fontFamily: CRIMSON_FONT, fontSize: 16, color: '#6b4050', margin: 0, lineHeight: 1.5, fontWeight: 300 }}>{desc}</p>
                   </div>
                 </div>
               ))}
@@ -168,7 +180,7 @@ export default function MarieCuriePage() {
             {/* Publications note */}
             <div>
               <p style={{ fontSize: 10, letterSpacing: '0.2em', color: bordeaux, textTransform: 'uppercase', fontWeight: 700, marginBottom: 10, borderBottom: '1px solid #e8e0e4', paddingBottom: 8 }}>Publications</p>
-              <p className={crimson.className} style={{ fontSize: 16, color: '#9a7080', lineHeight: 1.5, fontWeight: 300 }}>
+              <p style={{ fontFamily: CRIMSON_FONT, fontSize: 16, color: '#9a7080', lineHeight: 1.5, fontWeight: 300 }}>
                 Over 70 peer-reviewed papers, including the foundational radioactivity papers of 1898 co-authored with Pierre Curie and G. Bémont.
               </p>
             </div>
@@ -176,7 +188,7 @@ export default function MarieCuriePage() {
         </div>
 
         <div style={{ marginTop: 56, paddingTop: 20, borderTop: '1px solid #e8e0e4', textAlign: 'center' }}>
-          <p className={crimson.className} style={{ fontSize: 14, color: '#c8a8b0', fontStyle: 'italic' }}>
+          <p style={{ fontFamily: CRIMSON_FONT, fontSize: 14, color: '#c8a8b0', fontStyle: 'italic' }}>
             Designed by <Link href="/" style={{ color: bordeaux, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
         </div>

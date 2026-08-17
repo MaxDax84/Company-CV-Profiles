@@ -1,15 +1,22 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Inter } from 'next/font/google'
+// Self-hosted (not next/font/google): fetching font files live from
+// Google's CDN at build time turned out to be randomly unreliable — a
+// different font would 404 on maybe 1 in 3 production builds (confirmed
+// transient, not a real bug, but it kept forcing a manual redeploy retry).
+// @fontsource ships the actual font files in the package, so the build
+// never depends on Google's CDN being up. --font-body/--font-heading are
+// set directly in globals.css now instead of via next/font's `variable`
+// option.
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+import '@fontsource/space-grotesk/500.css'
+import '@fontsource/space-grotesk/600.css'
+import '@fontsource/space-grotesk/700.css'
 import { LanguageProvider } from '@/components/language-provider'
 import ScrollToTop from '@/components/scroll-to-top'
 import './globals.css'
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-heading',
-})
-const inter = Inter({ subsets: ['latin'], variable: '--font-body' })
 
 export const metadata: Metadata = {
   title: 'Jobli | Più colloqui, con il CV che hai già',
@@ -31,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <ScrollToTop />
         <LanguageProvider>{children}</LanguageProvider>
       </body>

@@ -1,10 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { Orbitron, DM_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/orbitron/400.css'
+import '@fontsource/orbitron/700.css'
+import '@fontsource/orbitron/900.css'
+import '@fontsource/dm-sans/300.css'
+import '@fontsource/dm-sans/400.css'
+import '@fontsource/dm-sans/500.css'
+import '@fontsource/dm-sans/600.css'
+import '@fontsource/dm-sans/700.css'
 
-const orbitron = Orbitron({ subsets: ['latin'], weight: ['400', '700', '900'] })
-const dmSans = DM_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const ORBITRON_FONT = "'Orbitron', sans-serif"
+const DM_SANS_FONT = "'DM Sans', sans-serif"
 
 const red = '#ef4444'
 const gold = '#f59e0b'
@@ -55,7 +63,7 @@ const roles = [
 
 export default function TonyStarkPage() {
   return (
-    <div className={dmSans.className} style={{ background: darkBg, color: '#e2e8f0', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: DM_SANS_FONT, background: darkBg, color: '#e2e8f0', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
 
@@ -99,7 +107,7 @@ export default function TonyStarkPage() {
       {/* NAVBAR */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(3,6,8,0.88)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${border}` }}>
         <div className="ts-nav-inner">
-          <span className={orbitron.className} style={{ fontSize: 13, color: red, letterSpacing: '0.1em', fontWeight: 700 }}>TS</span>
+          <span style={{ fontFamily: ORBITRON_FONT, fontSize: 13, color: red, letterSpacing: '0.1em', fontWeight: 700 }}>TS</span>
           <div className="ts-nav-links">
             {[['#about', 'Profile'], ['#roles', 'Career'], ['#skills', 'Tech'], ['#education', 'Education']].map(([href, label]) => (
               <a key={href} href={href} style={{ fontSize: 12, color: '#6b7280', textDecoration: 'none', letterSpacing: '0.1em' }}>{label}</a>
@@ -116,9 +124,9 @@ export default function TonyStarkPage() {
         <div style={{ position: 'relative', maxWidth: 1100, margin: '0 auto', padding: '80px 32px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', background: 'rgba(239,68,68,0.08)', border: `1px solid ${borderRed}`, borderRadius: 99, marginBottom: 32 }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: red, display: 'inline-block' }} />
-            <span className={orbitron.className} style={{ fontSize: 10, color: red, letterSpacing: '0.25em' }}>STARK INDUSTRIES // PERSONNEL FILE</span>
+            <span style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: red, letterSpacing: '0.25em' }}>STARK INDUSTRIES // PERSONNEL FILE</span>
           </div>
-          <h1 className={orbitron.className} style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 900, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontFamily: ORBITRON_FONT, fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 900, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
             ANTHONY E.<br />
             <span style={{ color: red }}>STARK</span>
           </h1>
@@ -129,8 +137,8 @@ export default function TonyStarkPage() {
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {[['ARC REACTOR', '100%', red], ['SUIT MARK', 'LXXXV', gold], ['IQ', '270+', '#8b5cf6'], ['NET WORTH', '$12.4B', '#10b981']].map(([k, v, c]) => (
               <div key={k} style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${border}`, borderRadius: 10, minWidth: 100 }}>
-                <p className={orbitron.className} style={{ fontSize: 20, fontWeight: 700, color: c as string, margin: 0, lineHeight: 1 }}>{v}</p>
-                <p className={orbitron.className} style={{ fontSize: 9, color: '#4b5563', margin: '4px 0 0', letterSpacing: '0.15em' }}>{k}</p>
+                <p style={{ fontFamily: ORBITRON_FONT, fontSize: 20, fontWeight: 700, color: c as string, margin: 0, lineHeight: 1 }}>{v}</p>
+                <p style={{ fontFamily: ORBITRON_FONT, fontSize: 9, color: '#4b5563', margin: '4px 0 0', letterSpacing: '0.15em' }}>{k}</p>
               </div>
             ))}
           </div>
@@ -140,10 +148,10 @@ export default function TonyStarkPage() {
       {/* PROFILE */}
       <section id="about" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div className="ts-section">
-          <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 01 BIOGRAPHICAL DATA</p>
+          <p style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 01 BIOGRAPHICAL DATA</p>
           <div className="ts-about-grid">
             <div>
-              <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 32px' }}>
+              <h2 style={{ fontFamily: ORBITRON_FONT, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 32px' }}>
                 I AM<br /><span style={{ color: red }}>IRON MAN.</span>
               </h2>
               <blockquote style={{ borderLeft: `3px solid ${red}`, paddingLeft: 20 }}>
@@ -166,7 +174,7 @@ export default function TonyStarkPage() {
               <div className="ts-info-grid">
                 {[['Born', 'May 29, 1970'], ['Alma Mater', 'MIT, Class of 1987'], ['Enrolled', 'Age 15'], ['Partner', 'Virginia Potts']].map(([k, v]) => (
                   <div key={k} style={{ padding: '10px 14px', background: cardBg, border: `1px solid ${borderRed}`, borderRadius: 8 }}>
-                    <p className={orbitron.className} style={{ fontSize: 9, color: '#4b5563', margin: '0 0 2px', letterSpacing: '0.12em' }}>{k}</p>
+                    <p style={{ fontFamily: ORBITRON_FONT, fontSize: 9, color: '#4b5563', margin: '0 0 2px', letterSpacing: '0.12em' }}>{k}</p>
                     <p style={{ fontSize: 13, color: '#e2e8f0', margin: 0, fontWeight: 500 }}>{v}</p>
                   </div>
                 ))}
@@ -179,8 +187,8 @@ export default function TonyStarkPage() {
       {/* CAREER */}
       <section id="roles" style={{ background: darkBg }}>
         <div className="ts-section">
-          <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 02 OPERATIONAL HISTORY</p>
-          <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 56px' }}>
+          <p style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 02 OPERATIONAL HISTORY</p>
+          <h2 style={{ fontFamily: ORBITRON_FONT, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 56px' }}>
             Three chapters.<br /><span style={{ color: red }}>All classified.</span>
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -192,8 +200,8 @@ export default function TonyStarkPage() {
               >
                 <div className="ts-role-grid">
                   <div>
-                    <p className={orbitron.className} style={{ fontSize: 10, color: r.color, margin: '0 0 6px', letterSpacing: '0.1em' }}>{r.period}</p>
-                    <p className={orbitron.className} style={{ fontSize: 14, fontWeight: 700, color: '#ffffff', margin: '0 0 4px' }}>{r.title}</p>
+                    <p style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: r.color, margin: '0 0 6px', letterSpacing: '0.1em' }}>{r.period}</p>
+                    <p style={{ fontFamily: ORBITRON_FONT, fontSize: 14, fontWeight: 700, color: '#ffffff', margin: '0 0 4px' }}>{r.title}</p>
                     <p style={{ fontSize: 12, color: '#4b5563', margin: '0 0 12px' }}>{r.org}</p>
                     <p style={{ fontSize: 13, color: r.color, fontStyle: 'italic', margin: 0 }}>&ldquo;{r.tagline}&rdquo;</p>
                   </div>
@@ -215,16 +223,16 @@ export default function TonyStarkPage() {
       {/* SKILLS */}
       <section id="skills" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div className="ts-section">
-          <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 03 TECHNICAL CAPABILITIES</p>
-          <h2 className={orbitron.className} style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, margin: '0 0 48px' }}>
+          <p style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 03 TECHNICAL CAPABILITIES</p>
+          <h2 style={{ fontFamily: ORBITRON_FONT, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, margin: '0 0 48px' }}>
             Off the charts.<br /><span style={{ color: gold }}>Literally.</span>
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 }}>
             {[['Mechanical Engineering', 100, red], ['Quantum Physics', 94, gold], ['AI Development', 98, '#8b5cf6'], ['Armor Combat', 88, red], ['Clean Energy Systems', 97, '#10b981'], ['Business Strategy', 85, gold], ['Materials Science', 96, '#06b6d4'], ['Weapons Engineering', 99, red]].map(([skill, pct, color]) => (
               <div key={skill as string} style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${border}`, borderRadius: 10, padding: '16px 18px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <span className={orbitron.className} style={{ fontSize: 10, color: '#9ca3af' }}>{skill}</span>
-                  <span className={orbitron.className} style={{ fontSize: 10, color: color as string, fontWeight: 700 }}>{pct}%</span>
+                  <span style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: '#9ca3af' }}>{skill}</span>
+                  <span style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: color as string, fontWeight: 700 }}>{pct}%</span>
                 </div>
                 <div style={{ height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
                   <div style={{ width: `${pct}%`, height: '100%', background: color as string, borderRadius: 2 }} />
@@ -238,9 +246,9 @@ export default function TonyStarkPage() {
       {/* EDUCATION */}
       <section id="education" style={{ background: darkBg }}>
         <div className="ts-section">
-          <p className={orbitron.className} style={{ fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 04 EDUCATION</p>
+          <p style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: gold, letterSpacing: '0.3em', marginBottom: 20 }}>// 04 EDUCATION</p>
           <div style={{ padding: '32px', background: cardBg, border: `1px solid ${borderRed}`, borderRadius: 16 }}>
-            <p className={orbitron.className} style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', margin: '0 0 6px' }}>Massachusetts Institute of Technology</p>
+            <p style={{ fontFamily: ORBITRON_FONT, fontSize: 18, fontWeight: 900, color: '#ffffff', margin: '0 0 6px' }}>Massachusetts Institute of Technology</p>
             <p style={{ fontSize: 14, color: red, margin: '0 0 4px', fontWeight: 500 }}>B.Sc. Electrical Engineering & Physics — Summa Cum Laude</p>
             <p style={{ fontSize: 13, color: '#4b5563', margin: 0 }}>Enrolled age 15 · Class of 1987 · Youngest department graduate in history</p>
           </div>
@@ -249,7 +257,7 @@ export default function TonyStarkPage() {
 
       <footer style={{ background: midBg, borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
         <div className="ts-footer-inner">
-          <span className={orbitron.className} style={{ fontSize: 10, color: '#1f2937', letterSpacing: '0.2em' }}>STARK INDUSTRIES CONFIDENTIAL</span>
+          <span style={{ fontFamily: ORBITRON_FONT, fontSize: 10, color: '#1f2937', letterSpacing: '0.2em' }}>STARK INDUSTRIES CONFIDENTIAL</span>
           <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>Designed by <Link href="/" style={{ color: red, textDecoration: 'none' }}>Jobli</Link></p>
         </div>
       </footer>

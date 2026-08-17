@@ -1,13 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/plus-jakarta-sans/300.css'
+import '@fontsource/plus-jakarta-sans/400.css'
+import '@fontsource/plus-jakarta-sans/500.css'
+import '@fontsource/plus-jakarta-sans/600.css'
+import '@fontsource/plus-jakarta-sans/700.css'
+import '@fontsource/plus-jakarta-sans/800.css'
 import { useLanguage } from '@/components/language-provider'
 
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-})
+const JAKARTA_FONT = "'Plus Jakarta Sans', sans-serif"
 
 const em = '#10b981'
 const emDark = '#059669'
@@ -291,7 +294,7 @@ export default function GammaPage() {
   const c = content[lang]
 
   return (
-    <div className={jakarta.className} style={{ background: '#fff', color: ink, overflowX: 'hidden' }}>
+    <div style={{ fontFamily: JAKARTA_FONT, background: '#fff', color: ink, overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

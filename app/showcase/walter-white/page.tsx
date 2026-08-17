@@ -1,9 +1,17 @@
 import Link from 'next/link'
-import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/ibm-plex-mono/400.css'
+import '@fontsource/ibm-plex-mono/500.css'
+import '@fontsource/ibm-plex-mono/700.css'
+import '@fontsource/ibm-plex-sans/300.css'
+import '@fontsource/ibm-plex-sans/400.css'
+import '@fontsource/ibm-plex-sans/500.css'
+import '@fontsource/ibm-plex-sans/600.css'
+import '@fontsource/ibm-plex-sans/700.css'
 import type { Metadata } from 'next'
 
-const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '700'] })
-const sans = IBM_Plex_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const MONO_FONT = "'IBM Plex Mono', monospace"
+const SANS_FONT = "'IBM Plex Sans', sans-serif"
 
 export const metadata: Metadata = { title: 'Walter White — Jobli Showcase' }
 
@@ -13,15 +21,15 @@ export default function WalterWhitePage() {
   const green = '#059669'
 
   return (
-    <div className={sans.className} style={{ minHeight: '100vh', background: '#f9fafb', color: gray }}>
+    <div style={{ fontFamily: SANS_FONT, minHeight: '100vh', background: '#f9fafb', color: gray }}>
 
       {/* Clinical header bar */}
       <div style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '12px 0' }}>
         <div style={{ maxWidth: 820, margin: '0 auto', padding: '0 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span className={mono.className} style={{ fontSize: 11, color: '#9ca3af', letterSpacing: '0.1em' }}>
+          <span style={{ fontFamily: MONO_FONT, fontSize: 11, color: '#9ca3af', letterSpacing: '0.1em' }}>
             ALBUQUERQUE PUBLIC SCHOOLS · FACULTY RECORD
           </span>
-          <span className={mono.className} style={{ fontSize: 11, color: '#9ca3af' }}>
+          <span style={{ fontFamily: MONO_FONT, fontSize: 11, color: '#9ca3af' }}>
             REF: WW-9P-2004
           </span>
         </div>
@@ -35,7 +43,7 @@ export default function WalterWhitePage() {
 
         {/* Name block */}
         <div style={{ borderLeft: '4px solid #d1d5db', paddingLeft: 24, margin: '40px 0 48px' }}>
-          <p className={mono.className} style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 8px', letterSpacing: '0.15em' }}>
+          <p style={{ fontFamily: MONO_FONT, fontSize: 11, color: '#9ca3af', margin: '0 0 8px', letterSpacing: '0.15em' }}>
             CURRICULUM VITAE
           </p>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, margin: 0, color: accent, letterSpacing: '-0.02em', lineHeight: 1 }}>
@@ -53,7 +61,7 @@ export default function WalterWhitePage() {
           <div>
             {/* Contact */}
             <div style={{ marginBottom: 32 }}>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
                 CONTACT
               </p>
               {[
@@ -71,7 +79,7 @@ export default function WalterWhitePage() {
 
             {/* Education */}
             <div style={{ marginBottom: 32 }}>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
                 EDUCATION
               </p>
               <div>
@@ -87,7 +95,7 @@ export default function WalterWhitePage() {
 
             {/* Certifications */}
             <div>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 12 }}>
                 CERTIFICATIONS
               </p>
               {['New Mexico Teaching License', 'Hazardous Materials Handler', 'Lab Safety Certified', 'Nobel Prize (Physics, 1985)*'].map(c => (
@@ -103,7 +111,7 @@ export default function WalterWhitePage() {
           <div>
             {/* Summary */}
             <section style={{ marginBottom: 36 }}>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 16 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 16 }}>
                 PROFESSIONAL SUMMARY
               </p>
               <p style={{ fontSize: 15, lineHeight: 1.8, color: '#4b5563', fontWeight: 300 }}>
@@ -116,7 +124,7 @@ export default function WalterWhitePage() {
 
             {/* Experience */}
             <section style={{ marginBottom: 36 }}>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 20 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 20 }}>
                 PROFESSIONAL EXPERIENCE
               </p>
               {[
@@ -144,7 +152,7 @@ export default function WalterWhitePage() {
                 <div key={title} style={{ marginBottom: 24 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 2 }}>
                     <p style={{ fontWeight: 600, fontSize: 15, color: accent, margin: 0 }}>{title}</p>
-                    <p className={mono.className} style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{dates}</p>
+                    <p style={{ fontFamily: MONO_FONT, fontSize: 11, color: '#9ca3af', margin: 0 }}>{dates}</p>
                   </div>
                   <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 10px' }}>{org}</p>
                   <ul style={{ margin: 0, paddingLeft: 16 }}>
@@ -158,7 +166,7 @@ export default function WalterWhitePage() {
 
             {/* Technical skills */}
             <section>
-              <p className={mono.className} style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 16 }}>
+              <p style={{ fontFamily: MONO_FONT, fontSize: 10, letterSpacing: '0.15em', color: '#9ca3af', borderBottom: '1px solid #e5e7eb', paddingBottom: 8, marginBottom: 16 }}>
                 TECHNICAL SKILLS
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -173,7 +181,7 @@ export default function WalterWhitePage() {
         </div>
 
         <div style={{ marginTop: 64, paddingTop: 24, borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p className={mono.className} style={{ fontSize: 10, color: '#d1d5db' }}>
+          <p style={{ fontFamily: MONO_FONT, fontSize: 10, color: '#d1d5db' }}>
             ALBUQUERQUE PUBLIC SCHOOLS · CONFIDENTIAL DOCUMENT
           </p>
           <p style={{ fontSize: 12, color: '#9ca3af' }}>

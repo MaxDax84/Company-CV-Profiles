@@ -2,12 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Playfair_Display, Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/playfair-display/400.css'
+import '@fontsource/playfair-display/700.css'
+import '@fontsource/playfair-display/900.css'
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import type { ProfileSchema } from '@/lib/schema'
 import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
-const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700', '900'] })
-const inter    = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const PLAYFAIR_FONT = "'Playfair Display', serif"
+const INTER_FONT = "'Inter', sans-serif"
 
 function useScrolled(threshold = 50) {
   const [scrolled, setScrolled] = useState(false)
@@ -64,7 +72,7 @@ export default function TemplateDelta({ profile }: Props) {
   const contactIn = useInView()
 
   return (
-    <div className={inter.className} style={{ background: navy, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: INTER_FONT, background: navy, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
@@ -128,7 +136,7 @@ export default function TemplateDelta({ profile }: Props) {
       {/* ── NAVBAR ── */}
       <nav className={`dl-nav${scrolled ? ' scrolled' : ''}`}>
         <div className="dl-nav-inner">
-          <span className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: accent, letterSpacing: '0.08em' }}>{initials}</span>
+          <span style={{ fontFamily: PLAYFAIR_FONT, fontSize: 15, fontWeight: 700, color: accent, letterSpacing: '0.08em' }}>{initials}</span>
           <div className="dl-nav-links">
             {([
               ['#about',      isIT ? 'Profilo'    : 'Profile'],
@@ -148,7 +156,7 @@ export default function TemplateDelta({ profile }: Props) {
         {/* Diagonal texture overlay */}
         <div style={{ position: 'absolute', inset: 0, backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, ${accent}04 40px, ${accent}04 41px)`, pointerEvents: 'none' }} />
         {/* Large watermark initials */}
-        <div className={playfair.className} style={{ position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-50%)', fontSize: 'clamp(18rem, 35vw, 30rem)', fontWeight: 900, color: `${accent}06`, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
+        <div style={{ fontFamily: PLAYFAIR_FONT, position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-50%)', fontSize: 'clamp(18rem, 35vw, 30rem)', fontWeight: 900, color: `${accent}06`, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
           {initials}
         </div>
 
@@ -160,7 +168,7 @@ export default function TemplateDelta({ profile }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.3em', textTransform: 'uppercase', margin: '0 0 24px' }}>
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
-          <h1 className={`${playfair.className} dl-hero-h1`} style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, color: fg, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.01em' }}>
+          <h1 className="dl-hero-h1" style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, color: fg, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.01em' }}>
             {p.full_name.split(' ')[0]}{' '}
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
@@ -194,7 +202,7 @@ export default function TemplateDelta({ profile }: Props) {
               { v: `${education.length + certifications.length}`, label: isIT ? 'titoli & cert.' : 'degrees & certs' },
             ].slice(0, 4).map(({ v, label }) => (
               <div key={label} className="dl-stat" style={{ textAlign: 'center' }}>
-                <p className={playfair.className} style={{ fontSize: 28, fontWeight: 700, color: accent, margin: '0 0 4px', lineHeight: 1 }}>{v}</p>
+                <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 28, fontWeight: 700, color: accent, margin: '0 0 4px', lineHeight: 1 }}>{v}</p>
                 <p style={{ fontSize: 11, color: muted, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
               </div>
             ))}
@@ -214,7 +222,7 @@ export default function TemplateDelta({ profile }: Props) {
               <p style={{ fontSize: 11, fontWeight: 600, color: inkMid, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 20px' }}>
                 {isIT ? 'Profilo' : 'Profile'}
               </p>
-              <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: inkDark, lineHeight: 1.15, margin: '0 0 24px' }}>
+              <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: inkDark, lineHeight: 1.15, margin: '0 0 24px' }}>
                 {isIT ? <>Chi sono.<br /><span style={{ color: accent }}>In breve.</span></> : <>About me.<br /><span style={{ color: accent }}>In short.</span></>}
               </h2>
               <p style={{ fontSize: 15, color: inkMid, lineHeight: 1.85, fontWeight: 300 }}>{p.bio}</p>
@@ -263,7 +271,7 @@ export default function TemplateDelta({ profile }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 20px' }}>
             {isIT ? 'Esperienza' : 'Experience'}
           </p>
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: fg, margin: '0 0 56px' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: fg, margin: '0 0 56px' }}>
             {isIT ? <>Dove sono stato.<br /><span style={{ color: accent }}>Cosa ho costruito.</span></> : <>Where I&apos;ve been.<br /><span style={{ color: accent }}>What I&apos;ve built.</span></>}
           </h2>
           <div className="dl-skills-rows">
@@ -281,7 +289,7 @@ export default function TemplateDelta({ profile }: Props) {
                     )}
                   </div>
                   <div>
-                    <p className={playfair.className} style={{ fontSize: 17, fontWeight: 700, color: fg, margin: '0 0 14px' }}>{exp.role}</p>
+                    <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 17, fontWeight: 700, color: fg, margin: '0 0 14px' }}>{exp.role}</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 24px' }}>
                       {exp.description.map((pt, j) => (
                         <div key={j} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'flex-start' }}>
@@ -315,7 +323,7 @@ export default function TemplateDelta({ profile }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: inkMid, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 20px' }}>
             {isIT ? 'Competenze' : 'Skills'}
           </p>
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: inkDark, margin: '0 0 40px' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 900, color: inkDark, margin: '0 0 40px' }}>
             {isIT ? 'Il toolkit.' : 'The toolkit.'}
           </h2>
           {skillGroups.map(({ label, items }) => (
@@ -337,7 +345,7 @@ export default function TemplateDelta({ profile }: Props) {
               <div className="dl-edu-grid">
                 {education.map((ed, i) => (
                   <div key={i} style={{ background: creamAlt, border: `1px solid ${accent}20`, borderRadius: 10, padding: '20px 24px' }}>
-                    <p className={playfair.className} style={{ fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
+                    <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 15, fontWeight: 700, color: inkDark, margin: '0 0 4px' }}>{ed.institution}</p>
                     <p style={{ fontSize: 13, color: accent, margin: '0 0 4px', fontWeight: 500 }}>{[ed.degree, ed.field].filter(Boolean).join(' — ')}</p>
                     <p style={{ fontSize: 12, color: inkMid, margin: 0 }}>{formatEducationYearRange(ed.start_year, ed.end_year)}{ed.grade ? ` · ${ed.grade}` : ''}</p>
                   </div>
@@ -391,7 +399,7 @@ export default function TemplateDelta({ profile }: Props) {
                   onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = `${accent}40`}
                   onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = border}
                 >
-                  <p className={playfair.className} style={{ fontSize: 16, fontWeight: 700, color: fg, margin: '0 0 8px' }}>{proj.title}</p>
+                  <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 16, fontWeight: 700, color: fg, margin: '0 0 8px' }}>{proj.title}</p>
                   <p style={{ fontSize: 13, color: muted, lineHeight: 1.7, margin: '0 0 14px' }}>{proj.description}</p>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: proj.url ? 12 : 0 }}>
                     {proj.tags.map(t => (
@@ -416,7 +424,7 @@ export default function TemplateDelta({ profile }: Props) {
           ref={contactIn.ref}
           style={{ maxWidth: 600, margin: '0 auto', padding: '0 24px', transition: 'opacity 0.7s, transform 0.7s', opacity: contactIn.inView ? 1 : 0, transform: contactIn.inView ? 'translateY(0)' : 'translateY(28px)' }}
         >
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 900, color: inkDark, lineHeight: 1.1, margin: '0 0 16px' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 900, color: inkDark, lineHeight: 1.1, margin: '0 0 16px' }}>
             {isIT ? <>Parliamo.<br /><span style={{ color: accent }}>Sono disponibile.</span></> : <>Let&apos;s talk.<br /><span style={{ color: accent }}>I&apos;m available.</span></>}
           </h2>
           <p style={{ fontSize: 15, color: inkMid, margin: '0 0 48px', lineHeight: 1.75, fontWeight: 300 }}>

@@ -1,14 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { Libre_Baskerville, Crimson_Pro } from 'next/font/google'
+// Self-hosted (see app/layout.tsx) — next/font/google was dropped entirely
+// after Google's CDN started 404ing Source_Serif_4's v14 font files (stale
+// hashes in this Next.js version's bundled font metadata), which broke the
+// ENTIRE production build, not just this page — next/font/google resolves
+// at build time, so one bad font file fails the whole deploy. @fontsource
+// ships the font files in the package, so the build never depends on
+// Google's CDN. (sourceSerif below is actually Crimson Pro, the eventual
+// replacement for the dropped Source_Serif_4 — name kept for git history.)
+import '@fontsource/libre-baskerville/400.css'
+import '@fontsource/libre-baskerville/400-italic.css'
+import '@fontsource/libre-baskerville/700.css'
+import '@fontsource/libre-baskerville/700-italic.css'
+import '@fontsource/crimson-pro/300.css'
+import '@fontsource/crimson-pro/300-italic.css'
+import '@fontsource/crimson-pro/400.css'
+import '@fontsource/crimson-pro/400-italic.css'
+import '@fontsource/crimson-pro/600.css'
+import '@fontsource/crimson-pro/600-italic.css'
 
-const baskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'] })
-// Source_Serif_4 dropped: Google's CDN started 404ing its v14 font files
-// (stale hashes in this Next.js version's bundled font metadata), which
-// broke the ENTIRE production build, not just this page — next/font/google
-// resolves at build time, so one bad font file fails the whole deploy.
-const sourceSerif = Crimson_Pro({ subsets: ['latin'], weight: ['300', '400', '600'], style: ['normal', 'italic'] })
+const BASKERVILLE_FONT = "'Libre Baskerville', serif"
+const SOURCE_SERIF_FONT = "'Crimson Pro', serif"
 
 const amber = '#b8860b'
 const amberLight = '#d4a017'
@@ -83,7 +96,7 @@ const cases = [
 
 export default function SherlockHolmesPage() {
   return (
-    <div className={baskerville.className} style={{ background: darkBg, color: '#d4cec5', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: BASKERVILLE_FONT, background: darkBg, color: '#d4cec5', overflowX: 'hidden' }}>
       <style>{`html { scroll-behavior: smooth; }`}</style>
 
       {/* NAVBAR */}
@@ -111,11 +124,11 @@ export default function SherlockHolmesPage() {
             </div>
           </div>
           <p style={{ fontSize: 13, letterSpacing: '0.3em', color: amber, textTransform: 'uppercase', margin: '0 0 20px' }}>Consulting Detective</p>
-          <h1 className={baskerville.className} style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)', fontWeight: 700, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em', color: '#f0ece4' }}>
+          <h1 style={{ fontFamily: BASKERVILLE_FONT, fontSize: 'clamp(3.5rem, 10vw, 8rem)', fontWeight: 700, lineHeight: 0.92, margin: '0 0 32px', letterSpacing: '-0.02em', color: '#f0ece4' }}>
             Sherlock<br />
             <em style={{ color: amber, fontWeight: 400 }}>Holmes</em>
           </h1>
-          <p className={sourceSerif.className} style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: '#7a9070', maxWidth: 540, lineHeight: 1.75, marginBottom: 48, fontStyle: 'italic', fontWeight: 300 }}>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: '#7a9070', maxWidth: 540, lineHeight: 1.75, marginBottom: 48, fontStyle: 'italic', fontWeight: 300 }}>
             &ldquo;Crime solved. Invoice to follow.&rdquo; — The world&apos;s only consulting detective has
             no interest in your feelings, your opinions, or your disbelief. Only in the facts. And the facts,
             as always, are his.
@@ -124,7 +137,7 @@ export default function SherlockHolmesPage() {
             {[['Cases', '500+'], ['Outcome', '99.7% solved'], ['Years Active', '1878–1914'], ['Enemies Neutralised', 'Moriarty (†)']].map(([k, v]) => (
               <div key={k} style={{ padding: '14px 20px', background: cardBg, border: `1px solid ${borderAmber}`, borderRadius: 8 }}>
                 <p style={{ fontSize: 18, fontWeight: 700, color: amber, margin: 0, lineHeight: 1 }}>{v}</p>
-                <p className={sourceSerif.className} style={{ fontSize: 11, color: '#4a6050', margin: '4px 0 0', letterSpacing: '0.1em' }}>{k}</p>
+                <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 11, color: '#4a6050', margin: '4px 0 0', letterSpacing: '0.1em' }}>{k}</p>
               </div>
             ))}
           </div>
@@ -134,30 +147,30 @@ export default function SherlockHolmesPage() {
       {/* PROFILE */}
       <section id="profile" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 40px' }}>
-          <p className={sourceSerif.className} style={{ fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>01 · Profile</p>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>01 · Profile</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
             <div>
-              <h2 className={baskerville.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 32px', color: '#f0ece4' }}>
+              <h2 style={{ fontFamily: BASKERVILLE_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 32px', color: '#f0ece4' }}>
                 He doesn&apos;t observe.<br />
                 <em style={{ color: amber, fontWeight: 400 }}>He deduces.</em>
               </h2>
               <blockquote style={{ borderLeft: `2px solid ${amber}`, paddingLeft: 24, margin: 0 }}>
-                <p className={sourceSerif.className} style={{ fontSize: 20, color: '#d4cec5', fontStyle: 'italic', margin: 0, lineHeight: 1.65, fontWeight: 300 }}>
+                <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 20, color: '#d4cec5', fontStyle: 'italic', margin: 0, lineHeight: 1.65, fontWeight: 300 }}>
                   &ldquo;When you have eliminated the impossible, whatever remains, however improbable, must be the truth.&rdquo;
                 </p>
               </blockquote>
             </div>
             <div>
-              <p className={sourceSerif.className} style={{ fontSize: 16, lineHeight: 1.85, color: '#7a9070', marginBottom: 20, fontWeight: 300 }}>
+              <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 16, lineHeight: 1.85, color: '#7a9070', marginBottom: 20, fontWeight: 300 }}>
                 Born January 6, 1854, in Yorkshire. Self-educated in the sciences at Christ Church, Oxford. Created an entirely new profession — consulting detective — from nothing but intellect, observation, and the conviction that every crime leaves a trail, however invisible to ordinary minds.
               </p>
-              <p className={sourceSerif.className} style={{ fontSize: 16, lineHeight: 1.85, color: '#7a9070', marginBottom: 28, fontWeight: 300 }}>
+              <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 16, lineHeight: 1.85, color: '#7a9070', marginBottom: 28, fontWeight: 300 }}>
                 Operates exclusively on the basis of logic. Has no patience for sentiment. Has, despite himself, a profound loyalty to those who earn his respect — Watson chief among them.
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 {[['Born', '6 January 1854, Yorkshire'], ['Residence', '221B Baker Street'], ['Biographer', 'Dr. John H. Watson'], ['Nemesis', 'Prof. Moriarty (†)']].map(([k, v]) => (
                   <div key={k} style={{ padding: '10px 14px', background: cardBg, border: `1px solid ${borderAmber}`, borderRadius: 6 }}>
-                    <p className={sourceSerif.className} style={{ fontSize: 10, color: '#4a6050', margin: '0 0 2px', letterSpacing: '0.15em', textTransform: 'uppercase' }}>{k}</p>
+                    <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 10, color: '#4a6050', margin: '0 0 2px', letterSpacing: '0.15em', textTransform: 'uppercase' }}>{k}</p>
                     <p style={{ fontSize: 13, color: '#d4cec5', margin: 0, fontWeight: 700 }}>{v}</p>
                   </div>
                 ))}
@@ -170,8 +183,8 @@ export default function SherlockHolmesPage() {
       {/* NOTABLE CASES — work experience timeline */}
       <section id="cases" style={{ background: darkBg }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 40px' }}>
-          <p className={sourceSerif.className} style={{ fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>02 · Career</p>
-          <h2 className={baskerville.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 64px', color: '#f0ece4' }}>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>02 · Career</p>
+          <h2 style={{ fontFamily: BASKERVILLE_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, margin: '0 0 64px', color: '#f0ece4' }}>
             From the casebooks<br /><em style={{ color: amber, fontWeight: 400 }}>of Dr. Watson.</em>
           </h2>
 
@@ -186,7 +199,7 @@ export default function SherlockHolmesPage() {
 
                   {/* Left: period + dot */}
                   <div style={{ textAlign: 'right', paddingTop: 4, position: 'relative' }}>
-                    <p className={sourceSerif.className} style={{ fontSize: 13, color: amber, margin: '0 0 4px', fontStyle: 'italic', lineHeight: 1.4 }}>{c.period}</p>
+                    <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 13, color: amber, margin: '0 0 4px', fontStyle: 'italic', lineHeight: 1.4 }}>{c.period}</p>
                     {/* Timeline dot */}
                     <div style={{ position: 'absolute', right: -46, top: 6, width: 10, height: 10, borderRadius: '50%', background: amber, border: `2px solid ${darkBg}`, boxShadow: `0 0 0 3px ${amber}30` }} />
                   </div>
@@ -209,7 +222,7 @@ export default function SherlockHolmesPage() {
                   >
                     {/* Card header */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 12 }}>
-                      <p className={baskerville.className} style={{ fontSize: 19, fontWeight: 700, color: '#f0ece4', margin: 0, lineHeight: 1.2 }}>{c.title}</p>
+                      <p style={{ fontFamily: BASKERVILLE_FONT, fontSize: 19, fontWeight: 700, color: '#f0ece4', margin: 0, lineHeight: 1.2 }}>{c.title}</p>
                       <span style={{
                         fontSize: 10, fontWeight: 700, letterSpacing: '0.18em',
                         color: c.outcome === 'PEAK YEARS' || c.outcome === 'PROLIFIC' ? '#10b981' : c.outcome === 'CLASSIFIED' ? '#8b5cf6' : amber,
@@ -218,14 +231,14 @@ export default function SherlockHolmesPage() {
                         borderRadius: 99, whiteSpace: 'nowrap', flexShrink: 0,
                       }}>{c.outcome}</span>
                     </div>
-                    <p className={sourceSerif.className} style={{ fontSize: 13, color: '#4a6050', margin: '0 0 18px', fontStyle: 'italic', letterSpacing: '0.06em' }}>{c.client}</p>
+                    <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 13, color: '#4a6050', margin: '0 0 18px', fontStyle: 'italic', letterSpacing: '0.06em' }}>{c.client}</p>
 
                     {/* Bullet points */}
                     <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {c.bullets.map(pt => (
                         <li key={pt} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                           <span style={{ color: amber, fontSize: 10, marginTop: 5, flexShrink: 0, opacity: 0.7 }}>◆</span>
-                          <span className={sourceSerif.className} style={{ fontSize: 15, color: '#7a9070', lineHeight: 1.65, fontWeight: 300 }}>{pt}</span>
+                          <span style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 15, color: '#7a9070', lineHeight: 1.65, fontWeight: 300 }}>{pt}</span>
                         </li>
                       ))}
                     </ul>
@@ -240,21 +253,21 @@ export default function SherlockHolmesPage() {
       {/* FACULTIES & NETWORK */}
       <section id="faculties" style={{ background: midBg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 40px' }}>
-          <p className={sourceSerif.className} style={{ fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>03 · Faculties & Network</p>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 11, color: amber, letterSpacing: '0.35em', textTransform: 'uppercase', marginBottom: 20 }}>03 · Faculties & Network</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
             <div>
-              <h3 className={baskerville.className} style={{ fontSize: 22, fontWeight: 700, color: '#f0ece4', marginBottom: 24 }}>Notable Faculties</h3>
+              <h3 style={{ fontFamily: BASKERVILLE_FONT, fontSize: 22, fontWeight: 700, color: '#f0ece4', marginBottom: 24 }}>Notable Faculties</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[['Observation & Deduction', 'Can determine profession, travels, and character from a single glance.'],['Chemistry & Forensics', 'Expert in forensic chemistry; private laboratory maintained at Baker Street.'],['Disguise', 'Master of disguise; unrecognised by Watson on multiple occasions.'],['Violin', 'Accomplished violinist; composes original pieces during cogitation.'],['Boxing & Baritsu', 'Expert in the Japanese wrestling system; former bare-knuckle boxer.']].map(([title, desc]) => (
                   <div key={title as string} style={{ borderLeft: `2px solid ${amber}40`, paddingLeft: 16 }}>
                     <p style={{ fontSize: 14, fontWeight: 700, color: '#d4cec5', margin: '0 0 3px' }}>{title}</p>
-                    <p className={sourceSerif.className} style={{ fontSize: 14, color: '#4a6050', margin: 0, lineHeight: 1.5, fontWeight: 300 }}>{desc}</p>
+                    <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 14, color: '#4a6050', margin: 0, lineHeight: 1.5, fontWeight: 300 }}>{desc}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div id="network">
-              <h3 className={baskerville.className} style={{ fontSize: 22, fontWeight: 700, color: '#f0ece4', marginBottom: 24 }}>Known Associates</h3>
+              <h3 style={{ fontFamily: BASKERVILLE_FONT, fontSize: 22, fontWeight: 700, color: '#f0ece4', marginBottom: 24 }}>Known Associates</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[['Dr. John H. Watson', 'Colleague & Biographer', '#10b981'],['Mrs. Hudson', 'Landlady · 221B Baker Street', amber],['Inspector Lestrade', 'Scotland Yard · Frequently assisted', '#3b82f6'],['Mycroft Holmes', 'Elder brother · British Intelligence', '#8b5cf6'],['Irene Adler', 'The Woman · Only individual to outwit Holmes', '#ef4444'],['Baker Street Irregulars', 'Street intelligence network · Paid informants', amber]].map(([name, role, color]) => (
                   <div key={name as string} style={{ padding: '14px 18px', background: cardBg, border: `1px solid ${border}`, borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, transition: 'border-color 0.2s ease' }}
@@ -263,7 +276,7 @@ export default function SherlockHolmesPage() {
                   >
                     <div>
                       <p style={{ fontSize: 14, fontWeight: 700, color: '#d4cec5', margin: '0 0 2px' }}>{name}</p>
-                      <p className={sourceSerif.className} style={{ fontSize: 13, color: '#4a6050', margin: 0, fontStyle: 'italic' }}>{role}</p>
+                      <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 13, color: '#4a6050', margin: 0, fontStyle: 'italic' }}>{role}</p>
                     </div>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: color as string, flexShrink: 0, marginTop: 4 }} />
                   </div>
@@ -276,8 +289,8 @@ export default function SherlockHolmesPage() {
 
       <footer style={{ background: darkBg, borderTop: `1px solid ${border}`, padding: '24px 40px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p className={sourceSerif.className} style={{ fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>221B Baker Street · London, England</p>
-          <p className={sourceSerif.className} style={{ fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>221B Baker Street · London, England</p>
+          <p style={{ fontFamily: SOURCE_SERIF_FONT, fontSize: 12, color: '#1a2820', fontStyle: 'italic' }}>
             Designed by <Link href="/" style={{ color: amber, textDecoration: 'none' }}>Jobli</Link>
           </p>
         </div>

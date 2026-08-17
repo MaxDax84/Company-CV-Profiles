@@ -1,8 +1,13 @@
 import Link from 'next/link'
-import { Nunito } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/nunito/400.css'
+import '@fontsource/nunito/600.css'
+import '@fontsource/nunito/700.css'
+import '@fontsource/nunito/800.css'
+import '@fontsource/nunito/900.css'
 import type { Metadata } from 'next'
 
-const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800', '900'] })
+const NUNITO_FONT = "'Nunito', sans-serif"
 
 export const metadata: Metadata = { title: 'Sailor Moon — Jobli Showcase' }
 
@@ -12,7 +17,7 @@ export default function SailorMoonPage() {
   const gold = '#ffd700'
 
   return (
-    <div className={nunito.className} style={{ minHeight: '100vh', background: '#fff5fb', color: '#4a2040' }}>
+    <div style={{ fontFamily: NUNITO_FONT, minHeight: '100vh', background: '#fff5fb', color: '#4a2040' }}>
       {/* Rainbow top border */}
       <div style={{ height: 5, background: `linear-gradient(90deg, #ff69b4, #ff99cc, #ffd700, #c9b8ff, #ff69b4)` }} />
 

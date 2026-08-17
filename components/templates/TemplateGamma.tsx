@@ -2,11 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/plus-jakarta-sans/300.css'
+import '@fontsource/plus-jakarta-sans/400.css'
+import '@fontsource/plus-jakarta-sans/500.css'
+import '@fontsource/plus-jakarta-sans/600.css'
+import '@fontsource/plus-jakarta-sans/700.css'
 import type { ProfileSchema } from '@/lib/schema'
 import { earliestStartYear, formatEducationYearRange } from '@/lib/experience-utils'
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const JAKARTA_FONT = "'Plus Jakarta Sans', sans-serif"
 
 function useScrolled(threshold = 50) {
   const [scrolled, setScrolled] = useState(false)
@@ -63,7 +68,7 @@ export default function TemplateGamma({ profile }: Props) {
   const contactIn = useInView()
 
   return (
-    <div className={jakarta.className} style={{ background: lightBg, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: JAKARTA_FONT, background: lightBg, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

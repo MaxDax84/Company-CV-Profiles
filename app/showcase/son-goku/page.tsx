@@ -1,9 +1,14 @@
 import Link from 'next/link'
-import { Bangers, Rajdhani } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/bangers/400.css'
+import '@fontsource/rajdhani/400.css'
+import '@fontsource/rajdhani/500.css'
+import '@fontsource/rajdhani/600.css'
+import '@fontsource/rajdhani/700.css'
 import type { Metadata } from 'next'
 
-const bangers = Bangers({ subsets: ['latin'], weight: ['400'] })
-const rajdhani = Rajdhani({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
+const BANGERS_FONT = "'Bangers', cursive, sans-serif"
+const RAJDHANI_FONT = "'Rajdhani', sans-serif"
 
 export const metadata: Metadata = { title: 'Son Goku — Jobli Showcase' }
 
@@ -13,7 +18,7 @@ export default function SonGokuPage() {
   const yellow = '#fbbf24'
 
   return (
-    <div className={rajdhani.className} style={{ minHeight: '100vh', background: '#0f0a1e', color: '#e2e8f0', overflow: 'hidden' }}>
+    <div style={{ fontFamily: RAJDHANI_FONT, minHeight: '100vh', background: '#0f0a1e', color: '#e2e8f0', overflow: 'hidden' }}>
       {/* Energy burst background effects */}
       <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${orange}18, transparent 50%), radial-gradient(ellipse at 80% 20%, ${blue}18, transparent 50%)`, pointerEvents: 'none', zIndex: 0 }} />
 
@@ -27,14 +32,14 @@ export default function SonGokuPage() {
           {/* Speed lines */}
           <div style={{ position: 'absolute', inset: 0, background: `repeating-linear-gradient(85deg, transparent, transparent 40px, ${orange}06 40px, ${orange}06 42px)`, pointerEvents: 'none', borderRadius: 4 }} />
           <div style={{ position: 'relative' }}>
-            <p className={bangers.className} style={{ fontSize: 13, letterSpacing: '0.5em', color: orange, margin: '0 0 8px' }}>
+            <p style={{ fontFamily: BANGERS_FONT, fontSize: 13, letterSpacing: '0.5em', color: orange, margin: '0 0 8px' }}>
               Z FIGHTER · EARTH'S DEFENDER · SAIYAN WARRIOR
             </p>
-            <h1 className={bangers.className} style={{ fontSize: 'clamp(4rem, 12vw, 8rem)', margin: 0, lineHeight: 0.9, letterSpacing: '0.05em' }}>
+            <h1 style={{ fontFamily: BANGERS_FONT, fontSize: 'clamp(4rem, 12vw, 8rem)', margin: 0, lineHeight: 0.9, letterSpacing: '0.05em' }}>
               <span style={{ color: orange }}>SON</span>{' '}
               <span style={{ color: '#ffffff', WebkitTextStroke: `2px ${orange}` }}>GOKU</span>
             </h1>
-            <p className={bangers.className} style={{ fontSize: 18, color: yellow, letterSpacing: '0.2em', margin: '8px 0 0' }}>
+            <p style={{ fontFamily: BANGERS_FONT, fontSize: 18, color: yellow, letterSpacing: '0.2em', margin: '8px 0 0' }}>
               カカロット / Kakarrot
             </p>
           </div>
@@ -42,14 +47,14 @@ export default function SonGokuPage() {
 
         {/* Power level banner */}
         <div style={{ background: `linear-gradient(90deg, ${orange}, #f97316, ${yellow})`, padding: '12px 24px', borderRadius: 4, marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span className={bangers.className} style={{ fontSize: 18, color: '#1a0a00', letterSpacing: '0.15em' }}>POWER LEVEL</span>
-          <span className={bangers.className} style={{ fontSize: 24, color: '#1a0a00' }}>∞ (Ultra Instinct)</span>
+          <span style={{ fontFamily: BANGERS_FONT, fontSize: 18, color: '#1a0a00', letterSpacing: '0.15em' }}>POWER LEVEL</span>
+          <span style={{ fontFamily: BANGERS_FONT, fontSize: 24, color: '#1a0a00' }}>∞ (Ultra Instinct)</span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
           {/* Identity */}
           <div style={{ background: 'rgba(234,88,12,0.08)', border: `1px solid ${orange}40`, borderRadius: 4, padding: 24 }}>
-            <h2 className={bangers.className} style={{ fontSize: 22, color: orange, marginBottom: 16, letterSpacing: '0.1em' }}>
+            <h2 style={{ fontFamily: BANGERS_FONT, fontSize: 22, color: orange, marginBottom: 16, letterSpacing: '0.1em' }}>
               IDENTITY
             </h2>
             {[
@@ -71,7 +76,7 @@ export default function SonGokuPage() {
 
           {/* Transformations */}
           <div style={{ background: 'rgba(29,78,216,0.08)', border: `1px solid ${blue}40`, borderRadius: 4, padding: 24 }}>
-            <h2 className={bangers.className} style={{ fontSize: 22, color: yellow, marginBottom: 16, letterSpacing: '0.1em' }}>
+            <h2 style={{ fontFamily: BANGERS_FONT, fontSize: 22, color: yellow, marginBottom: 16, letterSpacing: '0.1em' }}>
               TRANSFORMATIONS
             </h2>
             {[
@@ -95,7 +100,7 @@ export default function SonGokuPage() {
 
         {/* Battle record */}
         <div style={{ background: 'rgba(234,88,12,0.06)', border: `1px solid ${orange}30`, borderRadius: 4, padding: 28, marginBottom: 28 }}>
-          <h2 className={bangers.className} style={{ fontSize: 22, color: orange, marginBottom: 20, letterSpacing: '0.1em' }}>
+          <h2 style={{ fontFamily: BANGERS_FONT, fontSize: 22, color: orange, marginBottom: 20, letterSpacing: '0.1em' }}>
             BATTLE RECORD
           </h2>
           {[
@@ -117,13 +122,13 @@ export default function SonGokuPage() {
 
         {/* Signature moves */}
         <div style={{ marginBottom: 40 }}>
-          <h2 className={bangers.className} style={{ fontSize: 22, color: blue, marginBottom: 16, letterSpacing: '0.1em' }}>
+          <h2 style={{ fontFamily: BANGERS_FONT, fontSize: 22, color: blue, marginBottom: 16, letterSpacing: '0.1em' }}>
             SIGNATURE TECHNIQUES
           </h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {['Kamehameha', 'Spirit Bomb', 'Instant Transmission', 'Kaioken', 'Dragon Fist', 'Hakai (limited)', 'Ultra Instinct Dodge', 'Solar Flare'].map(move => (
               <div key={move} style={{ padding: '8px 16px', background: `${blue}15`, border: `1px solid ${blue}40`, borderRadius: 4 }}>
-                <span className={bangers.className} style={{ fontSize: 15, color: yellow, letterSpacing: '0.1em' }}>{move}</span>
+                <span style={{ fontFamily: BANGERS_FONT, fontSize: 15, color: yellow, letterSpacing: '0.1em' }}>{move}</span>
               </div>
             ))}
           </div>
@@ -132,9 +137,9 @@ export default function SonGokuPage() {
         {/* Quote */}
         <div style={{ position: 'relative', padding: '24px 28px', border: `2px solid ${orange}`, borderRadius: 4 }}>
           <div style={{ position: 'absolute', top: -12, left: 20, background: '#0f0a1e', padding: '0 8px' }}>
-            <span className={bangers.className} style={{ fontSize: 14, color: orange, letterSpacing: '0.2em' }}>MOTTO</span>
+            <span style={{ fontFamily: BANGERS_FONT, fontSize: 14, color: orange, letterSpacing: '0.2em' }}>MOTTO</span>
           </div>
-          <p className={bangers.className} style={{ fontSize: 20, color: yellow, margin: 0, lineHeight: 1.5, letterSpacing: '0.05em' }}>
+          <p style={{ fontFamily: BANGERS_FONT, fontSize: 20, color: yellow, margin: 0, lineHeight: 1.5, letterSpacing: '0.05em' }}>
             &ldquo;I am the answer to all living things that cry out for peace. I am protector of the innocent. I am the light in the darkness. I am truth. Ally to good! Nightmare to you!&rdquo;
           </p>
         </div>

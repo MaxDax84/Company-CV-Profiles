@@ -1,15 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { Playfair_Display, Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/playfair-display/400.css'
+import '@fontsource/playfair-display/700.css'
+import '@fontsource/playfair-display/900.css'
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import { useLanguage } from '@/components/language-provider'
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '700', '900'],
-  style: ['normal', 'italic'],
-})
-const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const PLAYFAIR_FONT = "'Playfair Display', serif"
+const INTER_FONT = "'Inter', sans-serif"
 
 const gold = '#c9a84c'
 const goldBorder = 'rgba(201,168,76,0.22)'
@@ -281,7 +285,7 @@ export default function AlphaPage() {
   const c = content[lang]
 
   return (
-    <div className={inter.className} style={{ background: navy, color: onDark, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: INTER_FONT, background: navy, color: onDark, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
@@ -385,7 +389,7 @@ export default function AlphaPage() {
       {/* ── NAVBAR ── */}
       <nav className="mb-nav">
         <div className="mb-nav-inner">
-          <span className={playfair.className} style={{ fontSize: 18, fontWeight: 700, color: gold, letterSpacing: '0.04em' }}>MB</span>
+          <span style={{ fontFamily: PLAYFAIR_FONT, fontSize: 18, fontWeight: 700, color: gold, letterSpacing: '0.04em' }}>MB</span>
           <div className="mb-nav-links">
             {c.navLinks.map(([href, label]) => (
               <a key={href} href={href} className="mb-nav-link">{label}</a>
@@ -402,7 +406,7 @@ export default function AlphaPage() {
         {/* Diagonal line texture */}
         <div style={{ position: 'absolute', inset: 0, backgroundImage: `repeating-linear-gradient(135deg, ${goldBorder} 0, ${goldBorder} 1px, transparent 0, transparent 50%)`, backgroundSize: '60px 60px', opacity: 0.12, pointerEvents: 'none' }} />
         {/* Large decorative label */}
-        <div style={{ position: 'absolute', right: '3%', top: '44%', transform: 'translateY(-50%)', fontSize: 'clamp(8rem, 20vw, 18rem)', fontWeight: 900, color: `rgba(201,168,76,0.04)`, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', fontFamily: playfair.style.fontFamily }}>CFO</div>
+        <div style={{ position: 'absolute', right: '3%', top: '44%', transform: 'translateY(-50%)', fontSize: 'clamp(8rem, 20vw, 18rem)', fontWeight: 900, color: `rgba(201,168,76,0.04)`, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', fontFamily: PLAYFAIR_FONT }}>CFO</div>
 
         <div className="mb-hero-inner">
           {/* Disclaimer */}
@@ -412,7 +416,7 @@ export default function AlphaPage() {
           </div>
 
           {/* Name — two-line typographic treatment, no whiteSpace:nowrap needed */}
-          <div className={playfair.className} style={{ margin: '0 0 24px', lineHeight: 1 }}>
+          <div style={{ fontFamily: PLAYFAIR_FONT, margin: '0 0 24px', lineHeight: 1 }}>
             <div style={{ fontSize: 'clamp(2.4rem, 6vw, 5.2rem)', fontWeight: 400, color: onDark, marginBottom: 4, letterSpacing: '-0.01em' }}>Marco</div>
             <div style={{ fontSize: 'clamp(4rem, 11vw, 9rem)', fontWeight: 900, color: gold, letterSpacing: '-0.03em', lineHeight: 0.88 }}>Bianchi</div>
           </div>
@@ -433,8 +437,8 @@ export default function AlphaPage() {
             <div className="mb-stats-strip">
               {c.statsRow.map(({ value, unit, label }, i, arr) => (
                 <div key={label} style={{ padding: '28px 32px', borderRight: i < arr.length - 1 ? `1px solid ${goldBorder}` : 'none' }}>
-                  <p style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1, fontFamily: playfair.style.fontFamily }}>
-                    {value}<span style={{ fontSize: 13, color: gold, fontFamily: inter.style.fontFamily }}>{unit}</span>
+                  <p style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1, fontFamily: PLAYFAIR_FONT }}>
+                    {value}<span style={{ fontSize: 13, color: gold, fontFamily: INTER_FONT }}>{unit}</span>
                   </p>
                   <p style={{ fontSize: 11, color: onDarkMuted, margin: 0, letterSpacing: '0.05em' }}>{label}</p>
                 </div>
@@ -450,7 +454,7 @@ export default function AlphaPage() {
           <p style={{ fontSize: 11, fontWeight: 700, color: inkLight, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 16px' }}>{c.aboutLabel}</p>
           <div className="mb-about-grid">
             <div>
-              <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 28px', letterSpacing: '-0.01em' }}>
+              <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 28px', letterSpacing: '-0.01em' }}>
                 {c.aboutHeading}<br /><em style={{ color: gold }}>{c.aboutHeadingAccent}</em>
               </h2>
               <p style={{ fontSize: 16, color: inkMid, lineHeight: 1.88, margin: '0 0 20px' }}>{c.about1}</p>
@@ -479,7 +483,7 @@ export default function AlphaPage() {
       <section id="experience" className="mb-section-dark">
         <div className="mb-container">
           <p style={{ fontSize: 11, fontWeight: 700, color: gold, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 14px', opacity: 0.8 }}>{c.expLabel}</p>
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 64px', letterSpacing: '-0.01em' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 64px', letterSpacing: '-0.01em' }}>
             {c.expHeading} <em style={{ color: gold }}>{c.expHeadingAccent}</em>
           </h2>
 
@@ -487,7 +491,7 @@ export default function AlphaPage() {
             <div key={e.index} className="mb-exp-item">
               <div className="mb-exp-header">
                 <span style={{ fontSize: 11, fontWeight: 700, color: gold, opacity: 0.45, letterSpacing: '0.15em' }}>{e.index}</span>
-                <h3 className={playfair.className} style={{ fontSize: 'clamp(1.3rem, 2.8vw, 2rem)', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.01em' }}>{e.company}</h3>
+                <h3 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.3rem, 2.8vw, 2rem)', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.01em' }}>{e.company}</h3>
                 {e.current && <span style={{ fontSize: 10, fontWeight: 700, background: gold, color: navy, borderRadius: 3, padding: '2px 8px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Now</span>}
               </div>
               <div className="mb-exp-meta">
@@ -514,7 +518,7 @@ export default function AlphaPage() {
           <div className="mb-metrics-grid">
             {c.numbersRow.map(({ value, label }) => (
               <div key={label} style={{ padding: '48px 32px', textAlign: 'center', background: '#fff' }}>
-                <p className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 900, color: inkDark, margin: '0 0 8px', lineHeight: 1, letterSpacing: '-0.02em' }}>{value}</p>
+                <p style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 900, color: inkDark, margin: '0 0 8px', lineHeight: 1, letterSpacing: '-0.02em' }}>{value}</p>
                 <p style={{ fontSize: 12, color: inkLight, margin: 0, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</p>
               </div>
             ))}
@@ -526,7 +530,7 @@ export default function AlphaPage() {
       <section id="skills" className="mb-section-card">
         <div className="mb-container">
           <p style={{ fontSize: 11, fontWeight: 700, color: gold, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 14px', opacity: 0.8 }}>{c.skillsLabel}</p>
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 48px', letterSpacing: '-0.01em' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 700, color: '#fff', lineHeight: 1.15, margin: '0 0 48px', letterSpacing: '-0.01em' }}>
             {c.skillsHeading} <em style={{ color: gold }}>{c.skillsHeadingAccent}</em>
           </h2>
 
@@ -566,7 +570,7 @@ export default function AlphaPage() {
       <section id="contact" className="mb-section-cream" style={{ textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 700, color: inkLight, letterSpacing: '0.22em', textTransform: 'uppercase', margin: '0 0 20px' }}>{c.contactLabel}</p>
-          <h2 className={playfair.className} style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 16px', letterSpacing: '-0.01em' }}>
+          <h2 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: inkDark, lineHeight: 1.15, margin: '0 0 16px', letterSpacing: '-0.01em' }}>
             {c.contactHeading} <em style={{ color: gold }}>{c.contactHeadingAccent}</em>
           </h2>
           <p style={{ fontSize: 16, color: inkMid, margin: '0 0 48px', lineHeight: 1.75 }}>{c.contactSub}</p>

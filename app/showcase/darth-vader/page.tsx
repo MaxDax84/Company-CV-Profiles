@@ -1,7 +1,9 @@
 import Link from 'next/link'
-import { Space_Mono } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/space-mono/400.css'
+import '@fontsource/space-mono/700.css'
 
-const mono = Space_Mono({ subsets: ['latin'], weight: ['400', '700'] })
+const MONO_FONT = "'Space Mono', monospace"
 
 const red = '#dc2626'
 const dim = '#374151'
@@ -9,7 +11,7 @@ const mid = '#4b5563'
 
 export default function DarthVaderPage() {
   return (
-    <div className={mono.className} style={{ minHeight: '100vh', background: '#000000', color: '#9ca3af', padding: '0 0 80px', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: MONO_FONT, minHeight: '100vh', background: '#000000', color: '#9ca3af', padding: '0 0 80px', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         .redact { background: #374151; color: transparent; border-radius: 2px; display: inline-block; user-select: none; }

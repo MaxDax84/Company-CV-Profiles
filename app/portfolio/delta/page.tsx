@@ -2,10 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Inter } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 import { useLanguage } from '@/components/language-provider'
 
-const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] })
+const INTER_FONT = "'Inter', sans-serif"
 
 // ── Design tokens (Alessandro Marcello inspired) ──────────────────────────
 const v = 'oklch(0.72 0.18 280)'       // violet accent
@@ -310,7 +315,7 @@ export default function DeltaPage() {
   const contactIn = useInView()
 
   return (
-    <div className={inter.className} style={{ background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: INTER_FONT, background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

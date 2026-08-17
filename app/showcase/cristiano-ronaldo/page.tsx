@@ -1,7 +1,13 @@
 import Link from 'next/link'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+// Self-hosted (see app/layout.tsx)
+import '@fontsource/plus-jakarta-sans/300.css'
+import '@fontsource/plus-jakarta-sans/400.css'
+import '@fontsource/plus-jakarta-sans/500.css'
+import '@fontsource/plus-jakarta-sans/600.css'
+import '@fontsource/plus-jakarta-sans/700.css'
+import '@fontsource/plus-jakarta-sans/800.css'
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'] })
+const JAKARTA_FONT = "'Plus Jakarta Sans', sans-serif"
 
 export default function CristianoRonaldoPage() {
   const gold = '#c9a84c'
@@ -11,7 +17,7 @@ export default function CristianoRonaldoPage() {
   const navyBorder = '#1a2540'
 
   return (
-    <div className={jakarta.className} style={{ minHeight: '100vh', background: navy, color: '#e8edf5', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: JAKARTA_FONT, minHeight: '100vh', background: navy, color: '#e8edf5', overflowX: 'hidden' }}>
       <style>{`
         .cr-stat-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; border-radius: 12px; overflow: hidden; background: ${navyBorder}; }
         .cr-main-grid { display: grid; grid-template-columns: 1fr 260px; gap: 40px; }
