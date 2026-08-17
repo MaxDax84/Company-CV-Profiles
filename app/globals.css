@@ -108,6 +108,81 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Global click/tap feedback — most CTAs here are plain <button>/<a>
+     (no shared Button component to centralize this on), so this is a
+     base-layer default rather than a per-component class. Uses `filter`
+     specifically because it can't collide with the transform-based hover
+     effects (hover:-translate-y-0.5, card hover:scale, etc.) already used
+     across components — brightness and transform are independent
+     properties, so a press dims the element regardless of what its own
+     hover transform is doing. Any component with its own `transition-*`
+     utility overrides this default (Tailwind's utilities layer always
+     wins over @layer base), so this only fills in where nothing already
+     handles it. */
+  a,
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    transition: filter 120ms ease-out, transform 150ms ease-out,
+      background-color 150ms ease-out, border-color 150ms ease-out,
+      box-shadow 150ms ease-out, opacity 150ms ease-out, color 150ms ease-out;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+  a:active,
+  button:not(:disabled):active,
+  [role='button']:not([aria-disabled='true']):active,
+  summary:active {
+    filter: brightness(0.9);
+  }
+}
+
+/* Respect the OS-level "reduce motion" setting: kill the decorative
+   infinite-loop animations (they're pure flourish, not state feedback)
+   and make sure fade-in-on-mount elements still end up visible instead of
+   stuck at their pre-animation opacity: 0. Click/tap feedback above is
+   left untouched — a brief brightness dip on press isn't the kind of
+   motion this preference is about. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow-pulse,
+  .animate-float,
+  .gradient-text,
+  .animate-template-preview-scroll,
+  .animate-showcase-web-scroll,
+  .animate-fade-in {
+    animation: none;
+  }
+  .animate-fade-in {
+    opacity: 1;
+  }
+}
+
+/* Smooth cross-fade between full-page navigations. Most nav here uses
+   plain <a href> (see components/navigation.tsx), i.e. real MPA
+   navigations, not client-side routing — so a React-side transition
+   wrapper wouldn't run across the reload. The cross-document View
+   Transitions API handles exactly this case at the browser level, with
+   no JS: supporting browsers (Chromium-based) get a smooth crossfade,
+   everyone else just gets the normal instant navigation they have today. */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }
 
 /* ── Custom animations ── */
