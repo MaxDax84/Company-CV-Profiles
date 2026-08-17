@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Globe, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
@@ -108,9 +108,8 @@ export default function Navigation() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center transition-all group-hover:border-primary/60 group-hover:bg-primary/25">
-            <Globe className="w-4 h-4 text-primary" />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
+          <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
           <span className="font-heading font-bold text-lg tracking-tight">
             Job<span className="text-primary">li</span>
           </span>

@@ -6,9 +6,15 @@ import { useRouter } from "next/navigation";
 interface EditableSlugProps {
   profileId: string;
   slug: string;
+  // "compact" (default) is the small labeled row used alongside an already-
+  // meaningful heading (e.g. the tailored-CV's job title). "heading" is for
+  // when the CV's own name IS the primary identifier of the card — the
+  // person's full_name isn't useful there since every one of a user's CVs
+  // shares the same name, so the CV's editable name takes the heading slot.
+  variant?: "compact" | "heading";
 }
 
-export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
+export default function EditableSlug({ profileId, slug, variant = "compact" }: EditableSlugProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(slug);
@@ -42,19 +48,23 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
     }
   }
 
+  const isHeading = variant === "heading";
+
   if (!editing) {
     return (
       <div className="space-y-0.5">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-          Nome del CV caricato come PDF:
-        </p>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
-          <span className="truncate">{slug}</span>
+        {!isHeading && (
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+            Nome del CV caricato come PDF:
+          </p>
+        )}
+        <div className={isHeading ? "flex items-center gap-2" : "flex items-center gap-2 text-xs text-muted-foreground/60"}>
+          <span className={isHeading ? "text-sm font-semibold truncate" : "truncate"}>{slug}</span>
           <button
             onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
-            className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0"
+            className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0 text-xs"
           >
-            Modifica nome
+            {isHeading ? "Modifica" : "Modifica nome"}
           </button>
         </div>
       </div>
@@ -63,9 +73,11 @@ export default function EditableSlug({ profileId, slug }: EditableSlugProps) {
 
   return (
     <div className="space-y-1.5">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-        Nome del CV caricato come PDF:
-      </p>
+      {!isHeading && (
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+          Nome del CV caricato come PDF:
+        </p>
+      )}
       <div className="flex items-center gap-2">
         <input
           value={value}

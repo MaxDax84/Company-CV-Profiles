@@ -53,7 +53,6 @@ const TABS = [
   { id: "dashboard", label: "Riepilogo", title: "Dashboard", icon: LayoutDashboard },
   { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
   { id: "adapted", label: "CV Adattati", title: "CV adattati alle offerte", icon: Target },
-  { id: "letters", label: "Lettere", title: "Lettere di presentazione", icon: Mail },
   { id: "downloads", label: "Download", title: "Download", icon: Download },
   { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
 ] as const;
@@ -94,7 +93,6 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
   const [limitModalOpen, setLimitModalOpen] = useState(false);
-  const [letterTargetSlug, setLetterTargetSlug] = useState<string | null>(null);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
@@ -165,7 +163,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   return (
                     <div key={row.id} className="glass-card rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate">{row.data.personal_info.full_name}</p>
+                        <p className="text-sm font-semibold truncate">{row.slug}</p>
                         <p className="text-xs text-muted-foreground/60">
                           {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
@@ -239,7 +237,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   <div key={row.id} className="glass-card rounded-2xl p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold">{row.data.personal_info.full_name}</p>
+                        <EditableSlug profileId={row.id} slug={row.slug} variant="heading" />
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
                           {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
@@ -251,7 +249,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         {computeCvScore(row.data).total}/100
                       </p>
                     </div>
-                    <EditableSlug profileId={row.id} slug={row.slug} />
                     {row.data.metadata.suggested_titles && row.data.metadata.suggested_titles.length > 0 && (
                       <div className="space-y-1.5">
                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
@@ -396,64 +393,50 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         </div>
       )}
 
-      {/* ── Tab: Lettere di presentazione ────────────────────────────────── */}
-      {tab === "letters" && (
+      {/* ── Tab: Download ──────────────────────────────────────────────── */}
+      {tab === "downloads" && (
         <div className="space-y-10">
           <div className="space-y-3">
-            <SectionTitle>Genera una lettera</SectionTitle>
-            {tailoredProfiles.length > 0 ? (
-              (() => {
-                const selectedSlug = letterTargetSlug ?? tailoredProfiles[0].slug;
-                const selectedRow = tailoredProfiles.find(r => r.slug === selectedSlug) ?? tailoredProfiles[0];
-                return (
-                  <div className="glass-card rounded-2xl p-5 space-y-4">
-                    <p className="text-xs text-muted-foreground">
-                      Scegli per quale CV adattato vuoi generare la lettera — usa già ruolo e azienda dell'annuncio, senza bisogno di incollarlo di nuovo.
-                    </p>
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-1">
-                        CV adattato
-                      </p>
-                      <select
-                        value={selectedSlug}
-                        onChange={(e) => setLetterTargetSlug(e.target.value)}
-                        className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 cursor-pointer"
+            <SectionTitle>CV scaricati ({paidDownloads.length})</SectionTitle>
+            <p className="text-xs text-muted-foreground/60">
+              Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.
+            </p>
+            {paidDownloads.length > 0 ? (
+              <div className="glass-card rounded-2xl divide-y divide-foreground/5">
+                {paidDownloads.map((dl) => {
+                  const row = profilesById.get(dl.profile_id);
+                  if (!row) return null;
+                  const templateName = PDF_TEMPLATES.find(t => t.id === dl.template)?.name ?? dl.template;
+                  return (
+                    <div key={dl.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
+                      <div>
+                        <p className="text-sm font-medium">{row.slug} · {templateName}</p>
+                        <p className="text-xs text-muted-foreground/50">
+                          Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                      </div>
+                      <a
+                        href={`/api/pdf/${row.slug}?template=${dl.template}`}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                        style={{ background: `${ACCENT}20`, color: ACCENT }}
                       >
-                        {tailoredProfiles.map((row) => {
-                          const roleCompany = [row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" presso ");
-                          const label = roleCompany || row.data.personal_info.title || row.slug;
-                          return <option key={row.slug} value={row.slug}>{label}</option>;
-                        })}
-                      </select>
+                        Riscarica ↓
+                      </a>
                     </div>
-                    <CoverLetterButton
-                      slug={selectedRow.slug}
-                      label="Genera lettera ↓"
-                      credits={credits}
-                      className="block w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-center transition-all duration-200 hover:opacity-90"
-                      style={{ background: ACCENT, color: "#000" }}
-                    />
-                  </div>
-                );
-              })()
+                  );
+                })}
+              </div>
             ) : (
-              <div className="glass-card rounded-2xl p-6 text-center space-y-3">
+              <div className="glass-card rounded-2xl p-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Genera prima un CV adattato a un'offerta di lavoro — la lettera si scrive a partire da quello.
+                  Non hai ancora scaricato nessun PDF. Ogni PDF generato comparirà qui, riscaricabile gratis.
                 </p>
-                <a
-                  href="/tailor"
-                  className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
-                  style={{ background: ACCENT, color: "#000" }}
-                >
-                  Adatta un CV a un annuncio →
-                </a>
               </div>
             )}
           </div>
 
           <div className="space-y-3">
-            <SectionTitle>Lettere generate ({coverLetters.length})</SectionTitle>
+            <SectionTitle>Lettere di presentazione scaricate ({coverLetters.length})</SectionTitle>
             <p className="text-xs text-muted-foreground/60">
               Ogni lettera già generata puoi riscaricarla qui gratuitamente, quante volte vuoi.
             </p>
@@ -462,11 +445,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 {coverLetters.map((letter) => {
                   const row = profilesById.get(letter.profile_id);
                   if (!row) return null;
-                  const roleCompany = [row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" presso ");
+                  const target = row.data.metadata.target_role || row.data.metadata.target_company || "candidatura generica";
                   return (
                     <div key={letter.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
                       <div>
-                        <p className="text-sm font-medium">{row.data.personal_info.full_name} · {roleCompany || "lettera generica"}</p>
+                        <p className="text-sm font-medium">Lettera per {target}</p>
                         <p className="text-xs text-muted-foreground/50">
                           Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
@@ -490,48 +473,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      {/* ── Tab: Download ──────────────────────────────────────────────── */}
-      {tab === "downloads" && (
-        <div className="space-y-3">
-          <SectionTitle>PDF generati ({paidDownloads.length})</SectionTitle>
-          <p className="text-xs text-muted-foreground/60">
-            Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.
-          </p>
-          {paidDownloads.length > 0 ? (
-            <div className="glass-card rounded-2xl divide-y divide-foreground/5">
-              {paidDownloads.map((dl) => {
-                const row = profilesById.get(dl.profile_id);
-                if (!row) return null;
-                const templateName = PDF_TEMPLATES.find(t => t.id === dl.template)?.name ?? dl.template;
-                return (
-                  <div key={dl.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
-                    <div>
-                      <p className="text-sm font-medium">{row.data.personal_info.full_name} · {templateName}</p>
-                      <p className="text-xs text-muted-foreground/50">
-                        Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
-                      </p>
-                    </div>
-                    <a
-                      href={`/api/pdf/${row.slug}?template=${dl.template}`}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                      style={{ background: `${ACCENT}20`, color: ACCENT }}
-                    >
-                      Riscarica ↓
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="glass-card rounded-2xl p-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                Non hai ancora scaricato nessun PDF. Ogni PDF generato comparirà qui, riscaricabile gratis.
-              </p>
-            </div>
-          )}
         </div>
       )}
 
