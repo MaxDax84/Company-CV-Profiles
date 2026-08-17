@@ -8,6 +8,7 @@ import {
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
+import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
 import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
@@ -52,6 +53,7 @@ const TABS = [
   { id: "dashboard", label: "Riepilogo", title: "Dashboard", icon: LayoutDashboard },
   { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
   { id: "adapted", label: "CV Adattati", title: "CV adattati alle offerte", icon: Target },
+  { id: "letters", label: "Lettere", title: "Lettere di presentazione", icon: Mail },
   { id: "downloads", label: "Download", title: "Download", icon: Download },
   { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
 ] as const;
@@ -74,6 +76,7 @@ interface AccountTabsProps {
   credits: number;
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
+  coverLetters: GeneratedCoverLetterEntry[];
   // Owned by AccountShell — account settings are now their own page (see
   // app/account/settings/page.tsx), reached via the avatar dropdown in the
   // global nav, so this component only needs the commercial tab itself.
@@ -89,8 +92,9 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, tab, setTab }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
   const [limitModalOpen, setLimitModalOpen] = useState(false);
+  const [letterTargetSlug, setLetterTargetSlug] = useState<string | null>(null);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
@@ -389,6 +393,103 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Tab: Lettere di presentazione ────────────────────────────────── */}
+      {tab === "letters" && (
+        <div className="space-y-10">
+          <div className="space-y-3">
+            <SectionTitle>Genera una lettera</SectionTitle>
+            {tailoredProfiles.length > 0 ? (
+              (() => {
+                const selectedSlug = letterTargetSlug ?? tailoredProfiles[0].slug;
+                const selectedRow = tailoredProfiles.find(r => r.slug === selectedSlug) ?? tailoredProfiles[0];
+                return (
+                  <div className="glass-card rounded-2xl p-5 space-y-4">
+                    <p className="text-xs text-muted-foreground">
+                      Scegli per quale CV adattato vuoi generare la lettera — usa già ruolo e azienda dell'annuncio, senza bisogno di incollarlo di nuovo.
+                    </p>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-1">
+                        CV adattato
+                      </p>
+                      <select
+                        value={selectedSlug}
+                        onChange={(e) => setLetterTargetSlug(e.target.value)}
+                        className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 cursor-pointer"
+                      >
+                        {tailoredProfiles.map((row) => {
+                          const roleCompany = [row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" presso ");
+                          const label = roleCompany || row.data.personal_info.title || row.slug;
+                          return <option key={row.slug} value={row.slug}>{label}</option>;
+                        })}
+                      </select>
+                    </div>
+                    <CoverLetterButton
+                      slug={selectedRow.slug}
+                      label="Genera lettera ↓"
+                      credits={credits}
+                      className="block w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-center transition-all duration-200 hover:opacity-90"
+                      style={{ background: ACCENT, color: "#000" }}
+                    />
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="glass-card rounded-2xl p-6 text-center space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Genera prima un CV adattato a un'offerta di lavoro — la lettera si scrive a partire da quello.
+                </p>
+                <a
+                  href="/tailor"
+                  className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+                  style={{ background: ACCENT, color: "#000" }}
+                >
+                  Adatta un CV a un annuncio →
+                </a>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <SectionTitle>Lettere generate ({coverLetters.length})</SectionTitle>
+            <p className="text-xs text-muted-foreground/60">
+              Ogni lettera già generata puoi riscaricarla qui gratuitamente, quante volte vuoi.
+            </p>
+            {coverLetters.length > 0 ? (
+              <div className="glass-card rounded-2xl divide-y divide-foreground/5">
+                {coverLetters.map((letter) => {
+                  const row = profilesById.get(letter.profile_id);
+                  if (!row) return null;
+                  const roleCompany = [row.data.metadata.target_role, row.data.metadata.target_company].filter(Boolean).join(" presso ");
+                  return (
+                    <div key={letter.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
+                      <div>
+                        <p className="text-sm font-medium">{row.data.personal_info.full_name} · {roleCompany || "lettera generica"}</p>
+                        <p className="text-xs text-muted-foreground/50">
+                          Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                      </div>
+                      <a
+                        href={`/api/cover-letter/${row.slug}`}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                        style={{ background: `${ACCENT}20`, color: ACCENT }}
+                      >
+                        Riscarica ↓
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="glass-card rounded-2xl p-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Non hai ancora generato nessuna lettera. Ogni lettera generata comparirà qui, riscaricabile gratis.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

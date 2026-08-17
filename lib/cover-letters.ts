@@ -37,3 +37,24 @@ export async function rememberCoverLetter(
     );
   if (error) console.error("[rememberCoverLetter]", error);
 }
+
+export interface GeneratedCoverLetterEntry {
+  id: string;
+  profile_id: string;
+  created_at: string;
+}
+
+// Every cover letter a user has ever generated, newest first — shown on
+// the account's dedicated "Lettere" tab alongside a free re-download link.
+export async function getGeneratedCoverLetters(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<GeneratedCoverLetterEntry[]> {
+  const { data, error } = await supabase
+    .from("cover_letters")
+    .select("id, profile_id, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (error) console.error("[getGeneratedCoverLetters]", error);
+  return (data ?? []) as GeneratedCoverLetterEntry[];
+}

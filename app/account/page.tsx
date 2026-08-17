@@ -8,6 +8,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles } from "@/lib/profile-store";
 import { getCreditBalance, getCreditLedger, getAccountCode } from "@/lib/credits";
 import { getPaidDownloads } from "@/lib/paid-downloads";
+import { getGeneratedCoverLetters } from "@/lib/cover-letters";
 
 export default async function AccountPage() {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
@@ -16,13 +17,14 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [primaryProfiles, tailoredProfiles, credits, ledger, accountCode, paidDownloads] = await Promise.all([
+  const [primaryProfiles, tailoredProfiles, credits, ledger, accountCode, paidDownloads, coverLetters] = await Promise.all([
     getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
     getCreditBalance(supabase, user.id),
     getCreditLedger(supabase, user.id),
     getAccountCode(supabase, user.id),
     getPaidDownloads(supabase, user.id),
+    getGeneratedCoverLetters(supabase, user.id),
   ]);
 
   return (
@@ -39,6 +41,7 @@ export default async function AccountPage() {
           credits={credits}
           ledger={ledger}
           paidDownloads={paidDownloads}
+          coverLetters={coverLetters}
         />
       </div>
       <Footer />
