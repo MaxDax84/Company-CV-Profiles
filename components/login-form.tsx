@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import GoogleAuthButton from "@/components/google-auth-button";
 
 const ACCENT = "#6366f1";
 const inputClass =
@@ -16,7 +17,14 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Seeded from ?error=oauth_failed (see app/auth/callback/route.ts) if the
+  // user gets bounced back here after a failed Google sign-in — same error
+  // state as a failed password login, just a different source.
+  const [error, setError] = useState<string | null>(
+    searchParams.get("error") === "oauth_failed"
+      ? "Accesso con Google non riuscito. Riprova, o accedi con email e password."
+      : null
+  );
   const [claimFailed, setClaimFailed] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -119,6 +127,14 @@ export default function LoginForm() {
       >
         {loading ? "Accesso…" : "Accedi"}
       </button>
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground/50">
+        <div className="flex-1 h-px bg-foreground/10" />
+        oppure
+        <div className="flex-1 h-px bg-foreground/10" />
+      </div>
+
+      <GoogleAuthButton claimToken={claimToken} />
 
       <p className="text-xs text-muted-foreground text-center">
         Non hai un account?{" "}

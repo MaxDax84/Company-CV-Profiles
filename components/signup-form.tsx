@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
+import GoogleAuthButton from "@/components/google-auth-button";
 
 const ACCENT = "#6366f1";
 const inputClass =
@@ -166,6 +167,14 @@ export default function SignupForm() {
           {status === "loading" ? "Creazione account…" : "Crea account gratis"}
         </span>
       </button>
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground/50">
+        <div className="flex-1 h-px bg-foreground/10" />
+        oppure
+        <div className="flex-1 h-px bg-foreground/10" />
+      </div>
+
+      <GoogleAuthButton claimToken={claimToken} />
 
       <p className="text-xs text-muted-foreground text-center">
         Hai già un account?{" "}
