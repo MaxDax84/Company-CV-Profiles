@@ -99,9 +99,9 @@ export default function HeroSection() {
           style={{ animationDelay: '0.48s' }}
         >
           {[
-            lang === 'en' ? 'Built from your real CV — never invented' : 'Parte dal tuo CV vero — mai inventato',
-            lang === 'en' ? 'Optimized to pass ATS filters' : 'Ottimizzato per superare i filtri ATS',
-            lang === 'en' ? '1 free credit to get started' : '1 credito gratis per iniziare',
+            lang === 'en' ? 'Built from your real CV — never invented' : 'Ottimizzato per ATS e recruiter',
+            lang === 'en' ? 'Optimized to pass ATS filters' : 'Si adatta a ogni offerta a cui ti candidi',
+            lang === 'en' ? '1 free credit to get started' : 'Anche come pagina web, condivisibile con un click',
           ].map((label) => (
             <div
               key={label}

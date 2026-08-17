@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   title: 'Jobli | Più colloqui, con il CV che hai già',
   description:
     'Jobli usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.',
-  icons: {
-    icon: '/icon.svg',
-  },
+  // No explicit `icons` field — app/icon.png (Next.js file convention) is
+  // picked up and served automatically. An explicit icons entry here would
+  // override that convention instead of complementing it.
 }
 
 // Runs before hydration so the .dark class is already set on first paint —
@@ -32,9 +32,13 @@ export const metadata: Metadata = {
 // user, then flip once React mounts.
 const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`
 
+// suppressHydrationWarning on <html> below: THEME_INIT_SCRIPT adds .dark
+// before hydration to avoid a light-mode flash for dark-mode users — React
+// correctly flags that as a client/server mismatch, but it's expected here,
+// not a bug. Doesn't suppress mismatches deeper in the tree.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

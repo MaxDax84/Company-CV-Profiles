@@ -393,9 +393,9 @@ export const translations = {
     hero: {
       badge: 'Piattaforma AI per dare un boost alla tua carriera',
       titleGradient: 'Più colloqui,',
-      titleNormal: 'non solo un CV più bello.',
+      titleNormal: 'non un CV più bello.',
       subtitle:
-        'Carica il tuo CV: la nostra AI lo trasforma in un profilo pronto da condividere, lo adatta all\'annuncio a cui ti candidi e ti aiuta a rafforzarlo con numeri e risultati veri — senza inventare nulla.',
+        'La nostra AI riorganizza la struttura del tuo CV e lo modula su misura per ogni offerta di lavoro. Supera i filtri ATS valorizzando la tua vera esperienza, e trasforma il tuo profilo in una pagina web personale pronta da condividere con un link.',
       ctaPrimary: 'Inizia Ora →',
     },
     services: {
