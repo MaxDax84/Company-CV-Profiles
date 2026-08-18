@@ -43,6 +43,10 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
     q: 'Come cancello il mio account?',
     a: 'Dalla sezione Account trovi "Elimina account permanentemente": profilo, CV adattati e crediti vengono cancellati senza possibilità di recupero.',
   },
+  {
+    q: 'Come posso contattarvi?',
+    a: 'Registrati così nell\'account trovi l\'email di contatto.',
+  },
 ]
 
 function AccordionItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boolean; onToggle: () => void }) {

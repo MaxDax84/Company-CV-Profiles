@@ -1,4 +1,5 @@
 import type { ProfileSchema } from "./schema";
+import type { CvScoreBreakdown } from "./cv-score";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 
 // Thrown when the model itself flags the uploaded PDF as not being a CV at
@@ -10,6 +11,25 @@ export class NotAResumeError extends Error {
     super("The uploaded file doesn't appear to be a CV/resume.");
     this.name = "NotAResumeError";
   }
+}
+
+// Raw 0-25-per-criterion score Claude assigns to the SOURCE CV, before any
+// of the extraction/clarity improvements are applied — only the model can
+// judge this honestly and severely, since a deterministic formula over the
+// normalized ProfileSchema can only check for presence/counts, not genuine
+// quality (a previous deterministic-only version of this score let a CV
+// that was merely *complete* — some bio, some skills, some contact info —
+// max out 3 of its 4 criteria regardless of how thin or unremarkable it
+// actually was). This raw judgment gets embedded into
+// profile.metadata.score_before so it travels with the profile through the
+// permanent PDF-hash memory (lib/cv-score-memory.ts) — the same file
+// re-uploaded later reuses this exact judgment instead of re-grading and
+// risking a different number for content that hasn't changed.
+export interface CvScoreBeforeRaw {
+  quantified_results: number;
+  clarity: number;
+  ats_structure: number;
+  specific_skills: number;
 }
 
 const SYSTEM_PROMPT = `You are a precise CV data extractor. Your task is to extract information from a CV/resume PDF and return ONLY a valid JSON object matching the schema below.
@@ -39,12 +59,24 @@ Rules:
 - For other: catch-all for anything relevant that doesn't fit the sections above — hobbies, sports, volunteering, non-professional collaborations, extra languages, interests. Max 8 short items (a few words each), same language as the CV. Omit the field entirely if there's nothing like this in the CV — do not invent generic filler.
 - Detect language from the CV content and set metadata.language to "it" or "en".
 - Additionally, suggest 3 to 5 job titles this person is genuinely qualified for right now, in a top-level "suggested_titles" array of strings, same language as the CV. Ground every title strictly in the seniority, domain, and concrete skills/experience actually present in the CV — a plausible next step or lateral move, never an aspirational role the CV doesn't support (e.g. don't suggest "CTO" for someone with two years as a junior developer, and don't suggest a totally different domain the CV shows no evidence of). Order from closest/most obvious match to more exploratory. If the CV is too thin or unfocused to support even 3 honest suggestions, return fewer rather than padding with a weak guess.
+- Additionally, evaluate the SOURCE CV as originally written (before any of the improvements you make above) on 4 criteria, each an integer from 0 to 25, in a top-level "cv_score_before" object:
+  - "quantified_results": what fraction of the CV's own bullet points/achievements already include a concrete number, percentage, or monetary value? 25 = nearly all do, 0 = none do.
+  - "clarity": how clear, concise, and professional is the CV's own summary/profile statement, if it has one? A one-line job title or qualification name copied as if it were a summary does NOT count as a real self-description. 25 = a genuinely clear, well-scoped positioning statement; 0 = missing, vague, or just a restated title.
+  - "ats_structure": does the CV have a clearly labeled, organized skills section (not skills only scattered or implied inside paragraphs), and is it substantial (several distinct, genuinely named skills — not just one or two)? 25 = yes, cleanly categorized and substantial; 0 = no dedicated section at all, or only a token one.
+  - "specific_skills": how many concrete, specific hard skills or tools does the CV explicitly name (not vague soft-skill adjectives, not skills you had to infer from a course title)? 25 = 10 or more distinct, genuinely specific skills/tools explicitly stated; 0 = none.
+  Be strict and critical, not encouraging — judge against the standard of a highly polished, ATS-optimized, recruiter-ready CV, not against an average CV, and not relative to the candidate's seniority or field. Most real CVs, even genuinely good ones, should land in the 30-65 range on most criteria; reserve scores above 80 for the rare CV that is already close to exceptional on that specific criterion. Do not round up out of politeness, and do not inflate a criterion just because the CV is complete or well-organized elsewhere — a vague or generic bio, a thin or merely-implied skills section, or bullets with no numbers should score low even if the CV is otherwise tidy.
 
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}
 
 Also include, as a sibling of "personal_info" at the top level (not nested inside it):
-"suggested_titles": string[]`;
+"suggested_titles": string[]
+"cv_score_before": {
+  "quantified_results": number,
+  "clarity": number,
+  "ats_structure": number,
+  "specific_skills": number
+}`;
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -110,7 +142,7 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     content: { type: string; text: string }[];
   };
 
-  const parsed = extractProfileJson<Partial<ProfileSchema> & { is_resume?: boolean; suggested_titles?: string[] }>(
+  const parsed = extractProfileJson<Partial<ProfileSchema> & { is_resume?: boolean; suggested_titles?: string[]; cv_score_before?: CvScoreBeforeRaw }>(
     json,
     "CV too long to process. Please try with a shorter CV (max 2 pages recommended)."
   );
@@ -119,10 +151,23 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     throw new NotAResumeError();
   }
 
-  const { suggested_titles, is_resume, ...profile } = parsed as ProfileSchema & { suggested_titles?: string[]; is_resume?: boolean };
+  const { suggested_titles, is_resume, cv_score_before, ...profile } = parsed as ProfileSchema & { suggested_titles?: string[]; is_resume?: boolean; cv_score_before?: CvScoreBeforeRaw };
 
   if (!profile.metadata?.generated_at) {
     profile.metadata.generated_at = new Date().toISOString();
+  }
+
+  // Sum ourselves rather than trusting the model to also report a correct
+  // total — it's only ever asked for the 4 individual criteria.
+  if (cv_score_before) {
+    const scoreBefore: CvScoreBreakdown = {
+      quantifiedResults: cv_score_before.quantified_results,
+      clarity: cv_score_before.clarity,
+      atsStructure: cv_score_before.ats_structure,
+      specificSkills: cv_score_before.specific_skills,
+      total: cv_score_before.quantified_results + cv_score_before.clarity + cv_score_before.ats_structure + cv_score_before.specific_skills,
+    };
+    profile.metadata.score_before = scoreBefore;
   }
 
   return { profile, suggestedTitles: suggested_titles ?? [] };

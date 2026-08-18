@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getClientIp, improveProfileRatelimit } from "@/lib/rate-limit";
 import { improveAndFinalizePendingProfile } from "@/lib/profile-store";
 import { isTemplateStyle } from "@/lib/templates";
-import { computeCvScore } from "@/lib/cv-score";
+import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 
 // Node runtime (not edge): this route now makes a Claude call (the phase-2
 // "improve" pass) — maxDuration only takes effect on Node functions.
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       slug: result.slug,
       profile: result.profile,
-      cvScoreAfter: computeCvScore(result.profile),
+      cvScoreAfter: floorScoreAgainst(computeCvScore(result.profile), result.profile.metadata.score_before),
     });
   } catch (err) {
     console.error("[customize-profile]", err);

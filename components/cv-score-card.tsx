@@ -5,6 +5,10 @@ interface CvScoreCardProps {
   before: CvScoreBreakdown | null;
   after: CvScoreBreakdown;
   accentColor: string;
+  // The CV's own (editable) name/slug — shown under the eyebrow title so
+  // it's clear which uploaded CV this score belongs to, not just a generic
+  // "your CV score" label.
+  cvName?: string;
   // "teaser": phase 1 of /generate, right after analysis — nothing has been
   // improved yet, so only the current (raw) score is shown, plus a claim
   // inviting the user to proceed. "full" (default): the final result panel,
@@ -28,16 +32,19 @@ const CRITERIA: { key: keyof Omit<CvScoreBreakdown, "total">; labelKey: keyof Cv
   { key: "specificSkills", labelKey: "specificSkills" },
 ];
 
-export default function CvScoreCard({ before, after, accentColor, labels, variant = "full" }: CvScoreCardProps) {
+export default function CvScoreCard({ before, after, accentColor, labels, cvName, variant = "full" }: CvScoreCardProps) {
   const isTeaser = variant === "teaser";
   const current = isTeaser ? (before ?? after) : after;
   const delta = !isTeaser && before ? after.total - before.total : null;
 
   return (
     <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 space-y-5">
-      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">
-        {labels.title}
-      </p>
+      <div className="text-center space-y-0.5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+          {labels.title}
+        </p>
+        {cvName && <p className="text-sm font-semibold truncate">{cvName}</p>}
+      </div>
 
       {isTeaser ? (
         <div className="text-center space-y-2">

@@ -382,7 +382,7 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: cachedProfile.metadata.score_before ?? computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
     }
   }
 
@@ -416,5 +416,5 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: computeCvScore(profile), suggestedTitles };
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: profile.metadata.score_before ?? computeCvScore(profile), suggestedTitles };
 }

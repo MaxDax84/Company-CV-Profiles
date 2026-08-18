@@ -11,6 +11,7 @@ export const translations = {
       contact: 'Contact',
       generate: 'Try Free',
       tailorLink: 'Tailor to a Job',
+      faq: 'FAQ',
     },
     trust: {
       autoDelete: 'Auto-deleted after 1 hour if unclaimed',
@@ -55,6 +56,14 @@ export const translations = {
             'Career evolving? We keep your profile up to date. Up to 3 content updates per month, so your page is always accurate.',
         },
       ],
+    },
+    about: {
+      sectionLabel: 'About us',
+      headline: 'We believe your CV doesn\'t need to be invented.',
+      headlineAccent: 'Just told better.',
+      paragraph1: 'Jobli started from a simple observation: most CVs don\'t fail for lack of experience, but for how that experience is told. Generic phrasing, unclear structure, missing keywords — and ATS filters discard the CV before a recruiter ever reads a line.',
+      paragraph2: 'We built Jobli to solve exactly that: an AI that reads what you\'ve actually done and makes it clear, structured, and optimized — never adding an experience, a skill, or a result that isn\'t genuinely yours.',
+      paragraph3: 'We don\'t promise shortcuts. We promise that the CV you bring to an interview is the clearest, most honest version of you.',
     },
     templateShowcase: {
       webTitle: 'Your CV, as a web page',
@@ -377,6 +386,7 @@ export const translations = {
       contact: 'Contatti',
       generate: 'Prova Gratis',
       tailorLink: 'Adatta a un annuncio',
+      faq: 'FAQ',
     },
     trust: {
       autoDelete: 'Eliminato automaticamente dopo 1 ora se non registrato',
@@ -427,6 +437,14 @@ export const translations = {
       ],
       wipBadge: 'Work in progress',
       wipNote: 'Presto potrai anche dialogare con l\'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio "di quanto sono aumentate le revenue nell\'ultimo anno fiscale? 15%? 30%?" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.',
+    },
+    about: {
+      sectionLabel: 'Chi siamo',
+      headline: 'Crediamo che il tuo CV non abbia bisogno di essere inventato.',
+      headlineAccent: 'Solo raccontato meglio.',
+      paragraph1: 'Jobli nasce da un\'osservazione semplice: la maggior parte dei CV non perde per mancanza di esperienza, ma per come viene raccontata. Frasi generiche, struttura confusa, parole chiave mancanti — e i filtri ATS scartano il CV prima ancora che un recruiter ne legga una riga.',
+      paragraph2: 'Costruiamo Jobli per risolvere esattamente questo: un\'intelligenza artificiale che legge quello che hai già fatto e lo rende chiaro, strutturato, ottimizzato — senza mai aggiungere un\'esperienza, una competenza o un risultato che non è realmente tuo.',
+      paragraph3: 'Non promettiamo scorciatoie. Promettiamo che il CV che porti al colloquio sia la versione più chiara e onesta di te stesso.',
     },
     templateShowcase: {
       webTitle: 'Il tuo CV, come pagina web',
@@ -718,7 +736,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',
-      rights: '© 2025 Jobli. Tutti i diritti riservati.',
+      rights: '© 2026 Jobli. Tutti i diritti riservati.',
     },
   },
 } as const

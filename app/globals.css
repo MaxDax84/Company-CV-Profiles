@@ -296,25 +296,11 @@
   animation: float 6s ease-in-out infinite;
 }
 
-/* Grid overlay helper — purely decorative, so it must never intercept
-   clicks. It's always `position: absolute` with no z-index, which per CSS
-   stacking rules paints ABOVE plain static-flow siblings regardless of DOM
-   order (positioned descendants paint after non-positioned ones even at
-   the same z-index:auto level) — on any page where a later sibling (e.g. a
-   footer) isn't itself wrapped in a higher stacking context, the overlay
-   sat on top of it and silently ate its clicks. pointer-events: none fixes
-   every current and future usage of this class at once. */
+/* Grid overlay helper — background pattern removed site-wide per request
+   (was a faint dotted-grid texture behind the hero/section backgrounds).
+   Left as a harmless no-op class rather than stripped from every page's
+   markup, since dozens of files still reference it; pointer-events: none
+   stays in case anything is ever layered back on here. */
 .grid-overlay {
-  background-image:
-    linear-gradient(#0f172a 1px, transparent 1px),
-    linear-gradient(90deg, #0f172a 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.035;
   pointer-events: none;
-}
-.dark .grid-overlay {
-  background-image:
-    linear-gradient(#e8eaef 1px, transparent 1px),
-    linear-gradient(90deg, #e8eaef 1px, transparent 1px);
-  opacity: 0.05;
 }

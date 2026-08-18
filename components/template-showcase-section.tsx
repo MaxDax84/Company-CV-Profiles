@@ -21,13 +21,20 @@ const PDF_TEMPLATE_CARDS: { id: 'ats-core' | 'executive' | 'creative-tech'; name
 ]
 
 // Card box stays the original, compact size — only the content INSIDE zooms
-// in (see CROP_SCALE below), instead of blowing up the whole card. Left-
-// aligned crop (transformOrigin "top left"): at this scale the box only
-// shows the left ~520px-wide slice of the 1200px source page, which is
-// exactly where the name/header/opening lines live.
+// in (see CROP_SCALE below), instead of blowing up the whole card.
+//
+// The crop is centered horizontally, not left-aligned: every template's
+// hero content (name/title) is itself centered on the page, so a
+// left-aligned crop showed mostly empty margin — worst-case on the darkest
+// template (Alpha), where that empty margin just reads as a solid black
+// box with no visible text at all. SOURCE_WIDTH is the iframe's real
+// width; centering math below picks the `left` offset that lines up the
+// source page's horizontal center with the box's own center.
 const CARD_WIDTH = 220
 const CARD_HEIGHT = 310
 const CROP_SCALE = 0.4
+const SOURCE_WIDTH = 1200
+const CENTERED_LEFT = CARD_WIDTH / 2 - (SOURCE_WIDTH / 2) * CROP_SCALE
 
 function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
   return (
@@ -52,8 +59,8 @@ function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
         style={{
           position: 'absolute',
           top: 20,
-          left: 0,
-          width: 1200,
+          left: CENTERED_LEFT,
+          width: SOURCE_WIDTH,
           height: 4000,
           border: 'none',
           transformOrigin: 'top left',
@@ -82,8 +89,8 @@ function PdfTemplateCard({ tpl }: { tpl: (typeof PDF_TEMPLATE_CARDS)[number] }) 
         style={{
           position: 'absolute',
           top: 0,
-          left: 0,
-          width: 1200,
+          left: CENTERED_LEFT,
+          width: SOURCE_WIDTH,
           height: 1697,
           border: 'none',
           transform: `scale(${CROP_SCALE})`,
@@ -132,8 +139,24 @@ function Carousel<T>({ items, renderCard, keyOf }: { items: T[]; renderCard: (it
       rafRef.current = requestAnimationFrame(updateCentered)
     }
     container.addEventListener('scroll', onScroll, { passive: true })
+
+    // Native wheel-to-horizontal-scroll is 1:1 with the vertical wheel
+    // delta, which feels sluggish for a row this wide — multiply it so a
+    // normal mouse-wheel tick moves several cards' worth of distance
+    // instead of a few pixels. preventDefault stops the page itself from
+    // also scrolling vertically while the cursor is over the carousel.
+    const WHEEL_SPEED_MULTIPLIER = 4
+    const onWheel = (e: WheelEvent) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+      if (delta === 0) return
+      e.preventDefault()
+      container.scrollLeft += delta * WHEEL_SPEED_MULTIPLIER
+    }
+    container.addEventListener('wheel', onWheel, { passive: false })
+
     return () => {
       container.removeEventListener('scroll', onScroll)
+      container.removeEventListener('wheel', onWheel)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
   }, [])

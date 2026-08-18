@@ -70,6 +70,14 @@ export interface Metadata {
   target_company?: string;     // tailored profiles only — hiring company, if named in the job posting
   target_role?: string;        // tailored profiles only — job title, if named in the job posting
   suggested_titles?: string[]; // job titles this person is qualified for, from extraction — shown per-CV in the account
+  // The AI's subjective, deliberately strict judgment of the SOURCE CV
+  // (see CvScoreBeforeRaw in lib/parse-resume.ts) — embedded here so it
+  // travels with the profile through the permanent PDF-hash memory
+  // (lib/cv-score-memory.ts) and survives improveResume()'s "copy metadata
+  // unchanged" pass. The "after" score is the deterministic computeCvScore()
+  // (lib/cv-score.ts), floored per-criterion against this so optimizing a
+  // CV can never make its displayed score go down, only stay level or rise.
+  score_before?: import("./cv-score").CvScoreBreakdown;
 }
 
 // ─── Schema completo ───────────────────────────────────────────────────────

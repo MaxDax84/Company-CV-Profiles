@@ -356,6 +356,7 @@ export default function GeneratePage() {
                       after={cvScore.after}
                       accentColor={selected.accent}
                       labels={t.cvScore}
+                      cvName={slug ?? undefined}
                     />
                   )}
                   {suggestedTitles.length > 0 && (
@@ -492,6 +493,7 @@ export default function GeneratePage() {
                 after={cvScore.after}
                 accentColor={selected.accent}
                 labels={t.cvScore}
+                cvName={slug ?? undefined}
                 variant="teaser"
               />
             )}
