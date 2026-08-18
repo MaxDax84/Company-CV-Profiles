@@ -2,7 +2,7 @@ import PdfExportButton from "@/components/pdf-export-button";
 
 interface OwnerToolbarProps {
   slug: string;
-  kind: "primary" | "tailored";
+  kind: "primary" | "tailored" | "translated";
   credits: number;
 }
 

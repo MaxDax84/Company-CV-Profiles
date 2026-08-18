@@ -23,7 +23,7 @@ interface Props {
 // needed here: ownership only depends on whether the *currently signed-in*
 // user owns a profile with this slug, same check regardless of whose code
 // got them to this page.
-async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored"; credits: number } | null> {
+async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored" | "translated"; credits: number } | null> {
   if (!isSupabaseConfigured()) return null;
   try {
     const supabase = await createServerSupabaseClient();

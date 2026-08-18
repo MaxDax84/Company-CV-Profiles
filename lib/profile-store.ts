@@ -112,7 +112,7 @@ export const getProfileByAccountCode = cache(async (code: string, slug: string):
 export async function getOwnedProfileRow(
   supabase: SupabaseClient,
   userId: string,
-  kind: "primary" | "tailored" = "primary"
+  kind: "primary" | "tailored" | "translated" = "primary"
 ): Promise<{ id: string; slug: string; data: ProfileSchema } | null> {
   const { data } = await supabase
     .from("profiles")
@@ -148,14 +148,14 @@ export async function getOwnedProfileBySlug(
   supabase: SupabaseClient,
   userId: string,
   slug: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" } | null> {
+): Promise<{ id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null> {
   const { data } = await supabase
     .from("profiles")
     .select("id, slug, data, kind")
     .eq("user_id", userId)
     .eq("slug", slug)
     .maybeSingle();
-  return data as { id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" } | null;
+  return data as { id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null;
 }
 
 // All of a user's tailored (job-specific) profiles, newest first — shown as
@@ -202,6 +202,50 @@ export async function saveTailoredProfile(
   }
 
   throw new Error("Could not allocate a unique slug for the tailored profile.");
+}
+
+// Same pattern as saveTailoredProfile, but for an opt-in translated copy of
+// a primary CV — unlike a tailored (job-specific) profile, a translation
+// DOES get its own public page (kind='translated' isn't excluded by
+// getProfileByAccountCode below), since the whole point is a shareable
+// multilingual version of the profile.
+export async function saveTranslatedProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  sourceProfileId: string,
+  profile: ProfileSchema
+): Promise<{ slug: string }> {
+  const baseSlug = `${toSlug(profile.personal_info.full_name) || "profile"}-${profile.metadata.language}`;
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt}`;
+    const { error } = await supabase.from("profiles").insert({
+      user_id: userId,
+      kind: "translated",
+      slug,
+      data: profile,
+      source_profile_id: sourceProfileId,
+    });
+    if (!error) return { slug };
+    if (error.code !== "23505") throw error;
+  }
+
+  throw new Error("Could not allocate a unique slug for the translated profile.");
+}
+
+// Every translation of a given source profile, newest first — shown under
+// that CV's card on the account dashboard.
+export async function getTranslationsOf(
+  supabase: SupabaseClient,
+  sourceProfileId: string
+): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data, created_at")
+    .eq("source_profile_id", sourceProfileId)
+    .eq("kind", "translated")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
 }
 
 // Writes a freshly-generated (not yet claimed by any account) profile to

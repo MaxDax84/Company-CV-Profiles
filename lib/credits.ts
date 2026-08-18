@@ -5,6 +5,7 @@ export const CREDIT_COSTS = {
   pdfDownload: 1,
   tailor: 1,
   coverLetter: 1,
+  translate: 1,
 } as const;
 
 export class InsufficientCreditsError extends Error {

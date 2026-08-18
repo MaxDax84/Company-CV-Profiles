@@ -376,7 +376,7 @@ const LABELS_BY_LANG: Record<"it" | "en", Labels> = {
 };
 
 export function AtsResumeDocument({ profile, template = "ats-core" }: { profile: ProfileSchema; template?: PdfTemplate }) {
-  const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
+  const t = (LABELS_BY_LANG as Record<string, Labels>)[profile.metadata.language] ?? LABELS_BY_LANG.en;
   const { personal_info, experience, education, certifications, skills, projects, other } = profile;
   const cfg = VARIANTS[template];
   const accent = resolveAccent(profile, cfg);

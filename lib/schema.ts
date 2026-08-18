@@ -65,7 +65,14 @@ export type TemplateStyle = "alpha" | "beta" | "gamma" | "delta";
 export interface Metadata {
   primary_color: string;       // hex: "#6366f1"
   template: TemplateStyle;
-  language: "it" | "en";
+  // "it"/"en" drive actual UI-chrome branching in the templates (section
+  // labels etc, e.g. `language === "it" ? "Esperienza" : "Experience"`) —
+  // any other value gracefully falls into the English branch. Widened from
+  // a strict "it" | "en" union to support lib/translate-resume.ts producing
+  // a translated profile in an arbitrary target language: the CV's own
+  // *content* is genuinely translated regardless of this value, only the
+  // template's own static labels don't have full localization yet.
+  language: string;
   generated_at: string;        // ISO 8601
   target_company?: string;     // tailored profiles only — hiring company, if named in the job posting
   target_role?: string;        // tailored profiles only — job title, if named in the job posting

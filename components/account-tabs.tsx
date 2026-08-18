@@ -13,6 +13,7 @@ import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
+import TranslateCvButton from "@/components/translate-cv-button";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 
@@ -298,6 +299,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         icon={<Mail className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      />
+                    </div>
+                    <div className="pt-2 border-t border-foreground/10 space-y-1.5">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                        Traduci in un'altra lingua (1 credito)
+                      </p>
+                      <TranslateCvButton
+                        slug={row.slug}
+                        accountCode={accountCode}
+                        credits={credits}
+                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                     </div>
                     <div className="pt-2 border-t border-foreground/10">
