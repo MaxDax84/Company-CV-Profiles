@@ -50,28 +50,28 @@
      --accent-cyan mirrors --primary (also Lime) since the guide defines no
      second dark-mode accent; kept as a separate token so call sites that
      reference either still resolve to the same brand-correct color. */
-  --background: #101996;
+  --background: #0a0d4d;
   --foreground: #ffffff;
-  --card: #171f9e;
+  --card: #0f1355;
   --card-foreground: #ffffff;
-  --popover: #171f9e;
+  --popover: #0f1355;
   --popover-foreground: #ffffff;
   --primary: #c7f36b;
-  --primary-foreground: #101996;
-  --secondary: #171f9e;
+  --primary-foreground: #0a0d4d;
+  --secondary: #0f1355;
   --secondary-foreground: #ffffff;
-  --muted: #171f9e;
+  --muted: #0f1355;
   --muted-foreground: rgba(255, 255, 255, 0.68);
   --accent: #c7f36b;
-  --accent-foreground: #101996;
+  --accent-foreground: #0a0d4d;
   --accent-cyan: #c7f36b;
-  --accent-cyan-foreground: #101996;
+  --accent-cyan-foreground: #0a0d4d;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.12);
-  --input: #171f9e;
+  --input: #0f1355;
   --ring: #c7f36b;
-  --section-alt: #0b0f73;
+  --section-alt: #05072e;
 }
 
 @theme inline {
@@ -284,15 +284,22 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
-/* Deliberately a neutral charcoal, not a translucent blue like --card
-   (#171f9e) — that's close enough to --background (#101996) that a card
-   built from it nearly disappears into the page instead of reading as a
-   distinct raised surface. A neutral tone stands apart from the navy
-   background regardless of how it's tinted. */
+/* Light, not just "a different dark tone" — a translucent-dark card was
+   still close enough in value to the navy --background to read as barely
+   distinct. A genuinely light surface pops unmistakably against the dark
+   page instead. The local --foreground/--muted-foreground/--card-foreground
+   overrides flip any text inside (via Tailwind's text-foreground etc.
+   utilities, which resolve through these same custom properties) to dark,
+   since it's now sitting on a light background instead of the page's own
+   dark one — CSS custom properties cascade, so descendants pick up the
+   nearest definition without every consumer needing its own override. */
 .dark .glass-card {
-  background: rgba(30, 33, 43, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(10, 13, 77, 0.1);
   box-shadow: 0 4px 24px rgba(5, 7, 31, 0.35);
+  --foreground: #0a0d4d;
+  --card-foreground: #0a0d4d;
+  --muted-foreground: rgba(10, 13, 77, 0.65);
 }
 /* backdrop-filter is a real scroll-jank source on mobile GPUs, especially
    with several .glass-card instances stacked in a list (e.g. the account
@@ -305,7 +312,7 @@
     -webkit-backdrop-filter: none;
   }
   .dark .glass-card {
-    background: rgba(30, 33, 43, 0.94);
+    background: rgba(255, 255, 255, 0.96);
   }
 }
 
