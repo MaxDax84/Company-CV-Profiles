@@ -1,24 +1,23 @@
 import type { ProfileSchema } from "./schema";
 
 // The 4-criteria CV score shown on /generate: how strong the profile is,
-// 0-25 per criterion, 100 total. Computed deterministically from a
-// ProfileSchema — both "before" (the freshly-extracted, unpolished profile)
-// and "after" (post-improveResume) run through this exact same function, so
-// the comparison is always apples-to-apples and free/instant either way.
-// (An earlier version judged "before" via a separate subjective AI read of
-// the raw PDF — that let the two scores diverge for reasons that had
-// nothing to do with what improveResume() actually changed, which read as
-// the app randomly "losing" good content. Never re-introduce a second
-// scoring method for one side of this comparison.)
+// 0-25 per criterion, 100 total. computeCvScore() below is the deterministic
+// half: it's what always computes "after" (post-improveResume), and it's
+// also what backfills a missing "before" (see reconstructScoreBefore).
 //
-// Deliberately strict, not graded on a curve: that AI-judged predecessor
-// carried an explicit rubric ("most real CVs, even genuinely good ones,
-// should land 30-65 per criterion; 80+ reserved for near-exceptional") that
-// got lost when scoring moved to plain presence checks below — a CV could
-// max out 3 of 4 criteria just by having *some* bio/skills/contact info,
-// regardless of actual depth. The thresholds below restore that severity
-// while staying 100% deterministic (no AI judgment re-enters the "before"
-// score, so the consistency guarantee above still holds).
+// "before" itself, though, is normally an AI-judged score computed once at
+// extraction time (lib/parse-resume.ts's cv_score_before, carried on
+// profile.metadata.score_before) — a genuinely subjective, severity-rubric
+// read of the CV as originally written, not this file's own presence-check
+// formula. floorScoreAgainst() below then guarantees "after" can only match
+// or beat that judged "before" per criterion, never fall below it. Only
+// reconstructScoreBefore() falls back to scoring deterministically for
+// "before" too, and only when the real AI judgment is missing.
+//
+// The thresholds below are deliberately strict, not graded on a curve: an
+// earlier fully-deterministic design (no AI judgment at all, presence
+// checks only) let a CV max out 3 of 4 criteria just by having *some*
+// bio/skills/contact info, regardless of actual depth.
 export interface CvScoreBreakdown {
   quantifiedResults: number;
   clarity: number;
@@ -91,6 +90,26 @@ export function computeCvScore(profile: ProfileSchema): CvScoreBreakdown {
     specificSkills,
     total: quantifiedResults + clarity + atsStructure + specificSkills,
   };
+}
+
+// Reconstructs a genuine "before" score for a profile whose
+// metadata.score_before is missing (e.g. a PDF-hash cache entry remembered
+// before that field existed, or an extraction whose AI response omitted
+// it) — WITHOUT paying for a fresh Claude call. `profile` may already be
+// the post-improveResume version; substituting bio_original back in for
+// bio makes the clarity criterion (the only one bio affects) score the
+// true original text. The other 3 criteria (quantifiedResults, atsStructure,
+// specificSkills) read experience bullet numbers / skills / education /
+// certifications — fields improveResume() is contractually forbidden from
+// fabricating (see lib/improve-resume.ts's FIELDS TO PRESERVE EXACTLY) — so
+// they're already identical before and after by construction, and scoring
+// `profile` as-is for them is exact, not an approximation.
+export function reconstructScoreBefore(profile: ProfileSchema): CvScoreBreakdown {
+  if (!profile.personal_info.bio_original) return computeCvScore(profile);
+  return computeCvScore({
+    ...profile,
+    personal_info: { ...profile.personal_info, bio: profile.personal_info.bio_original },
+  });
 }
 
 // Applied to the "after" (post-improveResume) score against the AI-judged

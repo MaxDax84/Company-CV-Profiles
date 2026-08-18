@@ -5,7 +5,7 @@ import { parseResume } from "./parse-resume";
 import { improveResume } from "./improve-resume";
 import { TEMPLATE_COLORS, isTemplateStyle } from "./templates";
 import type { CvScoreBreakdown } from "./cv-score";
-import { computeCvScore } from "./cv-score";
+import { reconstructScoreBefore } from "./cv-score";
 import { hashPdf, getRememberedProfile, rememberProfile } from "./cv-score-memory";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -410,10 +410,11 @@ export interface ResolveFromPdfResult {
 // re-uploading the exact same file must always resolve to the exact same
 // extracted data, whether that's minutes or months later, and whether it's
 // an original CV or one of our own already-optimized exports (which get
-// remembered at export time, in /api/pdf/[slug]). The score itself is
-// always derived fresh from that profile with computeCvScore() — never
-// separately cached — so "before" and "after" are mathematically
-// guaranteed to start from identical data every time.
+// remembered at export time, in /api/pdf/[slug]). The AI-judged "before"
+// score (metadata.score_before, set in lib/parse-resume.ts) travels with
+// the remembered profile so re-uploads keep comparing against the real
+// original judgment, not a re-derived one — reconstructScoreBefore() below
+// only kicks in as a one-time repair for entries that predate that field.
 export async function resolveProfileFromPdf(
   buf: ArrayBuffer,
   templateChoice: unknown
@@ -430,7 +431,16 @@ export async function resolveProfileFromPdf(
         cachedProfile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
         templateChanged = true;
       }
-      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: cachedProfile.metadata.score_before ?? computeCvScore(cachedProfile), suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
+      // One-time repair for a pending preview remembered before score_before
+      // existed (or whose extraction response omitted it): reconstruct it
+      // now and persist so this doesn't get recomputed on every reload — see
+      // reconstructScoreBefore's own comment for why this is exact, not an
+      // approximation, and never needs a fresh Claude call.
+      if (!cachedProfile.metadata.score_before) {
+        cachedProfile.metadata.score_before = reconstructScoreBefore(cachedProfile);
+        await kv.set(`profile:${cachedSlug}`, JSON.stringify(cachedProfile), { ex: PENDING_TTL_SECONDS });
+      }
+      return { profile: cachedProfile, pdfHash, fromCache: true, cachedSlug, templateChanged, scoreBefore: cachedProfile.metadata.score_before, suggestedTitles: cachedProfile.metadata.suggested_titles ?? [] };
     }
   }
 
@@ -448,6 +458,12 @@ export async function resolveProfileFromPdf(
   if (remembered) {
     profile = remembered;
     suggestedTitles = remembered.metadata.suggested_titles ?? [];
+    // Same one-time repair as the pending-cache branch above, for an entry
+    // remembered before score_before existed.
+    if (!profile.metadata.score_before) {
+      profile.metadata.score_before = reconstructScoreBefore(profile);
+      await rememberProfile(pdfHash, profile);
+    }
   } else {
     const parsed = await parseResume(buf);
     profile = parsed.profile;
@@ -455,6 +471,12 @@ export async function resolveProfileFromPdf(
     profile.metadata.suggested_titles = suggestedTitles;
     // Normalize apostrophes in name (e.g. D'Assano → Dassano)
     profile.personal_info.full_name = profile.personal_info.full_name.replace(/'/g, "");
+    // Safety net for the rare case where the extraction's own AI response
+    // omitted cv_score_before (see lib/parse-resume.ts) — same repair, just
+    // applied before this fresh extraction is remembered for the first time.
+    if (!profile.metadata.score_before) {
+      profile.metadata.score_before = reconstructScoreBefore(profile);
+    }
     await rememberProfile(pdfHash, profile);
   }
 
@@ -464,5 +486,5 @@ export async function resolveProfileFromPdf(
     profile.metadata.primary_color = TEMPLATE_COLORS[templateChoice];
   }
 
-  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: profile.metadata.score_before ?? computeCvScore(profile), suggestedTitles };
+  return { profile, pdfHash, fromCache: false, cachedSlug: null, templateChanged: false, scoreBefore: profile.metadata.score_before ?? null, suggestedTitles };
 }

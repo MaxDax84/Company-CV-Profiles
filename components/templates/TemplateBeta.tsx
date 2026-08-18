@@ -137,8 +137,13 @@ export default function TemplateBeta({ profile }: Props) {
           .sb-expertise-grid { grid-template-columns: 1fr !important; }
           .hero-ctas { flex-direction: column !important; align-items: flex-start !important; }
         }
-        .sb-hero-h1 { white-space: nowrap; }
-        @media (max-width: 480px) { .sb-hero-h1 { white-space: normal !important; } }
+        /* No forced nowrap: the hero font-size is clamp()'d up to 6rem, a
+           size at which even a moderately long full_name (e.g. "Daniele
+           Cimmarrusti") is wider than the 960px sb-container regardless of
+           viewport width — nowrap just let it silently overflow the
+           container instead of wrapping, which reads as off-center rather
+           than actually centered. Wrapping always fits and stays centered,
+           for any name length. */
       `}</style>
 
       {/* ── NAVBAR ── */}

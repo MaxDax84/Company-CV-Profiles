@@ -29,8 +29,11 @@ export const metadata: Metadata = {
 
 // Runs before hydration so the .dark class is already set on first paint —
 // without this the page would flash light mode for a returning dark-mode
-// user, then flip once React mounts.
-const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`
+// user, then flip once React mounts. Default is light: a first-time visitor
+// with no saved choice gets light regardless of their OS preference: only
+// an explicit 'dark' previously saved via the toggle (components/theme-toggle.tsx)
+// turns dark mode on.
+const THEME_INIT_SCRIPT = `(function(){try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`
 
 // suppressHydrationWarning on <html> below: THEME_INIT_SCRIPT adds .dark
 // before hydration to avoid a light-mode flash for dark-mode users — React

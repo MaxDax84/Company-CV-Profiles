@@ -164,6 +164,7 @@
   .gradient-text,
   .animate-template-preview-scroll,
   .animate-showcase-web-scroll,
+  .animate-generate-after-preview-scroll,
   .animate-fade-in {
     animation: none;
   }
@@ -232,6 +233,20 @@
 }
 .animate-template-preview-scroll {
   animation: template-preview-scroll 12s linear infinite;
+}
+
+/* Same idea, the /generate page's own "before/after" bio-comparison card
+   (the small live "Dopo" page preview next to the struck-through original
+   PDF thumbnail) — its box is a different size (260px wide, 368px tall) so
+   the fitting scale (0.21667 = 260/1200) and scroll distance differ from
+   both cases above. */
+@keyframes generate-after-preview-scroll {
+  0%   { transform: scale(0.21667) translateY(0); }
+  85%  { transform: scale(0.21667) translateY(-900px); }
+  100% { transform: scale(0.21667) translateY(-900px); }
+}
+.animate-generate-after-preview-scroll {
+  animation: generate-after-preview-scroll 14s linear infinite;
 }
 
 /* Same idea, different numbers — used by the homepage's web-template

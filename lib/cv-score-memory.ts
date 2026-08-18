@@ -16,12 +16,17 @@ import type { ProfileSchema } from "./schema";
 // short-lived pending-cache had expired — two genuinely different
 // extractions (Claude's reading of a CV isn't perfectly deterministic
 // run-to-run), scored honestly but not comparably. Remembering the whole
-// profile instead — and always deriving the score fresh from it with
-// computeCvScore() — makes "before" and "after" mathematically guaranteed
-// to start from identical data whenever the same file resurfaces, and also
-// means a formula change (like the v2 bump this replaced) never needs its
-// own cache-versioning scheme: there's no separately-cached number to go
-// stale, only a profile to re-score on demand.
+// profile instead makes "before" and "after" mathematically guaranteed to
+// start from identical data whenever the same file resurfaces, and also
+// means a formula change never needs its own cache-versioning scheme:
+// there's no separately-cached number to go stale, only a profile to
+// re-score on demand.
+//
+// The profile's own metadata.score_before (the AI-judged rubric score from
+// its original extraction, see lib/parse-resume.ts) travels along inside it
+// and is what "before" actually means downstream — an entry remembered
+// before that field existed gets it backfilled on next read, see
+// reconstructScoreBefore() in lib/cv-score.ts.
 const PROFILE_MEMORY_PREFIX = "cv-profile-memory:";
 
 // Web Crypto works in both edge and Node runtimes, so this stays usable from
