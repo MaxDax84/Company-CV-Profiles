@@ -5,6 +5,7 @@ import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { hasPaidDownload, recordPaidDownload } from "@/lib/paid-downloads";
 import { hashPdf, rememberProfile } from "@/lib/cv-score-memory";
+import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import { AtsResumeDocument, PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
@@ -64,8 +65,17 @@ export async function GET(
   // the score), it resolves straight to this same data (same score,
   // instantly, no extraction call) instead of a fresh, possibly slightly
   // different re-reading of an already-optimized CV.
+  //
+  // The remembered copy's score_before is overwritten with THIS export's
+  // actual current score — not left as row.data's own score_before, which
+  // is the CV's original pre-optimization judgment from months ago. Without
+  // this, re-uploading your own already-improved PDF would show that old,
+  // lower starting score again instead of the real quality of the document
+  // you're holding, which reads as a false regression.
+  const currentScore = floorScoreAgainst(computeCvScore(row.data), row.data.metadata.score_before);
+  const exportedProfile = { ...row.data, metadata: { ...row.data.metadata, score_before: currentScore } };
   const pdfHash = await hashPdf(buffer);
-  await rememberProfile(pdfHash, row.data);
+  await rememberProfile(pdfHash, exportedProfile);
 
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
