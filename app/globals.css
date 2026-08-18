@@ -284,8 +284,13 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
+/* Deliberately a neutral charcoal, not a translucent blue like --card
+   (#171f9e) — that's close enough to --background (#101996) that a card
+   built from it nearly disappears into the page instead of reading as a
+   distinct raised surface. A neutral tone stands apart from the navy
+   background regardless of how it's tinted. */
 .dark .glass-card {
-  background: rgba(23, 31, 158, 0.55);
+  background: rgba(30, 33, 43, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 24px rgba(5, 7, 31, 0.35);
 }
@@ -300,7 +305,7 @@
     -webkit-backdrop-filter: none;
   }
   .dark .glass-card {
-    background: rgba(23, 31, 158, 0.92);
+    background: rgba(30, 33, 43, 0.94);
   }
 }
 
