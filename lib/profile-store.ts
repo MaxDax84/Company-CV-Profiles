@@ -91,10 +91,11 @@ export const getProfileByAccountCode = cache(async (code: string, slug: string):
       .eq("slug", slug)
       .maybeSingle();
     if (!data) return null;
-    // Tailored (job-adapted) profiles never get a public web page — only
-    // the PDF/cover-letter output, listed in the account's "CV adattati"
-    // section. Treat one exactly like a slug that doesn't exist.
-    if (data.kind === "tailored") return null;
+    // Tailored (job-adapted) and translated profiles never get a public web
+    // page — only a PDF output, listed in the account's "CV Adattati"
+    // section or "CV scaricati" (translations). Treat either exactly like a
+    // slug that doesn't exist.
+    if (data.kind === "tailored" || data.kind === "translated") return null;
 
     return stripPII(data.data as ProfileSchema);
   } catch (err) {
@@ -174,6 +175,24 @@ export async function getOwnedTailoredProfiles(
   return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
 }
 
+// All of a user's translated CVs, newest first — not shown as their own
+// dashboard list (translation has no dedicated tab, only a PDF download,
+// see components/translate-cv-button.tsx), but still needed so the Download
+// tab's profilesById lookup (components/account-tabs.tsx) can resolve a
+// translated profile's paid_downloads row back to its data/language.
+export async function getOwnedTranslatedProfiles(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, slug, data, created_at")
+    .eq("user_id", userId)
+    .eq("kind", "translated")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
+}
+
 // Saves a tailored (paid) output as a new, independent row owned by the
 // same account — never overwrites the primary profile. Slug uniqueness is
 // checked against Postgres now, not KV. RLS means each caller can only see
@@ -214,38 +233,23 @@ export async function saveTranslatedProfile(
   userId: string,
   sourceProfileId: string,
   profile: ProfileSchema
-): Promise<{ slug: string }> {
+): Promise<{ slug: string; id: string }> {
   const baseSlug = `${toSlug(profile.personal_info.full_name) || "profile"}-${profile.metadata.language}`;
 
   for (let attempt = 0; attempt < 10; attempt++) {
     const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt}`;
-    const { error } = await supabase.from("profiles").insert({
+    const { data, error } = await supabase.from("profiles").insert({
       user_id: userId,
       kind: "translated",
       slug,
       data: profile,
       source_profile_id: sourceProfileId,
-    });
-    if (!error) return { slug };
+    }).select("id").single();
+    if (!error) return { slug, id: data.id };
     if (error.code !== "23505") throw error;
   }
 
   throw new Error("Could not allocate a unique slug for the translated profile.");
-}
-
-// Every translation of a given source profile, newest first — shown under
-// that CV's card on the account dashboard.
-export async function getTranslationsOf(
-  supabase: SupabaseClient,
-  sourceProfileId: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
-  const { data } = await supabase
-    .from("profiles")
-    .select("id, slug, data, created_at")
-    .eq("source_profile_id", sourceProfileId)
-    .eq("kind", "translated")
-    .order("created_at", { ascending: false });
-  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
 }
 
 // Writes a freshly-generated (not yet claimed by any account) profile to

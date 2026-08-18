@@ -5,7 +5,7 @@ import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 // language, for people who want a multilingual profile page. A pure
 // translation pass — unlike lib/improve-resume.ts or lib/tailor-resume.ts,
 // nothing here is meant to change tone, add detail, or optimize anything.
-const SYSTEM_PROMPT = `You translate an existing structured CV profile into a target language. This is a faithful, literal translation pass — not a rewrite, not an improvement, not an optimization. You will be given the source profile as JSON and a target language name.
+const SYSTEM_PROMPT = `You translate an existing structured CV profile into a target language. This is a faithful, literal translation pass — not a rewrite, not an improvement, not an optimization. You will be given the source profile as JSON and a target language as an ISO 639-1 two-letter code (e.g. "it", "es", "fr", "de", "pt", "en", "zh", "ar").
 
 TRANSLATE (into the target language):
 - personal_info.title, personal_info.bio, personal_info.bio_original (if present)
@@ -29,7 +29,7 @@ RULES:
 - Do not add, remove, embellish, shorten, or reorder any content. Every fact, achievement, and number in the source must appear, translated, in the same place in the output — nothing more, nothing less.
 - If a source field is empty or absent, leave it that way in the output.
 - Write naturally in the target language — a fluent native speaker's phrasing, not a word-for-word mechanical translation, but never inventing content that isn't a direct translation of the source.
-- Set metadata.language to the ISO 639-1 two-letter code for the target language (e.g. "es" for Spanish, "fr" for French, "de" for German, "pt" for Portuguese, "it" for Italian, "en" for English).
+- Set metadata.language to the exact target language code you were given.
 - Set metadata.generated_at to the current ISO timestamp.
 
 OUTPUT FORMAT:
@@ -39,7 +39,7 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
-export async function translateResume(sourceProfile: ProfileSchema, targetLanguage: string): Promise<ProfileSchema> {
+export async function translateResume(sourceProfile: ProfileSchema, targetLanguageCode: string): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -61,7 +61,7 @@ export async function translateResume(sourceProfile: ProfileSchema, targetLangua
           content: [
             {
               type: "text",
-              text: `<source_cv_json>\n${JSON.stringify(sourceProfile)}\n</source_cv_json>\n\n<target_language>${targetLanguage}</target_language>\n\nTranslate the source profile into the target language and return the JSON object.`,
+              text: `<source_cv_json>\n${JSON.stringify(sourceProfile)}\n</source_cv_json>\n\n<target_language_code>${targetLanguageCode}</target_language_code>\n\nTranslate the source profile into the target language and return the JSON object.`,
             },
           ],
         },

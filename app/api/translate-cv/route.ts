@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug, saveTranslatedProfile } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { spendCredits, CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
 import { translateResume } from "@/lib/translate-resume";
-import { getAccountCode } from "@/lib/credits";
+import { recordPaidDownload } from "@/lib/paid-downloads";
+import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 
 // Calls Claude to translate the profile — same headroom as tailor-resume
 // for the model call.
 export const maxDuration = 60;
 
-const MAX_LANGUAGE_LENGTH = 40;
+// Only ever ISO 639-1 codes from components/translate-cv-button.tsx's fixed
+// language list (e.g. "it", "es", "zh") — never free text.
+const MAX_LANGUAGE_CODE_LENGTH = 8;
+
+function parseTemplate(value: unknown): PdfTemplate {
+  return PDF_TEMPLATES.some(t => t.id === value) ? (value as PdfTemplate) : "ats-core";
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,11 +29,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const slug = body?.slug;
     const targetLanguage = typeof body?.targetLanguage === "string" ? body.targetLanguage.trim() : "";
+    const template = parseTemplate(body?.template);
 
     if (typeof slug !== "string" || !slug) {
       return NextResponse.json({ error: "Missing slug." }, { status: 400 });
     }
-    if (!targetLanguage || targetLanguage.length > MAX_LANGUAGE_LENGTH) {
+    if (!targetLanguage || targetLanguage.length > MAX_LANGUAGE_CODE_LENGTH) {
       return NextResponse.json({ error: "Invalid target language." }, { status: 400 });
     }
 
@@ -53,10 +61,17 @@ export async function POST(req: NextRequest) {
     const translated = await translateResume(sourceRow.data, targetLanguage);
     translated.metadata.generated_at = new Date().toISOString();
 
-    const { slug: newSlug } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated);
+    const { slug: newSlug, id: newProfileId } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated);
+
+    // The 1 credit above already paid for this exact PDF — pre-mark it as
+    // paid so the client's immediate GET to /api/pdf/[newSlug] (which is
+    // what actually streams the file) doesn't spend a second credit for
+    // what is, from the user's perspective, one single "translate" action.
+    await recordPaidDownload(supabase, user.id, newProfileId, template);
+
     const code = await getAccountCode(supabase, user.id);
 
-    return NextResponse.json({ slug: newSlug, code, profile: translated });
+    return NextResponse.json({ slug: newSlug, code, template });
   } catch (err) {
     console.error("[translate-cv]", err);
     return NextResponse.json(

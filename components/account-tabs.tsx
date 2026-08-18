@@ -13,7 +13,7 @@ import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
-import TranslateCvButton from "@/components/translate-cv-button";
+import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 
@@ -73,6 +73,7 @@ interface AccountTabsProps {
   accountCode: string;
   primaryProfiles: ProfileRow[];
   tailoredProfiles: ProfileRow[];
+  translatedProfiles: ProfileRow[];
   credits: number;
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
@@ -92,11 +93,15 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
-  const profilesById = new Map([...primaryProfiles, ...tailoredProfiles].map(row => [row.id, row]));
+  const profilesById = new Map([
+    ...primaryProfiles.map(row => ({ ...row, kind: "primary" as const })),
+    ...tailoredProfiles.map(row => ({ ...row, kind: "tailored" as const })),
+    ...translatedProfiles.map(row => ({ ...row, kind: "translated" as const })),
+  ].map(row => [row.id, row]));
 
   return (
     <div className="space-y-8">
@@ -303,11 +308,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     </div>
                     <div className="pt-2 border-t border-foreground/10 space-y-1.5">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                        Traduci in un'altra lingua (1 credito)
+                        Traduci in un'altra lingua (1 credito) — genera un PDF, disponibile poi in Download
                       </p>
                       <TranslateCvButton
                         slug={row.slug}
-                        accountCode={accountCode}
                         credits={credits}
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
@@ -419,10 +423,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   const row = profilesById.get(dl.profile_id);
                   if (!row) return null;
                   const templateName = PDF_TEMPLATES.find(t => t.id === dl.template)?.name ?? dl.template;
+                  const languageLabel = row.kind === "translated"
+                    ? TRANSLATE_LANGUAGES.find(l => l.code === row.data.metadata.language)?.label ?? row.data.metadata.language
+                    : null;
                   return (
                     <div key={dl.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
                       <div>
-                        <p className="text-sm font-medium">{row.slug} · {templateName}</p>
+                        <p className="text-sm font-medium">
+                          {row.slug}{languageLabel ? ` · Tradotto in ${languageLabel}` : ""} · {templateName}
+                        </p>
                         <p className="text-xs text-muted-foreground/50">
                           Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>

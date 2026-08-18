@@ -5,7 +5,7 @@ import SupabaseNotConfigured from "@/components/supabase-not-configured";
 import AccountShell from "@/components/account-shell";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
-import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles } from "@/lib/profile-store";
+import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles, getOwnedTranslatedProfiles } from "@/lib/profile-store";
 import { getCreditBalance, getCreditLedger, getAccountCode } from "@/lib/credits";
 import { getPaidDownloads } from "@/lib/paid-downloads";
 import { getGeneratedCoverLetters } from "@/lib/cover-letters";
@@ -17,9 +17,10 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [primaryProfiles, tailoredProfiles, credits, ledger, accountCode, paidDownloads, coverLetters] = await Promise.all([
+  const [primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, accountCode, paidDownloads, coverLetters] = await Promise.all([
     getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
+    getOwnedTranslatedProfiles(supabase, user.id),
     getCreditBalance(supabase, user.id),
     getCreditLedger(supabase, user.id),
     getAccountCode(supabase, user.id),
@@ -38,6 +39,7 @@ export default async function AccountPage() {
           accountCode={accountCode}
           primaryProfiles={primaryProfiles}
           tailoredProfiles={tailoredProfiles}
+          translatedProfiles={translatedProfiles}
           credits={credits}
           ledger={ledger}
           paidDownloads={paidDownloads}

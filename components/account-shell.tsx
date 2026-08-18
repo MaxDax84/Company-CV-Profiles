@@ -15,6 +15,7 @@ interface AccountShellProps {
   accountCode: string;
   primaryProfiles: ProfileRow[];
   tailoredProfiles: ProfileRow[];
+  translatedProfiles: ProfileRow[];
   credits: number;
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
@@ -25,7 +26,7 @@ interface AccountShellProps {
 // drawer here — reached via the avatar dropdown in the global nav (see
 // components/account-avatar-menu.tsx), so this shell only owns which
 // commercial tab is showing.
-export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, credits, ledger, paidDownloads, coverLetters }: AccountShellProps) {
+export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters }: AccountShellProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedTab = searchParams.get("tab");
@@ -51,6 +52,7 @@ export default function AccountShell({ userEmail, accountCode, primaryProfiles, 
         accountCode={accountCode}
         primaryProfiles={primaryProfiles}
         tailoredProfiles={tailoredProfiles}
+        translatedProfiles={translatedProfiles}
         credits={credits}
         ledger={ledger}
         paidDownloads={paidDownloads}
