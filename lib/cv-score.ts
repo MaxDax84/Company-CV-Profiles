@@ -53,19 +53,22 @@ function scoreClarity(profile: ProfileSchema): number {
 }
 
 function scoreAtsStructure(profile: ProfileSchema): number {
-  // Raised from a bare >0 presence check on every item — passing "you have
-  // at least one skill" was trivial to clear regardless of how thin the CV
-  // actually was. A real skills/certifications section reads as more than
-  // one or two scattered entries.
-  const checks = [
-    profile.skills.hard.length >= 3,
-    profile.skills.tools.length >= 2,
-    profile.education.length > 0,
-    profile.certifications.length >= 2 || profile.projects.length >= 2,
-    Boolean(profile.personal_info.email_obfuscated) &&
-      (Boolean(profile.personal_info.phone_obfuscated) || Boolean(profile.personal_info.social_links.linkedin)),
-  ];
-  return checks.filter(Boolean).length * 5;
+  // This is a document-STRUCTURE criterion (single column, standard
+  // Experience/Education/Skills headers, no tables/text-boxes/graphics an
+  // ATS parser could choke on) — not a measure of how rich the skills
+  // section is (that's scoreSpecificSkills below). Every Jobli export
+  // renders through one of our own PDF templates, which is ATS-safe by
+  // construction regardless of how the originally-uploaded CV was laid
+  // out — so "after" isn't really computed from profile content, it's a
+  // property of the output format itself. The only thing checked here is
+  // that there's actually substantive content to format (a real CV was
+  // parsed, not a near-empty one); genuine layout quality of the ORIGINAL
+  // document lives entirely in the AI-judged "before" score (see
+  // lib/parse-resume.ts's ats_structure rubric), which looks at the real
+  // source PDF's actual structure before any of this exists.
+  const hasSubstantiveContent = profile.experience.length > 0 &&
+    (profile.skills.hard.length > 0 || profile.skills.tools.length > 0);
+  return hasSubstantiveContent ? 25 : 10;
 }
 
 function scoreSpecificSkills(profile: ProfileSchema): number {
