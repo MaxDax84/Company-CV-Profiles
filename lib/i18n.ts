@@ -566,7 +566,7 @@ export const translations = {
       ctaReady: 'Procedi →',
       ctaWaiting: 'Carica il tuo CV per iniziare',
       scoredTitle: 'Ecco il punteggio del tuo CV',
-      scoredSubtitle: 'La nostra AI può migliorare i contenuti per alzare il punteggio trasformarli in un profilo digitale completo, senza mai inventare nulla.',
+      scoredSubtitle: 'Prosegui e lasciaci migliorare i contenuti per alzare il punteggio, trasformando il CV in un profilo digitale, senza inventare nulla.',
       ctaProceed: 'Procedi →',
       customizeTitle: 'Personalizza la tua pagina web',
       creatingNote: 'Creazione in corso…',
