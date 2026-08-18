@@ -52,7 +52,7 @@ export default function MissionSection() {
       {/* Accent orb */}
       <div
         className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'rgba(99, 102, 241, 0.08)' }}
+        style={{ background: 'rgba(18, 59, 255, 0.08)' }}
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
@@ -87,13 +87,13 @@ export default function MissionSection() {
               )}
               style={{
                 background: 'var(--card)',
-                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
+                boxShadow: '0 1px 3px rgba(16, 25, 150, 0.06)',
                 transitionDelay: `${i * 80 + 150}ms`,
               }}
             >
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center text-lg mb-5"
-                style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.2)' }}
+                style={{ background: 'rgba(18, 59, 255, 0.12)', border: '1px solid rgba(18, 59, 255, 0.2)' }}
               >
                 {pillar.icon}
               </div>
@@ -117,8 +117,8 @@ export default function MissionSection() {
             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
           )}
           style={{
-            background: 'rgba(99, 102, 241, 0.06)',
-            border: '1px solid rgba(99, 102, 241, 0.15)',
+            background: 'rgba(18, 59, 255, 0.06)',
+            border: '1px solid rgba(18, 59, 255, 0.15)',
             transitionDelay: '500ms',
           }}
         >

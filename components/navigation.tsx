@@ -112,7 +112,7 @@ export default function Navigation() {
           {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
           <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
           <span className="font-heading font-bold text-lg tracking-tight">
-            Job<span className="text-primary">li</span>
+            Jobli
           </span>
         </a>
 
@@ -160,7 +160,7 @@ export default function Navigation() {
           {!isAccountContext && (
             <a
               href="/generate"
-              className="hidden md:inline-flex items-center px-4 py-1.5 rounded-lg bg-primary/15 border border-primary/30 hover:bg-primary/25 hover:border-primary/50 text-primary text-sm font-medium transition-all duration-200"
+              className="hidden md:inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
             >
               {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
             </a>
@@ -201,7 +201,7 @@ export default function Navigation() {
           ))}
           <a
             href={generateHref}
-            className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm font-semibold"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-cyan text-accent-cyan-foreground text-sm font-semibold"
             onClick={() => setMobileOpen(false)}
           >
             {generateLabel}

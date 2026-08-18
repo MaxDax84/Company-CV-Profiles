@@ -4,34 +4,38 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Jobli v3 — AI Career Platform: light, professional tech palette
-     (indigo brand + slate neutrals + darkened cyan) on a white background.
+  /* Jobli brand palette — Electric Blue + Lime Green + Dark Navy on white.
      Plain hex on purpose (not oklch) — the oklch()-with-lab()-fallback pair
      Lightning CSS was emitting made the actual rendered shade unpredictable
-     across browsers/displays on the previous dark theme. */
+     across browsers/displays on the previous dark theme.
+     --primary (Electric Blue) carries titles, logo, links, borders and most
+     buttons. --accent-cyan (kept as the token name to avoid touching every
+     call site — it now holds Lime Green, not cyan) is reserved for the
+     highest-emphasis CTAs and status/attention elements, per the brand
+     guide's "Lime for CTA importanti, elementi di stato" rule. */
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #101996;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #101996;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #6366f1;
+  --popover-foreground: #101996;
+  --primary: #123bff;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
-  --accent: #6366f1;
+  --secondary: #f1f3ff;
+  --secondary-foreground: #101996;
+  --muted: #f1f3ff;
+  --muted-foreground: #4a4f9e;
+  --accent: #123bff;
   --accent-foreground: #ffffff;
-  --accent-cyan: #0891b2;
-  --accent-cyan-foreground: #ffffff;
+  --accent-cyan: #c7f36b;
+  --accent-cyan-foreground: #101996;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #f1f5f9;
-  --ring: #6366f1;
+  --border: #e1e3f7;
+  --input: #f1f3ff;
+  --ring: #123bff;
   --radius: 0.75rem;
-  --section-alt: #f5f3ff; /* tinted alternating-section background (mission-section.tsx) */
+  --section-alt: #f3f4ff; /* tinted alternating-section background (mission-section.tsx) */
   /* Self-hosted via @fontsource (see app/layout.tsx) instead of next/font's
      `variable` option — same two custom properties, just set directly. */
   --font-body: 'Inter', system-ui, sans-serif;
@@ -39,31 +43,35 @@
 }
 
 .dark {
-  /* Anthracite dark mode — same indigo/cyan brand accents as light mode,
-     cool-gray (not pure black/blue) neutrals so cards read as a distinct
-     surface from the page background. */
-  --background: #15171d;
-  --foreground: #e8eaef;
-  --card: #1c1f26;
-  --card-foreground: #e8eaef;
-  --popover: #1c1f26;
-  --popover-foreground: #e8eaef;
-  --primary: #6366f1;
-  --primary-foreground: #ffffff;
-  --secondary: #22252c;
-  --secondary-foreground: #e8eaef;
-  --muted: #22252c;
-  --muted-foreground: #9aa1ae;
-  --accent: #6366f1;
-  --accent-foreground: #ffffff;
-  --accent-cyan: #22d3ee;
-  --accent-cyan-foreground: #0f172a;
+  /* Dark Navy brand background. Electric Blue reads poorly as text/icons on
+     this background (too close in hue/value to the background itself) per
+     the brand guide, so --primary switches to Lime Green here instead —
+     the guide's reliable high-contrast interactive color on Dark Navy.
+     --accent-cyan mirrors --primary (also Lime) since the guide defines no
+     second dark-mode accent; kept as a separate token so call sites that
+     reference either still resolve to the same brand-correct color. */
+  --background: #101996;
+  --foreground: #ffffff;
+  --card: #171f9e;
+  --card-foreground: #ffffff;
+  --popover: #171f9e;
+  --popover-foreground: #ffffff;
+  --primary: #c7f36b;
+  --primary-foreground: #101996;
+  --secondary: #171f9e;
+  --secondary-foreground: #ffffff;
+  --muted: #171f9e;
+  --muted-foreground: rgba(255, 255, 255, 0.68);
+  --accent: #c7f36b;
+  --accent-foreground: #101996;
+  --accent-cyan: #c7f36b;
+  --accent-cyan-foreground: #101996;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #2a2d35;
-  --input: #22252c;
-  --ring: #6366f1;
-  --section-alt: #1a1a24;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: #171f9e;
+  --ring: #c7f36b;
+  --section-alt: #0b0f73;
 }
 
 @theme inline {
@@ -245,32 +253,26 @@
 
 /* ── Utility classes ── */
 
+/* Solid Electric Blue rather than an animated multi-color gradient — a
+   moving blue→lime blend read as muddy on running text, so this stays a
+   flat brand color. Class name (and the .animate-gradient-x wiring above)
+   kept as-is to avoid touching every call site. */
 .gradient-text {
-  background: linear-gradient(
-    135deg,
-    #0891b2 0%,
-    #6366f1 55%,
-    #0891b2 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-x 7s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary);
 }
 
 /* Glass card — used across the redesigned marketing sections */
 .glass-card {
   background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(16, 25, 150, 0.08);
+  box-shadow: 0 4px 24px rgba(16, 25, 150, 0.06);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
 .dark .glass-card {
-  background: rgba(28, 31, 38, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  background: rgba(23, 31, 158, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(5, 7, 31, 0.35);
 }
 /* backdrop-filter is a real scroll-jank source on mobile GPUs, especially
    with several .glass-card instances stacked in a list (e.g. the account
@@ -283,7 +285,7 @@
     -webkit-backdrop-filter: none;
   }
   .dark .glass-card {
-    background: rgba(28, 31, 38, 0.94);
+    background: rgba(23, 31, 158, 0.92);
   }
 }
 

@@ -17,14 +17,14 @@ export default function HeroSection() {
         {/* Grid */}
         <div className="absolute inset-0 grid-overlay" />
 
-        {/* Orb 1 — indigo, top-right */}
+        {/* Orb 1 — Electric Blue, top-right */}
         <div className="hidden md:block absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/12 rounded-full blur-[100px] animate-glow-pulse" />
 
-        {/* Orb 2 — cyan, bottom-left */}
+        {/* Orb 2 — Lime Green, bottom-left */}
         <div
           className="hidden md:block absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full blur-[100px] animate-glow-pulse"
           style={{
-            background: 'rgba(8, 145, 178, 0.12)',
+            background: 'rgba(199, 243, 107, 0.35)',
             animationDelay: '2.5s',
           }}
         />
@@ -74,10 +74,10 @@ export default function HeroSection() {
           style={{ animationDelay: '0.36s' }}
         >
           <div className="relative inline-block">
-            <div className="absolute inset-0 rounded-2xl bg-primary/50 blur-xl animate-glow-pulse pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl bg-accent-cyan/60 blur-xl animate-glow-pulse pointer-events-none" />
             <button
               onClick={() => router.push('/generate')}
-              className="relative px-14 py-6 rounded-2xl bg-primary text-primary-foreground font-bold text-lg sm:text-xl hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+              className="relative px-14 py-6 rounded-2xl bg-accent-cyan text-accent-cyan-foreground font-bold text-lg sm:text-xl hover:bg-accent-cyan/90 transition-all duration-200 hover:shadow-xl hover:shadow-accent-cyan/40 hover:-translate-y-0.5"
             >
               {t.ctaPrimary}
             </button>

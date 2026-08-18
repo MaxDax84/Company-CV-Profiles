@@ -30,11 +30,14 @@ export default function FinalCtaSection() {
   }, [])
 
   return (
-    <section id="cta" ref={ref} className="relative py-24 md:py-32 overflow-hidden">
+    // Always a Dark Navy block, independent of the site's light/dark theme
+    // toggle — the brand guide calls out Dark Navy as a deliberate closing
+    // "sezione a blocco" against the mostly-white/light site.
+    <section id="cta" ref={ref} className="relative py-24 md:py-32 overflow-hidden bg-[#101996]">
       <div className="absolute inset-0 grid-overlay" />
       <div
         className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'rgba(99, 102, 241, 0.10)' }}
+        style={{ background: 'rgba(199, 243, 107, 0.18)' }}
       />
       <div
         className={cn(
@@ -42,16 +45,16 @@ export default function FinalCtaSection() {
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
         )}
       >
-        <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-5">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-5 text-white">
           {t.title}
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg mb-10 leading-relaxed">
+        <p className="text-white/70 text-base md:text-lg mb-10 leading-relaxed">
           {t.subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => router.push('/generate')}
-            className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+            className="px-8 py-3.5 rounded-xl bg-[#c7f36b] text-[#101996] font-semibold text-sm hover:bg-[#c7f36b]/90 transition-all duration-200 hover:shadow-xl hover:shadow-[#c7f36b]/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}
           </button>
