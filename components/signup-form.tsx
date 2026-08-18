@@ -45,7 +45,12 @@ export default function SignupForm() {
     setError(null);
 
     const supabase = createBrowserSupabaseClient();
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+    const emailRedirectTo = `${window.location.origin}/auth/callback${claimToken ? `?claim=${encodeURIComponent(claimToken)}` : ""}`;
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo },
+    });
 
     if (signUpError) {
       setError(signUpError.message);
