@@ -15,15 +15,16 @@ TRANSLATE (into the target language):
 - Every skill in skills.hard / skills.soft / skills.tools — EXCEPT proper technology/tool/product names that are conventionally kept in their original form in every language (e.g. "JavaScript", "Kubernetes", "Salesforce", "Excel" stay as-is; "Lavoro di squadra" becomes "Teamwork", "Gestione del team" becomes "Team management")
 - Every project's "title", "description", and "tags"
 - Every item in "other"
+- Every experience's "start_date" and "end_date", but ONLY the words in them — a written-out month name (e.g. "Luglio 2016" → "July 2016", "Julio 2016") or a status word for an ongoing role (e.g. "presente"/"in corso" → "present", "ongoing"). NEVER change the actual year or numeric month this represents, and if the value is already purely numeric (e.g. "2021-03", "2024") there is nothing to translate — copy it through unchanged.
 
 NEVER TRANSLATE OR CHANGE, copy through EXACTLY as in the source:
 - personal_info.full_name, email_obfuscated, phone_obfuscated, email, phone, social_links
-- Every experience's company, start_date, end_date, location
-- Every education's institution, start_year, end_year
+- Every experience's company and location
+- Every education's institution, start_year, end_year (these are plain numbers or the literal string "present" already in the schema's own format, not free text — leave them exactly as given)
 - Every certification's issuer, year, url
 - Every project's url and image_placeholder
 - metadata.primary_color, metadata.template
-- All numbers, percentages, dates, team sizes, budgets — translate the words around them, never the figures themselves
+- All numbers, percentages, team sizes, budgets, and the actual chronological value of every date — translate the words around a date, never the year/month/day it refers to
 
 RULES:
 - Do not add, remove, embellish, shorten, or reorder any content. Every fact, achievement, and number in the source must appear, translated, in the same place in the output — nothing more, nothing less.
@@ -93,8 +94,9 @@ export async function translateResume(sourceProfile: ProfileSchema, targetLangua
   translated.experience = translated.experience.map((exp, i) => ({
     ...exp,
     company: sourceProfile.experience[i]?.company ?? exp.company,
-    start_date: sourceProfile.experience[i]?.start_date ?? exp.start_date,
-    end_date: sourceProfile.experience[i]?.end_date ?? exp.end_date,
+    // start_date/end_date are deliberately NOT hard-copied here — the
+    // prompt above is allowed to translate a spelled-out month name or an
+    // "ongoing" status word within them (e.g. "Luglio 2016" → "July 2016").
     location: sourceProfile.experience[i]?.location ?? exp.location,
   }));
   translated.metadata.primary_color = sourceProfile.metadata.primary_color;

@@ -362,7 +362,12 @@ interface Labels {
   other: string;
 }
 
-const LABELS_BY_LANG: Record<"it" | "en", Labels> = {
+// Covers "it"/"en" (the two original languages) plus every language in
+// components/translate-cv-button.tsx's TRANSLATE_LANGUAGES list — a
+// translated CV's own content is genuinely translated by lib/translate-
+// resume.ts, but without an entry here its section headers would silently
+// stay in English (the fallback) regardless of the target language chosen.
+const LABELS_BY_LANG: Record<string, Labels> = {
   en: {
     summary: "Summary", experience: "Experience", education: "Education",
     certifications: "Certifications", skills: "Skills", skillsHard: "Technical",
@@ -373,10 +378,40 @@ const LABELS_BY_LANG: Record<"it" | "en", Labels> = {
     certifications: "Certificazioni", skills: "Competenze", skillsHard: "Tecniche",
     skillsSoft: "Trasversali", skillsTools: "Strumenti", projects: "Progetti", other: "Altro",
   },
+  es: {
+    summary: "Resumen", experience: "Experiencia", education: "Educación",
+    certifications: "Certificaciones", skills: "Habilidades", skillsHard: "Técnicas",
+    skillsSoft: "Habilidades blandas", skillsTools: "Herramientas", projects: "Proyectos", other: "Otros",
+  },
+  fr: {
+    summary: "Profil", experience: "Expérience", education: "Formation",
+    certifications: "Certifications", skills: "Compétences", skillsHard: "Techniques",
+    skillsSoft: "Savoir-être", skillsTools: "Outils", projects: "Projets", other: "Autres",
+  },
+  de: {
+    summary: "Profil", experience: "Berufserfahrung", education: "Ausbildung",
+    certifications: "Zertifizierungen", skills: "Fähigkeiten", skillsHard: "Fachkenntnisse",
+    skillsSoft: "Soft Skills", skillsTools: "Werkzeuge", projects: "Projekte", other: "Sonstiges",
+  },
+  pt: {
+    summary: "Perfil", experience: "Experiência", education: "Formação",
+    certifications: "Certificações", skills: "Competências", skillsHard: "Técnicas",
+    skillsSoft: "Competências comportamentais", skillsTools: "Ferramentas", projects: "Projetos", other: "Outros",
+  },
+  zh: {
+    summary: "简介", experience: "工作经历", education: "教育经历",
+    certifications: "证书", skills: "技能", skillsHard: "专业技能",
+    skillsSoft: "软技能", skillsTools: "工具", projects: "项目", other: "其他",
+  },
+  ar: {
+    summary: "الملخص", experience: "الخبرة", education: "التعليم",
+    certifications: "الشهادات", skills: "المهارات", skillsHard: "المهارات التقنية",
+    skillsSoft: "المهارات الشخصية", skillsTools: "الأدوات", projects: "المشاريع", other: "أخرى",
+  },
 };
 
 export function AtsResumeDocument({ profile, template = "ats-core" }: { profile: ProfileSchema; template?: PdfTemplate }) {
-  const t = (LABELS_BY_LANG as Record<string, Labels>)[profile.metadata.language] ?? LABELS_BY_LANG.en;
+  const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
   const { personal_info, experience, education, certifications, skills, projects, other } = profile;
   const cfg = VARIANTS[template];
   const accent = resolveAccent(profile, cfg);

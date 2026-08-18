@@ -27,6 +27,10 @@ interface TranslateCvButtonProps {
   slug: string;
   credits: number;
   className?: string;
+  // Lets the parent (the account page's tab switcher) jump straight to the
+  // Download tab when the user clicks through from the success popup below —
+  // optional so this component still works standalone without one.
+  onGoToDownloads?: () => void;
 }
 
 // Unlike PdfExportButton/CoverLetterButton, this can't just be a plain
@@ -35,13 +39,14 @@ interface TranslateCvButtonProps {
 // then immediately follow up with the normal PDF GET once we have the new
 // slug. That second request is free (the route pre-marks it as paid) —
 // translating costs exactly the 1 credit spent in the POST, not two.
-export default function TranslateCvButton({ slug, credits, className }: TranslateCvButtonProps) {
+export default function TranslateCvButton({ slug, credits, className, onGoToDownloads }: TranslateCvButtonProps) {
   const router = useRouter();
   const [language, setLanguage] = useState(TRANSLATE_LANGUAGES[0].code);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [confirming, setConfirming] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [done, setDone] = useState(false);
 
   async function handleConfirm() {
     setConfirming(false);
@@ -60,6 +65,7 @@ export default function TranslateCvButton({ slug, credits, className }: Translat
       }
       window.location.href = `/api/pdf/${data.slug}?template=${data.template}`;
       setStatus("idle");
+      setDone(true);
       router.refresh();
     } catch {
       setStatus("error");
@@ -107,6 +113,42 @@ export default function TranslateCvButton({ slug, credits, className }: Translat
           onCancel={() => setConfirming(false)}
           onConfirm={handleConfirm}
         />
+      )}
+      {done && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setDone(false)}
+        >
+          <div
+            className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold">CV tradotto e scaricato ✓</p>
+            <p className="text-sm text-muted-foreground">
+              Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setDone(false);
+                  onGoToDownloads?.();
+                }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: "#6366f1", color: "#000" }}
+              >
+                Vai a Download
+              </button>
+              <button
+                type="button"
+                onClick={() => setDone(false)}
+                className="px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Chiudi
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

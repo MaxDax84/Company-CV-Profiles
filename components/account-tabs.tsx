@@ -313,6 +313,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <TranslateCvButton
                         slug={row.slug}
                         credits={credits}
+                        onGoToDownloads={() => setTab("downloads")}
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                     </div>
@@ -418,7 +419,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.
             </p>
             {paidDownloads.length > 0 ? (
-              <div className="glass-card rounded-2xl divide-y divide-foreground/5">
+              <div className="space-y-2.5">
                 {paidDownloads.map((dl) => {
                   const row = profilesById.get(dl.profile_id);
                   if (!row) return null;
@@ -427,9 +428,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     ? TRANSLATE_LANGUAGES.find(l => l.code === row.data.metadata.language)?.label ?? row.data.metadata.language
                     : null;
                   return (
-                    <div key={dl.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
-                      <div>
-                        <p className="text-sm font-medium">
+                    <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">
                           {row.slug}{languageLabel ? ` · Tradotto in ${languageLabel}` : ""} · {templateName}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
@@ -438,7 +439,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </div>
                       <a
                         href={`/api/pdf/${row.slug}?template=${dl.template}`}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                         style={{ background: `${ACCENT}20`, color: ACCENT }}
                       >
                         Riscarica ↓
@@ -462,22 +463,22 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               Ogni lettera già generata puoi riscaricarla qui gratuitamente, quante volte vuoi.
             </p>
             {coverLetters.length > 0 ? (
-              <div className="glass-card rounded-2xl divide-y divide-foreground/5">
+              <div className="space-y-2.5">
                 {coverLetters.map((letter) => {
                   const row = profilesById.get(letter.profile_id);
                   if (!row) return null;
                   const target = row.data.metadata.target_role || row.data.metadata.target_company || "candidatura generica";
                   return (
-                    <div key={letter.id} className="flex items-center justify-between gap-3 px-5 py-3 flex-wrap">
-                      <div>
-                        <p className="text-sm font-medium">Lettera per {target}</p>
+                    <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">Lettera per {target}</p>
                         <p className="text-xs text-muted-foreground/50">
                           Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <a
                         href={`/api/cover-letter/${row.slug}`}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                         style={{ background: `${ACCENT}20`, color: ACCENT }}
                       >
                         Riscarica ↓
