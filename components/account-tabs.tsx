@@ -129,10 +129,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
       {/* ── Tab: Dashboard ─────────────────────────────────────────────── */}
       {tab === "dashboard" && (
         <div className="space-y-8">
-          <div
-            className="rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6"
-            style={{ background: `linear-gradient(135deg, ${ACCENT}18, ${ACCENT}05)`, border: `1px solid ${ACCENT}30` }}
-          >
+          <div className="glass-card rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6">
             <div>
               <p className="text-sm text-muted-foreground/70 mb-1">Bentornato,</p>
               <h2 className="font-heading text-2xl font-bold tracking-tight">
@@ -223,16 +220,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 primaryProfiles.length < MAX_CVS ? (
                   <a
                     href="/generate"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                    style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                   >
                     + Carica un nuovo CV
                   </a>
                 ) : (
                   <button
                     onClick={() => setLimitModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                    style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                   >
                     + Carica un nuovo CV
                   </button>
@@ -266,8 +261,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           {row.data.metadata.suggested_titles.map((title) => (
                             <span
                               key={title}
-                              className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
-                              style={{ background: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}40` }}
+                              className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-foreground/[0.04] text-foreground/70 border border-foreground/10"
                             >
                               {title}
                             </span>
@@ -441,8 +435,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </div>
                       <a
                         href={`/api/pdf/${row.slug}?template=${dl.template}`}
-                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                        style={{ background: `${ACCENT}20`, color: ACCENT }}
+                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         Apri ↓
                       </a>
@@ -480,8 +473,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </div>
                       <a
                         href={`/api/cover-letter/${row.slug}`}
-                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-                        style={{ background: `${ACCENT}20`, color: ACCENT }}
+                        className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         Apri ↓
                       </a>
