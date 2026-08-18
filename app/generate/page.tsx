@@ -38,8 +38,20 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Matches the homepage carousel's identical case (see app/globals.css's
+// template-preview-scroll comment): at scale 0.16, a 112px-tall box shows a
+// 700px-tall (112/0.16) window into the 1697px-tall source page — -997px of
+// unscaled translateY is exactly enough to reveal all the way to the
+// bottom without overshooting into blank space past the page's end.
+const PREVIEW_MAX_SCROLL = 997;
+
 export default function GeneratePage() {
   const [template, setTemplate] = useState<TemplateStyle>("alpha");
+  // Per-template manual scroll offset (unscaled px, 0 to -PREVIEW_MAX_SCROLL)
+  // for the 4 template-picker thumbnails — wheel-driven (see onWheel below),
+  // replacing the old fixed auto-scroll animation so the direction actually
+  // follows the user's own scroll input instead of cycling on a timer.
+  const [previewScroll, setPreviewScroll] = useState<Record<string, number>>({});
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
   const [pdfThumbnailError, setPdfThumbnailError] = useState<string | null>(null);
@@ -537,12 +549,21 @@ export default function GeneratePage() {
                     <div
                       className="relative h-28 overflow-hidden"
                       style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
+                      onWheel={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPreviewScroll(prev => {
+                          const current = prev[tpl.id] ?? 0;
+                          const next = Math.min(0, Math.max(-PREVIEW_MAX_SCROLL, current - e.deltaY));
+                          return { ...prev, [tpl.id]: next };
+                        });
+                      }}
                     >
                       <iframe
                         src={`/profile/${tpl.demoSlug}`}
                         title={tpl.name}
                         tabIndex={-1}
-                        className="animate-template-preview-scroll pointer-events-none"
+                        className="pointer-events-none"
                         style={{
                           position: "absolute",
                           top: 0,
@@ -550,8 +571,9 @@ export default function GeneratePage() {
                           width: 1200,
                           height: 1697,
                           border: "none",
-                          transform: "scale(0.16)",
+                          transform: `scale(0.16) translateY(${previewScroll[tpl.id] ?? 0}px)`,
                           transformOrigin: "top left",
+                          transition: "transform 0.1s linear",
                         }}
                       />
                       <span

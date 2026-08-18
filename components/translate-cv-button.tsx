@@ -105,6 +105,18 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         {status === "loading" ? "Traduzione…" : "Traduci e scarica PDF"}
       </button>
       {status === "error" && <p className="text-xs text-red-600 w-full">{errorMsg}</p>}
+      {status === "loading" && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-card rounded-2xl p-8 max-w-xs w-full space-y-4 text-center">
+            <div
+              className="mx-auto w-10 h-10 rounded-full border-[3px] border-foreground/15 animate-spin"
+              style={{ borderTopColor: "#6366f1" }}
+            />
+            <p className="text-sm font-semibold">Sto traducendo il CV…</p>
+            <p className="text-xs text-muted-foreground">Ci vogliono in genere pochi secondi.</p>
+          </div>
+        </div>
+      )}
       {confirming && (
         <CreditConfirmModal
           actionLabel={`Tradurre questo CV in ${selectedLabel} e scaricarlo in PDF (${selectedTemplateName})?`}

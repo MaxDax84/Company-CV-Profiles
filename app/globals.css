@@ -111,15 +111,17 @@
 
   /* Global click/tap feedback — most CTAs here are plain <button>/<a>
      (no shared Button component to centralize this on), so this is a
-     base-layer default rather than a per-component class. Uses `filter`
-     specifically because it can't collide with the transform-based hover
-     effects (hover:-translate-y-0.5, card hover:scale, etc.) already used
-     across components — brightness and transform are independent
-     properties, so a press dims the element regardless of what its own
-     hover transform is doing. Any component with its own `transition-*`
-     utility overrides this default (Tailwind's utilities layer always
-     wins over @layer base), so this only fills in where nothing already
-     handles it. */
+     base-layer default rather than a per-component class. The press state
+     sets its own `transform: scale(...)`, which on an element that also has
+     a hover transform (hover:-translate-y-0.5, card hover:scale, etc.)
+     simply wins outright while `:active` — that's fine, a "pressed down"
+     snap overriding a "lifted" hover reads correctly, and it un-overrides
+     itself the instant the press ends. The transition on press is faster
+     than on release (60ms vs 150ms+) so the press itself reads as an
+     immediate, snappy reaction rather than a soft fade. Any component with
+     its own `transition-*` utility overrides this default (Tailwind's
+     utilities layer always wins over @layer base), so this only fills in
+     where nothing already handles it. */
   a,
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']),
@@ -136,7 +138,9 @@
   button:not(:disabled):active,
   [role='button']:not([aria-disabled='true']):active,
   summary:active {
-    filter: brightness(0.9);
+    filter: brightness(0.75) saturate(1.15);
+    transform: scale(0.94);
+    transition: filter 60ms ease-out, transform 60ms ease-out;
   }
 }
 
@@ -223,17 +227,17 @@
 }
 
 /* Same idea, different numbers — used by the homepage's web-template
-   showcase cards (components/template-showcase-section.tsx), which zoom in
-   further (0.4 scale, a left-aligned crop of the compact card) for
-   legible text. -800px is a moderate, deliberately conservative scroll
-   distance: real profile pages vary a lot in length by template and
-   content, and undershooting (never reaching the experience section) is a
-   smaller problem than overshooting into blank space past a shorter
-   page's end. */
+   showcase cards (components/template-showcase-section.tsx). Scale here
+   (220/1200 ≈ 0.1833) fits the source page's full width exactly into the
+   card box — no horizontal crop, unlike the 0.4 zoom this used before.
+   -800px is a moderate, deliberately conservative scroll distance: real
+   profile pages vary a lot in length by template and content, and
+   undershooting (never reaching the experience section) is a smaller
+   problem than overshooting into blank space past a shorter page's end. */
 @keyframes showcase-web-scroll {
-  0%   { transform: scale(0.4) translateY(0); }
-  85%  { transform: scale(0.4) translateY(-800px); }
-  100% { transform: scale(0.4) translateY(-800px); }
+  0%   { transform: scale(0.1833) translateY(0); }
+  85%  { transform: scale(0.1833) translateY(-800px); }
+  100% { transform: scale(0.1833) translateY(-800px); }
 }
 .animate-showcase-web-scroll {
   animation: showcase-web-scroll 14s linear infinite;

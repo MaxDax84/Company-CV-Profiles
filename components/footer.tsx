@@ -1,6 +1,5 @@
 'use client'
 
-import { Globe } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 
@@ -15,9 +14,8 @@ export default function Footer() {
         <div className="border-t border-border/40 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
-              <Globe className="w-3.5 h-3.5 text-primary" />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the nav logo */}
+            <img src="/icon.png" alt="" className="w-7 h-7 rounded-lg" />
             <span className="font-heading font-bold text-base tracking-tight">
               Job<span className="text-primary">li</span>
             </span>

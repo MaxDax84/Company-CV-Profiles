@@ -20,21 +20,17 @@ const PDF_TEMPLATE_CARDS: { id: 'ats-core' | 'executive' | 'creative-tech'; name
   { id: 'creative-tech', name: 'Creative Tech', accent: '#7c3aed' },
 ]
 
-// Card box stays the original, compact size — only the content INSIDE zooms
-// in (see CROP_SCALE below), instead of blowing up the whole card.
-//
-// The crop is centered horizontally, not left-aligned: every template's
-// hero content (name/title) is itself centered on the page, so a
-// left-aligned crop showed mostly empty margin — worst-case on the darkest
-// template (Alpha), where that empty margin just reads as a solid black
-// box with no visible text at all. SOURCE_WIDTH is the iframe's real
-// width; centering math below picks the `left` offset that lines up the
-// source page's horizontal center with the box's own center.
+// Card box stays the original, compact size. The preview inside is scaled
+// so the FULL page width exactly fills the box's own width edge-to-edge —
+// no horizontal cropping, no left offset needed. An earlier version zoomed
+// in past the box's width and cropped the overflow, which on the darkest
+// templates (Alpha, Delta) could land on a mostly-empty dark stretch of the
+// hero and read as a frozen/blank card with nothing visibly happening.
+// SOURCE_WIDTH is the iframe's real (unscaled) width.
 const CARD_WIDTH = 220
 const CARD_HEIGHT = 310
-const CROP_SCALE = 0.4
 const SOURCE_WIDTH = 1200
-const CENTERED_LEFT = CARD_WIDTH / 2 - (SOURCE_WIDTH / 2) * CROP_SCALE
+const FIT_SCALE = CARD_WIDTH / SOURCE_WIDTH
 
 function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
   return (
@@ -59,7 +55,7 @@ function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
         style={{
           position: 'absolute',
           top: 20,
-          left: CENTERED_LEFT,
+          left: 0,
           width: SOURCE_WIDTH,
           height: 4000,
           border: 'none',
@@ -89,11 +85,11 @@ function PdfTemplateCard({ tpl }: { tpl: (typeof PDF_TEMPLATE_CARDS)[number] }) 
         style={{
           position: 'absolute',
           top: 0,
-          left: CENTERED_LEFT,
+          left: 0,
           width: SOURCE_WIDTH,
           height: 1697,
           border: 'none',
-          transform: `scale(${CROP_SCALE})`,
+          transform: `scale(${FIT_SCALE})`,
           transformOrigin: 'top left',
           pointerEvents: 'none',
         }}
@@ -172,8 +168,8 @@ function Carousel<T>({ items, renderCard, keyOf }: { items: T[]; renderCard: (it
           key={keyOf(item)}
           ref={(el) => { cardRefs.current[i] = el }}
           onClick={() => cardRefs.current[i]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })}
-          className="shrink-0 snap-center cursor-pointer transition-transform duration-300 ease-out"
-          style={{ transform: `scale(${i === centered ? 1.08 : 1})` }}
+          className="relative shrink-0 snap-center cursor-pointer transition-transform duration-300 ease-out"
+          style={{ transform: `scale(${i === centered ? 1.5 : 1})`, zIndex: i === centered ? 10 : 1 }}
         >
           {renderCard(item)}
         </div>

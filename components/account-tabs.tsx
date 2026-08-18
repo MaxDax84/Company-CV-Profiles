@@ -27,9 +27,11 @@ const MAX_CVS = 4;
 
 const LEDGER_REASON_LABELS: Record<string, string> = {
   welcome: "Credito di benvenuto",
+  welcome_promo_first10: "Credito di benvenuto (promo primi 10)",
   pdf_download: "Download PDF",
   tailor: "Adattamento a un annuncio",
   cover_letter: "Lettera di presentazione",
+  translate: "Traduzione CV",
   manual_grant: "Credito aggiunto manualmente",
 };
 
@@ -442,7 +444,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                         style={{ background: `${ACCENT}20`, color: ACCENT }}
                       >
-                        Riscarica ↓
+                        Apri ↓
                       </a>
                     </div>
                   );
@@ -481,7 +483,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
                         style={{ background: `${ACCENT}20`, color: ACCENT }}
                       >
-                        Riscarica ↓
+                        Apri ↓
                       </a>
                     </div>
                   );
@@ -512,7 +514,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF, 1 adattamento a un annuncio o 1 lettera di presentazione. Per aggiungerne, scrivici.
+            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione o 1 traduzione del CV. Per aggiungerne, scrivici.
           </p>
 
           <div className="space-y-3">
