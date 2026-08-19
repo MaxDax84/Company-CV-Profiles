@@ -1,6 +1,7 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 import { collectAllowedTechTokens, buildSourceCorpus, keepAllowed } from "./profile-corpus";
+import { logClaudeUsage } from "./log-claude-usage";
 import type { ChatTurn } from "./cv-chat-question";
 
 const SYSTEM_PROMPT = `You rewrite specific fields of a user's existing structured CV profile based on their own answers in a short guided conversation — never inventing anything the user didn't actually say or that wasn't already true in the source profile. You are given the source profile as JSON and the full conversation transcript: each question the assistant asked (with the exact profile field it targeted) and the user's own answer.
@@ -67,7 +68,12 @@ export async function reformulateProfileFromChat(
     throw new Error(`Anthropic API error ${res.status}: ${body}`);
   }
 
-  const json = await res.json() as { stop_reason: string; content: { type: string; text: string }[] };
+  const json = await res.json() as {
+    stop_reason: string;
+    content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
+  };
+  logClaudeUsage("cv-chat/finish", "claude-sonnet-5", json.usage);
   const updated = extractProfileJson(json, "Il CV o la conversazione sono troppo lunghi da processare.");
 
   // Same deterministic backstop as lib/tailor-resume.ts, extended with the

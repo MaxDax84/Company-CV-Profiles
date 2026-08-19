@@ -1,5 +1,6 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson } from "./claude-json";
+import { logClaudeUsage } from "./log-claude-usage";
 
 export interface ChatTurn {
   role: "assistant" | "user";
@@ -84,7 +85,12 @@ export async function askNextQuestion(
     throw new Error(`Anthropic API error ${res.status}: ${body}`);
   }
 
-  const json = await res.json() as { stop_reason: string; content: { type: string; text: string }[] };
+  const json = await res.json() as {
+    stop_reason: string;
+    content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
+  };
+  logClaudeUsage("cv-chat/next-question", "claude-haiku-4-5-20251001", json.usage);
   const result = extractProfileJson<QuestionResult>(json, "La conversazione è diventata troppo lunga da processare.");
 
   return { done: result.done, question: result.question, targetField: result.target_field };

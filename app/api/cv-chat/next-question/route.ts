@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
+import { cvChatQuestionRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileRow } from "@/lib/profile-store";
 import { getActiveChatSession, saveChatTurn } from "@/lib/cv-chat-store";
@@ -14,7 +14,7 @@ const ANSWER_MAX_LENGTH = 1000;
 export async function POST(req: NextRequest) {
   try {
     const clientIp = getClientIp(req);
-    const { success, reset } = await tailorResumeRatelimit.limit(clientIp);
+    const { success, reset } = await cvChatQuestionRatelimit.limit(clientIp);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },
