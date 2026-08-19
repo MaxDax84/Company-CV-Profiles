@@ -1,5 +1,6 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
+import { logClaudeUsage } from "./log-claude-usage";
 
 // Phase 2 of /generate: lib/parse-resume.ts only extracts faithfully now (see
 // its bio instruction) and computes the "before" score. This is the step
@@ -74,7 +75,9 @@ export async function improveResume(sourceProfile: ProfileSchema): Promise<Profi
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("improve_resume", "claude-sonnet-5", json.usage);
 
   const improved = extractProfileJson(json, "CV too long to process.");
 

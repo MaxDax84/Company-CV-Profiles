@@ -1,5 +1,6 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
+import { logClaudeUsage } from "./log-claude-usage";
 
 // Opt-in feature: translate an already-generated CV profile into another
 // language, for people who want a multilingual profile page. A pure
@@ -78,7 +79,9 @@ export async function translateResume(sourceProfile: ProfileSchema, targetLangua
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("translate_resume", "claude-sonnet-5", json.usage);
 
   const translated = extractProfileJson(json, "CV too long to process.");
 

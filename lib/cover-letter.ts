@@ -1,4 +1,5 @@
 import type { ProfileSchema } from "./schema";
+import { logClaudeUsage } from "./log-claude-usage";
 
 const SYSTEM_PROMPT = `You write a cover letter for a job application, based on a structured CV profile given to you as JSON. Return ONLY the letter's plain text — no markdown, no JSON, no explanation, no code fences, no subject line.
 
@@ -51,7 +52,9 @@ export async function generateCoverLetter(profile: ProfileSchema): Promise<strin
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("cover_letter", "claude-sonnet-5", json.usage);
 
   if (json.stop_reason === "max_tokens") {
     throw new Error("Cover letter generation was cut off.");

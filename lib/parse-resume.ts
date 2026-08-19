@@ -1,6 +1,7 @@
 import type { ProfileSchema } from "./schema";
 import type { CvScoreBreakdown } from "./cv-score";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
+import { logClaudeUsage } from "./log-claude-usage";
 
 // Thrown when the model itself flags the uploaded PDF as not being a CV at
 // all (see the is_resume check in SYSTEM_PROMPT) — a distinct error type so
@@ -140,7 +141,9 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("parse_resume", "claude-haiku-4-5-20251001", json.usage);
 
   const parsed = extractProfileJson<Partial<ProfileSchema> & { is_resume?: boolean; suggested_titles?: string[]; cv_score_before?: CvScoreBeforeRaw }>(
     json,

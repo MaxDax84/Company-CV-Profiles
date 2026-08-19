@@ -534,10 +534,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               <p className="text-xs text-muted-foreground/60 mt-1">usati finora</p>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione o 1 traduzione (del CV o della lettera). Per aggiungerne,{" "}
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Un credito si spende una sola volta per ogni risultato: la prima volta che scarichi un PDF, adatti il CV a un annuncio, generi una lettera di presentazione o traduci CV o lettera in un&apos;altra lingua. Da quel momento puoi riscaricarlo quante volte vuoi, gratis — lo trovi sempre qui nella sezione Download. Vuoi più crediti?{" "}
             <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
-              scrivici
+              Scrivici
             </a>
             .
           </p>

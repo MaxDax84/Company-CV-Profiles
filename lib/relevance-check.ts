@@ -1,4 +1,5 @@
 import type { ProfileSchema } from "./schema";
+import { logClaudeUsage } from "./log-claude-usage";
 
 const SYSTEM_PROMPT = `You estimate how relevant a candidate's CV profile is to a specific job posting — purely to warn the user before they spend a credit tailoring their CV to a job that doesn't genuinely match their background. You are not making a hiring decision.
 
@@ -45,7 +46,9 @@ export async function checkRelevance(profile: ProfileSchema, jobPostingText: str
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("relevance_check", "claude-haiku-4-5-20251001", json.usage);
 
   const textBlock = json.content.find((b) => b.type === "text");
   if (!textBlock) {
