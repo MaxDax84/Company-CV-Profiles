@@ -10,7 +10,7 @@ import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
 import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
-import { computeCvScore } from "@/lib/cv-score";
+import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
@@ -44,6 +44,17 @@ function scoreBadgeColor(score: number): string {
   if (score < 50) return "#ef4444";
   if (score < 75) return "#f59e0b";
   return "#22c55e";
+}
+
+// The score shown anywhere in the account (dashboard, CV list) must never
+// read lower than what was shown at generation time on /generate — same
+// "after never drops below before" guarantee as floorScoreAgainst enforces
+// there. Without this, a later scoring-formula change (a criterion's
+// deterministic recompute getting stricter) would silently show existing
+// users a LOWER number than they already saw, which is exactly the
+// regression this was built to prevent in the first place.
+function displayedScore(profile: ProfileSchema): number {
+  return floorScoreAgainst(computeCvScore(profile), profile.metadata.score_before).total;
 }
 
 type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
@@ -167,7 +178,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             {primaryProfiles.length > 0 ? (
               <div className="space-y-2">
                 {primaryProfiles.slice(0, 3).map((row) => {
-                  const score = computeCvScore(row.data).total;
+                  const score = displayedScore(row.data);
                   return (
                     <div key={row.id} className="glass-card rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
                       <div className="min-w-0">
@@ -250,9 +261,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </div>
                       <p
                         className="text-xs font-bold px-2.5 py-1 rounded-full"
-                        style={{ color: scoreBadgeColor(computeCvScore(row.data).total), background: `${scoreBadgeColor(computeCvScore(row.data).total)}18` }}
+                        style={{ color: scoreBadgeColor(displayedScore(row.data)), background: `${scoreBadgeColor(displayedScore(row.data))}18` }}
                       >
-                        {computeCvScore(row.data).total}/100
+                        {displayedScore(row.data)}/100
                       </p>
                     </div>
                     {row.data.metadata.suggested_titles && row.data.metadata.suggested_titles.length > 0 && (
