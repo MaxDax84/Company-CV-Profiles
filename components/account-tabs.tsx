@@ -14,6 +14,7 @@ import { computeCvScore } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
+import TranslateCoverLetterButton from "@/components/translate-cover-letter-button";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 
@@ -30,6 +31,7 @@ const LEDGER_REASON_LABELS: Record<string, string> = {
   tailor: "Adattamento a un annuncio",
   cover_letter: "Lettera di presentazione",
   translate: "Traduzione CV",
+  translate_cover_letter: "Traduzione lettera di presentazione",
   manual_grant: "Credito aggiunto manualmente",
 };
 
@@ -311,6 +313,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                     </div>
+                    <div className="pt-2 border-t border-foreground/10 space-y-1.5">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                        Traduci la lettera di presentazione (1 credito) — genera un PDF, disponibile poi in Download
+                      </p>
+                      <TranslateCoverLetterButton
+                        slug={row.slug}
+                        credits={credits}
+                        onGoToDownloads={() => setTab("downloads")}
+                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      />
+                    </div>
                     <div className="pt-2 border-t border-foreground/10">
                       <DeleteProfileButton
                         profileId={row.id}
@@ -461,16 +474,22 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   const row = profilesById.get(letter.profile_id);
                   if (!row) return null;
                   const target = row.data.metadata.target_role || row.data.metadata.target_company || "candidatura generica";
+                  const isTranslated = letter.language !== row.data.metadata.language;
+                  const languageLabel = isTranslated
+                    ? TRANSLATE_LANGUAGES.find(l => l.code === letter.language)?.label ?? letter.language
+                    : null;
                   return (
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">Lettera per {target}</p>
+                        <p className="text-sm font-medium truncate">
+                          Lettera per {target}{languageLabel ? ` · Tradotta in ${languageLabel}` : ""}
+                        </p>
                         <p className="text-xs text-muted-foreground/50">
                           Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <a
-                        href={`/api/cover-letter/${row.slug}`}
+                        href={`/api/cover-letter/${row.slug}?language=${letter.language}`}
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         Apri ↓
@@ -504,7 +523,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione o 1 traduzione del CV. Per aggiungerne, scrivici.
+            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione o 1 traduzione (del CV o della lettera). Per aggiungerne, scrivici.
           </p>
 
           <div className="space-y-3">

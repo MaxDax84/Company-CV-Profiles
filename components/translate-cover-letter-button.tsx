@@ -1,0 +1,100 @@
+"use client";
+
+import { useState } from "react";
+import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
+import CreditConfirmModal from "@/components/credit-confirm-modal";
+
+interface TranslateCoverLetterButtonProps {
+  slug: string;
+  credits: number;
+  className?: string;
+  // Lets the parent (the account page's tab switcher) jump straight to the
+  // Download tab when the user clicks through from the success popup below —
+  // optional so this component still works standalone without one.
+  onGoToDownloads?: () => void;
+}
+
+// Simpler than TranslateCvButton: no template picker (a cover letter only
+// ever has the one layout), and no separate POST+follow-up-GET — the target
+// PDF is a plain GET to /api/cover-letter/[slug]?language=..., which
+// generates-or-reuses the original letter and translates it server-side
+// (see that route for the credit-cost reasoning).
+export default function TranslateCoverLetterButton({ slug, credits, className, onGoToDownloads }: TranslateCoverLetterButtonProps) {
+  const [language, setLanguage] = useState(TRANSLATE_LANGUAGES[0].code);
+  const [confirming, setConfirming] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const selectedLabel = TRANSLATE_LANGUAGES.find((l) => l.code === language)?.label ?? language;
+
+  function handleConfirm() {
+    setConfirming(false);
+    window.location.href = `/api/cover-letter/${slug}?language=${language}`;
+    setDone(true);
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
+      >
+        {TRANSLATE_LANGUAGES.map((l) => (
+          <option key={l.code} value={l.code}>{l.label}</option>
+        ))}
+      </select>
+      <button
+        type="button"
+        onClick={() => setConfirming(true)}
+        className={className}
+      >
+        Traduci e scarica PDF
+      </button>
+      {confirming && (
+        <CreditConfirmModal
+          actionLabel={`Tradurre la lettera di presentazione in ${selectedLabel} e scaricarla in PDF?`}
+          cost={1}
+          balance={credits}
+          onCancel={() => setConfirming(false)}
+          onConfirm={handleConfirm}
+        />
+      )}
+      {done && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setDone(false)}
+        >
+          <div
+            className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold">Lettera tradotta e scaricata ✓</p>
+            <p className="text-sm text-muted-foreground">
+              Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setDone(false);
+                  onGoToDownloads?.();
+                }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+              >
+                Vai a Download
+              </button>
+              <button
+                type="button"
+                onClick={() => setDone(false)}
+                className="px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Chiudi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

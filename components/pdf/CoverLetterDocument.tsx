@@ -29,7 +29,16 @@ function splitParagraphs(text: string): string[] {
     .filter(Boolean);
 }
 
-export function CoverLetterDocument({ profile, letterText }: { profile: ProfileSchema; letterText: string }) {
+interface CoverLetterDocumentProps {
+  profile: ProfileSchema;
+  letterText: string;
+  // The letter's own language — defaults to the profile's when this is the
+  // original letter; a translation passes its own target language code
+  // instead, so the date reads naturally in that language too.
+  language?: string;
+}
+
+export function CoverLetterDocument({ profile, letterText, language }: CoverLetterDocumentProps) {
   const { personal_info, metadata } = profile;
   const accent = metadata.primary_color || FALLBACK_ACCENT;
   const styles = buildStyles(accent);
@@ -41,9 +50,17 @@ export function CoverLetterDocument({ profile, letterText }: { profile: ProfileS
     personal_info.location,
   ].filter(Boolean);
 
-  const today = new Date().toLocaleDateString(metadata.language === "it" ? "it-IT" : "en-US", {
-    day: "numeric", month: "long", year: "numeric",
-  });
+  // toLocaleDateString accepts a bare language code (e.g. "es", "zh"), not
+  // just a full locale tag — no need for a per-language lookup table. Falls
+  // back to the browser/runtime default if the code isn't recognized.
+  let today: string;
+  try {
+    today = new Date().toLocaleDateString(language ?? metadata.language, {
+      day: "numeric", month: "long", year: "numeric",
+    });
+  } catch {
+    today = new Date().toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  }
 
   return (
     <Document>

@@ -292,11 +292,18 @@
    still close enough in value to the navy --background to read as barely
    distinct. A genuinely light surface pops unmistakably against the dark
    page instead. The local --foreground/--muted-foreground/--card-foreground
-   overrides flip any text inside (via Tailwind's text-foreground etc.
-   utilities, which resolve through these same custom properties) to dark,
-   since it's now sitting on a light background instead of the page's own
-   dark one — CSS custom properties cascade, so descendants pick up the
-   nearest definition without every consumer needing its own override.
+   overrides flip any TEXT-COLORED-VIA-VARIABLE inside (Tailwind's
+   text-foreground/text-muted-foreground utilities) to dark. That alone
+   isn't enough, though: plain text with no color utility at all (e.g. a
+   bare `<h2>{name}</h2>`) doesn't reference the variable — it inherits
+   whatever `color` was already COMPUTED on body (white, from body's own
+   --foreground) as a plain resolved value, which redefining --foreground
+   deeper in the tree can't retroactively change; inheritance carries the
+   resolved value down, not a live var() reference, so nothing here ever
+   re-triggers unless something in the card's own ancestry sets `color`
+   again. The explicit `color: var(--foreground)` below is that: it applies
+   the (now-local) --foreground as this element's own `color`, which then
+   correctly re-inherits into any descendant that doesn't set its own.
    --primary/--accent/--ring also get scoped back to the LIGHT theme's
    Electric Blue here, not left at dark mode's Lime Green: Lime is tuned for
    contrast against the dark navy page, but reads as low-contrast light-on-
@@ -309,6 +316,7 @@
   --foreground: #0a0d4d;
   --card-foreground: #0a0d4d;
   --muted-foreground: rgba(10, 13, 77, 0.65);
+  color: var(--foreground);
   --primary: #123bff;
   --primary-foreground: #ffffff;
   --accent: #123bff;
