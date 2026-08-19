@@ -6,6 +6,7 @@ export const CREDIT_COSTS = {
   tailor: 1,
   coverLetter: 1,
   translate: 1,
+  chat: 1,
 } as const;
 
 export class InsufficientCreditsError extends Error {

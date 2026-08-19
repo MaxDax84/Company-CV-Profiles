@@ -91,24 +91,6 @@ export default function ServicesSection() {
           })}
         </div>
 
-        {/* Work-in-progress note — the AI chat refinement isn't built yet */}
-        {(t as { wipNote?: string }).wipNote && (
-          <div
-            className={cn(
-              'mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-2xl border border-dashed border-foreground/15 bg-foreground/[0.02] px-6 py-4 max-w-4xl mx-auto transition-all duration-700',
-              visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-            )}
-            style={{ transitionDelay: '550ms' }}
-          >
-            <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan text-[10px] font-bold uppercase tracking-wider">
-              {(t as { wipBadge?: string }).wipBadge}
-            </span>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {(t as { wipNote?: string }).wipNote}
-            </p>
-          </div>
-        )}
-
       </div>
     </section>
   )

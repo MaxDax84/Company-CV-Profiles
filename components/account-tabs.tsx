@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   UploadCloud, Target, Download, ExternalLink, Mail, X,
-  LayoutDashboard, FileText, Wallet,
+  LayoutDashboard, FileText, Wallet, MessageCircle,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
@@ -15,6 +15,7 @@ import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import TranslateCoverLetterButton from "@/components/translate-cover-letter-button";
+import CvChat from "@/components/cv-chat";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 
@@ -32,6 +33,7 @@ const LEDGER_REASON_LABELS: Record<string, string> = {
   cover_letter: "Lettera di presentazione",
   translate: "Traduzione CV",
   translate_cover_letter: "Traduzione lettera di presentazione",
+  chat_refine: "Rifinitura CV via chat AI",
   manual_grant: "Credito aggiunto manualmente",
 };
 
@@ -57,6 +59,7 @@ const TABS = [
   { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
   { id: "adapted", label: "CV Adattati", title: "CV adattati alle offerte", icon: Target },
   { id: "downloads", label: "Download", title: "Download", icon: Download },
+  { id: "chat", label: "Assistente AI", title: "Assistente AI", icon: MessageCircle },
   { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
 ] as const;
 
@@ -509,6 +512,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         </div>
       )}
 
+      {/* ── Tab: Assistente AI ─────────────────────────────────────────── */}
+      {tab === "chat" && (
+        <CvChat profile={profileRow} accountCode={accountCode} credits={credits} />
+      )}
+
       {/* ── Tab: Crediti ───────────────────────────────────────────────── */}
       {tab === "credits" && (
         <div className="space-y-8">
@@ -523,7 +531,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione o 1 traduzione (del CV o della lettera). Per aggiungerne, scrivici.
+            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione, 1 traduzione (del CV o della lettera) o 1 sessione di chat AI per rifinire il CV. Per aggiungerne, scrivici.
           </p>
 
           <div className="space-y-3">
