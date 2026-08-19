@@ -48,7 +48,7 @@ function WebTemplateCard({ tpl }: { tpl: (typeof WEB_TEMPLATES)[number] }) {
           taller than the visible box auto-scrolls slowly to also reveal the
           experience/education sections, not just the hero. */}
       <iframe
-        src={`/profile/${tpl.demoSlug}`}
+        src={`/profile/${tpl.demoSlug}?preview=1`}
         title={tpl.name}
         tabIndex={-1}
         className="animate-showcase-web-scroll"

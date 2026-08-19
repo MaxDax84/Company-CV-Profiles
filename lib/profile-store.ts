@@ -264,7 +264,8 @@ export async function saveTranslatedProfile(
 // no alphanumeric characters at all).
 export async function savePendingProfile(
   profile: ProfileSchema,
-  slugSource?: string
+  slugSource?: string,
+  pdfHash?: string
 ): Promise<{ slug: string; claimToken: string }> {
   const baseSlug = toSlug(slugSource ?? "") || toSlug(profile.personal_info.full_name) || "profile";
   let slug = baseSlug;
@@ -275,6 +276,11 @@ export async function savePendingProfile(
   }
 
   await kv.set(`profile:${slug}`, JSON.stringify(profile), { ex: PENDING_TTL_SECONDS });
+  // Carried alongside the pending preview only so claimPendingProfile can
+  // persist it on the permanent row once saved — see findDuplicatePrimaryProfile.
+  if (pdfHash) {
+    await kv.set(`pending-pdf-hash:${slug}`, pdfHash, { ex: PENDING_TTL_SECONDS });
+  }
 
   const claimToken = crypto.randomUUID();
   await kv.set(`claim:${claimToken}`, JSON.stringify({ slug }), { ex: PENDING_TTL_SECONDS });
@@ -350,6 +356,8 @@ export async function claimPendingProfile(
   const profile = await getRawPendingProfile(pendingSlug);
   if (!profile) return { error: "expired" };
 
+  const pdfHash = await kv.get<string>(`pending-pdf-hash:${pendingSlug}`);
+
   const { count } = await supabase
     .from("profiles")
     .select("id", { count: "exact", head: true })
@@ -369,16 +377,52 @@ export async function claimPendingProfile(
     const slug = attempt === 0 ? pendingSlug : `${pendingSlug}-${attempt}`;
     const { error: insertError } = await supabase
       .from("profiles")
-      .insert({ user_id: userId, kind: "primary", slug, data: profile });
+      .insert({ user_id: userId, kind: "primary", slug, data: profile, pdf_hash: pdfHash ?? null });
     if (!insertError) {
       await kv.del(`profile:${pendingSlug}`);
       await kv.del(`claim:${claimToken}`);
+      await kv.del(`pending-pdf-hash:${pendingSlug}`);
       return { slug };
     }
     if (insertError.code !== "23505") return { error: "claim_failed" };
   }
 
   return { error: "claim_failed" };
+}
+
+export interface DuplicateProfileMatch {
+  slug: string;
+  fullName: string;
+  createdAt: string;
+}
+
+// Warns (at /generate upload time) when the just-uploaded PDF is
+// byte-identical to a CV the signed-in user already has saved, so they can
+// choose to open the existing one instead of unknowingly creating a second,
+// indistinguishable digital profile — see supabase/migrations/0014. Only
+// checks kind='primary' CVs (the account's actual saved profiles, not
+// tailored/translated derivatives) and only ever matches rows saved after
+// this column existed; older CVs have a null pdf_hash and simply never match.
+export async function findDuplicatePrimaryProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  pdfHash: string
+): Promise<DuplicateProfileMatch | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("slug, data, created_at")
+    .eq("user_id", userId)
+    .eq("kind", "primary")
+    .eq("pdf_hash", pdfHash)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data) return null;
+  return {
+    slug: data.slug,
+    fullName: (data.data as ProfileSchema).personal_info.full_name,
+    createdAt: data.created_at,
+  };
 }
 
 export interface ResolveFromPdfResult {

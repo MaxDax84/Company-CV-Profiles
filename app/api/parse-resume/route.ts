@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
 import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { resolveProfileFromPdf, savePendingProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
+import { resolveProfileFromPdf, savePendingProfile, findDuplicatePrimaryProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
 import { computeCvScore } from "@/lib/cv-score";
 import { NotAResumeError } from "@/lib/parse-resume";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -58,6 +59,23 @@ export async function POST(req: NextRequest) {
 
     const resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
 
+    // Only meaningful for someone already signed in (e.g. via "+ Carica un
+    // nuovo CV" from their account) — an anonymous /generate visitor has no
+    // saved CVs to match against yet. Best-effort: getUser() failing or
+    // returning nobody just means "skip the check", never a hard error —
+    // this warning is a courtesy, not something worth blocking an upload
+    // over.
+    let duplicateOf = null;
+    try {
+      const supabase = await createServerSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        duplicateOf = await findDuplicatePrimaryProfile(supabase, user.id, resolved.pdfHash);
+      }
+    } catch (err) {
+      console.error("[parse-resume] duplicate check failed", err);
+    }
+
     // Same PDF re-uploaded within the pending window (accidental resubmit,
     // or someone trying to run up the Claude bill by replaying the same
     // file): reuse the existing pending slug instead of minting a new one
@@ -74,6 +92,7 @@ export async function POST(req: NextRequest) {
         claimToken,
         cvScore: { before: resolved.scoreBefore, after: computeCvScore(resolved.profile) },
         suggestedTitles: resolved.suggestedTitles,
+        duplicateOf,
       });
     }
 
@@ -87,7 +106,7 @@ export async function POST(req: NextRequest) {
       profile.personal_info.social_links.linkedin = linkedinUrl;
     }
 
-    const { slug, claimToken } = await savePendingProfile(profile, filenameBase);
+    const { slug, claimToken } = await savePendingProfile(profile, filenameBase, resolved.pdfHash);
     await kv.set(`pdf-hash:${resolved.pdfHash}`, slug, { ex: PENDING_TTL_SECONDS });
 
     return NextResponse.json({
@@ -96,6 +115,7 @@ export async function POST(req: NextRequest) {
       claimToken,
       cvScore: { before: resolved.scoreBefore, after: computeCvScore(profile) },
       suggestedTitles: resolved.suggestedTitles,
+      duplicateOf,
     });
   } catch (err) {
     if (err instanceof NotAResumeError) {

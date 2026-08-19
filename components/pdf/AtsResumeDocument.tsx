@@ -40,13 +40,20 @@ interface VariantConfig {
   headerFontFamilyBold: StdFont;
   bullet: string;
   headerAlign: "flex-start" | "center";
-  entryMarker: "dot" | "none";
+  entryMarker: "dot" | "bar" | "none";
   useDateChip: boolean;
   sectionTitleStyle: "rule-simple" | "rule-both" | "tag";
   // "ats-core" and "executive" use a fixed, non-personalized accent (pure
   // neutral grayscale / institutional navy per the brief) instead of the
   // CV's own suggested color — only "creative-tech" stays personalized.
   fixedAccent?: string;
+  // "executive" only — a warm gold used purely for decorative rules/markers
+  // (top bar, section-title border, entry marker, dates), never for a
+  // second block of text — so it adds visual richness without touching the
+  // plain single-column, sequential-text structure every variant shares.
+  accentSecondary?: string;
+  // Thin full-bleed rule above the header — "executive" only.
+  topRule?: boolean;
   // Header keeps a tinted background band for two variants; "ats-core"
   // stays flat white with a hairline rule instead, per its "bianco e nero,
   // solo linee sottili" spec.
@@ -66,9 +73,10 @@ const VARIANTS: Record<PdfTemplate, VariantConfig> = {
   executive: {
     fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold",
     headerFontFamily: "Times-Roman", headerFontFamilyBold: "Times-Bold",
-    bullet: "—", headerAlign: "center", entryMarker: "none",
+    bullet: "—", headerAlign: "center", entryMarker: "bar",
     useDateChip: false, sectionTitleStyle: "rule-both",
-    fixedAccent: "#16233f", headerBand: true, skillStyle: "line", spacing: "generous",
+    fixedAccent: "#16233f", accentSecondary: "#b6903f", topRule: true,
+    headerBand: true, skillStyle: "line", spacing: "generous",
   },
   "creative-tech": {
     fontFamily: "Helvetica", fontFamilyBold: "Helvetica-Bold",
@@ -94,6 +102,10 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
     // first once a section overflows. Page-level padding, by contrast, is
     // correctly reapplied on every auto-generated page.
     page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: generous ? 40 : 34, paddingBottom: generous ? 44 : 36, paddingHorizontal: PAGE_PADDING_H },
+    // "executive" only — a thin full-bleed gold rule above the header, purely
+    // decorative (a colored bar, no text), so it adds a touch of richness
+    // without introducing a second column or changing reading order.
+    topRule: { height: 3, marginHorizontal: -PAGE_PADDING_H, marginBottom: 16, backgroundColor: cfg.accentSecondary },
     // Tinted band behind the name/title/contact block — bleeds to the page's
     // physical edges by cancelling the Page's own horizontal padding, then
     // re-applying it as the band's own padding so the text inside still
@@ -139,17 +151,21 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
       ...(cfg.sectionTitleStyle === "rule-both" && {
         paddingVertical: 3,
         borderTopWidth: 1,
-        borderTopColor: accentSoft,
+        borderTopColor: cfg.accentSecondary ?? accentSoft,
         borderBottomWidth: 1,
-        borderBottomColor: accentSoft,
+        borderBottomColor: cfg.accentSecondary ?? accentSoft,
       }),
     },
     bio: { fontSize: 10, lineHeight: 1.55, color: "#333333" },
     entry: {
       marginBottom: generous ? 13 : 11,
-      paddingLeft: cfg.entryMarker === "dot" ? 12 : 0,
+      paddingLeft: cfg.entryMarker === "dot" ? 12 : cfg.entryMarker === "bar" ? 10 : 0,
     },
     entryDot: { position: "absolute", left: 0, top: 3, width: 5, height: 5, borderRadius: 2.5 },
+    // "executive" only — a thin vertical rule to the left of each entry
+    // (like a timeline spine), purely decorative: still one sequential
+    // column of text, nothing sits beside it.
+    entryBar: { position: "absolute", left: 0, top: 1, bottom: 1, width: 2, borderRadius: 1 },
     entryHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
     entryTitle: { fontSize: 10.5, fontFamily: cfg.fontFamilyBold, color: "#232323" },
     entryDates: { fontSize: 8.5, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3 },
@@ -161,7 +177,7 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string) {
     // under the bullet. Still plain sequential text in the content stream,
     // so ATS extraction order is unaffected.
     bulletRow: { flexDirection: "row", marginBottom: 3.5 },
-    bulletMarker: { width: 13, fontSize: 9.5, lineHeight: 1.45, color: accentSoft },
+    bulletMarker: { width: 13, fontSize: 9.5, lineHeight: 1.45, color: cfg.accentSecondary ?? accentSoft },
     bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.45, color: "#333333" },
     skillLine: { fontSize: 9.5, lineHeight: 1.65, color: "#333333" },
     skillLabel: { fontFamily: cfg.fontFamilyBold, color: "#232323" },
@@ -209,12 +225,13 @@ function DateLabel({ text, accent, cfg, styles }: { text: string; accent: string
       <Text style={[styles.entryDatesChip, { color: accent, backgroundColor: hexToRgba(accent, 0.1) }]}>{text}</Text>
     );
   }
-  return <Text style={[styles.entryDates, { color: accent }]}>{text}</Text>;
+  return <Text style={[styles.entryDates, { color: cfg.accentSecondary ?? accent }]}>{text}</Text>;
 }
 
 function EntryMarker({ accent, cfg, styles }: { accent: string; cfg: VariantConfig; styles: ReturnType<typeof buildStyles> }) {
-  if (cfg.entryMarker !== "dot") return null;
-  return <View style={[styles.entryDot, { backgroundColor: accent }]} />;
+  if (cfg.entryMarker === "dot") return <View style={[styles.entryDot, { backgroundColor: accent }]} />;
+  if (cfg.entryMarker === "bar") return <View style={[styles.entryBar, { backgroundColor: cfg.accentSecondary ?? accent }]} />;
+  return null;
 }
 
 function TagRow({ items, styles }: { items: string[]; styles: ReturnType<typeof buildStyles> }) {
@@ -421,6 +438,7 @@ export function AtsResumeDocument({ profile, template = "ats-core" }: { profile:
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {cfg.topRule && <View style={styles.topRule} />}
         <View style={styles.header}>
           <Text style={[styles.name, { color: accent }]}>{personal_info.full_name}</Text>
           <Text style={styles.title}>{personal_info.title}</Text>

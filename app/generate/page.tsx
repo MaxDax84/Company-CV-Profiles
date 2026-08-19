@@ -57,6 +57,7 @@ export default function GeneratePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [claiming, setClaiming] = useState(false);
   const [claimError, setClaimError] = useState<string | null>(null);
+  const [duplicateOf, setDuplicateOf] = useState<{ slug: string; fullName: string; createdAt: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const turnstileRef = useRef<TurnstileHandle>(null);
 
@@ -136,6 +137,7 @@ export default function GeneratePage() {
       setClaimToken(data.claimToken ?? null);
       setCvScore(data.cvScore ?? null);
       setSuggestedTitles(data.suggestedTitles ?? []);
+      setDuplicateOf(data.duplicateOf ?? null);
       setState("scored");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
@@ -214,6 +216,7 @@ export default function GeneratePage() {
     setError(null);
     setIsCreating(false);
     setPrivacy(false);
+    setDuplicateOf(null);
     if (inputRef.current) inputRef.current.value = "";
   }
 
@@ -342,7 +345,7 @@ export default function GeneratePage() {
                     className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
                     style={{ background: selected.accent, color: "#000" }}
                   >
-                    Crea account gratis →
+                    Crea account gratis o accedi per continuare →
                   </a>
                 </div>
               ) : undefined
@@ -420,7 +423,7 @@ export default function GeneratePage() {
                           <span className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
                         </div>
                         <iframe
-                          src={`/profile/${slug}`}
+                          src={`/profile/${slug}?preview=1`}
                           title={t.afterLabel}
                           tabIndex={-1}
                           className="animate-generate-after-preview-scroll"
@@ -539,7 +542,7 @@ export default function GeneratePage() {
                       style={{ background: tpl.bg, borderBottom: `2px solid ${tpl.accent}30` }}
                     >
                       <iframe
-                        src={`/profile/${tpl.demoSlug}`}
+                        src={`/profile/${tpl.demoSlug}?preview=1`}
                         title={tpl.name}
                         tabIndex={-1}
                         className="animate-template-preview-scroll pointer-events-none"
@@ -671,13 +674,6 @@ export default function GeneratePage() {
               <TrustBadges />
             </div>
 
-            {/* Error */}
-            {error && (
-              <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
-                {error}
-              </div>
-            )}
-
             {/* Privacy consent */}
             <div className="space-y-2">
               <label className="flex items-start gap-3 cursor-pointer group">
@@ -754,12 +750,77 @@ export default function GeneratePage() {
                 {t.needPrivacyNote}
               </p>
             )}
+            {!needsPrivacy && !!file && privacy && !turnstileToken && (
+              <p className="text-xs text-center -mt-3 text-muted-foreground/60">
+                {t.needVerificationNote}
+              </p>
+            )}
           </>
         )}
 
       </div>
       </div>
       </div>
+
+      {/* Upload error — a popup instead of an inline box so it can't be
+          missed, and so it doesn't shift the layout of the fields below it. */}
+      {state === "idle" && error && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setError(null)}
+        >
+          <div
+            className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold text-destructive">{error}</p>
+            <button
+              type="button"
+              onClick={() => setError(null)}
+              className="px-4 py-2 rounded-lg text-sm font-semibold"
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+            >
+              Ho capito
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Duplicate-CV warning — only ever set for a signed-in user whose
+          upload matched a CV they already have saved (see /api/parse-resume).
+          A heads-up, not a block: either action is one click away. */}
+      {duplicateOf && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setDuplicateOf(null)}
+        >
+          <div
+            className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold">Hai già questo CV salvato</p>
+            <p className="text-sm text-muted-foreground">
+              &quot;{duplicateOf.fullName}&quot;, creato il {new Date(duplicateOf.createdAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}, è identico al file appena caricato. Puoi aprire quello esistente oppure continuare e crearne comunque un secondo, identico.
+            </p>
+            <div className="flex gap-2 justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => setDuplicateOf(null)}
+                className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Continua comunque
+              </button>
+              <a
+                href="/account?tab=cv"
+                className="px-4 py-2 rounded-lg text-sm font-semibold"
+                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+              >
+                Apri il CV esistente
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

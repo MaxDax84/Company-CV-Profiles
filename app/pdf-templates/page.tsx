@@ -26,6 +26,10 @@ export default function PdfTemplatesPage() {
         <div className="flex flex-wrap justify-center gap-8">
           {PDF_TEMPLATES.map((tpl) => (
             <div key={tpl.id} className="space-y-3" style={{ width: SOURCE_WIDTH * SCALE }}>
+              <div className="text-center">
+                <p className="text-sm font-semibold">{tpl.name}</p>
+                <p className="text-xs text-muted-foreground">{tpl.description}</p>
+              </div>
               <div
                 className="rounded-2xl overflow-hidden border border-foreground/10 bg-white shadow-lg"
                 style={{ width: SOURCE_WIDTH * SCALE, height: SOURCE_HEIGHT * SCALE }}
@@ -43,10 +47,6 @@ export default function PdfTemplatesPage() {
                     pointerEvents: "none",
                   }}
                 />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold">{tpl.name}</p>
-                <p className="text-xs text-muted-foreground">{tpl.description}</p>
               </div>
             </div>
           ))}

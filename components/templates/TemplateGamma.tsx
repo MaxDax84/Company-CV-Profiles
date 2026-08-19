@@ -23,20 +23,26 @@ function useScrolled(threshold = 50) {
   return scrolled
 }
 
-function useInView() {
+// forceVisible skips the observer entirely and starts already-in-view — used
+// by the small animated iframe preview on /generate, whose CSS-transform
+// "scroll" never actually moves the iframe's own scroll position, so a
+// section below the iframe's fixed viewport height would otherwise never be
+// observed as intersecting and would stay invisible forever.
+function useInView(forceVisible = false) {
   const ref = useRef<HTMLDivElement>(null)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(forceVisible)
   useEffect(() => {
+    if (forceVisible) return
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold: 0.1 })
     if (ref.current) obs.observe(ref.current)
     return () => obs.disconnect()
-  }, [])
+  }, [forceVisible])
   return { ref, inView }
 }
 
-interface Props { profile: ProfileSchema }
+interface Props { profile: ProfileSchema; forceVisible?: boolean }
 
-export default function TemplateGamma({ profile }: Props) {
+export default function TemplateGamma({ profile, forceVisible }: Props) {
   const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
 
   const accent    = metadata.primary_color
@@ -61,11 +67,11 @@ export default function TemplateGamma({ profile }: Props) {
   ]
 
   const scrolled  = useScrolled()
-  const heroIn    = useInView()
-  const aboutIn   = useInView()
-  const expIn     = useInView()
-  const skillsIn  = useInView()
-  const contactIn = useInView()
+  const heroIn    = useInView(forceVisible)
+  const aboutIn   = useInView(forceVisible)
+  const expIn     = useInView(forceVisible)
+  const skillsIn  = useInView(forceVisible)
+  const contactIn = useInView(forceVisible)
 
   return (
     <div style={{ fontFamily: JAKARTA_FONT, background: lightBg, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>

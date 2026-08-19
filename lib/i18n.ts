@@ -216,6 +216,7 @@ export const translations = {
       privacyLink: 'Privacy Policy',
       privacyNote: 'Your CV data is processed solely to generate your profile page and is not shared with third parties.',
       needPrivacyNote: 'Check the box above to agree to the Privacy Policy before continuing.',
+      needVerificationNote: 'Running an anti-spam check, one moment…',
       templates: {
         alpha: 'Dark · minimal · timeline',
         beta: 'Light · elegant · editorial',
@@ -401,8 +402,8 @@ export const translations = {
     },
     hero: {
       badge: 'AI Career Profiler & ATS Optimizer',
-      titleGradient: 'Ti candidi a decine di offerte ma nessuno ti risponde?',
-      titleNormal: 'E se il problema non fosse il tuo CV, ma come viene letto dai filtri automatici?',
+      titleGradient: 'Più colloqui,',
+      titleNormal: 'non un CV più bello.',
       subtitle:
         'La nostra AI riorganizza la struttura del tuo CV e lo modula su misura per ogni offerta di lavoro. Supera i filtri ATS valorizzando la tua vera esperienza e trasforma la tua storia professionale in una pagina web personale pronta da condividere con un semplice link.',
       ctaPrimary: 'Scoprilo Gratis Ora →',
@@ -579,6 +580,7 @@ export const translations = {
       privacyLink: 'Privacy Policy',
       privacyNote: 'I dati del tuo CV vengono elaborati esclusivamente per generare la tua pagina profilo e non vengono condivisi con terze parti.',
       needPrivacyNote: 'Spunta la casella qui sopra per accettare la Privacy Policy e continuare.',
+      needVerificationNote: 'Verifica anti-spam in corso, un attimo…',
       templates: {
         alpha: 'Dark · minimale · timeline',
         beta: 'Chiaro · editoriale',
