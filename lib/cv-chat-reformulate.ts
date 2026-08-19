@@ -35,7 +35,8 @@ function formatTranscript(transcript: ChatTurn[]): string {
 
 export async function reformulateProfileFromChat(
   sourceProfile: ProfileSchema,
-  transcript: ChatTurn[]
+  transcript: ChatTurn[],
+  userId?: string
 ): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -73,7 +74,7 @@ export async function reformulateProfileFromChat(
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("cv-chat/finish", "claude-sonnet-5", json.usage);
+  logClaudeUsage("cv_chat_finish", "claude-sonnet-5", json.usage, userId);
   const updated = extractProfileJson(json, "Il CV o la conversazione sono troppo lunghi da processare.");
 
   // Same deterministic backstop as lib/tailor-resume.ts, extended with the

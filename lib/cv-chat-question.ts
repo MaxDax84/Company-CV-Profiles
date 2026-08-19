@@ -51,7 +51,8 @@ function formatTranscript(transcript: ChatTurn[]): string {
 
 export async function askNextQuestion(
   profile: ProfileSchema,
-  transcript: ChatTurn[]
+  transcript: ChatTurn[],
+  userId?: string
 ): Promise<{ done: boolean; question: string | null; targetField: string | null }> {
   const questionsAsked = transcript.filter((t) => t.role === "assistant").length;
 
@@ -90,7 +91,7 @@ export async function askNextQuestion(
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("cv-chat/next-question", "claude-haiku-4-5-20251001", json.usage);
+  logClaudeUsage("cv_chat_question", "claude-haiku-4-5-20251001", json.usage, userId);
   const result = extractProfileJson<QuestionResult>(json, "La conversazione è diventata troppo lunga da processare.");
 
   return { done: result.done, question: result.question, targetField: result.target_field };

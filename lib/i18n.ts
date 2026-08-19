@@ -401,11 +401,11 @@ export const translations = {
     },
     hero: {
       badge: 'AI Career Profiler & ATS Optimizer',
-      titleGradient: 'Più colloqui,',
-      titleNormal: 'non un CV più bello.',
+      titleGradient: 'Ti candidi a decine di offerte ma nessuno ti risponde?',
+      titleNormal: 'E se il problema non fosse il tuo CV, ma come viene letto dai filtri automatici?',
       subtitle:
-        'La nostra AI riorganizza la struttura del tuo CV e lo modula su misura per ogni offerta di lavoro. Supera i filtri ATS valorizzando la tua vera esperienza, e trasforma il tuo profilo in una pagina web personale pronta da condividere con un link.',
-      ctaPrimary: 'Inizia Ora →',
+        'La nostra AI riorganizza la struttura del tuo CV e lo modula su misura per ogni offerta di lavoro. Supera i filtri ATS valorizzando la tua vera esperienza e trasforma la tua storia professionale in una pagina web personale pronta da condividere con un semplice link.',
+      ctaPrimary: 'Scoprilo Gratis Ora →',
     },
     services: {
       sectionLabel: 'Come funziona',

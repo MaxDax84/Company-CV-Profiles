@@ -1,3 +1,5 @@
+import { logClaudeUsage } from "./log-claude-usage";
+
 // Opt-in feature mirroring lib/translate-resume.ts, but for plain text
 // instead of structured JSON — a cover letter is just prose, so there's no
 // schema to preserve, only the letter's own structure (paragraph breaks,
@@ -47,7 +49,9 @@ export async function translateCoverLetter(letterText: string, targetLanguageCod
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("translate_cover_letter", "claude-sonnet-5", json.usage);
 
   if (json.stop_reason === "max_tokens") {
     throw new Error("Cover letter translation was cut off.");

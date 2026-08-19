@@ -1,6 +1,7 @@
 import type { ProfileSchema } from "./schema";
 import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 import { collectAllowedTechTokens, buildSourceCorpus, keepAllowed } from "./profile-corpus";
+import { logClaudeUsage } from "./log-claude-usage";
 
 const SYSTEM_PROMPT = `You rewrite an existing structured CV profile to align with a specific job posting, optimizing it to pass ATS (Applicant Tracking System) keyword filters and to read as a strong match to a human recruiter — without inventing anything not truthfully present in the source profile. You will be given the source profile as JSON and a job posting as plain text.
 
@@ -83,7 +84,9 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
   const json = await res.json() as {
     stop_reason: string;
     content: { type: string; text: string }[];
+    usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
+  logClaudeUsage("tailor_resume", "claude-sonnet-5", json.usage);
 
   const tailored = extractProfileJson(
     json,

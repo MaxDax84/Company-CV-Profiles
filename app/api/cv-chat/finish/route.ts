@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    const updated = await reformulateProfileFromChat(row.data, session.transcript);
+    const updated = await reformulateProfileFromChat(row.data, session.transcript, user.id);
     updated.metadata.generated_at = new Date().toISOString();
 
     const { error: updateError } = await supabase

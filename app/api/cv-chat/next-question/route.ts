@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // Built in memory and only persisted after Haiku succeeds — if this
     // call throws, nothing is written, and the client (which still has the
     // answer it just typed) can simply resend the identical request.
-    const result = await askNextQuestion(row.data, newTranscript);
+    const result = await askNextQuestion(row.data, newTranscript, user.id);
 
     const finalTranscript: ChatTurn[] = result.done
       ? newTranscript
