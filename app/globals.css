@@ -239,14 +239,18 @@
    (the small live "Dopo" page preview next to the struck-through original
    PDF thumbnail) — its box is a different size (260px wide, 368px tall) so
    the fitting scale (0.21667 = 260/1200) and scroll distance differ from
-   both cases above. */
+   both cases above. At this scale the box already shows ~1698px of source
+   content per frame (368/0.21667), so -2400px reaches well past the hero
+   into experience/education/skills on a typical profile page, and 8s (down
+   from an earlier 14s that read as sluggish and barely moved) covers that
+   distance at a clearly faster, more complete pace. */
 @keyframes generate-after-preview-scroll {
   0%   { transform: scale(0.21667) translateY(0); }
-  85%  { transform: scale(0.21667) translateY(-900px); }
-  100% { transform: scale(0.21667) translateY(-900px); }
+  85%  { transform: scale(0.21667) translateY(-2400px); }
+  100% { transform: scale(0.21667) translateY(-2400px); }
 }
 .animate-generate-after-preview-scroll {
-  animation: generate-after-preview-scroll 14s linear infinite;
+  animation: generate-after-preview-scroll 8s linear infinite;
 }
 
 /* Same idea, different numbers — used by the homepage's web-template
@@ -292,7 +296,12 @@
    utilities, which resolve through these same custom properties) to dark,
    since it's now sitting on a light background instead of the page's own
    dark one — CSS custom properties cascade, so descendants pick up the
-   nearest definition without every consumer needing its own override. */
+   nearest definition without every consumer needing its own override.
+   --primary/--accent/--ring also get scoped back to the LIGHT theme's
+   Electric Blue here, not left at dark mode's Lime Green: Lime is tuned for
+   contrast against the dark navy page, but reads as low-contrast light-on-
+   light for any text/link drawn on this now-light card — the same reason
+   light mode itself uses blue rather than lime as its primary. */
 .dark .glass-card {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(10, 13, 77, 0.1);
@@ -300,6 +309,14 @@
   --foreground: #0a0d4d;
   --card-foreground: #0a0d4d;
   --muted-foreground: rgba(10, 13, 77, 0.65);
+  --primary: #123bff;
+  --primary-foreground: #ffffff;
+  --accent: #123bff;
+  --accent-foreground: #ffffff;
+  --accent-cyan: #123bff;
+  --accent-cyan-foreground: #ffffff;
+  --ring: #123bff;
+  --border: #e1e3f7;
 }
 /* backdrop-filter is a real scroll-jank source on mobile GPUs, especially
    with several .glass-card instances stacked in a list (e.g. the account

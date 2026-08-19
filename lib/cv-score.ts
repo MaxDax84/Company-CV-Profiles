@@ -88,21 +88,51 @@ function scoreQuantifiedResults(profile: ProfileSchema): number {
   return Math.round(numbersScore + verbScore);
 }
 
+// A bullet reading as a dense, multi-clause block is hard to scan in the
+// few seconds a CV typically gets — roughly 2-3 lines at normal CV width.
+const WALL_OF_TEXT_CHARS = 220;
+
 function scoreClarity(profile: ProfileSchema): number {
   const bio = profile.personal_info.bio?.trim() ?? "";
-  if (!bio) return 0;
   // bio_original is omitted by extraction when the source CV had no
   // self-description at all to draw from (see lib/parse-resume.ts) — but
   // even when present, a one-line qualification/job title copied verbatim
   // isn't a real positioning statement either. Only count it as genuine
   // "own voice" once it reads like an actual summary sentence, not a title.
-  const original = profile.personal_info.bio_original?.trim() ?? "";
-  const hasSubstantiveVoice = original.length >= 50;
-  let score = hasSubstantiveVoice ? 8 : 3;
-  if (bio.length >= 60 && bio.length <= 140) score += 10;
-  else if (bio.length >= 30 && bio.length <= 180) score += 5;
-  if (profile.personal_info.title?.trim()) score += 7;
-  return Math.max(0, Math.min(25, score));
+  let bioRaw = 0;
+  if (bio) {
+    const original = profile.personal_info.bio_original?.trim() ?? "";
+    const hasSubstantiveVoice = original.length >= 50;
+    bioRaw = hasSubstantiveVoice ? 8 : 3;
+    if (bio.length >= 60 && bio.length <= 140) bioRaw += 10;
+    else if (bio.length >= 30 && bio.length <= 180) bioRaw += 5;
+    if (profile.personal_info.title?.trim()) bioRaw += 7;
+  }
+  // Rescaled from the bio formula's own 0-25 range to a 0-15 contribution,
+  // leaving room for the two document-wide signals below — this criterion
+  // used to be bio-only, which meant it couldn't reflect a CV that was a
+  // wall of dense paragraphs everywhere else, or reward the layout quality
+  // every Jobli export already guarantees.
+  const bioContribution = (Math.max(0, Math.min(25, bioRaw)) / 25) * 15;
+
+  // Bullet conciseness: genuinely readable if it's not scannable in a
+  // glance — measurable from the text itself, and something improveResume()
+  // can actually fix by tightening an overlong bullet (see its own prompt).
+  const bullets = profile.experience.flatMap((e) => e.description);
+  const concisenessScore = bullets.length === 0
+    ? 5 // no bullets isn't itself a "wall of text" problem
+    : (bullets.filter((b) => b.length <= WALL_OF_TEXT_CHARS).length / bullets.length) * 5;
+
+  // Visual hierarchy (bold on role/company, real bullet points, consistent
+  // spacing) and contact info placed near the top are guaranteed by every
+  // Jobli export template, regardless of how the original CV was laid out —
+  // a property of the output format, not something computed from content,
+  // same reasoning as scoreAtsStructure below. Gated on there being actual
+  // content to lay out, so a near-empty profile doesn't get free points.
+  const hasSubstantiveContent = profile.experience.length > 0 || bio.length > 0;
+  const hierarchyScore = hasSubstantiveContent ? 5 : 0;
+
+  return Math.round(bioContribution + concisenessScore + hierarchyScore);
 }
 
 function scoreAtsStructure(profile: ProfileSchema): number {
