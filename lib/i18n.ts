@@ -623,7 +623,7 @@ export const translations = {
         'Lettura del CV di partenza…',
         'Analisi dell\'annuncio di lavoro…',
         'Riscrittura per l\'allineamento ATS…',
-        'Costruzione della tua pagina…',
+        'Costruzione del tuo profilo su misura…',
       ],
       generatingNote: 'Potrebbe richiedere 10–20 secondi',
       timeoutErrorNote: 'Il server ha impiegato troppo tempo a rispondere — può succedere con un CV o un annuncio molto lunghi. Riprova tra qualche istante.',
