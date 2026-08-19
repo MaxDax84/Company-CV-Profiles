@@ -17,7 +17,7 @@ function todayLabel(): string {
 // carry target_role/target_company; a primary (not-yet-adapted) CV falls
 // back to the person's own current title, since there's no target position
 // to name.
-function positionLabel(profile: ProfileSchema): string {
+export function positionLabel(profile: ProfileSchema): string {
   const { target_role, target_company } = profile.metadata;
   if (target_role && target_company) return `${target_role} - ${target_company}`;
   if (target_role) return target_role;
