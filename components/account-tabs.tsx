@@ -18,6 +18,7 @@ import TranslateCoverLetterButton from "@/components/translate-cover-letter-butt
 import CvChat from "@/components/cv-chat";
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
+import { SUPPORT_EMAIL } from "@/lib/contact";
 
 // Must match MAX_PRIMARY_PROFILES_PER_USER in lib/profile-store.ts (the
 // actual enforcement point, at claim time) — kept as a separate constant
@@ -542,7 +543,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione, 1 traduzione (del CV o della lettera) o 1 sessione di chat AI per rifinire il CV. Per aggiungerne, scrivici.
+            1 credito = 1 download PDF, 1 adattamento a un annuncio, 1 lettera di presentazione, 1 traduzione (del CV o della lettera) o 1 sessione di chat AI per rifinire il CV. Per aggiungerne,{" "}
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
+              scrivici
+            </a>
+            .
           </p>
 
           <div className="space-y-3">

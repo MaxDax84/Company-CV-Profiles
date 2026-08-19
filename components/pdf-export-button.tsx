@@ -27,44 +27,44 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
   }
 
   return (
-    <div className="w-full rounded-xl border border-foreground/10 bg-foreground/[0.02] p-3 space-y-2.5 text-left">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Scegli il template PDF</p>
-      <div className="grid grid-cols-3 gap-2">
+    <div
+      className="w-full rounded-xl border border-foreground/10 p-3 space-y-2.5 text-left"
+      style={{ background: "var(--background)", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Scegli il template PDF</p>
+        <a
+          href="/pdf-templates"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] font-semibold shrink-0"
+          style={{ color: "var(--primary)" }}
+        >
+          Vedi i 3 formati →
+        </a>
+      </div>
+      <div className="flex flex-col gap-1.5">
         {PDF_TEMPLATES.map(tpl => (
-          <div
+          <button
             key={tpl.id}
+            type="button"
             onClick={() => setTemplate(tpl.id)}
-            className="rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200"
-            style={{ borderColor: template === tpl.id ? "var(--primary)" : "var(--border)" }}
+            className="rounded-lg border px-3 py-2 text-left transition-all duration-200"
+            style={{
+              borderColor: template === tpl.id ? "var(--primary)" : "var(--border)",
+              background: template === tpl.id ? "color-mix(in srgb, var(--primary) 10%, transparent)" : "transparent",
+            }}
           >
-            <div className="relative h-16 overflow-hidden bg-white">
-              <iframe
-                src={`/pdf-preview/${tpl.id}`}
-                title={tpl.name}
-                tabIndex={-1}
-                className="animate-template-preview-scroll pointer-events-none"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: 1200,
-                  height: 1697,
-                  border: "none",
-                  transform: "scale(0.16)",
-                  transformOrigin: "top left",
-                }}
-              />
-            </div>
-            <p
-              className="text-[10px] font-semibold text-center py-1"
-              style={{ background: template === tpl.id ? "color-mix(in srgb, var(--primary) 12%, transparent)" : "transparent", color: template === tpl.id ? "var(--primary)" : "var(--muted-foreground)" }}
+            <span
+              className="text-xs font-semibold block"
+              style={{ color: template === tpl.id ? "var(--primary)" : "var(--foreground)" }}
             >
               {tpl.name}
-            </p>
-          </div>
+            </span>
+            <span className="text-[10px] text-muted-foreground">{tpl.description}</span>
+          </button>
         ))}
       </div>
-      <p className="text-[10px] text-muted-foreground/60">{PDF_TEMPLATES.find(t => t.id === template)?.description}</p>
       <div className="flex gap-2 pt-1">
         <button
           type="button"
