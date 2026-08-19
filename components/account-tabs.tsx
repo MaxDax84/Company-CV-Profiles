@@ -373,15 +373,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 <div key={row.id} className="glass-card rounded-2xl p-5 space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="space-y-2.5">
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                          Titolo nel CV adattato
-                        </p>
-                        <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
-                        <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          Creato il {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
-                        </p>
-                      </div>
                       {(row.data.metadata.target_role || row.data.metadata.target_company) && (
                         <div>
                           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
@@ -394,6 +385,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           </p>
                         </div>
                       )}
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                          Titolo nel CV adattato
+                        </p>
+                        <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
+                        <p className="text-xs text-muted-foreground/60 mt-0.5">
+                          Creato il {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <EditableSlug profileId={row.id} slug={row.slug} />
@@ -535,7 +535,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Un credito si spende una sola volta per ogni risultato: la prima volta che scarichi un PDF, adatti il CV a un annuncio, generi una lettera di presentazione o traduci CV o lettera in un&apos;altra lingua. Da quel momento puoi riscaricarlo quante volte vuoi, gratis — lo trovi sempre qui nella sezione Download. Vuoi più crediti?{" "}
+            Utilizzi 1 credito per sbloccare per la prima volta un PDF, un&apos;ottimizzazione per annuncio, una lettera o una traduzione. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?{" "}
             <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
               Scrivici
             </a>

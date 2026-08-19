@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { useLanguage } from './language-provider'
 
@@ -125,6 +125,24 @@ export default function FaqSection({ compact = false }: { compact?: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const { lang } = useLanguage()
   const items = lang === 'en' ? FAQ_ITEMS_EN : FAQ_ITEMS_IT
+
+  // The account menu's "FAQ" link (components/account-avatar-menu.tsx) is a
+  // plain <a href="/#faq"> — a full page navigation from any other page, so
+  // the browser's own hash-scroll should just work. In practice it landed
+  // at the top instead: this section (and everything above it) fades in via
+  // scroll-triggered IntersectionObserver animations, so the page's layout
+  // is still settling — images loading, sections animating in — right as
+  // the browser tries to scroll to the hash, and the target's position
+  // shifts out from under it. Explicitly scrolling once on mount, after a
+  // short delay for that layout to stabilize, is more reliable than relying
+  // on the browser's one-shot attempt.
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.location.hash !== '#faq') return
+    const id = setTimeout(() => {
+      document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 150)
+    return () => clearTimeout(id)
+  }, [])
 
   return (
     <section id="faq" className={compact ? '' : 'relative py-16 md:py-20 overflow-hidden'}>

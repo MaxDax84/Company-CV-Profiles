@@ -7,6 +7,7 @@ import { hasPaidDownload, recordPaidDownload } from "@/lib/paid-downloads";
 import { hashPdf, rememberProfile } from "@/lib/cv-score-memory";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import { AtsResumeDocument, PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
+import { buildCvFilename } from "@/lib/download-filename";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
 export const maxDuration = 15;
@@ -80,7 +81,7 @@ export async function GET(
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="JOBLI CV - ${slug}.pdf"`,
+      "Content-Disposition": `attachment; filename="${buildCvFilename(row.data, templateLabel)}"`,
     },
   });
 }

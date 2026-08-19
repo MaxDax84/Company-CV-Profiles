@@ -3,6 +3,8 @@
 import { useState, type ReactNode } from "react";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
+import DownloadLoadingOverlay from "@/components/download-loading-overlay";
+import { triggerDownload } from "@/lib/trigger-download";
 
 interface PdfExportButtonProps {
   slug: string;
@@ -15,6 +17,7 @@ interface PdfExportButtonProps {
 export default function PdfExportButton({ slug, label, icon, className, credits }: PdfExportButtonProps) {
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
 
   if (!open) {
@@ -88,13 +91,22 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
-          onConfirm={() => {
-            window.location.href = `/api/pdf/${slug}?template=${template}`;
+          onConfirm={async () => {
             setConfirming(false);
+            setDownloading(true);
+            try {
+              await triggerDownload(`/api/pdf/${slug}?template=${template}`);
+            } catch {
+              // Non-blocking — the credit spend already happened server-side
+              // if it reached that point; a network hiccup on the download
+              // itself isn't worth a dedicated error state here.
+            }
+            setDownloading(false);
             setOpen(false);
           }}
         />
       )}
+      {downloading && <DownloadLoadingOverlay label="Sto preparando il tuo PDF…" />}
     </div>
   );
 }

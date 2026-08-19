@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
+import DownloadLoadingOverlay from "@/components/download-loading-overlay";
+import { triggerDownload } from "@/lib/trigger-download";
 
 // The CV's own CONTENT is genuinely translated into any of these (the
 // prompt in lib/translate-resume.ts isn't limited to this list) — this is
@@ -44,13 +46,13 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
   const [language, setLanguage] = useState(TRANSLATE_LANGUAGES[0].code);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [confirming, setConfirming] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "translating" | "downloading" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [done, setDone] = useState(false);
 
   async function handleConfirm() {
     setConfirming(false);
-    setStatus("loading");
+    setStatus("translating");
     try {
       const res = await fetch("/api/translate-cv", {
         method: "POST",
@@ -63,7 +65,8 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         setErrorMsg(data.error ?? "Errore, riprova.");
         return;
       }
-      window.location.href = `/api/pdf/${data.slug}?template=${data.template}`;
+      setStatus("downloading");
+      await triggerDownload(`/api/pdf/${data.slug}?template=${data.template}`);
       setStatus("idle");
       setDone(true);
       router.refresh();
@@ -99,24 +102,14 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        disabled={status === "loading"}
+        disabled={status === "translating" || status === "downloading"}
         className={className}
       >
-        {status === "loading" ? "Traduzione…" : "Traduci e scarica PDF"}
+        {status === "translating" ? "Traduzione…" : status === "downloading" ? "Download…" : "Traduci e scarica PDF"}
       </button>
       {status === "error" && <p className="text-xs text-destructive w-full">{errorMsg}</p>}
-      {status === "loading" && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="glass-card rounded-2xl p-8 max-w-xs w-full space-y-4 text-center">
-            <div
-              className="mx-auto w-10 h-10 rounded-full border-[3px] border-foreground/15 animate-spin"
-              style={{ borderTopColor: "var(--primary)" }}
-            />
-            <p className="text-sm font-semibold">Sto traducendo il CV…</p>
-            <p className="text-xs text-muted-foreground">Ci vogliono in genere pochi secondi.</p>
-          </div>
-        </div>
-      )}
+      {status === "translating" && <DownloadLoadingOverlay label="Sto traducendo il CV…" />}
+      {status === "downloading" && <DownloadLoadingOverlay label="Sto preparando il tuo PDF…" />}
       {confirming && (
         <CreditConfirmModal
           actionLabel={`Tradurre questo CV in ${selectedLabel} e scaricarlo in PDF (${selectedTemplateName})?`}

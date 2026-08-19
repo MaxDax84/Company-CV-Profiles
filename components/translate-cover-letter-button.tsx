@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
+import DownloadLoadingOverlay from "@/components/download-loading-overlay";
+import { triggerDownload } from "@/lib/trigger-download";
 
 interface TranslateCoverLetterButtonProps {
   slug: string;
@@ -22,14 +24,21 @@ interface TranslateCoverLetterButtonProps {
 export default function TranslateCoverLetterButton({ slug, credits, className, onGoToDownloads }: TranslateCoverLetterButtonProps) {
   const [language, setLanguage] = useState(TRANSLATE_LANGUAGES[0].code);
   const [confirming, setConfirming] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [done, setDone] = useState(false);
 
   const selectedLabel = TRANSLATE_LANGUAGES.find((l) => l.code === language)?.label ?? language;
 
-  function handleConfirm() {
+  async function handleConfirm() {
     setConfirming(false);
-    window.location.href = `/api/cover-letter/${slug}?language=${language}`;
-    setDone(true);
+    setDownloading(true);
+    try {
+      await triggerDownload(`/api/cover-letter/${slug}?language=${language}`);
+      setDone(true);
+    } catch {
+      // Non-blocking, same reasoning as pdf-export-button.tsx.
+    }
+    setDownloading(false);
   }
 
   return (
@@ -59,6 +68,7 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
           onConfirm={handleConfirm}
         />
       )}
+      {downloading && <DownloadLoadingOverlay label="Sto traducendo la lettera…" />}
       {done && (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"

@@ -23,7 +23,7 @@ export const translations = {
       job: 'Job posting',
       ready: 'Ready',
       score: 'ATS Analysis',
-      page: 'Private link',
+      page: 'Digital profile',
     },
     hero: {
       badge: 'AI Career Profiler & ATS Optimizer',
@@ -397,7 +397,7 @@ export const translations = {
       job: 'Annuncio',
       ready: 'Pronto',
       score: 'Analisi ATS',
-      page: 'Link privato',
+      page: 'Profilo digitale',
     },
     hero: {
       badge: 'AI Career Profiler & ATS Optimizer',

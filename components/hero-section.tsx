@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Sparkles, Shield, Target, Unlock, Link as LinkIcon } from 'lucide-react'
+import { Sparkles, Shield, Target, Link as LinkIcon } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 
@@ -92,7 +92,6 @@ export default function HeroSection() {
           {[
             { icon: Shield, label: lang === 'en' ? 'Built from your real CV — never invented' : 'Zero invenzioni, solo la tua vera storia' },
             { icon: Target, label: lang === 'en' ? 'Optimized to pass ATS filters' : 'Progettato per superare i filtri ATS' },
-            { icon: Unlock, label: lang === 'en' ? '1 free credit to get started' : 'Primo CV ottimizzato gratis' },
             { icon: LinkIcon, label: lang === 'en' ? 'Includes a personal web page' : 'Pagina web personale inclusa' },
           ].map(({ icon: Icon, label }) => (
             <div

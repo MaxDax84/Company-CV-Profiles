@@ -7,6 +7,7 @@ import { generateCoverLetter } from "@/lib/cover-letter";
 import { translateCoverLetter } from "@/lib/translate-cover-letter";
 import { getRememberedCoverLetter, rememberCoverLetter } from "@/lib/cover-letters";
 import { CoverLetterDocument } from "@/components/pdf/CoverLetterDocument";
+import { buildCoverLetterFilename } from "@/lib/download-filename";
 
 // Calls Claude to write (or translate) the letter, then renders the PDF —
 // same headroom as the tailor-resume route for the model call.
@@ -62,10 +63,13 @@ export async function GET(
       // the target language. "Translate" is always exactly 1 credit total,
       // matching the flat pricing shown everywhere in the credits UI,
       // regardless of whether the original happened to be cached already.
+      // Deliberately NOT persisted via rememberCoverLetter when it has to be
+      // generated here: it's only translation source material the user
+      // never asked for, and saving it would surface a second, unrequested
+      // "generic" letter next to the translation in the Downloads list.
       let originalText = await getRememberedCoverLetter(supabase, row.id, originalLanguage);
       if (!originalText) {
         originalText = await generateCoverLetter(row.data);
-        await rememberCoverLetter(supabase, user.id, row.id, originalLanguage, originalText);
       }
       try {
         await spendCredits(supabase, CREDIT_COSTS.translate, "translate_cover_letter", `${detail} → ${targetLanguage}`);
@@ -103,7 +107,7 @@ export async function GET(
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="JOBLI Lettera - ${slug}.pdf"`,
+      "Content-Disposition": `attachment; filename="${buildCoverLetterFilename(row.data)}"`,
     },
   });
 }
