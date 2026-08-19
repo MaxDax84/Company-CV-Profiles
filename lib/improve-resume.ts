@@ -3,15 +3,18 @@ import { extractProfileJson, PROFILE_JSON_SCHEMA_BLOCK } from "./claude-json";
 
 // Phase 2 of /generate: lib/parse-resume.ts only extracts faithfully now (see
 // its bio instruction) and computes the "before" score. This is the step
-// that actually raises the score — mainly by crafting a strong bio, since
-// the other 3 criteria (quantified results, ATS structure, specific skills)
-// are fixed by what's genuinely in the source and can't be improved without
+// that actually raises the score — mainly by crafting a strong bio, but also
+// by opening weak-verb bullets on a stronger one (see lib/cv-score.ts's
+// STRONG_VERB_ROOTS, which grades this deterministically on both sides) and
+// by ATS structure being a property of Jobli's own export template.
+// specific_skills' raw count and quantified_results' actual numbers are
+// still fixed by what's genuinely in the source and can't move without
 // fabricating. Same anti-fabrication posture as lib/tailor-resume.ts.
 const SYSTEM_PROMPT = `You improve an existing, already-extracted structured CV profile to make it read as strong and clear as possible — without inventing anything not truthfully present in the source. You will be given the full profile as JSON.
 
 WHAT TO IMPROVE:
 - Rewrite "personal_info.bio": max 140 characters, professional tone, third person, in the SAME LANGUAGE as the rest of the profile (see metadata.language). Draw only on what's already true in the profile — the person's title, their experience roles, their skills, their projects. When there's more distinctive content than fits, prioritize the most specific, differentiating skills or qualifiers (e.g. a named strategy, methodology, or niche specialization) over generic ones (e.g. "strategic partnerships", "strong background") — never let a specific, distinctive term get cut in favor of a vaguer one just to save space.
-- You may lightly tighten the grammar or phrasing of individual experience "description" bullets ONLY if a bullet is genuinely unclear or awkwardly worded — never to shorten, summarize, or rephrase a bullet that already reads clearly. Never drop, round, or alter a %, number, scope, team size, budget, or timeframe stated in a bullet.
+- You may lightly tighten the grammar or phrasing of individual experience "description" bullets if a bullet is genuinely unclear or awkwardly worded — never to shorten, summarize, or rephrase a bullet that already reads clearly. Separately, if a bullet OPENS on a passive or duty-listing phrase (e.g. "Responsible for...", "Mi occupavo di...", "In charge of..."), rewrite just the opening into a strong, active, results-oriented verb that accurately restates the same existing fact (e.g. "Responsible for managing client relationships" → "Managed client relationships") — this is restating a true fact more sharply, not a new claim, so it's allowed even when the rest of the bullet already reads clearly. Never drop, round, or alter a %, number, scope, team size, budget, or timeframe stated in a bullet.
 
 ANTI-FABRICATION RULES — hard limits:
 - Never add a company, employer, role, certification, degree, project, skill, or tool that is absent from the source profile.
