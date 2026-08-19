@@ -17,8 +17,6 @@ import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-c
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 
-const ACCENT = "#6366f1";
-
 // Must match MAX_PRIMARY_PROFILES_PER_USER in lib/profile-store.ts (the
 // actual enforcement point, at claim time) — kept as a separate constant
 // here rather than imported, since that file pulls in server-only/service-
@@ -117,7 +115,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             onClick={() => setTab(id)}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
             style={tab === id
-              ? { background: ACCENT, color: "#000" }
+              ? { background: "var(--primary)", color: "var(--primary-foreground)" }
               : { background: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
           >
             <Icon className="w-4 h-4" />
@@ -136,7 +134,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 {profileRow?.data.personal_info.full_name ?? userEmail}
               </h2>
               <p className="text-sm mt-2">
-                <span className="font-bold" style={{ color: ACCENT }}>{credits}</span>
+                <span className="font-bold" style={{ color: "var(--primary)" }}>{credits}</span>
                 <span className="text-muted-foreground"> credit{credits === 1 ? "o" : "i"} disponibil{credits === 1 ? "e" : "i"}</span>
               </p>
             </div>
@@ -144,7 +142,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               <a
                 href="/generate"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
-                style={{ background: ACCENT, color: "#000" }}
+                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
               >
                 <UploadCloud className="w-4 h-4" />
                 Carica un nuovo CV
@@ -156,7 +154,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             <div className="flex items-center justify-between">
               <SectionTitle>CV recenti</SectionTitle>
               {primaryProfiles.length > 0 && (
-                <button onClick={() => setTab("cv")} className="text-xs font-semibold" style={{ color: ACCENT }}>
+                <button onClick={() => setTab("cv")} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>
                   Vedi tutti →
                 </button>
               )}
@@ -200,7 +198,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 <a
                   href="/generate"
                   className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
-                  style={{ background: ACCENT, color: "#000" }}
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
                   Carica il tuo CV →
                 </a>
@@ -275,7 +273,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl font-semibold transition-all duration-200"
-                        style={{ background: ACCENT, color: "#000" }}
+                        style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                       >
                         <ExternalLink className="w-4 h-4" />
                         <span className="text-[10px] leading-tight text-center line-clamp-2">Apri profilo</span>
@@ -329,7 +327,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 <a
                   href="/generate"
                   className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
-                  style={{ background: ACCENT, color: "#000" }}
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
                   Carica il tuo CV →
                 </a>
@@ -364,7 +362,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
                             Annuncio a cui è stato adattato
                           </p>
-                          <p className="text-xs font-medium" style={{ color: ACCENT }}>
+                          <p className="text-xs font-medium" style={{ color: "var(--primary)" }}>
                             {row.data.metadata.target_role}
                             {row.data.metadata.target_role && row.data.metadata.target_company ? " presso " : ""}
                             {row.data.metadata.target_company}
@@ -497,7 +495,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         <div className="space-y-8">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="glass-card rounded-2xl p-6">
-              <p className="font-heading text-3xl font-bold" style={{ color: ACCENT }}>{credits}</p>
+              <p className="font-heading text-3xl font-bold" style={{ color: "var(--primary)" }}>{credits}</p>
               <p className="text-xs text-muted-foreground/60 mt-1">disponibili</p>
             </div>
             <div className="glass-card rounded-2xl p-6">

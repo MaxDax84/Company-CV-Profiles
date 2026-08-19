@@ -59,12 +59,12 @@ export default function RequestDomainForm() {
         type="submit"
         disabled={status === "sending"}
         className="px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50"
-        style={{ background: "#6366f1", color: "#000" }}
+        style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
       >
         {status === "sending" ? "Invio…" : "Richiedi dominio personalizzato"}
       </button>
       {status === "error" && (
-        <p className="text-xs text-red-600">Non siamo riusciti a inviare la richiesta. Riprova o scrivici direttamente.</p>
+        <p className="text-xs text-destructive">Non siamo riusciti a inviare la richiesta. Riprova o scrivici direttamente.</p>
       )}
     </form>
   );

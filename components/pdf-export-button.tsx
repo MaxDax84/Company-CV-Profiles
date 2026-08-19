@@ -35,7 +35,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
             key={tpl.id}
             onClick={() => setTemplate(tpl.id)}
             className="rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200"
-            style={{ borderColor: template === tpl.id ? "#6366f1" : "rgba(15,23,42,0.08)" }}
+            style={{ borderColor: template === tpl.id ? "var(--primary)" : "var(--border)" }}
           >
             <div className="relative h-16 overflow-hidden bg-white">
               <iframe
@@ -57,7 +57,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
             </div>
             <p
               className="text-[10px] font-semibold text-center py-1"
-              style={{ background: template === tpl.id ? "#6366f120" : "transparent", color: template === tpl.id ? "#6366f1" : "#475569" }}
+              style={{ background: template === tpl.id ? "color-mix(in srgb, var(--primary) 12%, transparent)" : "transparent", color: template === tpl.id ? "var(--primary)" : "var(--muted-foreground)" }}
             >
               {tpl.name}
             </p>
@@ -70,7 +70,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
           type="button"
           onClick={() => setConfirming(true)}
           className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
-          style={{ background: "#6366f1", color: "#000" }}
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
           Scarica
         </button>

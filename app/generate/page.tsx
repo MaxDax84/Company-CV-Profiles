@@ -314,7 +314,7 @@ export default function GeneratePage() {
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Procedi per salvare questo profilo nel tuo account.
                   </p>
-                  {claimError && <p className="text-xs text-red-500">{claimError}</p>}
+                  {claimError && <p className="text-xs text-destructive">{claimError}</p>}
                   <button
                     onClick={handleProceedLoggedIn}
                     disabled={claiming}
@@ -454,7 +454,7 @@ export default function GeneratePage() {
           />
         ) : state === "analyzing" ? (
           /* ── Analyzing state ── */
-          <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px rgba(99, 102, 241, 0.12)" }}>
+          <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}>
             <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
             <div className="space-y-2 max-w-xs mx-auto">
               {t.generatingSteps.map((step, i) => {
@@ -596,7 +596,7 @@ export default function GeneratePage() {
 
             {/* Error */}
             {error && (
-              <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-600 text-center">
+              <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
                 {error}
               </div>
             )}
@@ -673,7 +673,7 @@ export default function GeneratePage() {
 
             {/* Error */}
             {error && (
-              <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-600 text-center">
+              <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
                 {error}
               </div>
             )}

@@ -82,7 +82,7 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-500/[0.06] transition-colors disabled:opacity-50"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/[0.06] transition-colors disabled:opacity-50"
           >
             <LogOut className="w-4 h-4" />
             {loggingOut ? "Uscita…" : "Esci"}

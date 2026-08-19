@@ -94,7 +94,7 @@ export default function ProfileResultPanel({
   return (
     <div
       className="rounded-3xl border border-primary/30 bg-primary/5 p-8 text-center space-y-5"
-      style={{ boxShadow: "0 0 40px rgba(99, 102, 241, 0.14)" }}
+      style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 14%, transparent)" }}
     >
       <div className="text-4xl">✅</div>
       <div>

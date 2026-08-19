@@ -1,7 +1,5 @@
 "use client";
 
-const ACCENT = "#6366f1";
-
 interface CreditConfirmModalProps {
   actionLabel: string;
   cost: number;
@@ -52,7 +50,7 @@ export default function CreditConfirmModal({ actionLabel, cost, balance, warning
             <a
               href="/account?tab=credits"
               className="px-4 py-2 rounded-lg text-sm font-semibold"
-              style={{ background: ACCENT, color: "#000" }}
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
               Vai ai crediti
             </a>
@@ -61,7 +59,7 @@ export default function CreditConfirmModal({ actionLabel, cost, balance, warning
               type="button"
               onClick={onConfirm}
               className="px-4 py-2 rounded-lg text-sm font-semibold"
-              style={{ background: ACCENT, color: "#000" }}
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
               Conferma
             </button>

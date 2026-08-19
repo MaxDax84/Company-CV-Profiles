@@ -49,10 +49,13 @@ export default function MissionSection() {
       {/* Subtle grid overlay */}
       <div className="absolute inset-0 grid-overlay opacity-40" />
 
-      {/* Accent orb */}
+      {/* Accent orb — color-mix against var(--primary) rather than a fixed
+          Electric Blue literal, so this switches to Lime in dark mode
+          instead of staying blue-tinted (identical result in light mode,
+          where --primary already is Electric Blue). */}
       <div
         className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'rgba(18, 59, 255, 0.08)' }}
+        style={{ background: 'color-mix(in srgb, var(--primary) 8%, transparent)' }}
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
@@ -93,7 +96,7 @@ export default function MissionSection() {
             >
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center text-lg mb-5"
-                style={{ background: 'rgba(18, 59, 255, 0.12)', border: '1px solid rgba(18, 59, 255, 0.2)' }}
+                style={{ background: 'color-mix(in srgb, var(--primary) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--primary) 20%, transparent)' }}
               >
                 {pillar.icon}
               </div>
@@ -117,8 +120,8 @@ export default function MissionSection() {
             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
           )}
           style={{
-            background: 'rgba(18, 59, 255, 0.06)',
-            border: '1px solid rgba(18, 59, 255, 0.15)',
+            background: 'color-mix(in srgb, var(--primary) 6%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--primary) 15%, transparent)',
             transitionDelay: '500ms',
           }}
         >

@@ -9,8 +9,6 @@ import AvatarUploadForm from "@/components/avatar-upload-form";
 import { DeleteAccountButton } from "@/components/account-actions";
 import type { ProfileSchema } from "@/lib/schema";
 
-const ACCENT = "#6366f1";
-
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
@@ -53,7 +51,7 @@ export default function AccountSettingsView({ userId, userEmail, avatarUrl, acco
               <button
                 onClick={() => setEditingEmail(v => !v)}
                 className="text-xs font-semibold"
-                style={{ color: ACCENT }}
+                style={{ color: "var(--primary)" }}
               >
                 {editingEmail ? "Annulla" : "Modifica"}
               </button>
@@ -115,7 +113,7 @@ export default function AccountSettingsView({ userId, userEmail, avatarUrl, acco
       <div className="space-y-3">
         <SectionTitle>Privacy</SectionTitle>
         <div className="glass-card rounded-2xl p-5">
-          <a href="/privacy" className="text-sm font-semibold" style={{ color: ACCENT }}>
+          <a href="/privacy" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
             Leggi la privacy policy →
           </a>
         </div>
@@ -123,7 +121,7 @@ export default function AccountSettingsView({ userId, userEmail, avatarUrl, acco
 
       <div className="space-y-3">
         <SectionTitle>Zona pericolosa</SectionTitle>
-        <div className="rounded-2xl p-5 border border-red-500/20 bg-red-500/[0.03] space-y-3">
+        <div className="rounded-2xl p-5 border border-destructive/20 bg-destructive/[0.03] space-y-3">
           <p className="text-xs text-muted-foreground">
             Elimina definitivamente il tuo account: profilo, CV adattati e crediti verranno cancellati senza possibilità di recupero.
           </p>

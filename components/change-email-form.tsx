@@ -46,17 +46,17 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
           type="submit"
           disabled={status === "saving"}
           className="px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50 shrink-0"
-          style={{ background: "#6366f1", color: "#000" }}
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
           {status === "saving" ? "Invio…" : "Cambia email"}
         </button>
       </div>
       {status === "success" && (
-        <p className="text-xs text-green-700">
+        <p className="text-xs text-green-700 dark:text-green-400">
           Controlla la tua nuova casella email per confermare il cambio.
         </p>
       )}
-      {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
+      {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}
     </form>
   );
 }

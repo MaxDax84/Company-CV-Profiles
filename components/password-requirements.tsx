@@ -27,8 +27,7 @@ export default function PasswordRequirements({ password }: { password: string })
         return (
           <li
             key={r.label}
-            className="flex items-center gap-1.5 text-xs transition-colors duration-200"
-            style={{ color: met ? "#16a34a" : "#dc2626" }}
+            className={`flex items-center gap-1.5 text-xs transition-colors duration-200 ${met ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
           >
             <span className="inline-flex w-3.5 shrink-0 justify-center">{met ? "✓" : "✗"}</span>
             <span>{r.label}</span>

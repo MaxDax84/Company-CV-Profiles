@@ -88,7 +88,7 @@ export default function AvatarUploadForm({ userId, currentUrl }: AvatarUploadFor
         >
           {status === "uploading" ? "Caricamento…" : currentUrl ? "Cambia foto" : "Carica una foto"}
         </button>
-        {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
+        {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}
       </div>
       <input
         ref={inputRef}

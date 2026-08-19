@@ -18,7 +18,7 @@ type JobSource = "text" | "url";
 type Relevance = { score: number; reason: string };
 
 const JOB_TEXT_MIN = 200;
-const ACCENT = "#6366f1";
+const ACCENT = "var(--primary)";
 // Below this, the job posting doesn't genuinely match the CV — the tailored
 // result will be honest (no invented skills/experience) but largely
 // unchanged from the source, so the user should know before spending a
@@ -195,14 +195,14 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           <a
             href="/generate"
             className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
-            style={{ background: ACCENT, color: "#000" }}
+            style={{ background: ACCENT, color: "var(--primary-foreground)" }}
           >
             Carica il tuo CV →
           </a>
         </div>
       ) : !hasCredits && state !== "done" ? (
         <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-5 text-center space-y-1">
-          <p className="text-sm font-semibold text-amber-700">Crediti esauriti</p>
+          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">Crediti esauriti</p>
           <p className="text-xs text-muted-foreground">
             Adattare il CV a un annuncio costa 1 credito. Vai al tuo{" "}
             <a href="/account" className="underline hover:text-foreground">account</a> o scrivici per aggiungerne.
@@ -239,7 +239,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
         <>
           {relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD && (
             <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-center space-y-1">
-              <p className="font-semibold text-amber-700">Ho fatto del mio meglio, con onestà</p>
+              <p className="font-semibold text-amber-700 dark:text-amber-400">Ho fatto del mio meglio, con onestà</p>
               <p className="text-xs text-muted-foreground">
                 Questo annuncio si allinea poco al tuo CV, quindi non ho potuto scrivere competenze o esperienze che non sono realmente presenti. Il risultato potrebbe essere molto simile al profilo originale.
               </p>
@@ -310,7 +310,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
         />
         </>
       ) : hasProfile && state === "uploading" ? (
-        <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px rgba(99, 102, 241, 0.12)" }}>
+        <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}>
           <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
           <div className="space-y-2 max-w-xs mx-auto">
             {t.generatingSteps.map((step, i) => {
@@ -356,7 +356,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                     jobSource === src ? "" : "hover:border-foreground/25 hover:bg-foreground/[0.06] hover:text-foreground/80 hover:shadow-lg hover:shadow-foreground/20"
                   }`}
                   style={jobSource === src
-                    ? { borderColor: `${ACCENT}70`, background: `${ACCENT}15`, color: ACCENT }
+                    ? { borderColor: "color-mix(in srgb, var(--primary) 44%, transparent)", background: "color-mix(in srgb, var(--primary) 8%, transparent)", color: ACCENT }
                     : { borderColor: "var(--border)", color: "var(--muted-foreground)" }}
                 >
                   {src === "text" ? t.jobSourceText : t.jobSourceUrl}
@@ -371,12 +371,12 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                 placeholder={t.jobTextPlaceholder}
                 rows={6}
                 className="w-full rounded-2xl border px-4 py-3 text-sm text-foreground/80 placeholder:text-muted-foreground/30 outline-none bg-transparent resize-none"
-                style={{ borderColor: jobText ? `${ACCENT}60` : "var(--border)" }}
+                style={{ borderColor: jobText ? "color-mix(in srgb, var(--primary) 38%, transparent)" : "var(--border)" }}
               />
             ) : (
               <div
                 className="flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200"
-                style={{ borderColor: jobUrl ? `${ACCENT}60` : "var(--border)" }}
+                style={{ borderColor: jobUrl ? "color-mix(in srgb, var(--primary) 38%, transparent)" : "var(--border)" }}
               >
                 <input
                   type="url"
@@ -391,7 +391,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
 
           {/* Error */}
           {state === "error" && error && (
-            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-600 text-center">
+            <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
               {error}
             </div>
           )}
@@ -454,8 +454,8 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
             className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
             style={canGenerate ? {
               background: ACCENT,
-              color: "#000",
-              boxShadow: `0 4px 24px ${ACCENT}50`,
+              color: "var(--primary-foreground)",
+              boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)",
             } : needsPrivacy ? {
               background: "rgba(251,191,36,0.08)",
               color: "rgba(251,191,36,0.9)",
@@ -502,7 +502,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                 <button
                   onClick={() => setJobFetchFailedOpen(false)}
                   className="w-full py-2.5 rounded-xl font-semibold text-sm"
-                  style={{ background: ACCENT, color: "#000" }}
+                  style={{ background: ACCENT, color: "var(--primary-foreground)" }}
                 >
                   Ho capito
                 </button>

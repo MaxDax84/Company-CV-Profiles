@@ -98,7 +98,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
           Annulla
         </button>
       </div>
-      {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
+      {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}
     </div>
   );
 }

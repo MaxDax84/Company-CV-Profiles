@@ -62,12 +62,12 @@ export default function ChangePasswordForm() {
           type="submit"
           disabled={status === "saving" || !isPasswordValid(password)}
           className="px-4 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50"
-          style={{ background: "#6366f1", color: "#000" }}
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
           {status === "saving" ? "Aggiornamento…" : "Aggiorna password"}
         </button>
-        {status === "success" && <p className="text-xs text-green-700">Password aggiornata ✓</p>}
-        {status === "error" && <p className="text-xs text-red-600">{errorMsg}</p>}
+        {status === "success" && <p className="text-xs text-green-700 dark:text-green-400">Password aggiornata ✓</p>}
+        {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}
       </div>
     </form>
   );

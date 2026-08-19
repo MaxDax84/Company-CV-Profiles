@@ -92,7 +92,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
           onClick={handleSave}
           disabled={status === "saving"}
           className="px-4 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50"
-          style={{ background: "#6366f1", color: "#000" }}
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
           {status === "saving" ? "Salvataggio…" : "Salva modifiche"}
         </button>
@@ -102,7 +102,7 @@ export default function EditPersonalInfoForm({ fullName, title, location }: Edit
         >
           Annulla
         </button>
-        {status === "error" && <p className="text-xs text-red-600">Errore, riprova.</p>}
+        {status === "error" && <p className="text-xs text-destructive">Errore, riprova.</p>}
       </div>
     </div>
   );

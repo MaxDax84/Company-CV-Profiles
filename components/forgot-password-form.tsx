@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
-const ACCENT = "#6366f1";
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
 
@@ -57,13 +56,13 @@ export default function ForgotPasswordForm() {
         />
       </div>
 
-      {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+      {error && <p className="text-sm text-destructive text-center">{error}</p>}
 
       <button
         type="submit"
         disabled={status === "loading"}
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ background: ACCENT, color: "#000", boxShadow: `0 4px 24px ${ACCENT}50` }}
+        style={{ background: "var(--primary)", color: "var(--primary-foreground)", boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)" }}
       >
         {status === "loading" ? "Invio…" : "Invia link di recupero"}
       </button>
