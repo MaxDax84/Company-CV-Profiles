@@ -18,7 +18,7 @@ import TranslateCoverLetterButton from "@/components/translate-cover-letter-butt
 import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 import { SUPPORT_EMAIL } from "@/lib/contact";
-import { positionLabel } from "@/lib/download-filename";
+import { cvLabel } from "@/lib/download-filename";
 
 // Must match MAX_PRIMARY_PROFILES_PER_USER in lib/profile-store.ts (the
 // actual enforcement point, at claim time) — kept as a separate constant
@@ -451,7 +451,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">
-                          {positionLabel(row.data)}{languageLabel ? ` · Tradotto in ${languageLabel}` : ""} · {templateName}
+                          {cvLabel(row.data, row.slug)}{languageLabel ? ` · Tradotto in ${languageLabel}` : ""} · {templateName}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
                           Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
@@ -494,7 +494,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">
-                          Lettera per {positionLabel(row.data)}{languageLabel ? ` · Tradotta in ${languageLabel}` : ""}
+                          Lettera per {cvLabel(row.data, row.slug)}{languageLabel ? ` · Tradotta in ${languageLabel}` : ""}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
                           Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}

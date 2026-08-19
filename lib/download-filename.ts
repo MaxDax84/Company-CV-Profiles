@@ -25,14 +25,25 @@ export function positionLabel(profile: ProfileSchema): string {
   return profile.personal_info.title || "CV";
 }
 
-export function buildCvFilename(profile: ProfileSchema, templateName: string): string {
+// CV-only variant of positionLabel: a CV not adapted to any specific job
+// posting (no target_role/target_company) identifies itself by its own name
+// — the same editable name shown as "Nome del CV caricato" on /account — not
+// by a guessed job title, which reads as noise once you already know your
+// own title. Tailored CVs are unaffected: they still label by role/company.
+export function cvLabel(profile: ProfileSchema, cvName: string): string {
+  const { target_role, target_company } = profile.metadata;
+  if (target_role || target_company) return positionLabel(profile);
+  return cvName;
+}
+
+export function buildCvFilename(profile: ProfileSchema, templateName: string, cvName: string): string {
   return sanitize(
-    `${profile.personal_info.full_name} - ${positionLabel(profile)} - ${templateName} - ${todayLabel()}.pdf`
+    `${profile.personal_info.full_name} - ${cvLabel(profile, cvName)} - ${templateName} - ${todayLabel()}.pdf`
   );
 }
 
-export function buildCoverLetterFilename(profile: ProfileSchema): string {
+export function buildCoverLetterFilename(profile: ProfileSchema, cvName: string): string {
   return sanitize(
-    `${profile.personal_info.full_name} - Lettera - ${positionLabel(profile)} - ${todayLabel()}.pdf`
+    `${profile.personal_info.full_name} - Lettera - ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`
   );
 }
