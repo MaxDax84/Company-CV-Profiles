@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
@@ -27,6 +27,18 @@ const ACCENT = "var(--primary)";
 // credit on it.
 const RELEVANCE_WARNING_THRESHOLD = 40;
 
+// On mobile, downloading the tailored PDF/Word can navigate the browser
+// away from this page entirely (iOS Safari's blob+download-attribute
+// handling for PDFs is unreliable — it often opens its own PDF viewer
+// instead of respecting `download`), and hitting "back" from there is a
+// real page reload, not a same-tab history pop — every bit of in-memory
+// React state (the "done" result) is gone. Stashing the result in
+// sessionStorage keyed by slug, plus reflecting the slug in the URL via
+// a plain history.pushState (no Next.js navigation, so it doesn't trigger
+// a server re-fetch), lets a fresh mount after that reload restore the
+// exact same "done" screen instead of resetting to the empty form.
+const RESULT_STORAGE_PREFIX = "jobli_tailor_result_";
+
 interface TailorFormProps {
   credits: number;
   hasProfile: boolean;
@@ -36,6 +48,7 @@ interface TailorFormProps {
 
 export default function TailorForm({ credits, hasProfile, sourceSlug, availableProfiles }: TailorFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   // "url" first/default — pasting a link is the faster path, and its
   // failure mode (can't read the page) already has a clear recovery: it
   // shows an error and auto-switches to "text" for the user (see the
@@ -60,6 +73,29 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   const [checkingRelevance, setCheckingRelevance] = useState(false);
   const [relevance, setRelevance] = useState<Relevance | null>(null);
   const turnstileRef = useRef<TurnstileHandle>(null);
+
+  // Restore the "done" screen after a reload that lands back on this exact
+  // URL (see RESULT_STORAGE_PREFIX above) — e.g. the browser "back" button
+  // after a mobile PDF viewer took over the tab. Mount-only: at the moment
+  // this runs, a fresh tailoring completed in THIS session hasn't happened
+  // yet, so there's nothing to conflict with.
+  useEffect(() => {
+    const resultSlug = searchParams.get("result");
+    if (!resultSlug) return;
+    const stored = sessionStorage.getItem(RESULT_STORAGE_PREFIX + resultSlug);
+    if (!stored) return;
+    try {
+      const { code: storedCode, profile: storedProfile } = JSON.parse(stored);
+      setSlug(resultSlug);
+      setCode(storedCode);
+      setProfile(storedProfile);
+      setState("done");
+    } catch {
+      // Corrupted/unexpected stored value — fall through to the normal
+      // empty-form state rather than throwing.
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (state !== "uploading") {
@@ -147,6 +183,10 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
       setCode(data.code);
       setProfile(data.profile);
       setState("done");
+      sessionStorage.setItem(RESULT_STORAGE_PREFIX + data.slug, JSON.stringify({ code: data.code, profile: data.profile }));
+      const resultUrl = new URL(window.location.href);
+      resultUrl.searchParams.set("result", data.slug);
+      window.history.pushState(null, "", resultUrl.toString());
       router.refresh(); // re-fetch the server-rendered credit balance
     } catch (err) {
       setError(err instanceof Error ? err.message : (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
@@ -158,6 +198,10 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   }
 
   function handleReset() {
+    if (slug) sessionStorage.removeItem(RESULT_STORAGE_PREFIX + slug);
+    const resetUrl = new URL(window.location.href);
+    resetUrl.searchParams.delete("result");
+    window.history.pushState(null, "", resetUrl.toString());
     setState("idle");
     setSlug(null);
     setCode(null);
