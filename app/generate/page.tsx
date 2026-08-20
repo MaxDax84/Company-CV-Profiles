@@ -673,6 +673,14 @@ export default function GeneratePage() {
                 <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
               </div>
               <TrustBadges />
+              <p className="text-xs text-muted-foreground/70 text-center leading-relaxed max-w-md mx-auto">
+                {lang === "en"
+                  ? "Your CV is safe: we only analyze it to optimize your application. We don't keep it for third-party purposes, and you can delete all your data in one click from your account."
+                  : "Il tuo CV è al sicuro: lo analizziamo solo per ottimizzare la tua candidatura. Non lo conserviamo per scopi terzi e puoi cancellare tutti i tuoi dati in un click dal tuo account."}{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
+                  {lang === "en" ? "Read our full policy" : "Leggi la nostra policy completa"}
+                </a>
+              </p>
             </div>
 
             {/* Privacy consent */}
