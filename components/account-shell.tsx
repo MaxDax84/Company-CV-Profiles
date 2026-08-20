@@ -7,6 +7,7 @@ import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
 import AccountTabs, { isTabId, getTabTitle, type TabId } from "@/components/account-tabs";
+import { useLanguage } from "@/components/language-provider";
 
 type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
 
@@ -29,6 +30,7 @@ interface AccountShellProps {
 export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters }: AccountShellProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { lang } = useLanguage();
   const requestedTab = searchParams.get("tab");
   const [tab, setTabState] = useState<TabId>(isTabId(requestedTab) ? requestedTab : "dashboard");
 
@@ -44,7 +46,7 @@ export default function AccountShell({ userEmail, accountCode, primaryProfiles, 
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="font-heading text-2xl font-bold tracking-tight">{getTabTitle(tab)}</h1>
+        <h1 className="font-heading text-2xl font-bold tracking-tight">{getTabTitle(tab, lang)}</h1>
       </div>
 
       <AccountTabs

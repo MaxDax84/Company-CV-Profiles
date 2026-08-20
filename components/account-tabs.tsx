@@ -19,6 +19,8 @@ import EditableSlug from "@/components/editable-slug";
 import { DeleteProfileButton } from "@/components/account-actions";
 import { SUPPORT_EMAIL } from "@/lib/contact";
 import { cvLabel } from "@/lib/download-filename";
+import { useLanguage } from "@/components/language-provider";
+import type { Language } from "@/lib/i18n";
 
 // Must match MAX_PRIMARY_PROFILES_PER_USER in lib/profile-store.ts (the
 // actual enforcement point, at claim time) — kept as a separate constant
@@ -26,15 +28,15 @@ import { cvLabel } from "@/lib/download-filename";
 // role code that shouldn't end up in the client bundle.
 const MAX_CVS = 4;
 
-const LEDGER_REASON_LABELS: Record<string, string> = {
-  welcome: "Credito di benvenuto",
-  welcome_promo_first10: "Credito di benvenuto (promo primi 10)",
-  pdf_download: "Download PDF",
-  tailor: "Adattamento a un annuncio",
-  cover_letter: "Lettera di presentazione",
-  translate: "Traduzione CV",
-  translate_cover_letter: "Traduzione lettera di presentazione",
-  manual_grant: "Credito aggiunto manualmente",
+const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
+  welcome: { it: "Credito di benvenuto", en: "Welcome credit" },
+  welcome_promo_first10: { it: "Credito di benvenuto (promo primi 10)", en: "Welcome credit (first-10 promo)" },
+  pdf_download: { it: "Download PDF", en: "PDF download" },
+  tailor: { it: "Adattamento a un annuncio", en: "Job-posting tailoring" },
+  cover_letter: { it: "Lettera di presentazione", en: "Cover letter" },
+  translate: { it: "Traduzione CV", en: "CV translation" },
+  translate_cover_letter: { it: "Traduzione lettera di presentazione", en: "Cover letter translation" },
+  manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 
 // Same 3-band read as the /generate score card (see lib/score-comments.ts)
@@ -66,11 +68,11 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 // the tab row (see AccountShell) — deliberately different for "dashboard"
 // (button reads "Riepilogo", section heading reads "Dashboard").
 const TABS = [
-  { id: "dashboard", label: "Riepilogo", title: "Dashboard", icon: LayoutDashboard },
-  { id: "cv", label: "I miei CV", title: "I miei CV", icon: FileText },
-  { id: "adapted", label: "CV Adattati", title: "CV adattati alle offerte", icon: Target },
-  { id: "downloads", label: "Download", title: "Download", icon: Download },
-  { id: "credits", label: "Crediti", title: "Crediti", icon: Wallet },
+  { id: "dashboard", labelIt: "Riepilogo", labelEn: "Overview", titleIt: "Dashboard", titleEn: "Dashboard", icon: LayoutDashboard },
+  { id: "cv", labelIt: "I miei CV", labelEn: "My CVs", titleIt: "I miei CV", titleEn: "My CVs", icon: FileText },
+  { id: "adapted", labelIt: "CV Adattati", labelEn: "Tailored CVs", titleIt: "CV adattati alle offerte", titleEn: "CVs tailored to job postings", icon: Target },
+  { id: "downloads", labelIt: "Download", labelEn: "Downloads", titleIt: "Download", titleEn: "Downloads", icon: Download },
+  { id: "credits", labelIt: "Crediti", labelEn: "Credits", titleIt: "Crediti", titleEn: "Credits", icon: Wallet },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
@@ -79,8 +81,9 @@ export function isTabId(value: string | null): value is TabId {
   return TABS.some(t => t.id === value);
 }
 
-export function getTabTitle(tab: TabId): string {
-  return TABS.find(t => t.id === tab)?.title ?? "";
+export function getTabTitle(tab: TabId, lang: Language): string {
+  const found = TABS.find(t => t.id === tab);
+  return (lang === "en" ? found?.titleEn : found?.titleIt) ?? "";
 }
 
 interface AccountTabsProps {
@@ -109,6 +112,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
+  const { lang } = useLanguage();
+  // Compact helper for this file's many one-off strings — full ternaries
+  // everywhere else in the codebase, but this component alone has ~60+
+  // distinct pieces of copy, so a shorthand keeps each line readable.
+  const tr = (it: string, en: string) => (lang === "en" ? en : it);
+  const dateLocale = lang === "en" ? "en-US" : "it-IT";
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
@@ -124,7 +133,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           (a gear icon) moved to the avatar dropdown in the global nav (see
           components/account-avatar-menu.tsx), reachable from every page. */}
       <div className="flex flex-wrap gap-2">
-        {TABS.map(({ id, label, icon: Icon }) => (
+        {TABS.map(({ id, labelIt, labelEn, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setTab(id)}
@@ -134,7 +143,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               : { background: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
           >
             <Icon className="w-4 h-4" />
-            <span className="hidden sm:inline">{label}</span>
+            <span className="hidden sm:inline">{lang === "en" ? labelEn : labelIt}</span>
           </button>
         ))}
       </div>
@@ -144,13 +153,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         <div className="space-y-8">
           <div className="glass-card rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6">
             <div>
-              <p className="text-sm text-muted-foreground/70 mb-1">Bentornato,</p>
+              <p className="text-sm text-muted-foreground/70 mb-1">{tr("Bentornato,", "Welcome back,")}</p>
               <h2 className="font-heading text-2xl font-bold tracking-tight">
                 {profileRow?.data.personal_info.full_name ?? userEmail}
               </h2>
               <p className="text-sm mt-2">
                 <span className="font-bold" style={{ color: "var(--primary)" }}>{credits}</span>
-                <span className="text-muted-foreground"> credit{credits === 1 ? "o" : "i"} disponibil{credits === 1 ? "e" : "i"}</span>
+                <span className="text-muted-foreground">
+                  {" "}{lang === "en" ? `credit${credits === 1 ? "" : "s"} available` : `credit${credits === 1 ? "o" : "i"} disponibil${credits === 1 ? "e" : "i"}`}
+                </span>
               </p>
             </div>
             {primaryProfiles.length < MAX_CVS && (
@@ -160,17 +171,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
               >
                 <UploadCloud className="w-4 h-4" />
-                Carica un nuovo CV
+                {tr("Carica un nuovo CV", "Upload a new CV")}
               </a>
             )}
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <SectionTitle>CV recenti</SectionTitle>
+              <SectionTitle>{tr("CV recenti", "Recent CVs")}</SectionTitle>
               {primaryProfiles.length > 0 && (
                 <button onClick={() => setTab("cv")} className="text-xs font-semibold" style={{ color: "var(--primary)" }}>
-                  Vedi tutti →
+                  {tr("Vedi tutti →", "See all →")}
                 </button>
               )}
             </div>
@@ -183,7 +194,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <div className="min-w-0">
                         <p className="text-sm font-semibold truncate">{row.slug}</p>
                         <p className="text-xs text-muted-foreground/60">
-                          {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -198,7 +209,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-lg hover:bg-foreground/[0.06] transition-colors"
-                          aria-label="Apri profilo"
+                          aria-label={tr("Apri profilo", "Open profile")}
                         >
                           <ExternalLink className="w-4 h-4 text-muted-foreground" />
                         </a>
@@ -209,13 +220,13 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </div>
             ) : (
               <div className="glass-card rounded-2xl p-6 text-center space-y-3">
-                <p className="text-sm text-muted-foreground">Non hai ancora un profilo.</p>
+                <p className="text-sm text-muted-foreground">{tr("Non hai ancora un profilo.", "You don't have a profile yet.")}</p>
                 <a
                   href="/generate"
                   className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
                   style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
-                  Carica il tuo CV →
+                  {tr("Carica il tuo CV →", "Upload your CV →")}
                 </a>
               </div>
             )}
@@ -228,21 +239,21 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
         <div className="space-y-10">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <SectionTitle>CV caricati ({primaryProfiles.length}/{MAX_CVS})</SectionTitle>
+              <SectionTitle>{tr("CV caricati", "Uploaded CVs")} ({primaryProfiles.length}/{MAX_CVS})</SectionTitle>
               {primaryProfiles.length > 0 && (
                 primaryProfiles.length < MAX_CVS ? (
                   <a
                     href="/generate"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                   >
-                    + Carica un nuovo CV
+                    {tr("+ Carica un nuovo CV", "+ Upload a new CV")}
                   </a>
                 ) : (
                   <button
                     onClick={() => setLimitModalOpen(true)}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                   >
-                    + Carica un nuovo CV
+                    {tr("+ Carica un nuovo CV", "+ Upload a new CV")}
                   </button>
                 )
               )}
@@ -255,7 +266,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <div>
                         <EditableSlug profileId={row.id} slug={row.slug} variant="heading" />
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <p
@@ -268,7 +279,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     {row.data.metadata.suggested_titles && row.data.metadata.suggested_titles.length > 0 && (
                       <div className="space-y-1.5">
                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
-                          Ruoli in linea con questo CV
+                          {tr("Ruoli in linea con questo CV", "Roles that fit this CV")}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {row.data.metadata.suggested_titles.map((title) => (
@@ -291,25 +302,25 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center line-clamp-2">Apri profilo</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Apri profilo", "Open profile")}</span>
                       </a>
                       <a
                         href={`/tailor?profile=${row.slug}`}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
                       >
                         <Target className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center line-clamp-2">Adatta a un annuncio</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Adatta a un annuncio", "Tailor to a job posting")}</span>
                       </a>
                       <PdfExportButton
                         slug={row.slug}
-                        label="Scarica PDF"
+                        label={tr("Scarica PDF", "Download PDF")}
                         icon={<Download className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <CoverLetterButton
                         slug={row.slug}
-                        label="Lettera di presentazione"
+                        label={tr("Lettera di presentazione", "Cover letter")}
                         icon={<Mail className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
@@ -317,7 +328,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     </div>
                     <div className="pt-2 border-t border-foreground/10 space-y-1.5">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                        Traduci in un'altra lingua (1 credito) — genera un PDF, disponibile poi in Download
+                        {tr(
+                          "Traduci in un'altra lingua (1 credito) — genera un PDF, disponibile poi in Download",
+                          "Translate into another language (1 credit) — generates a PDF, then available in Downloads"
+                        )}
                       </p>
                       <TranslateCvButton
                         slug={row.slug}
@@ -328,7 +342,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     </div>
                     <div className="pt-2 border-t border-foreground/10 space-y-1.5">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                        Traduci la lettera di presentazione (1 credito) — genera un PDF, disponibile poi in Download
+                        {tr(
+                          "Traduci la lettera di presentazione (1 credito) — genera un PDF, disponibile poi in Download",
+                          "Translate the cover letter (1 credit) — generates a PDF, then available in Downloads"
+                        )}
                       </p>
                       <TranslateCoverLetterButton
                         slug={row.slug}
@@ -340,8 +357,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div className="pt-2 border-t border-foreground/10">
                       <DeleteProfileButton
                         profileId={row.id}
-                        label="Elimina profilo"
-                        confirmMessage="Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito. Anche i CV adattati collegati resteranno, ma senza un'origine."
+                        label={tr("Elimina profilo", "Delete profile")}
+                        confirmMessage={tr(
+                          "Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito. Anche i CV adattati collegati resteranno, ma senza un'origine.",
+                          "Are you sure? The profile and its link will stop working immediately. Any tailored CVs linked to it will remain, but without a source."
+                        )}
                       />
                     </div>
                   </div>
@@ -349,13 +369,13 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </div>
             ) : (
               <div className="glass-card rounded-2xl p-6 text-center space-y-3">
-                <p className="text-sm text-muted-foreground">Non hai ancora un profilo.</p>
+                <p className="text-sm text-muted-foreground">{tr("Non hai ancora un profilo.", "You don't have a profile yet.")}</p>
                 <a
                   href="/generate"
                   className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
                   style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
-                  Carica il tuo CV →
+                  {tr("Carica il tuo CV →", "Upload your CV →")}
                 </a>
               </div>
             )}
@@ -367,7 +387,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
       {/* ── Tab: CV Adattati ──────────────────────────────────────────── */}
       {tab === "adapted" && (
         <div className="space-y-3">
-          <SectionTitle>CV adattati alle offerte ({tailoredProfiles.length})</SectionTitle>
+          <SectionTitle>{tr("CV adattati alle offerte", "CVs tailored to job postings")} ({tailoredProfiles.length})</SectionTitle>
           {tailoredProfiles.length > 0 ? (
             <div className="space-y-3">
               {tailoredProfiles.map((row) => (
@@ -377,22 +397,22 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       {(row.data.metadata.target_role || row.data.metadata.target_company) && (
                         <div>
                           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                            Annuncio a cui è stato adattato
+                            {tr("Annuncio a cui è stato adattato", "Job posting it was tailored to")}
                           </p>
                           <p className="text-xs font-medium" style={{ color: "var(--primary)" }}>
                             {row.data.metadata.target_role}
-                            {row.data.metadata.target_role && row.data.metadata.target_company ? " presso " : ""}
+                            {row.data.metadata.target_role && row.data.metadata.target_company ? tr(" presso ", " at ") : ""}
                             {row.data.metadata.target_company}
                           </p>
                         </div>
                       )}
                       <div>
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                          Titolo nel CV adattato
+                          {tr("Titolo nel CV adattato", "Title in the tailored CV")}
                         </p>
                         <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          Creato il {new Date(row.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Creato il", "Created on")} {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                     </div>
@@ -407,14 +427,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     />
                     <CoverLetterButton
                       slug={row.slug}
-                      label="Lettera ↓"
+                      label={tr("Lettera ↓", "Letter ↓")}
                       credits={credits}
                       className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                     />
                     <DeleteProfileButton
                       profileId={row.id}
-                      label="Elimina"
-                      confirmMessage="Sei sicuro? Questo CV adattato verrà eliminato definitivamente."
+                      label={tr("Elimina", "Delete")}
+                      confirmMessage={tr("Sei sicuro? Questo CV adattato verrà eliminato definitivamente.", "Are you sure? This tailored CV will be permanently deleted.")}
                     />
                   </div>
                 </div>
@@ -423,7 +443,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           ) : (
             <div className="glass-card rounded-2xl p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Nessun CV adattato ancora. Ogni volta che adatti il tuo CV a un annuncio, comparirà qui.
+                {tr(
+                  "Nessun CV adattato ancora. Ogni volta che adatti il tuo CV a un annuncio, comparirà qui.",
+                  "No tailored CVs yet. Every time you tailor your CV to a job posting, it'll show up here."
+                )}
               </p>
             </div>
           )}
@@ -434,9 +457,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
       {tab === "downloads" && (
         <div className="space-y-10">
           <div className="space-y-3">
-            <SectionTitle>CV scaricati ({paidDownloads.length})</SectionTitle>
+            <SectionTitle>{tr("CV scaricati", "Downloaded CVs")} ({paidDownloads.length})</SectionTitle>
             <p className="text-xs text-muted-foreground/60">
-              Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.
+              {tr("Ogni PDF già generato puoi riscaricarlo qui gratuitamente, quante volte vuoi.", "Any PDF you've already generated can be re-downloaded here for free, as many times as you like.")}
             </p>
             {paidDownloads.length > 0 ? (
               <div className="space-y-2.5">
@@ -451,17 +474,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">
-                          {cvLabel(row.data, row.slug)}{languageLabel ? ` · Tradotto in ${languageLabel}` : ""} · {templateName}
+                          {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotto in", "Translated to")} ${languageLabel}` : ""} · {templateName}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
-                          Generato il {new Date(dl.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Generato il", "Generated on")} {new Date(dl.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <a
                         href={`/api/pdf/${row.slug}?template=${dl.template}`}
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
-                        Apri ↓
+                        {tr("Apri ↓", "Open ↓")}
                       </a>
                     </div>
                   );
@@ -470,16 +493,16 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             ) : (
               <div className="glass-card rounded-2xl p-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Non hai ancora scaricato nessun PDF. Ogni PDF generato comparirà qui, riscaricabile gratis.
+                  {tr("Non hai ancora scaricato nessun PDF. Ogni PDF generato comparirà qui, riscaricabile gratis.", "You haven't downloaded any PDF yet. Every PDF you generate will show up here, free to re-download.")}
                 </p>
               </div>
             )}
           </div>
 
           <div className="space-y-3">
-            <SectionTitle>Lettere di presentazione scaricate ({coverLetters.length})</SectionTitle>
+            <SectionTitle>{tr("Lettere di presentazione scaricate", "Downloaded cover letters")} ({coverLetters.length})</SectionTitle>
             <p className="text-xs text-muted-foreground/60">
-              Ogni lettera già generata puoi riscaricarla qui gratuitamente, quante volte vuoi.
+              {tr("Ogni lettera già generata puoi riscaricarla qui gratuitamente, quante volte vuoi.", "Any letter you've already generated can be re-downloaded here for free, as many times as you like.")}
             </p>
             {coverLetters.length > 0 ? (
               <div className="space-y-2.5">
@@ -494,17 +517,17 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">
-                          Lettera per {cvLabel(row.data, row.slug)}{languageLabel ? ` · Tradotta in ${languageLabel}` : ""}
+                          {tr("Lettera per", "Letter for")} {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotta in", "Translated to")} ${languageLabel}` : ""}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
-                          Generata il {new Date(letter.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Generata il", "Generated on")} {new Date(letter.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <a
                         href={`/api/cover-letter/${row.slug}?language=${letter.language}`}
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
-                        Apri ↓
+                        {tr("Apri ↓", "Open ↓")}
                       </a>
                     </div>
                   );
@@ -513,7 +536,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             ) : (
               <div className="glass-card rounded-2xl p-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Non hai ancora generato nessuna lettera. Ogni lettera generata comparirà qui, riscaricabile gratis.
+                  {tr("Non hai ancora generato nessuna lettera. Ogni lettera generata comparirà qui, riscaricabile gratis.", "You haven't generated any letter yet. Every letter you generate will show up here, free to re-download.")}
                 </p>
               </div>
             )}
@@ -527,41 +550,44 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="glass-card rounded-2xl p-6">
               <p className="font-heading text-3xl font-bold" style={{ color: "var(--primary)" }}>{credits}</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">disponibili</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">{tr("disponibili", "available")}</p>
             </div>
             <div className="glass-card rounded-2xl p-6">
               <p className="font-heading text-3xl font-bold text-foreground/80">{usedTotal}</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">usati finora</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">{tr("usati finora", "used so far")}</p>
             </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Utilizzi 1 credito per sbloccare per la prima volta un PDF, un&apos;ottimizzazione per annuncio, una lettera o una traduzione. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?{" "}
+            {tr(
+              "Utilizzi 1 credito per sbloccare per la prima volta un PDF, un'ottimizzazione per annuncio, una lettera o una traduzione. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?",
+              "You spend 1 credit to unlock a PDF, a job-posting tailoring, a letter, or a translation for the first time. From then on, you can view or re-download it from the Download section any time, at no extra cost. Need more credits?"
+            )}{" "}
             <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
-              Scrivici
+              {tr("Scrivici", "Contact us")}
             </a>
             .
           </p>
 
           <div className="space-y-3">
-            <SectionTitle>Offerte per te</SectionTitle>
+            <SectionTitle>{tr("Offerte per te", "Offers for you")}</SectionTitle>
             <div className="glass-card rounded-2xl p-6 text-center">
-              <p className="text-sm text-muted-foreground">Nessuna promozione attiva al momento.</p>
+              <p className="text-sm text-muted-foreground">{tr("Nessuna promozione attiva al momento.", "No active promotion right now.")}</p>
             </div>
           </div>
 
           {ledger.length > 0 && (
             <div className="space-y-3">
-              <SectionTitle>Storico</SectionTitle>
+              <SectionTitle>{tr("Storico", "History")}</SectionTitle>
               <div className="glass-card rounded-2xl divide-y divide-foreground/5">
                 {ledger.map((entry) => (
                   <div key={entry.id} className="flex items-center justify-between px-5 py-3">
                     <div>
-                      <p className="text-sm">{LEDGER_REASON_LABELS[entry.reason] ?? entry.reason}</p>
+                      <p className="text-sm">{(lang === "en" ? LEDGER_REASON_LABELS[entry.reason]?.en : LEDGER_REASON_LABELS[entry.reason]?.it) ?? entry.reason}</p>
                       {entry.detail && (
                         <p className="text-xs text-muted-foreground/70">{entry.detail}</p>
                       )}
                       <p className="text-xs text-muted-foreground/50">
-                        {new Date(entry.created_at).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(entry.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
                     <p className="text-sm font-semibold" style={{ color: entry.amount > 0 ? "#16a34a" : "#dc2626" }}>
@@ -583,14 +609,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           <div className="relative w-full max-w-sm rounded-2xl border border-border bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setLimitModalOpen(false)}
-              aria-label="Chiudi"
+              aria-label={tr("Chiudi", "Close")}
               className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
-            <p className="text-sm font-semibold mb-2">Limite di {MAX_CVS} CV raggiunto</p>
+            <p className="text-sm font-semibold mb-2">{tr(`Limite di ${MAX_CVS} CV raggiunto`, `${MAX_CVS}-CV limit reached`)}</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Per caricarne uno nuovo, elimina prima uno dei CV esistenti qui sotto.
+              {tr("Per caricarne uno nuovo, elimina prima uno dei CV esistenti qui sotto.", "To upload a new one, first delete one of the existing CVs below.")}
             </p>
           </div>
         </div>
