@@ -2,6 +2,26 @@
 
 import { useEffect, useState } from "react";
 
+// Human-readable labels for lib/log-claude-usage.ts's ClaudeOperation union
+// — kept as a lookup (not a rename of the underlying values) so the raw
+// operation string stays a stable, grep-able identifier in the database and
+// codebase; only this dashboard needs it to read naturally.
+const OPERATION_LABELS: Record<string, string> = {
+  parse_resume: "Analisi del CV caricato",
+  improve_resume: "Miglioramento del CV",
+  tailor_resume: "Adattamento a un annuncio",
+  relevance_check: "Controllo pertinenza annuncio",
+  cover_letter: "Lettera di presentazione",
+  translate_resume: "Traduzione CV",
+  translate_cover_letter: "Traduzione lettera di presentazione",
+  cv_chat_question: "Chat AI (domanda)",
+  cv_chat_finish: "Chat AI (rifinitura CV)",
+};
+
+function operationLabel(operation: string): string {
+  return OPERATION_LABELS[operation] ?? operation;
+}
+
 interface OperationStat {
   operation: string;
   count: number;
@@ -193,7 +213,10 @@ export default function AdminCostsPage() {
                   <tbody>
                     {stats.operations.map((op) => (
                       <tr key={op.operation} className="border-b border-foreground/5 last:border-0">
-                        <td className="px-3 py-2 font-mono text-xs">{op.operation}</td>
+                        <td className="px-3 py-2">
+                          <span className="text-sm">{operationLabel(op.operation)}</span>
+                          <span className="block font-mono text-[10px] text-muted-foreground/50">{op.operation}</span>
+                        </td>
                         <td className="px-3 py-2 text-right tabular-nums">{op.count}</td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold">{fmtUsd(op.avgCost)}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{fmtUsd(op.totalCost, 2)}</td>
