@@ -57,10 +57,12 @@ export default function TermsPage() {
                 <h3 className="font-semibold text-foreground mb-2">2. Account e Crediti</h3>
                 <p>
                   L&apos;utilizzo di alcune funzionalità (salvataggio permanente del CV, download del
-                  PDF, adattamento a un annuncio) richiede la creazione di un account con email e
-                  password. Ogni nuovo account riceve un credito gratuito; il download del PDF e
-                  l&apos;adattamento a un annuncio consumano un credito ciascuno. L&apos;utente è
-                  responsabile della riservatezza delle proprie credenziali di accesso.
+                  PDF o di un documento Word) richiede la creazione di un account con email e
+                  password. Ogni nuovo account riceve un credito gratuito; il download del PDF, il
+                  download del documento Word, la generazione di una lettera di presentazione e la
+                  traduzione consumano un credito ciascuno. L&apos;adattamento del CV a un annuncio di
+                  lavoro è invece sempre gratuito. L&apos;utente è responsabile della riservatezza
+                  delle proprie credenziali di accesso.
                 </p>
                 <p className="mt-2">
                   L&apos;utente può eliminare in autonomia un singolo CV o l&apos;intero account, con
@@ -68,11 +70,11 @@ export default function TermsPage() {
                 </p>
                 <p className="mt-2">
                   Richiedendo l&apos;elaborazione del CV (analisi, generazione della pagina profilo,
-                  download del PDF o adattamento a un annuncio), l&apos;utente acconsente
-                  espressamente all&apos;esecuzione immediata del servizio digitale richiesto e prende
-                  atto che, una volta completata l&apos;elaborazione, perde il diritto di recesso di
-                  cui agli artt. 52 e seguenti del Codice del Consumo, ai sensi dell&apos;art. 59,
-                  comma 1, lett. a) e o) dello stesso Codice.
+                  download del PDF o del documento Word), l&apos;utente acconsente espressamente
+                  all&apos;esecuzione immediata del servizio digitale richiesto e prende atto che, una
+                  volta completata l&apos;elaborazione, perde il diritto di recesso di cui agli artt.
+                  52 e seguenti del Codice del Consumo, ai sensi dell&apos;art. 59, comma 1, lett. a) e
+                  o) dello stesso Codice.
                 </p>
               </div>
 
@@ -200,10 +202,11 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">2. Accounts and Credits</h3>
                 <p>
-                  Some features (permanently saving your CV, downloading the PDF, tailoring to a job
-                  posting) require creating an account with an email and password. Each new account
-                  receives one free credit; downloading a PDF and tailoring to a job posting each
-                  cost one credit. You are responsible for keeping your login credentials confidential.
+                  Some features (permanently saving your CV, downloading the PDF or a Word document)
+                  require creating an account with an email and password. Each new account receives
+                  one free credit; downloading a PDF, downloading a Word document, generating a cover
+                  letter, and translating each cost one credit. Tailoring your CV to a job posting is
+                  always free. You are responsible for keeping your login credentials confidential.
                 </p>
                 <p className="mt-2">
                   You can delete a single CV or your entire account yourself, with immediate and
@@ -211,7 +214,7 @@ export default function TermsPage() {
                 </p>
                 <p className="mt-2">
                   By requesting CV processing (analysis, profile page generation, PDF download, or
-                  job-posting tailoring), you expressly consent to the immediate performance of the
+                  Word document download), you expressly consent to the immediate performance of the
                   requested digital service and acknowledge that, once processing is complete, you
                   lose the right of withdrawal under Articles 52 et seq. of the Italian Consumer Code
                   (Codice del Consumo), pursuant to Article 59(1)(a) and (o) of the same Code.

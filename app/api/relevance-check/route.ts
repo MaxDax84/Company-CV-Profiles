@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getOwnedProfileRow, getOwnedProfileBySlug } from "@/lib/profile-store";
+import { getOwnedProfileRow, getOwnedProfileBySlug, hashJobPosting, findDuplicateTailoredProfile } from "@/lib/profile-store";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { checkRelevance } from "@/lib/relevance-check";
 
@@ -75,8 +75,11 @@ export async function POST(req: NextRequest) {
       jobPostingText = fetched.text;
     }
 
+    const jobHash = await hashJobPosting(sourceRow.id, jobPostingText);
+    const duplicateOf = await findDuplicateTailoredProfile(supabase, user.id, sourceRow.id, jobHash);
+
     const result = await checkRelevance(sourceRow.data, jobPostingText);
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, duplicateOf });
   } catch (err) {
     console.error("[relevance-check]", err);
     return NextResponse.json(

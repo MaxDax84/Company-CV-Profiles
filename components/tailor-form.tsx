@@ -17,7 +17,7 @@ import ActionFeedbackPopup from "@/components/action-feedback-popup";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
-type Relevance = { score: number; reason: string };
+type Relevance = { score: number; reason: string; duplicateOf: { slug: string; createdAt: string } | null };
 
 const JOB_TEXT_MIN = 200;
 const ACCENT = "var(--primary)";
@@ -80,17 +80,19 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   const t = translations[lang].tailor;
 
   const hasJob = jobSource === "text" ? jobText.trim().length >= JOB_TEXT_MIN : jobUrl.trim().length > 0;
-  const hasCredits = credits > 0;
-  const canGenerate = hasJob && hasCredits && privacy && !!turnstileToken && state !== "uploading";
-  const needsPrivacy = hasJob && hasCredits && !privacy;
+  const canGenerate = hasJob && privacy && !!turnstileToken && state !== "uploading";
+  const needsPrivacy = hasJob && !privacy;
 
-  // Runs before the credit-confirm popup — a free, cheap Haiku check so the
-  // popup can warn when the job posting doesn't genuinely match this CV
-  // (see lib/relevance-check.ts). Fails open: if the check itself errors,
-  // just skip straight to the normal confirm popup rather than blocking.
+  // Tailoring itself is free — only downloading the resulting PDF/Word costs
+  // a credit (see PdfExportButton/WordExportButton). This still runs the
+  // free relevance-check first, and only interrupts with a popup when
+  // there's something genuinely worth flagging (a low-relevance match, or an
+  // exact repeat of an already-tailored CV+job combo, see lib/profile-store.ts's
+  // findDuplicateTailoredProfile) — otherwise it goes straight through.
   async function handleGenerateClick() {
     if (!canGenerate) return;
     setCheckingRelevance(true);
+    let result: Relevance | null = null;
     try {
       const formData = new FormData();
       formData.append("jobSource", jobSource);
@@ -98,12 +100,17 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
       if (jobSource === "text") formData.append("jobText", jobText.trim());
       if (jobSource === "url") formData.append("jobUrl", jobUrl.trim());
       const res = await fetch("/api/relevance-check", { method: "POST", body: formData });
-      setRelevance(res.ok ? await res.json() : null);
+      result = res.ok ? await res.json() : null;
     } catch {
-      setRelevance(null);
-    } finally {
-      setCheckingRelevance(false);
+      result = null;
+    }
+    setRelevance(result);
+    setCheckingRelevance(false);
+    const hasWarning = result && (result.duplicateOf || result.score < RELEVANCE_WARNING_THRESHOLD);
+    if (hasWarning) {
       setConfirming(true);
+    } else {
+      handleGenerate();
     }
   }
 
@@ -203,19 +210,6 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           >
             {lang === "en" ? "Upload your CV →" : "Carica il tuo CV →"}
           </a>
-        </div>
-      ) : !hasCredits && state !== "done" ? (
-        <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-5 text-center space-y-1">
-          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{lang === "en" ? "Out of credits" : "Crediti esauriti"}</p>
-          <p className="text-xs text-muted-foreground">
-            {lang === "en" ? (
-              <>Tailoring your CV to a job posting costs 1 credit. Go to your{" "}
-              <a href="/account" className="underline hover:text-foreground">account</a> or contact us to add more.</>
-            ) : (
-              <>Adattare il CV a un annuncio costa 1 credito. Vai al tuo{" "}
-              <a href="/account" className="underline hover:text-foreground">account</a> o scrivici per aggiungerne.</>
-            )}
-          </p>
         </div>
       ) : null}
 
@@ -457,7 +451,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           </div>
 
           {/* Bot check — only mount once there's a job posting to submit */}
-          {hasJob && hasCredits && (
+          {hasJob && (
             <div className="flex justify-center">
               <TurnstileWidget
                 ref={turnstileRef}
@@ -487,8 +481,6 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           >
             {checkingRelevance
               ? (lang === "en" ? "Checking job posting relevance…" : "Verifico la pertinenza dell'annuncio…")
-              : !hasCredits
-              ? (lang === "en" ? "Insufficient credits" : "Crediti insufficienti")
               : hasJob ? t.ctaReady : t.ctaWaiting}
           </button>
           {needsPrivacy && (
@@ -499,13 +491,23 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           {confirming && (
             <CreditConfirmModal
               actionLabel={lang === "en" ? "Tailor the CV to this job posting?" : "Adattare il CV a questo annuncio?"}
-              cost={1}
+              hideCost
+              cost={0}
               balance={credits}
               warning={
-                relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD
+                relevance?.duplicateOf
+                  ? (lang === "en"
+                      ? `You already tailored this exact CV to this exact job posting on ${new Date(relevance.duplicateOf.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}. Running it again will produce the same result.`
+                      : `Hai già adattato esattamente questo CV a questo stesso annuncio il ${new Date(relevance.duplicateOf.createdAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}. Rifarlo produrrà lo stesso risultato.`)
+                  : relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD
                   ? (lang === "en"
                       ? `Estimated relevance is low (${relevance.score}/100): ${relevance.reason} The result won't invent skills or experience you don't have — it may stay very close to the original CV.`
                       : `Pertinenza stimata bassa (${relevance.score}/100): ${relevance.reason} Il risultato non inventerà competenze o esperienze che non hai — potrebbe restare molto simile al CV originale.`)
+                  : undefined
+              }
+              warningLink={
+                relevance?.duplicateOf
+                  ? { href: "/account?tab=adapted", label: lang === "en" ? "Open your tailored CVs →" : "Apri i tuoi CV adattati →" }
                   : undefined
               }
               onCancel={() => setConfirming(false)}

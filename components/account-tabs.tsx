@@ -562,8 +562,8 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
             {tr(
-              "Utilizzi 1 credito per sbloccare per la prima volta un PDF, un'ottimizzazione per annuncio, una lettera o una traduzione. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?",
-              "You spend 1 credit to unlock a PDF, a job-posting tailoring, a letter, or a translation for the first time. From then on, you can view or re-download it from the Download section any time, at no extra cost. Need more credits?"
+              "Utilizzi 1 credito per sbloccare per la prima volta un PDF, un documento Word, una lettera o una traduzione. Adattare il CV a un annuncio è sempre gratuito. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?",
+              "You spend 1 credit to unlock a PDF, a Word document, a letter, or a translation for the first time. Tailoring your CV to a job posting is always free. From then on, you can view or re-download it from the Download section any time, at no extra cost. Need more credits?"
             )}{" "}
             <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
               {tr("Scrivici", "Contact us")}

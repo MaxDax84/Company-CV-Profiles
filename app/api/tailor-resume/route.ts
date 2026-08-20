@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
+import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile, hashJobPosting } from "@/lib/profile-store";
+import { getAccountCode } from "@/lib/credits";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
 
@@ -93,21 +93,8 @@ export async function POST(req: NextRequest) {
       jobPostingText = fetched.text;
     }
 
-    // --- Spend the credit before running Claude. Not refunded if the
-    // tailoring call itself later fails — an accepted v1 gap (see project plan).
-    try {
-      await spendCredits(supabase, CREDIT_COSTS.tailor, "tailor", sourceRow.data.personal_info.full_name);
-    } catch (err) {
-      if (err instanceof InsufficientCreditsError) {
-        return NextResponse.json(
-          { error: "Not enough credits to tailor your profile.", code: "INSUFFICIENT_CREDITS" },
-          { status: 402 }
-        );
-      }
-      throw err;
-    }
-
-    // --- Tailor ---
+    // --- Tailor — free. Only the resulting file (PDF/Word) costs a credit,
+    // spent at download time in /api/pdf/[slug] and /api/cv-word/[slug].
     const sourceProfile = sourceRow.data;
     const tailored = await tailorResume(sourceProfile, jobPostingText);
 
@@ -116,7 +103,8 @@ export async function POST(req: NextRequest) {
     tailored.personal_info.bio_original = sourceProfile.personal_info.bio;
     tailored.metadata.generated_at = new Date().toISOString();
 
-    const { slug } = await saveTailoredProfile(supabase, user.id, sourceRow.id, tailored);
+    const jobHash = await hashJobPosting(sourceRow.id, jobPostingText);
+    const { slug } = await saveTailoredProfile(supabase, user.id, sourceRow.id, tailored, jobHash);
     const code = await getAccountCode(supabase, user.id);
 
     return NextResponse.json({ slug, code, profile: tailored });

@@ -17,7 +17,7 @@ interface ActionFeedbackPopupProps {
 
 const PROMPTS: Record<FeedbackActionType, { it: string; en: string }> = {
   generate: {
-    it: "Com'è andato il tuo nuovo CV?",
+    it: "Ti piace il tuo profilo digitale?",
     en: "How did your new CV turn out?",
   },
   tailor: {

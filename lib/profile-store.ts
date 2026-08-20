@@ -199,11 +199,16 @@ export async function getOwnedTranslatedProfiles(
 // their own rows, so the pre-check can't detect another user's identical
 // slug — the DB's UNIQUE constraint is the real guard; on a collision
 // (Postgres code 23505) just retry with the next suffix.
+//
+// `jobHash` (see hashJobPosting below) is optional only for callers that
+// predate it — always pass it from /api/tailor-resume so the NEXT identical
+// (CV, job posting) submission can be recognized as a duplicate.
 export async function saveTailoredProfile(
   supabase: SupabaseClient,
   userId: string,
   sourceProfileId: string,
-  profile: ProfileSchema
+  profile: ProfileSchema,
+  jobHash?: string
 ): Promise<{ slug: string }> {
   const baseSlug = toSlug(profile.personal_info.full_name) || "profile";
 
@@ -215,12 +220,59 @@ export async function saveTailoredProfile(
       slug,
       data: profile,
       source_profile_id: sourceProfileId,
+      job_hash: jobHash ?? null,
     });
     if (!error) return { slug };
     if (error.code !== "23505") throw error;
   }
 
   throw new Error("Could not allocate a unique slug for the tailored profile.");
+}
+
+// Web Crypto works in both edge and Node runtimes, matching hashPdf's own
+// reasoning in lib/cv-score-memory.ts — /api/relevance-check runs on the
+// default (Node) runtime today but this stays portable regardless.
+// Normalized (trimmed, whitespace-collapsed, lowercased) so trivial
+// formatting differences in a re-pasted or re-fetched job posting (extra
+// blank lines, a re-scrape with slightly different whitespace) still match,
+// rather than only catching byte-for-byte identical resubmissions.
+export async function hashJobPosting(sourceProfileId: string, jobPostingText: string): Promise<string> {
+  const normalized = jobPostingText.trim().toLowerCase().replace(/\s+/g, " ");
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${sourceProfileId}:${normalized}`)
+  );
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export interface DuplicateTailoredMatch {
+  slug: string;
+  createdAt: string;
+}
+
+// Warns (at the free relevance-check step, before any credit is spent) when
+// this exact CV has already been tailored to this exact job posting, so the
+// user can open the existing result instead of unknowingly paying again for
+// an output that would come out the same. Mirrors findDuplicatePrimaryProfile
+// above — same reasoning, scoped to tailored profiles instead of uploads.
+export async function findDuplicateTailoredProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  sourceProfileId: string,
+  jobHash: string
+): Promise<DuplicateTailoredMatch | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("slug, created_at")
+    .eq("user_id", userId)
+    .eq("kind", "tailored")
+    .eq("source_profile_id", sourceProfileId)
+    .eq("job_hash", jobHash)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data) return null;
+  return { slug: data.slug, createdAt: data.created_at };
 }
 
 // Same pattern as saveTailoredProfile, but for an opt-in translated copy of

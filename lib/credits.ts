@@ -4,7 +4,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const CREDIT_COSTS = {
   pdfDownload: 1,
   wordDownload: 1,
-  tailor: 1,
   coverLetter: 1,
   translate: 1,
 } as const;
