@@ -25,7 +25,6 @@ export const TRANSLATE_LANGUAGES: { code: string; label: string; labelEn: string
   { code: "pt", label: "Portoghese", labelEn: "Portuguese" },
   { code: "it", label: "Italiano", labelEn: "Italian" },
   { code: "zh", label: "Cinese (semplificato)", labelEn: "Chinese (Simplified)" },
-  { code: "ar", label: "Arabo", labelEn: "Arabic" },
 ];
 
 interface TranslateCvButtonProps {

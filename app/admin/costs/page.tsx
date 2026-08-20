@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AdminNav from "@/components/admin-nav";
 
 // Human-readable labels for lib/log-claude-usage.ts's ClaudeOperation union
 // — kept as a lookup (not a rename of the underlying values) so the raw
@@ -20,6 +21,30 @@ const OPERATION_LABELS: Record<string, string> = {
 
 function operationLabel(operation: string): string {
   return OPERATION_LABELS[operation] ?? operation;
+}
+
+// Where each operation actually sits in a user's real journey through the
+// product, not how expensive it is — parse+improve happen on upload
+// (/generate), the chat refinement is a later optional step on the same CV,
+// then relevance-check+tailor happen when adapting to a job posting, and
+// cover letters / translations are downstream extras either flow can reach.
+// Unknown future operations sort last rather than erroring.
+const OPERATION_PROCESS_ORDER = [
+  "parse_resume",
+  "improve_resume",
+  "cv_chat_question",
+  "cv_chat_finish",
+  "relevance_check",
+  "tailor_resume",
+  "cover_letter",
+  "translate_resume",
+  "translate_cover_letter",
+];
+
+function byProcessOrder(a: { operation: string }, b: { operation: string }): number {
+  const ai = OPERATION_PROCESS_ORDER.indexOf(a.operation);
+  const bi = OPERATION_PROCESS_ORDER.indexOf(b.operation);
+  return (ai === -1 ? OPERATION_PROCESS_ORDER.length : ai) - (bi === -1 ? OPERATION_PROCESS_ORDER.length : bi);
 }
 
 interface OperationStat {
@@ -154,6 +179,8 @@ export default function AdminCostsPage() {
           </button>
         </div>
 
+        <AdminNav />
+
         {loadError && <p className="text-sm text-destructive">{loadError}</p>}
 
         {stats && (
@@ -196,13 +223,16 @@ export default function AdminCostsPage() {
               </div>
             )}
 
-            {/* By operation */}
+            {/* By operation, ordered by where each step actually falls in the
+                user's journey (upload → refine → tailor → extras), not by
+                cost — see OPERATION_PROCESS_ORDER above. */}
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Costo medio per operazione</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Costo medio per operazione (in ordine di processo)</p>
               <div className="overflow-x-auto rounded-xl border border-foreground/10">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-foreground/10 text-left text-[10px] uppercase tracking-widest text-muted-foreground/60">
+                      <th className="px-3 py-2 font-medium">#</th>
                       <th className="px-3 py-2 font-medium">Operazione</th>
                       <th className="px-3 py-2 font-medium text-right">Chiamate</th>
                       <th className="px-3 py-2 font-medium text-right">Costo medio</th>
@@ -211,8 +241,9 @@ export default function AdminCostsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.operations.map((op) => (
+                    {[...stats.operations].sort(byProcessOrder).map((op, i) => (
                       <tr key={op.operation} className="border-b border-foreground/5 last:border-0">
+                        <td className="px-3 py-2 tabular-nums text-muted-foreground/50">{i + 1}</td>
                         <td className="px-3 py-2">
                           <span className="text-sm">{operationLabel(op.operation)}</span>
                           <span className="block font-mono text-[10px] text-muted-foreground/50">{op.operation}</span>
