@@ -51,6 +51,10 @@ interface ProfileResultPanelProps {
   // extraActions instead — "adatta un altro" competing right next to
   // download buttons for the CV just produced was the wrong second action.
   hideGenerateAnother?: boolean;
+  // The "expires in 1 hour" note is aimed at an anonymous visitor with
+  // nothing else backing this preview up — noise once there's already an
+  // account behind the session (set by /generate when isLoggedIn is true).
+  hideExpiryNote?: boolean;
 }
 
 export default function ProfileResultPanel({
@@ -65,6 +69,7 @@ export default function ProfileResultPanel({
   claimSlot,
   hideWebPageActions,
   hideGenerateAnother,
+  hideExpiryNote,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
   const { lang } = useLanguage();
@@ -103,7 +108,7 @@ export default function ProfileResultPanel({
         <p className="font-semibold text-foreground">{labels.done}</p>
         {labels.doneNote && <p className="text-sm text-muted-foreground mt-1">{labels.doneNote}</p>}
       </div>
-      <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>
+      {!hideExpiryNote && <p className="text-xs text-muted-foreground/50">{labels.doneExpiry}</p>}
 
       {labels.valueTitle && labels.valueText && (
         <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-4 space-y-1">

@@ -306,6 +306,7 @@ export default function GeneratePage() {
             accentColor={selected.accent}
             labels={t}
             onReset={handleReset}
+            hideExpiryNote={isLoggedIn === true}
             claimSlot={
               claimToken && isLoggedIn === true ? (
                 // Already signed in (e.g. arrived here via "+ Carica un
