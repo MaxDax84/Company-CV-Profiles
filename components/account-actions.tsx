@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { useLanguage } from "@/components/language-provider";
 
 export function LogoutButton() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { lang } = useLanguage();
 
   async function handleLogout() {
     setLoading(true);
@@ -22,7 +24,7 @@ export function LogoutButton() {
       disabled={loading}
       className="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
     >
-      {loading ? "Uscita…" : "Esci"}
+      {loading ? (lang === "en" ? "Signing out…" : "Uscita…") : (lang === "en" ? "Log out" : "Esci")}
     </button>
   );
 }
@@ -36,12 +38,14 @@ interface DeleteProfileButtonProps {
 // Deletes a single profile row — the primary CV or one specific tailored
 // (job-adapted) one, identified by profileId. Does NOT touch the account
 // itself; see DeleteAccountButton for that.
-export function DeleteProfileButton({ profileId, label = "Elimina profilo", confirmMessage }: DeleteProfileButtonProps) {
+export function DeleteProfileButton({ profileId, label, confirmMessage }: DeleteProfileButtonProps) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "deleting" | "error">("idle");
+  const { lang } = useLanguage();
+  const resolvedLabel = label ?? (lang === "en" ? "Delete profile" : "Elimina profilo");
 
   async function handleDelete() {
-    if (!window.confirm(confirmMessage ?? "Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito.")) return;
+    if (!window.confirm(confirmMessage ?? (lang === "en" ? "Are you sure? The profile and its link will stop working immediately." : "Sei sicuro? Il profilo e il suo link smetteranno di funzionare subito."))) return;
     setStatus("deleting");
     try {
       const res = await fetch("/api/account/profile", {
@@ -63,16 +67,14 @@ export function DeleteProfileButton({ profileId, label = "Elimina profilo", conf
         disabled={status === "deleting"}
         className="text-xs text-destructive hover:text-destructive/80 transition-colors disabled:opacity-50"
       >
-        {status === "deleting" ? "Eliminazione…" : label}
+        {status === "deleting" ? (lang === "en" ? "Deleting…" : "Eliminazione…") : resolvedLabel}
       </button>
       {status === "error" && (
-        <p className="text-xs text-destructive">Qualcosa è andato storto. Riprova.</p>
+        <p className="text-xs text-destructive">{lang === "en" ? "Something went wrong. Try again." : "Qualcosa è andato storto. Riprova."}</p>
       )}
     </div>
   );
 }
-
-const DELETE_ACCOUNT_PHRASE = "ELIMINA";
 
 // Permanently deletes the Supabase Auth user (and everything owned by it,
 // via cascading foreign keys) — not just a profile. High-friction on
@@ -81,12 +83,16 @@ const DELETE_ACCOUNT_PHRASE = "ELIMINA";
 export function DeleteAccountButton() {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "deleting" | "error">("idle");
+  const { lang } = useLanguage();
+  const deletePhrase = lang === "en" ? "DELETE" : "ELIMINA";
 
   async function handleDelete() {
     const typed = window.prompt(
-      `Questa azione è permanente e cancella account, profili e crediti senza possibilità di recupero.\n\nScrivi "${DELETE_ACCOUNT_PHRASE}" per confermare.`
+      lang === "en"
+        ? `This action is permanent and erases your account, profiles, and credits with no way to recover them.\n\nType "${deletePhrase}" to confirm.`
+        : `Questa azione è permanente e cancella account, profili e crediti senza possibilità di recupero.\n\nScrivi "${deletePhrase}" per confermare.`
     );
-    if (typed !== DELETE_ACCOUNT_PHRASE) return;
+    if (typed !== deletePhrase) return;
 
     setStatus("deleting");
     try {
@@ -108,10 +114,12 @@ export function DeleteAccountButton() {
         disabled={status === "deleting"}
         className="text-xs font-semibold text-destructive hover:text-destructive/80 transition-colors disabled:opacity-50"
       >
-        {status === "deleting" ? "Eliminazione account…" : "Elimina account permanentemente"}
+        {status === "deleting"
+          ? (lang === "en" ? "Deleting account…" : "Eliminazione account…")
+          : (lang === "en" ? "Permanently delete account" : "Elimina account permanentemente")}
       </button>
       {status === "error" && (
-        <p className="text-xs text-destructive">Qualcosa è andato storto. Riprova.</p>
+        <p className="text-xs text-destructive">{lang === "en" ? "Something went wrong. Try again." : "Qualcosa è andato storto. Riprova."}</p>
       )}
     </div>
   );

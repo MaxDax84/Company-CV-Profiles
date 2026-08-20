@@ -17,6 +17,16 @@ export const PDF_TEMPLATES: { id: PdfTemplate; name: string; description: string
   { id: "creative-tech", name: "Creative Tech", description: "Moderno e d'impatto, per profili innovativi" },
 ];
 
+// English labels for the template picker UI (components/pdf-export-button.tsx,
+// translate-cv-button.tsx, app/pdf-templates) — PDF_TEMPLATES itself stays
+// Italian since it's also what's baked into the rendered PDF file name/UI
+// via lib/download-filename.ts, unaffected by the site's language toggle.
+export const PDF_TEMPLATES_EN: Record<PdfTemplate, { name: string; description: string }> = {
+  "ats-core": { name: "Pragmatic", description: "Essential and direct, straight to the point" },
+  executive: { name: "Executive", description: "Elegant and authoritative, built for leadership" },
+  "creative-tech": { name: "Creative Tech", description: "Modern and striking, for innovative profiles" },
+};
+
 function hexToRgba(hex: string, alpha: number): string {
   const clean = hex.replace("#", "");
   const value = clean.length === 3 ? clean.split("").map(c => c + c).join("") : clean;

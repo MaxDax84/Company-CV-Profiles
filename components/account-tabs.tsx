@@ -9,7 +9,7 @@ import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
-import { PDF_TEMPLATES } from "@/components/pdf/AtsResumeDocument";
+import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
@@ -466,10 +466,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 {paidDownloads.map((dl) => {
                   const row = profilesById.get(dl.profile_id);
                   if (!row) return null;
-                  const templateName = PDF_TEMPLATES.find(t => t.id === dl.template)?.name ?? dl.template;
-                  const languageLabel = row.kind === "translated"
-                    ? TRANSLATE_LANGUAGES.find(l => l.code === row.data.metadata.language)?.label ?? row.data.metadata.language
-                    : null;
+                  const templateName = (lang === "en" ? PDF_TEMPLATES_EN[dl.template as PdfTemplate]?.name : PDF_TEMPLATES.find(t => t.id === dl.template)?.name) ?? dl.template;
+                  const langEntry = row.kind === "translated" ? TRANSLATE_LANGUAGES.find(l => l.code === row.data.metadata.language) : null;
+                  const languageLabel = langEntry ? (lang === "en" ? langEntry.labelEn : langEntry.label) : (row.kind === "translated" ? row.data.metadata.language : null);
                   return (
                     <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
@@ -510,8 +509,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   const row = profilesById.get(letter.profile_id);
                   if (!row) return null;
                   const isTranslated = letter.language !== row.data.metadata.language;
+                  const letterLangEntry = isTranslated ? TRANSLATE_LANGUAGES.find(l => l.code === letter.language) : null;
                   const languageLabel = isTranslated
-                    ? TRANSLATE_LANGUAGES.find(l => l.code === letter.language)?.label ?? letter.language
+                    ? (letterLangEntry ? (lang === "en" ? letterLangEntry.labelEn : letterLangEntry.label) : letter.language)
                     : null;
                   return (
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">

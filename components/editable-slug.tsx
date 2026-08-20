@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/components/language-provider";
 
 interface EditableSlugProps {
   profileId: string;
@@ -20,6 +21,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
   const [value, setValue] = useState(slug);
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const { lang } = useLanguage();
 
   async function handleSave() {
     if (value.trim() === slug) {
@@ -36,7 +38,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
       const data = await res.json();
       if (!res.ok) {
         setStatus("error");
-        setErrorMsg(data.error ?? "Errore, riprova.");
+        setErrorMsg(data.error ?? (lang === "en" ? "Error, try again." : "Errore, riprova."));
         return;
       }
       setStatus("idle");
@@ -44,7 +46,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
       router.refresh();
     } catch {
       setStatus("error");
-      setErrorMsg("Errore, riprova.");
+      setErrorMsg(lang === "en" ? "Error, try again." : "Errore, riprova.");
     }
   }
 
@@ -55,7 +57,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
       <div className="space-y-0.5">
         {!isHeading && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-            Nome del CV caricato come PDF:
+            {lang === "en" ? "CV name uploaded as PDF:" : "Nome del CV caricato come PDF:"}
           </p>
         )}
         <div className={isHeading ? "flex items-center gap-2" : "flex items-center gap-2 text-xs text-muted-foreground/60"}>
@@ -64,7 +66,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
             onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
             className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0 text-xs"
           >
-            {isHeading ? "Modifica" : "Modifica nome"}
+            {isHeading ? (lang === "en" ? "Edit" : "Modifica") : (lang === "en" ? "Edit name" : "Modifica nome")}
           </button>
         </div>
       </div>
@@ -75,7 +77,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
     <div className="space-y-1.5">
       {!isHeading && (
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-          Nome del CV caricato come PDF:
+          {lang === "en" ? "CV name uploaded as PDF:" : "Nome del CV caricato come PDF:"}
         </p>
       )}
       <div className="flex items-center gap-2">
@@ -89,13 +91,13 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
           disabled={status === "saving"}
           className="text-xs font-semibold text-primary hover:opacity-80 transition-opacity disabled:opacity-50 shrink-0"
         >
-          {status === "saving" ? "Salvataggio…" : "Salva"}
+          {status === "saving" ? (lang === "en" ? "Saving…" : "Salvataggio…") : (lang === "en" ? "Save" : "Salva")}
         </button>
         <button
           onClick={() => setEditing(false)}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
         >
-          Annulla
+          {lang === "en" ? "Cancel" : "Annulla"}
         </button>
       </div>
       {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}

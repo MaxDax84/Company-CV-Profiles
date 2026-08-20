@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
+import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
 import { triggerDownload } from "@/lib/trigger-download";
+import { useLanguage } from "@/components/language-provider";
 
 // The CV's own CONTENT is genuinely translated into any of these (the
 // prompt in lib/translate-resume.ts isn't limited to this list) — this is
@@ -13,16 +14,18 @@ import { triggerDownload } from "@/lib/trigger-download";
 // actually want. The code (ISO 639-1) is both what's sent to the API and
 // what ends up in the saved profile's metadata.language — exported so
 // components/account-tabs.tsx can look up a friendly label for the
-// Download list without duplicating this table.
-export const TRANSLATE_LANGUAGES: { code: string; label: string }[] = [
-  { code: "en", label: "Inglese" },
-  { code: "es", label: "Spagnolo" },
-  { code: "fr", label: "Francese" },
-  { code: "de", label: "Tedesco" },
-  { code: "pt", label: "Portoghese" },
-  { code: "it", label: "Italiano" },
-  { code: "zh", label: "Cinese (semplificato)" },
-  { code: "ar", label: "Arabo" },
+// Download list without duplicating this table. "label" (Italian) stays for
+// backward-compat call sites; "labelEn" is used whenever the UI itself is
+// in English.
+export const TRANSLATE_LANGUAGES: { code: string; label: string; labelEn: string }[] = [
+  { code: "en", label: "Inglese", labelEn: "English" },
+  { code: "es", label: "Spagnolo", labelEn: "Spanish" },
+  { code: "fr", label: "Francese", labelEn: "French" },
+  { code: "de", label: "Tedesco", labelEn: "German" },
+  { code: "pt", label: "Portoghese", labelEn: "Portuguese" },
+  { code: "it", label: "Italiano", labelEn: "Italian" },
+  { code: "zh", label: "Cinese (semplificato)", labelEn: "Chinese (Simplified)" },
+  { code: "ar", label: "Arabo", labelEn: "Arabic" },
 ];
 
 interface TranslateCvButtonProps {
@@ -43,6 +46,7 @@ interface TranslateCvButtonProps {
 // translating costs exactly the 1 credit spent in the POST, not two.
 export default function TranslateCvButton({ slug, credits, className, onGoToDownloads }: TranslateCvButtonProps) {
   const router = useRouter();
+  const { lang } = useLanguage();
   const [language, setLanguage] = useState(TRANSLATE_LANGUAGES[0].code);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [confirming, setConfirming] = useState(false);
@@ -62,7 +66,7 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
       const data = await res.json();
       if (!res.ok) {
         setStatus("error");
-        setErrorMsg(data.error ?? "Errore, riprova.");
+        setErrorMsg(data.error ?? (lang === "en" ? "Error, try again." : "Errore, riprova."));
         return;
       }
       setStatus("downloading");
@@ -72,12 +76,14 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
       router.refresh();
     } catch {
       setStatus("error");
-      setErrorMsg("Errore, riprova.");
+      setErrorMsg(lang === "en" ? "Error, try again." : "Errore, riprova.");
     }
   }
 
-  const selectedLabel = TRANSLATE_LANGUAGES.find((l) => l.code === language)?.label ?? language;
-  const selectedTemplateName = PDF_TEMPLATES.find((t) => t.id === template)?.name ?? template;
+  const selectedLabel = TRANSLATE_LANGUAGES.find((l) => l.code === language);
+  const selectedLanguageName = (lang === "en" ? selectedLabel?.labelEn : selectedLabel?.label) ?? language;
+  const selectedTpl = PDF_TEMPLATES.find((t) => t.id === template);
+  const selectedTemplateName = (lang === "en" ? PDF_TEMPLATES_EN[template].name : selectedTpl?.name) ?? template;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -87,7 +93,7 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
       >
         {TRANSLATE_LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code}>{l.label}</option>
+          <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>
         ))}
       </select>
       <select
@@ -96,7 +102,7 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
       >
         {PDF_TEMPLATES.map((t) => (
-          <option key={t.id} value={t.id}>{t.name}</option>
+          <option key={t.id} value={t.id}>{lang === "en" ? PDF_TEMPLATES_EN[t.id].name : t.name}</option>
         ))}
       </select>
       <button
@@ -105,14 +111,20 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         disabled={status === "translating" || status === "downloading"}
         className={className}
       >
-        {status === "translating" ? "Traduzione…" : status === "downloading" ? "Download…" : "Traduci e scarica PDF"}
+        {status === "translating"
+          ? (lang === "en" ? "Translating…" : "Traduzione…")
+          : status === "downloading"
+          ? (lang === "en" ? "Downloading…" : "Download…")
+          : (lang === "en" ? "Translate and download PDF" : "Traduci e scarica PDF")}
       </button>
       {status === "error" && <p className="text-xs text-destructive w-full">{errorMsg}</p>}
-      {status === "translating" && <DownloadLoadingOverlay label="Sto traducendo il CV…" />}
-      {status === "downloading" && <DownloadLoadingOverlay label="Sto preparando il tuo PDF…" />}
+      {status === "translating" && <DownloadLoadingOverlay label={lang === "en" ? "Translating the CV…" : "Sto traducendo il CV…"} />}
+      {status === "downloading" && <DownloadLoadingOverlay label={lang === "en" ? "Preparing your PDF…" : "Sto preparando il tuo PDF…"} />}
       {confirming && (
         <CreditConfirmModal
-          actionLabel={`Tradurre questo CV in ${selectedLabel} e scaricarlo in PDF (${selectedTemplateName})?`}
+          actionLabel={lang === "en"
+            ? `Translate this CV into ${selectedLanguageName} and download it as PDF (${selectedTemplateName})?`
+            : `Tradurre questo CV in ${selectedLanguageName} e scaricarlo in PDF (${selectedTemplateName})?`}
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
@@ -128,9 +140,11 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
             className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-sm font-semibold">CV tradotto e scaricato ✓</p>
+            <p className="text-sm font-semibold">{lang === "en" ? "CV translated and downloaded ✓" : "CV tradotto e scaricato ✓"}</p>
             <p className="text-sm text-muted-foreground">
-              Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti.
+              {lang === "en"
+                ? "The PDF is now also available in your account's Download section, in case you want to re-download it later."
+                : "Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti."}
             </p>
             <div className="flex gap-2">
               <button
@@ -142,14 +156,14 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
                 style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
               >
-                Vai a Download
+                {lang === "en" ? "Go to Downloads" : "Vai a Download"}
               </button>
               <button
                 type="button"
                 onClick={() => setDone(false)}
                 className="px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Chiudi
+                {lang === "en" ? "Close" : "Chiudi"}
               </button>
             </div>
           </div>

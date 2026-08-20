@@ -4,6 +4,7 @@ import { useState, type ReactNode, type CSSProperties } from "react";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
 import { triggerDownload } from "@/lib/trigger-download";
+import { useLanguage } from "@/components/language-provider";
 
 interface CoverLetterButtonProps {
   slug: string;
@@ -17,6 +18,7 @@ interface CoverLetterButtonProps {
 export default function CoverLetterButton({ slug, label, icon, className, style, credits }: CoverLetterButtonProps) {
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const { lang } = useLanguage();
 
   return (
     <>
@@ -26,7 +28,7 @@ export default function CoverLetterButton({ slug, label, icon, className, style,
       </button>
       {confirming && (
         <CreditConfirmModal
-          actionLabel="Generare la lettera di presentazione?"
+          actionLabel={lang === "en" ? "Generate the cover letter?" : "Generare la lettera di presentazione?"}
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
@@ -42,7 +44,7 @@ export default function CoverLetterButton({ slug, label, icon, className, style,
           }}
         />
       )}
-      {downloading && <DownloadLoadingOverlay label="Sto scrivendo la tua lettera…" />}
+      {downloading && <DownloadLoadingOverlay label={lang === "en" ? "Writing your letter…" : "Sto scrivendo la tua lettera…"} />}
     </>
   );
 }

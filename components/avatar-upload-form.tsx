@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { useLanguage } from "@/components/language-provider";
 
 const MAX_SIZE = 3 * 1024 * 1024; // 3MB — a profile photo, not a portfolio asset
 
@@ -17,16 +18,17 @@ export default function AvatarUploadForm({ userId, currentUrl }: AvatarUploadFor
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { lang } = useLanguage();
 
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) {
       setStatus("error");
-      setErrorMsg("Il file deve essere un'immagine.");
+      setErrorMsg(lang === "en" ? "The file must be an image." : "Il file deve essere un'immagine.");
       return;
     }
     if (file.size > MAX_SIZE) {
       setStatus("error");
-      setErrorMsg("L'immagine deve essere sotto i 3MB.");
+      setErrorMsg(lang === "en" ? "The image must be under 3MB." : "L'immagine deve essere sotto i 3MB.");
       return;
     }
 
@@ -72,7 +74,7 @@ export default function AvatarUploadForm({ userId, currentUrl }: AvatarUploadFor
       >
         {currentUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={currentUrl} alt="Foto profilo" className="w-full h-full object-cover" />
+          <img src={currentUrl} alt={lang === "en" ? "Profile photo" : "Foto profilo"} className="w-full h-full object-cover" />
         ) : (
           <Camera className="w-5 h-5 text-primary/50" />
         )}
@@ -86,7 +88,11 @@ export default function AvatarUploadForm({ userId, currentUrl }: AvatarUploadFor
           disabled={status === "uploading"}
           className="text-xs font-semibold text-primary hover:text-primary/80 disabled:opacity-50"
         >
-          {status === "uploading" ? "Caricamento…" : currentUrl ? "Cambia foto" : "Carica una foto"}
+          {status === "uploading"
+            ? (lang === "en" ? "Uploading…" : "Caricamento…")
+            : currentUrl
+            ? (lang === "en" ? "Change photo" : "Cambia foto")
+            : (lang === "en" ? "Upload a photo" : "Carica una foto")}
         </button>
         {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}
       </div>

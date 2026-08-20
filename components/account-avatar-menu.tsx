@@ -5,6 +5,7 @@ import { LayoutDashboard, Settings, HelpCircle, Mail, LogOut } from "lucide-reac
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
 import { SUPPORT_EMAIL } from "@/lib/contact";
+import { useLanguage } from "@/components/language-provider";
 
 interface AccountAvatarMenuProps {
   avatarUrl: string | null;
@@ -22,6 +23,7 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
   const [loggingOut, setLoggingOut] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { lang } = useLanguage();
   const initial = displayName.trim().charAt(0).toUpperCase() || "?";
 
   useEffect(() => {
@@ -47,14 +49,14 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
     // Opens the user's email client, addressed to the same support email
     // shown on the legal pages (lib/contact.ts is the single source of
     // truth both places read from).
-    { icon: Mail, label: "Contatti / Supporto", href: `mailto:${SUPPORT_EMAIL}` },
+    { icon: Mail, label: lang === "en" ? "Contact / Support" : "Contatti / Supporto", href: `mailto:${SUPPORT_EMAIL}` },
   ];
 
   return (
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(v => !v)}
-        aria-label="Menu account"
+        aria-label={lang === "en" ? "Account menu" : "Menu account"}
         className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/30 hover:border-primary/60 transition-colors bg-primary/10 flex items-center justify-center font-semibold text-xs text-primary shrink-0"
       >
         {avatarUrl ? (
@@ -85,7 +87,7 @@ export default function AccountAvatarMenu({ avatarUrl, displayName }: AccountAva
             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/[0.06] transition-colors disabled:opacity-50"
           >
             <LogOut className="w-4 h-4" />
-            {loggingOut ? "Uscita…" : "Esci"}
+            {loggingOut ? (lang === "en" ? "Signing out…" : "Uscita…") : (lang === "en" ? "Log out" : "Esci")}
           </button>
         </div>
       )}

@@ -1,4 +1,7 @@
+"use client";
+
 import PdfExportButton from "@/components/pdf-export-button";
+import { useLanguage } from "@/components/language-provider";
 
 interface OwnerToolbarProps {
   slug: string;
@@ -22,19 +25,23 @@ interface OwnerToolbarProps {
 // clearly over any of the four templates' backgrounds — near-black (Alpha),
 // white (Beta), dark green (Gamma), or navy (Delta).
 export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps) {
+  const { lang } = useLanguage();
+
   return (
     <div
       className="fixed top-0 left-0 right-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 text-xs sm:text-sm"
       style={{ height: 64, zIndex: 200, background: "#6366f1", boxShadow: "0 2px 12px rgba(0,0,0,0.35)" }}
     >
-      <span className="hidden sm:inline" style={{ color: "rgba(0,0,0,0.55)" }}>Questa è la tua pagina pubblica —</span>
+      <span className="hidden sm:inline" style={{ color: "rgba(0,0,0,0.55)" }}>
+        {lang === "en" ? "This is your public page —" : "Questa è la tua pagina pubblica —"}
+      </span>
       <a href="/account" className="font-semibold transition-opacity hover:opacity-70" style={{ color: "#000" }}>
-        Il tuo account
+        {lang === "en" ? "Your account" : "Il tuo account"}
       </a>
       <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
       <PdfExportButton
         slug={slug}
-        label="Scarica PDF ↓"
+        label={lang === "en" ? "Download PDF ↓" : "Scarica PDF ↓"}
         credits={credits}
         className="font-semibold text-foreground transition-opacity hover:opacity-70"
       />
@@ -42,7 +49,7 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         <>
           <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
           <a href={`/tailor?profile=${slug}`} className="font-bold underline underline-offset-2 transition-opacity hover:opacity-70" style={{ color: "#000" }}>
-            Adatta a un annuncio →
+            {lang === "en" ? "Tailor to a job posting →" : "Adatta a un annuncio →"}
           </a>
         </>
       )}

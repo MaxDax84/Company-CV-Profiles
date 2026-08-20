@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { useLanguage } from "@/components/language-provider";
 
 interface ChangeEmailFormProps {
   currentEmail: string;
@@ -11,12 +12,13 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const { lang } = useLanguage();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!email.trim() || email.trim() === currentEmail) {
       setStatus("error");
-      setErrorMsg("Inserisci un indirizzo email diverso da quello attuale.");
+      setErrorMsg(lang === "en" ? "Enter an email address different from your current one." : "Inserisci un indirizzo email diverso da quello attuale.");
       return;
     }
 
@@ -39,7 +41,7 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="nuova-email@esempio.com"
+          placeholder={lang === "en" ? "new-email@example.com" : "nuova-email@esempio.com"}
           className="flex-1 bg-foreground/[0.03] border border-foreground/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50"
         />
         <button
@@ -48,12 +50,12 @@ export default function ChangeEmailForm({ currentEmail }: ChangeEmailFormProps) 
           className="px-4 py-2 rounded-lg text-xs font-semibold disabled:opacity-50 shrink-0"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
-          {status === "saving" ? "Invio…" : "Cambia email"}
+          {status === "saving" ? (lang === "en" ? "Sending…" : "Invio…") : (lang === "en" ? "Change email" : "Cambia email")}
         </button>
       </div>
       {status === "success" && (
         <p className="text-xs text-green-700 dark:text-green-400">
-          Controlla la tua nuova casella email per confermare il cambio.
+          {lang === "en" ? "Check your new email inbox to confirm the change." : "Controlla la tua nuova casella email per confermare il cambio."}
         </p>
       )}
       {status === "error" && <p className="text-xs text-destructive">{errorMsg}</p>}

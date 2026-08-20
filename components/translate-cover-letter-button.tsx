@@ -5,6 +5,7 @@ import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
 import { triggerDownload } from "@/lib/trigger-download";
+import { useLanguage } from "@/components/language-provider";
 
 interface TranslateCoverLetterButtonProps {
   slug: string;
@@ -26,8 +27,10 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [done, setDone] = useState(false);
+  const { lang } = useLanguage();
 
-  const selectedLabel = TRANSLATE_LANGUAGES.find((l) => l.code === language)?.label ?? language;
+  const selectedEntry = TRANSLATE_LANGUAGES.find((l) => l.code === language);
+  const selectedLabel = (lang === "en" ? selectedEntry?.labelEn : selectedEntry?.label) ?? language;
 
   async function handleConfirm() {
     setConfirming(false);
@@ -49,7 +52,7 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
       >
         {TRANSLATE_LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code}>{l.label}</option>
+          <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>
         ))}
       </select>
       <button
@@ -57,18 +60,20 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
         onClick={() => setConfirming(true)}
         className={className}
       >
-        Traduci e scarica PDF
+        {lang === "en" ? "Translate and download PDF" : "Traduci e scarica PDF"}
       </button>
       {confirming && (
         <CreditConfirmModal
-          actionLabel={`Tradurre la lettera di presentazione in ${selectedLabel} e scaricarla in PDF?`}
+          actionLabel={lang === "en"
+            ? `Translate the cover letter into ${selectedLabel} and download it as PDF?`
+            : `Tradurre la lettera di presentazione in ${selectedLabel} e scaricarla in PDF?`}
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
           onConfirm={handleConfirm}
         />
       )}
-      {downloading && <DownloadLoadingOverlay label="Sto traducendo la lettera…" />}
+      {downloading && <DownloadLoadingOverlay label={lang === "en" ? "Translating the letter…" : "Sto traducendo la lettera…"} />}
       {done && (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -78,9 +83,11 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
             className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-sm font-semibold">Lettera tradotta e scaricata ✓</p>
+            <p className="text-sm font-semibold">{lang === "en" ? "Letter translated and downloaded ✓" : "Lettera tradotta e scaricata ✓"}</p>
             <p className="text-sm text-muted-foreground">
-              Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti.
+              {lang === "en"
+                ? "The PDF is now also available in your account's Download section, in case you want to re-download it later."
+                : "Il PDF è ora disponibile anche nella sezione Download del tuo account, se vuoi riscaricarlo più avanti."}
             </p>
             <div className="flex gap-2">
               <button
@@ -92,14 +99,14 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
                 style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
               >
-                Vai a Download
+                {lang === "en" ? "Go to Downloads" : "Vai a Download"}
               </button>
               <button
                 type="button"
                 onClick={() => setDone(false)}
                 className="px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Chiudi
+                {lang === "en" ? "Close" : "Chiudi"}
               </button>
             </div>
           </div>

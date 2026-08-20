@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
+import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
 import { triggerDownload } from "@/lib/trigger-download";
+import { useLanguage } from "@/components/language-provider";
 
 interface PdfExportButtonProps {
   slug: string;
@@ -15,6 +16,7 @@ interface PdfExportButtonProps {
 }
 
 export default function PdfExportButton({ slug, label, icon, className, credits }: PdfExportButtonProps) {
+  const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -35,7 +37,9 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
       style={{ background: "var(--background)", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Scegli il template PDF</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+          {lang === "en" ? "Choose the PDF template" : "Scegli il template PDF"}
+        </p>
         <a
           href="/pdf-templates"
           target="_blank"
@@ -43,30 +47,33 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
           className="text-[10px] font-semibold shrink-0"
           style={{ color: "var(--primary)" }}
         >
-          Vedi i 3 formati →
+          {lang === "en" ? "See all 3 formats →" : "Vedi i 3 formati →"}
         </a>
       </div>
       <div className="flex flex-col gap-1.5">
-        {PDF_TEMPLATES.map(tpl => (
-          <button
-            key={tpl.id}
-            type="button"
-            onClick={() => setTemplate(tpl.id)}
-            className="rounded-lg border px-3 py-2 text-left transition-all duration-200"
-            style={{
-              borderColor: template === tpl.id ? "var(--primary)" : "var(--border)",
-              background: template === tpl.id ? "color-mix(in srgb, var(--primary) 10%, transparent)" : "transparent",
-            }}
-          >
-            <span
-              className="text-xs font-semibold block"
-              style={{ color: template === tpl.id ? "var(--primary)" : "var(--foreground)" }}
+        {PDF_TEMPLATES.map(tpl => {
+          const label = lang === "en" ? PDF_TEMPLATES_EN[tpl.id] : tpl;
+          return (
+            <button
+              key={tpl.id}
+              type="button"
+              onClick={() => setTemplate(tpl.id)}
+              className="rounded-lg border px-3 py-2 text-left transition-all duration-200"
+              style={{
+                borderColor: template === tpl.id ? "var(--primary)" : "var(--border)",
+                background: template === tpl.id ? "color-mix(in srgb, var(--primary) 10%, transparent)" : "transparent",
+              }}
             >
-              {tpl.name}
-            </span>
-            <span className="text-[10px] text-muted-foreground">{tpl.description}</span>
-          </button>
-        ))}
+              <span
+                className="text-xs font-semibold block"
+                style={{ color: template === tpl.id ? "var(--primary)" : "var(--foreground)" }}
+              >
+                {label.name}
+              </span>
+              <span className="text-[10px] text-muted-foreground">{label.description}</span>
+            </button>
+          );
+        })}
       </div>
       <div className="flex gap-2 pt-1">
         <button
@@ -75,19 +82,19 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
           className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
-          Scarica
+          {lang === "en" ? "Download" : "Scarica"}
         </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
           className="px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          Annulla
+          {lang === "en" ? "Cancel" : "Annulla"}
         </button>
       </div>
       {confirming && (
         <CreditConfirmModal
-          actionLabel="Scaricare il PDF?"
+          actionLabel={lang === "en" ? "Download the PDF?" : "Scaricare il PDF?"}
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
@@ -106,7 +113,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
           }}
         />
       )}
-      {downloading && <DownloadLoadingOverlay label="Sto preparando il tuo PDF…" />}
+      {downloading && <DownloadLoadingOverlay label={lang === "en" ? "Preparing your PDF…" : "Sto preparando il tuo PDF…"} />}
     </div>
   );
 }
