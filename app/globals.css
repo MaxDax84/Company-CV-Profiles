@@ -362,3 +362,11 @@
 .grid-overlay {
   pointer-events: none;
 }
+
+/* Hides the scrollbar on a native-scroll drag/swipe carousel (see
+   components/testimonials-section.tsx) without disabling scrolling itself —
+   Firefox's scrollbar-width is set inline (no CSS-only equivalent), this
+   covers WebKit/Blink (Chrome, Safari, Edge). */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
