@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { ShieldCheck } from 'lucide-react'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -47,6 +48,21 @@ export default function AboutSection() {
           <p>{t.paragraph1}</p>
           <p>{t.paragraph2}</p>
           <p className="text-foreground font-medium">{t.paragraph3}</p>
+        </div>
+
+        <div className="glass-card rounded-2xl p-6 md:p-8 mt-10 max-w-2xl mx-auto text-left space-y-3">
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck className="w-5 h-5 shrink-0" style={{ color: 'var(--primary)' }} />
+            <h3 className="font-heading text-lg md:text-xl font-bold tracking-tight">
+              {t.dataPromiseTitle}
+            </h3>
+          </div>
+          <p className="text-sm md:text-base font-semibold text-foreground">
+            {t.dataPromiseLead}
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            {t.dataPromiseBody}
+          </p>
         </div>
       </div>
     </section>

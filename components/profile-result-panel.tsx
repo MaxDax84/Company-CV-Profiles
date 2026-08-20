@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Copy, Check, Share2 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
+import { useLanguage } from "@/components/language-provider";
 
 export interface ProfileResultPanelLabels {
   done: string;
@@ -66,6 +67,7 @@ export default function ProfileResultPanel({
   hideGenerateAnother,
 }: ProfileResultPanelProps) {
   const [copied, setCopied] = useState(false);
+  const { lang } = useLanguage();
   const path = code ? `/${code}/${slug}` : `/profile/${slug}`;
 
   function profileUrl() {
@@ -164,6 +166,12 @@ export default function ProfileResultPanel({
           {labels.generateAnother}
         </button>
       )}
+
+      <p className="text-[11px] text-muted-foreground/40 leading-relaxed pt-1">
+        {lang === "en"
+          ? "Jobli helps optimize your CV and pass ATS filters, but doesn't guarantee an interview or a hire."
+          : "Jobli aiuta a ottimizzare il CV e a superare i filtri ATS, ma non garantisce un colloquio o un'assunzione."}
+      </p>
     </div>
   );
 }

@@ -28,6 +28,9 @@ export default function Footer() {
 
           {/* Nav links */}
           <div className="flex items-center gap-6 flex-wrap justify-center">
+            <a href="/support" className="text-xs text-white/60 hover:text-white transition-colors">
+              {lang === 'en' ? 'Support' : 'Supporto'}
+            </a>
             <a href="/terms" className="text-xs text-white/60 hover:text-white transition-colors">
               {lang === 'en' ? 'Terms of Service' : 'Termini di Servizio'}
             </a>

@@ -96,10 +96,11 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">5. Proprietà Intellettuale</h3>
                 <p>
-                  Il codice sorgente, il design e i template del sito rimangono di proprietà del
-                  Fornitore. I contenuti del CV forniti dall&apos;utente, e la pagina profilo generata
-                  a partire da essi, restano di proprietà dell&apos;utente; il Fornitore non ne
-                  rivendica alcun diritto oltre a quanto necessario per erogare il servizio richiesto.
+                  Il codice sorgente, il design, i template e il marchio Jobli rimangono di proprietà
+                  del Fornitore. I contenuti del CV forniti dall&apos;utente, e la pagina profilo
+                  generata a partire da essi, restano di proprietà dell&apos;utente; il Fornitore non
+                  ne rivendica alcun diritto oltre a quanto necessario per erogare il servizio
+                  richiesto.
                 </p>
               </div>
 
@@ -140,7 +141,7 @@ export default function TermsPage() {
                 <h3 className="font-semibold text-foreground mb-2">9. Legge Applicabile e Foro Competente</h3>
                 <p>
                   I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia
-                  è competente in via esclusiva il Tribunale di Torino, salvo diversa disposizione
+                  è competente in via esclusiva il Tribunale di Milano, salvo diversa disposizione
                   inderogabile a tutela dei consumatori.
                 </p>
               </div>
@@ -228,10 +229,10 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">5. Intellectual Property</h3>
                 <p>
-                  The website&apos;s source code, design, and templates remain the property of the
-                  Provider. CV content you supply, and the profile page generated from it, remain
-                  your property; the Provider claims no rights over them beyond what is needed to
-                  deliver the requested service.
+                  The website&apos;s source code, design, templates, and the Jobli brand remain the
+                  property of the Provider. CV content you supply, and the profile page generated
+                  from it, remain your property; the Provider claims no rights over them beyond what
+                  is needed to deliver the requested service.
                 </p>
               </div>
 
@@ -269,7 +270,7 @@ export default function TermsPage() {
                 <h3 className="font-semibold text-foreground mb-2">9. Governing Law and Jurisdiction</h3>
                 <p>
                   These Terms are governed by Italian law. Any dispute shall be subject to the
-                  exclusive jurisdiction of the Court of Turin, without prejudice to any mandatory
+                  exclusive jurisdiction of the Court of Milan, without prejudice to any mandatory
                   consumer protection provisions.
                 </p>
               </div>

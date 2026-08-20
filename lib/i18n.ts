@@ -63,6 +63,9 @@ export const translations = {
       paragraph1: 'Jobli started from a simple observation: most CVs don\'t fail for lack of experience, but for how that experience is told. Generic phrasing, unclear structure, missing keywords — and ATS filters discard the CV before a recruiter ever reads a line.',
       paragraph2: 'We built Jobli to solve exactly that: an AI that reads what you\'ve actually done and makes it clear, structured, and optimized — never adding an experience, a skill, or a result that isn\'t genuinely yours.',
       paragraph3: 'We don\'t promise shortcuts. We promise that the CV you bring to an interview is the clearest, most honest version of you.',
+      dataPromiseTitle: 'Our promise about your data',
+      dataPromiseLead: 'Your data is yours. Period.',
+      dataPromiseBody: 'We know how personal a CV really is: it holds your story, your path, and your ambitions. At Jobli we believe in transparent AI: we use your data solely to help you tell your story better, never handing it to third parties and never running aggressive profiling trackers. We also work every day to make the algorithm more precise, more respectful of your privacy, and focused only on your real skills.',
     },
     templateShowcase: {
       webTitle: 'Your CV, as a web page',
@@ -445,6 +448,9 @@ export const translations = {
       paragraph1: 'Jobli nasce da un\'osservazione semplice: la maggior parte dei CV non perde per mancanza di esperienza, ma per come viene raccontata. Frasi generiche, struttura confusa, parole chiave mancanti — e i filtri ATS scartano il CV prima ancora che un recruiter ne legga una riga.',
       paragraph2: 'Costruiamo Jobli per risolvere esattamente questo: un\'intelligenza artificiale che legge quello che hai già fatto e lo rende chiaro, strutturato, ottimizzato — senza mai aggiungere un\'esperienza, una competenza o un risultato che non è realmente tuo.',
       paragraph3: 'Non promettiamo scorciatoie. Promettiamo che il CV che porti al colloquio sia la versione più chiara e onesta di te stesso.',
+      dataPromiseTitle: 'La nostra promessa sui tuoi dati',
+      dataPromiseLead: 'I tuoi dati sono tuoi. Punto.',
+      dataPromiseBody: 'Sappiamo quanto sia delicato il proprio Curriculum Vitae: ci sono dentro la tua storia, il tuo percorso e le tue ambizioni. Noi del team di Jobli crediamo in un\'Intelligenza Artificiale trasparente: usiamo i tuoi dati esclusivamente per aiutarti a raccontarti meglio, senza cederli a terzi e senza tracciamenti di profilazione aggressivi. Inoltre, lavoriamo ogni giorno per migliorare l\'algoritmo affinché sia sempre più preciso, rispettoso della tua privacy e focalizzato solo sulle tue reali competenze.',
     },
     templateShowcase: {
       webTitle: 'Il tuo CV, come pagina web',

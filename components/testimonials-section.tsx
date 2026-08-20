@@ -228,7 +228,7 @@ export default function TestimonialsSection() {
                 <p className="text-sm font-semibold leading-snug">
                   {lang === 'en' ? r.titleEn : r.titleIt}
                 </p>
-                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-6">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   {lang === 'en' ? r.bodyEn : r.bodyIt}
                 </p>
                 <p className="text-xs font-semibold pt-1" style={{ color: 'var(--primary)' }}>
