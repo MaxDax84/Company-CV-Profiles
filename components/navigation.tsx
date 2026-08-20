@@ -13,7 +13,7 @@ import AccountAvatarMenu from './account-avatar-menu'
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { lang } = useLanguage()
+  const { lang, setLang } = useLanguage()
   const t = translations[lang].nav
   const pathname = usePathname()
   const isHome = pathname === '/'
@@ -148,8 +148,16 @@ export default function Navigation() {
             </a>
           )}
 
-          {/* Language toggle — hidden for now (re-enable later), left the
-              useLanguage()/lang plumbing itself untouched. */}
+          {/* Language toggle — shows the language you'll switch TO, same
+              compact footprint as the theme toggle right next to it. */}
+          <button
+            type="button"
+            onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+            className="w-8 py-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 text-xs font-semibold"
+            aria-label={lang === 'it' ? 'Switch to English' : 'Passa all\'italiano'}
+          >
+            {lang === 'it' ? 'EN' : 'IT'}
+          </button>
 
           {/* Theme toggle */}
           <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
@@ -215,7 +223,16 @@ export default function Navigation() {
               {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
             </a>
           )}
-          <ThemeToggle className="self-start flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors" />
+          <div className="flex items-center gap-4">
+            <ThemeToggle className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors" />
+            <button
+              type="button"
+              onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {lang === 'it' ? 'English' : 'Italiano'}
+            </button>
+          </div>
         </div>
       )}
     </nav>
