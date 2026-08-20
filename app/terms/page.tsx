@@ -66,6 +66,14 @@ export default function TermsPage() {
                   L&apos;utente può eliminare in autonomia un singolo CV o l&apos;intero account, con
                   effetto immediato e irreversibile, dalla pagina del proprio account.
                 </p>
+                <p className="mt-2">
+                  Richiedendo l&apos;elaborazione del CV (analisi, generazione della pagina profilo,
+                  download del PDF o adattamento a un annuncio), l&apos;utente acconsente
+                  espressamente all&apos;esecuzione immediata del servizio digitale richiesto e prende
+                  atto che, una volta completata l&apos;elaborazione, perde il diritto di recesso di
+                  cui agli artt. 52 e seguenti del Codice del Consumo, ai sensi dell&apos;art. 59,
+                  comma 1, lett. a) e o) dello stesso Codice.
+                </p>
               </div>
 
               <div>
@@ -200,6 +208,13 @@ export default function TermsPage() {
                 <p className="mt-2">
                   You can delete a single CV or your entire account yourself, with immediate and
                   irreversible effect, from your account page.
+                </p>
+                <p className="mt-2">
+                  By requesting CV processing (analysis, profile page generation, PDF download, or
+                  job-posting tailoring), you expressly consent to the immediate performance of the
+                  requested digital service and acknowledge that, once processing is complete, you
+                  lose the right of withdrawal under Articles 52 et seq. of the Italian Consumer Code
+                  (Codice del Consumo), pursuant to Article 59(1)(a) and (o) of the same Code.
                 </p>
               </div>
 
