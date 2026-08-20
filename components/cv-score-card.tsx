@@ -1,5 +1,6 @@
 import type { CvScoreBreakdown } from "@/lib/cv-score";
 import { getScoreComment, ATS_TARGET_SCORE } from "@/lib/score-comments";
+import { useLanguage } from "@/components/language-provider";
 
 interface CvScoreCardProps {
   before: CvScoreBreakdown | null;
@@ -33,6 +34,7 @@ const CRITERIA: { key: keyof Omit<CvScoreBreakdown, "total">; labelKey: keyof Cv
 ];
 
 export default function CvScoreCard({ before, after, accentColor, labels, cvName, variant = "full" }: CvScoreCardProps) {
+  const { lang } = useLanguage();
   const isTeaser = variant === "teaser";
   const current = isTeaser ? (before ?? after) : after;
   const delta = !isTeaser && before ? after.total - before.total : null;
@@ -52,9 +54,9 @@ export default function CvScoreCard({ before, after, accentColor, labels, cvName
             {current.total}
             <span className="text-lg text-muted-foreground/40 font-semibold">/100</span>
           </p>
-          <p className="text-sm font-medium px-2" style={{ color: accentColor }}>{getScoreComment(current.total)}</p>
+          <p className="text-sm font-medium px-2" style={{ color: accentColor }}>{getScoreComment(current.total, lang)}</p>
           <p className="text-xs text-muted-foreground/60 px-2">
-            Soglia tipica per superare i filtri ATS: <span className="font-semibold" style={{ color: accentColor }}>{ATS_TARGET_SCORE}/100</span>
+            {lang === "en" ? "Typical threshold to pass ATS filters:" : "Soglia tipica per superare i filtri ATS:"} <span className="font-semibold" style={{ color: accentColor }}>{ATS_TARGET_SCORE}/100</span>
           </p>
         </div>
       ) : (

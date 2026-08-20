@@ -3,7 +3,22 @@
 // starting point" line that showed regardless of whether the CV scored 10
 // or 90, which read as tone-deaf at the extremes.
 
-export function getScoreComment(score: number): string {
+export function getScoreComment(score: number, lang: "it" | "en" = "it"): string {
+  if (lang === "en") {
+    if (score < 40) {
+      return "This CV still has a long way to go: measurable results are missing and the structure isn't optimized for automated filters. Our AI can raise it a lot without inventing anything.";
+    }
+    if (score < 60) {
+      return "A decent starting point, but with real room for improvement — especially around numbers and quantified results.";
+    }
+    if (score < 75) {
+      return "Almost there: a bit more work on clarity and concrete results can get you close to the typical threshold for passing ATS filters.";
+    }
+    if (score < 90) {
+      return "Already a solid CV, above the typical threshold ATS filters look for — we can still refine it to make it truly stand out.";
+    }
+    return "An excellent CV, well above the typical ATS threshold. We can still polish a few details to make it perfect.";
+  }
   if (score < 40) {
     return "Il CV ha ancora molta strada da fare: mancano risultati misurabili e la struttura non è ottimizzata per i filtri automatici. La nostra AI può alzarlo parecchio senza inventare nulla.";
   }

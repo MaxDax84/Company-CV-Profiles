@@ -131,7 +131,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           setState("idle");
           return;
         }
-        throw new Error(data.error ?? "Errore sconosciuto");
+        throw new Error(data.error ?? (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
       }
       setSlug(data.slug);
       setCode(data.code);
@@ -139,7 +139,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
       setState("done");
       router.refresh(); // re-fetch the server-rendered credit balance
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto");
+      setError(err instanceof Error ? err.message : (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
       setState("error");
     } finally {
       turnstileRef.current?.reset();
@@ -188,24 +188,29 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
 
       {!hasProfile ? (
         <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center space-y-3">
-          <p className="text-sm font-semibold">Genera prima il tuo profilo</p>
+          <p className="text-sm font-semibold">{lang === "en" ? "Generate your profile first" : "Genera prima il tuo profilo"}</p>
           <p className="text-xs text-muted-foreground">
-            Per adattarlo a un annuncio serve prima un profilo, creato dal tuo CV.
+            {lang === "en" ? "You need a profile, created from your CV, before you can tailor it to a job posting." : "Per adattarlo a un annuncio serve prima un profilo, creato dal tuo CV."}
           </p>
           <a
             href="/generate"
             className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
             style={{ background: ACCENT, color: "var(--primary-foreground)" }}
           >
-            Carica il tuo CV →
+            {lang === "en" ? "Upload your CV →" : "Carica il tuo CV →"}
           </a>
         </div>
       ) : !hasCredits && state !== "done" ? (
         <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-5 text-center space-y-1">
-          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">Crediti esauriti</p>
+          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{lang === "en" ? "Out of credits" : "Crediti esauriti"}</p>
           <p className="text-xs text-muted-foreground">
-            Adattare il CV a un annuncio costa 1 credito. Vai al tuo{" "}
-            <a href="/account" className="underline hover:text-foreground">account</a> o scrivici per aggiungerne.
+            {lang === "en" ? (
+              <>Tailoring your CV to a job posting costs 1 credit. Go to your{" "}
+              <a href="/account" className="underline hover:text-foreground">account</a> or contact us to add more.</>
+            ) : (
+              <>Adattare il CV a un annuncio costa 1 credito. Vai al tuo{" "}
+              <a href="/account" className="underline hover:text-foreground">account</a> o scrivici per aggiungerne.</>
+            )}
           </p>
         </div>
       ) : null}
@@ -213,7 +218,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
       {hasProfile && sourceSlug && (state === "idle" || state === "error") ? (
         availableProfiles.length > 1 ? (
           <div className="text-xs text-center text-muted-foreground/60 flex items-center justify-center gap-2 flex-wrap">
-            <span>Stai adattando:</span>
+            <span>{lang === "en" ? "Tailoring:" : "Stai adattando:"}</span>
             <select
               value={sourceSlug}
               onChange={(e) => router.push(`/tailor?profile=${e.target.value}`)}
@@ -226,22 +231,24 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           </div>
         ) : (
           <p className="text-xs text-center text-muted-foreground/60">
-            Stai adattando: <span className="font-semibold text-foreground/80">{sourceSlug}</span>
+            {lang === "en" ? "Tailoring:" : "Stai adattando:"} <span className="font-semibold text-foreground/80">{sourceSlug}</span>
           </p>
         )
       ) : null}
 
       {hasProfile && (state === "idle" || state === "error") ? (
-        <StepProgress accent={ACCENT} steps={[{ label: "Annuncio", done: hasJob }]} />
+        <StepProgress accent={ACCENT} steps={[{ label: lang === "en" ? "Job posting" : "Annuncio", done: hasJob }]} />
       ) : null}
 
       {hasProfile && state === "done" && slug && profile ? (
         <>
           {relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD && (
             <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-center space-y-1">
-              <p className="font-semibold text-amber-700 dark:text-amber-400">Ho fatto del mio meglio, con onestà</p>
+              <p className="font-semibold text-amber-700 dark:text-amber-400">{lang === "en" ? "I did my best, honestly" : "Ho fatto del mio meglio, con onestà"}</p>
               <p className="text-xs text-muted-foreground">
-                Questo annuncio si allinea poco al tuo CV, quindi non ho potuto scrivere competenze o esperienze che non sono realmente presenti. Il risultato potrebbe essere molto simile al profilo originale.
+                {lang === "en"
+                  ? "This job posting doesn't align well with your CV, so I couldn't write skills or experience that aren't genuinely there. The result may end up very similar to your original profile."
+                  : "Questo annuncio si allinea poco al tuo CV, quindi non ho potuto scrivere competenze o esperienze che non sono realmente presenti. Il risultato potrebbe essere molto simile al profilo originale."}
               </p>
             </div>
           )}
@@ -273,7 +280,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                 className="block w-full py-2.5 px-4 text-xs font-semibold text-center transition-colors"
                 style={{ color: ACCENT }}
               >
-                Vai ai CV adattati →
+                {lang === "en" ? "Go to tailored CVs →" : "Vai ai CV adattati →"}
               </a>
             </div>
           }
@@ -465,7 +472,11 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
               color: "var(--muted-foreground)",
             }}
           >
-            {checkingRelevance ? "Verifico la pertinenza dell'annuncio…" : !hasCredits ? "Crediti insufficienti" : hasJob ? t.ctaReady : t.ctaWaiting}
+            {checkingRelevance
+              ? (lang === "en" ? "Checking job posting relevance…" : "Verifico la pertinenza dell'annuncio…")
+              : !hasCredits
+              ? (lang === "en" ? "Insufficient credits" : "Crediti insufficienti")
+              : hasJob ? t.ctaReady : t.ctaWaiting}
           </button>
           {needsPrivacy && (
             <p className="text-xs text-center -mt-3" style={{ color: "rgba(251,191,36,0.8)" }}>
@@ -474,12 +485,14 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           )}
           {confirming && (
             <CreditConfirmModal
-              actionLabel="Adattare il CV a questo annuncio?"
+              actionLabel={lang === "en" ? "Tailor the CV to this job posting?" : "Adattare il CV a questo annuncio?"}
               cost={1}
               balance={credits}
               warning={
                 relevance && relevance.score < RELEVANCE_WARNING_THRESHOLD
-                  ? `Pertinenza stimata bassa (${relevance.score}/100): ${relevance.reason} Il risultato non inventerà competenze o esperienze che non hai — potrebbe restare molto simile al CV originale.`
+                  ? (lang === "en"
+                      ? `Estimated relevance is low (${relevance.score}/100): ${relevance.reason} The result won't invent skills or experience you don't have — it may stay very close to the original CV.`
+                      : `Pertinenza stimata bassa (${relevance.score}/100): ${relevance.reason} Il risultato non inventerà competenze o esperienze che non hai — potrebbe restare molto simile al CV originale.`)
                   : undefined
               }
               onCancel={() => setConfirming(false)}
@@ -504,7 +517,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                   className="w-full py-2.5 rounded-xl font-semibold text-sm"
                   style={{ background: ACCENT, color: "var(--primary-foreground)" }}
                 >
-                  Ho capito
+                  {lang === "en" ? "Got it" : "Ho capito"}
                 </button>
               </div>
             </div>

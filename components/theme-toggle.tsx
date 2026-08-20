@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { Sun, Moon } from 'lucide-react'
+import { useLanguage } from './language-provider'
 
 export default function ThemeToggle({ className }: { className?: string }) {
+  const { lang } = useLanguage()
   // Starts false and syncs on mount rather than reading localStorage inline —
   // the initial class was already set synchronously by the inline script in
   // app/layout.tsx (no flash), this just mirrors that into React state so
@@ -25,7 +27,9 @@ export default function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
+      aria-label={lang === 'en'
+        ? (isDark ? 'Switch to light theme' : 'Switch to dark theme')
+        : (isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro')}
       className={className}
     >
       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

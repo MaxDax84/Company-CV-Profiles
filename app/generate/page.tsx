@@ -82,10 +82,10 @@ export default function GeneratePage() {
         body: JSON.stringify({ claimToken }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
+      if (!res.ok) throw new Error(data.error ?? genericError);
       window.location.href = "/account?tab=cv";
     } catch (err) {
-      setClaimError(err instanceof Error ? err.message : "Errore sconosciuto");
+      setClaimError(err instanceof Error ? err.message : genericError);
       setClaiming(false);
     }
   }
@@ -131,7 +131,7 @@ export default function GeneratePage() {
         // not our own route's error response.
         throw new Error(t.timeoutErrorNote);
       }
-      if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
+      if (!res.ok) throw new Error(data.error ?? genericError);
       setSlug(data.slug);
       setProfile(data.profile);
       setClaimToken(data.claimToken ?? null);
@@ -140,7 +140,7 @@ export default function GeneratePage() {
       setDuplicateOf(data.duplicateOf ?? null);
       setState("scored");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto");
+      setError(err instanceof Error ? err.message : genericError);
       setState("idle");
     } finally {
       // Turnstile tokens are single-use — always get a fresh one for the next attempt.
@@ -169,12 +169,12 @@ export default function GeneratePage() {
       } catch {
         throw new Error(t.timeoutErrorNote);
       }
-      if (!res.ok) throw new Error(data.error ?? "Errore sconosciuto");
+      if (!res.ok) throw new Error(data.error ?? genericError);
       setProfile(data.profile);
       setCvScore(prev => prev ? { ...prev, after: data.cvScoreAfter ?? prev.after } : prev);
       setState("done");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto");
+      setError(err instanceof Error ? err.message : genericError);
     } finally {
       setIsCreating(false);
     }
@@ -223,6 +223,7 @@ export default function GeneratePage() {
   const { lang } = useLanguage();
   const t = translations[lang].generate;
   const stepLabels = translations[lang].steps;
+  const genericError = lang === "en" ? "Unknown error" : "Errore sconosciuto";
   const selected = TEMPLATES.find(t => t.id === template)!;
   const canAnalyze = !!file && privacy && !!turnstileToken && state === "idle";
   const needsPrivacy = !!file && !privacy;
@@ -312,10 +313,10 @@ export default function GeneratePage() {
                 // save this CV into the account they're already in.
                 <div className="text-left rounded-2xl border p-5 space-y-3" style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d` }}>
                   <p className="text-sm font-semibold" style={{ color: selected.accent }}>
-                    Questa è solo un&apos;anteprima
+                    {lang === "en" ? "This is just a preview" : "Questa è solo un'anteprima"}
                   </p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Procedi per salvare questo profilo nel tuo account.
+                    {lang === "en" ? "Proceed to save this profile to your account." : "Procedi per salvare questo profilo nel tuo account."}
                   </p>
                   {claimError && <p className="text-xs text-destructive">{claimError}</p>}
                   <button
@@ -324,20 +325,20 @@ export default function GeneratePage() {
                     className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all disabled:opacity-60"
                     style={{ background: selected.accent, color: "#000" }}
                   >
-                    {claiming ? "Salvataggio…" : "Procedi →"}
+                    {claiming ? (lang === "en" ? "Saving…" : "Salvataggio…") : (lang === "en" ? "Proceed →" : "Procedi →")}
                   </button>
                 </div>
               ) : claimToken && isLoggedIn === false ? (
                 <div className="text-left rounded-2xl border p-5 space-y-3" style={{ borderColor: `${selected.accent}40`, background: `${selected.accent}0d` }}>
                   <p className="text-sm font-semibold" style={{ color: selected.accent }}>
-                    Questa è solo un&apos;anteprima
+                    {lang === "en" ? "This is just a preview" : "Questa è solo un'anteprima"}
                   </p>
                   <div className="text-xs text-muted-foreground leading-relaxed space-y-1.5">
-                    <p>Crea un account gratuito per:</p>
+                    <p>{lang === "en" ? "Create a free account to:" : "Crea un account gratuito per:"}</p>
                     <ul className="space-y-1 pl-4">
-                      <li className="list-disc">Salvare questo profilo migliorato per sempre</li>
-                      <li className="list-disc">Scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso)</li>
-                      <li className="list-disc">Adattare il CV a un annuncio di lavoro specifico</li>
+                      <li className="list-disc">{lang === "en" ? "Save this improved profile forever" : "Salvare questo profilo migliorato per sempre"}</li>
+                      <li className="list-disc">{lang === "en" ? "Download the PDF choosing your preferred template (1 free credit included)" : "Scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso)"}</li>
+                      <li className="list-disc">{lang === "en" ? "Tailor the CV to a specific job posting" : "Adattare il CV a un annuncio di lavoro specifico"}</li>
                     </ul>
                   </div>
                   <a
@@ -345,7 +346,7 @@ export default function GeneratePage() {
                     className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
                     style={{ background: selected.accent, color: "#000" }}
                   >
-                    Crea account gratis o accedi per continuare →
+                    {lang === "en" ? "Create a free account or log in to continue →" : "Crea account gratis o accedi per continuare →"}
                   </a>
                 </div>
               ) : undefined
@@ -780,7 +781,7 @@ export default function GeneratePage() {
               className="px-4 py-2 rounded-lg text-sm font-semibold"
               style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
-              Ho capito
+              {lang === "en" ? "Got it" : "Ho capito"}
             </button>
           </div>
         </div>
@@ -798,9 +799,11 @@ export default function GeneratePage() {
             className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-sm font-semibold">Hai già questo CV salvato</p>
+            <p className="text-sm font-semibold">{lang === "en" ? "You already have this CV saved" : "Hai già questo CV salvato"}</p>
             <p className="text-sm text-muted-foreground">
-              &quot;{duplicateOf.fullName}&quot;, creato il {new Date(duplicateOf.createdAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}, è identico al file appena caricato. Puoi aprire quello esistente oppure continuare e crearne comunque un secondo, identico.
+              {lang === "en"
+                ? <>&quot;{duplicateOf.fullName}&quot;, created on {new Date(duplicateOf.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}, is identical to the file you just uploaded. You can open the existing one, or continue and create a second, identical one anyway.</>
+                : <>&quot;{duplicateOf.fullName}&quot;, creato il {new Date(duplicateOf.createdAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}, è identico al file appena caricato. Puoi aprire quello esistente oppure continuare e crearne comunque un secondo, identico.</>}
             </p>
             <div className="flex gap-2 justify-center pt-1">
               <button
@@ -808,14 +811,14 @@ export default function GeneratePage() {
                 onClick={() => setDuplicateOf(null)}
                 className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Continua comunque
+                {lang === "en" ? "Continue anyway" : "Continua comunque"}
               </button>
               <a
                 href="/account?tab=cv"
                 className="px-4 py-2 rounded-lg text-sm font-semibold"
                 style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
               >
-                Apri il CV esistente
+                {lang === "en" ? "Open the existing CV" : "Apri il CV esistente"}
               </a>
             </div>
           </div>
