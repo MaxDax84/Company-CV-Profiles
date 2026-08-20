@@ -9,6 +9,7 @@ import { translations } from "@/lib/i18n";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
 import PdfExportButton from "@/components/pdf-export-button";
+import WordExportButton from "@/components/word-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
@@ -49,6 +50,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
+  const [pdfDownloaded, setPdfDownloaded] = useState(false);
   // A dedicated popup instead of the generic bottom-of-form error text —
   // that text sat below the fold often enough that this specific failure
   // (common, since many job boards actively block scrapers) went unnoticed.
@@ -158,6 +160,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
     setError(null);
     setPrivacy(false);
     setRelevance(null);
+    setPdfDownloaded(false);
   }
 
   const accent = profile?.metadata.primary_color ?? ACCENT;
@@ -269,6 +272,14 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
                 label={t.downloadPdf}
                 credits={credits}
                 className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
+                onDownloaded={() => setPdfDownloaded(true)}
+              />
+              <WordExportButton
+                slug={slug}
+                label={lang === "en" ? "Download Word" : "Scarica Word"}
+                credits={credits}
+                className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
+                onDownloaded={() => setPdfDownloaded(true)}
               />
               <CoverLetterButton
                 slug={slug}
@@ -316,7 +327,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
             ) : undefined
           }
         />
-        <ActionFeedbackPopup actionType="tailor" trigger={state === "done"} />
+        <ActionFeedbackPopup actionType="tailor" trigger={pdfDownloaded} />
         </>
       ) : hasProfile && state === "uploading" ? (
         <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}>

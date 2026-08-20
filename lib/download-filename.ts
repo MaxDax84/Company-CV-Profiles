@@ -42,6 +42,12 @@ export function buildCvFilename(profile: ProfileSchema, templateName: string, cv
   );
 }
 
+export function buildCvWordFilename(profile: ProfileSchema, cvName: string): string {
+  return sanitize(
+    `${profile.personal_info.full_name} - ${cvLabel(profile, cvName)} - ${todayLabel()}.docx`
+  );
+}
+
 export function buildCoverLetterFilename(profile: ProfileSchema, cvName: string): string {
   return sanitize(
     `${profile.personal_info.full_name} - Lettera - ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`

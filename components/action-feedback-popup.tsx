@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { Star, X } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
-import { hasGivenFeedback, dismissFeedback, submitFeedback, type FeedbackActionType } from "@/lib/action-feedback";
+import { isFeedbackEligible, recordFeedbackShown, submitFeedback, type FeedbackActionType } from "@/lib/action-feedback";
 
 interface ActionFeedbackPopupProps {
   actionType: FeedbackActionType;
   // Flips true right when the user has just gotten real value out of the
   // action (a PDF actually downloaded, a tailoring run completed) — the
-  // popup checks eligibility (not signed in / already answered / already
-  // dismissed) at that moment rather than on every render, so it never
-  // flashes for someone who already answered.
+  // popup checks eligibility (signed in + not shown again too recently) at
+  // that moment rather than on every render, so it never flashes for
+  // someone who was just asked.
   trigger: boolean;
 }
 
@@ -28,7 +28,8 @@ const PROMPTS: Record<FeedbackActionType, { it: string; en: string }> = {
 
 export default function ActionFeedbackPopup({ actionType, trigger }: ActionFeedbackPopupProps) {
   const { lang } = useLanguage();
-  const [visible, setVisible] = useState(false);
+  const [mounted, setMounted] = useState(false); // in the DOM at all
+  const [entered, setEntered] = useState(false); // slid into view (drives the transition)
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -40,8 +41,11 @@ export default function ActionFeedbackPopup({ actionType, trigger }: ActionFeedb
     // Small delay so it doesn't compete for attention with whatever the
     // triggering action (a download, a "done" screen) is already showing.
     const timer = setTimeout(async () => {
-      const already = await hasGivenFeedback(actionType);
-      if (!cancelled && !already) setVisible(true);
+      const eligible = await isFeedbackEligible(actionType);
+      if (!cancelled && eligible) {
+        recordFeedbackShown(actionType);
+        setMounted(true);
+      }
     }, 1200);
     return () => {
       cancelled = true;
@@ -52,23 +56,35 @@ export default function ActionFeedbackPopup({ actionType, trigger }: ActionFeedb
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger]);
 
+  // Mounted with translate-y-full/opacity-0 first, then flipped to the
+  // "in view" classes on the next frame — without this two-step, the CSS
+  // transition has no starting state to animate from and the card just
+  // appears instantly instead of sliding up.
+  useEffect(() => {
+    if (!mounted) return;
+    const raf = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(raf);
+  }, [mounted]);
+
   function handleClose() {
-    dismissFeedback(actionType);
-    setVisible(false);
+    setEntered(false);
+    setTimeout(() => setMounted(false), 300);
   }
 
   async function handleSubmit(finalRating: number) {
     setRating(finalRating);
     await submitFeedback(actionType, finalRating, comment);
     setSubmitted(true);
-    setTimeout(() => setVisible(false), 1800);
+    setTimeout(handleClose, 1800);
   }
 
-  if (!visible) return null;
+  if (!mounted) return null;
 
   return (
     <div
-      className="fixed z-40 bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-80 rounded-2xl border p-4 space-y-3 relative"
+      className={`fixed z-40 bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-80 rounded-2xl border p-4 space-y-3 transition-all duration-300 ease-out ${
+        entered ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+      }`}
       style={{ background: "var(--background)", borderColor: "var(--border)", boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}
     >
       <button

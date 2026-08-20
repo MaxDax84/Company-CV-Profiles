@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import PdfExportButton from "@/components/pdf-export-button";
+import WordExportButton from "@/components/word-export-button";
 import ActionFeedbackPopup from "@/components/action-feedback-popup";
 import { useLanguage } from "@/components/language-provider";
 
@@ -28,7 +28,6 @@ interface OwnerToolbarProps {
 // white (Beta), dark green (Gamma), or navy (Delta).
 export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps) {
   const { lang } = useLanguage();
-  const [downloaded, setDownloaded] = useState(false);
 
   return (
     <>
@@ -48,7 +47,13 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         label={lang === "en" ? "Download PDF ↓" : "Scarica PDF ↓"}
         credits={credits}
         className="font-semibold text-foreground transition-opacity hover:opacity-70"
-        onDownloaded={kind === "primary" ? () => setDownloaded(true) : undefined}
+      />
+      <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
+      <WordExportButton
+        slug={slug}
+        label={lang === "en" ? "Download Word ↓" : "Scarica Word ↓"}
+        credits={credits}
+        className="font-semibold text-foreground transition-opacity hover:opacity-70"
       />
       {kind === "primary" && (
         <>
@@ -59,7 +64,10 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         </>
       )}
     </div>
-    {kind === "primary" && <ActionFeedbackPopup actionType="generate" trigger={downloaded} />}
+    {/* Own page freshly opened is already the "got real value" moment
+        here (unlike /tailor, which produces a downloadable file rather
+        than a page) — no need to wait for an actual download. */}
+    {kind === "primary" && <ActionFeedbackPopup actionType="generate" trigger={true} />}
     </>
   );
 }

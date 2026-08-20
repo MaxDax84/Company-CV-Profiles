@@ -2,35 +2,51 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 export type FeedbackActionType = "generate" | "tailor";
 
-const DISMISS_KEY_PREFIX = "jobli_feedback_dismissed_";
+const LAST_SHOWN_KEY_PREFIX = "jobli_feedback_last_shown_";
 
-// A row in action_feedback (see supabase/migrations/0015_action_feedback.sql)
-// is the source of truth for "already asked and answered" — it's unique per
-// (user_id, action_type), so a real submission is permanent and cross-device.
-// A dismiss without submitting has no server-side record (nothing meaningful
-// to store), so it's tracked best-effort in localStorage instead, just to
-// avoid nagging the same browser again this device.
-export async function hasGivenFeedback(actionType: FeedbackActionType): Promise<boolean> {
-  if (typeof window !== "undefined" && localStorage.getItem(DISMISS_KEY_PREFIX + actionType)) {
-    return true;
-  }
-  const supabase = createBrowserSupabaseClient();
-  const { data: userData } = await supabase.auth.getUser();
-  if (!userData.user) return true; // not signed in — nothing to ask, nothing to save
+// Not "ask once, forever" — the popup is meant to check back in periodically
+// so a user can leave more than one rating over time, without ever feeling
+// naggy. Cooldown applies whether the user answered, dismissed, or the
+// popup just happened to show and got auto-hidden — any of those "uses up"
+// this window equally.
+const COOLDOWN_DAYS = 21;
+const COOLDOWN_MS = COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
 
-  const { data } = await supabase
-    .from("action_feedback")
-    .select("id")
-    .eq("user_id", userData.user.id)
-    .eq("action_type", actionType)
-    .maybeSingle();
-  return !!data;
+function lastShownLocally(actionType: FeedbackActionType): number {
+  if (typeof window === "undefined") return 0;
+  const raw = localStorage.getItem(LAST_SHOWN_KEY_PREFIX + actionType);
+  return raw ? Number(raw) : 0;
 }
 
-export function dismissFeedback(actionType: FeedbackActionType) {
+// Called the moment the popup actually appears (not on every eligibility
+// check) — starts this device's cooldown regardless of whether the user
+// goes on to submit a rating or just closes it.
+export function recordFeedbackShown(actionType: FeedbackActionType) {
   if (typeof window !== "undefined") {
-    localStorage.setItem(DISMISS_KEY_PREFIX + actionType, "1");
+    localStorage.setItem(LAST_SHOWN_KEY_PREFIX + actionType, String(Date.now()));
   }
+}
+
+export async function isFeedbackEligible(actionType: FeedbackActionType): Promise<boolean> {
+  if (Date.now() - lastShownLocally(actionType) < COOLDOWN_MS) return false;
+
+  const supabase = createBrowserSupabaseClient();
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) return false; // not signed in — nothing to ask, nothing to save
+
+  // Cross-device cooldown: also check the most recent real submission in the
+  // DB, so switching devices doesn't reset the "ogni tanto" cadence.
+  const { data } = await supabase
+    .from("action_feedback")
+    .select("created_at")
+    .eq("user_id", userData.user.id)
+    .eq("action_type", actionType)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (data && Date.now() - new Date(data.created_at).getTime() < COOLDOWN_MS) return false;
+  return true;
 }
 
 export async function submitFeedback(actionType: FeedbackActionType, rating: number, comment: string) {
@@ -38,11 +54,13 @@ export async function submitFeedback(actionType: FeedbackActionType, rating: num
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) return;
 
+  // A new row every time, not an upsert — this is a periodic pulse check,
+  // so the history of ratings over time (visible in /admin/feedback) is the
+  // point, not a single "final answer" per user.
   await supabase.from("action_feedback").insert({
     user_id: userData.user.id,
     action_type: actionType,
     rating,
     comment: comment.trim() || null,
   });
-  dismissFeedback(actionType);
 }

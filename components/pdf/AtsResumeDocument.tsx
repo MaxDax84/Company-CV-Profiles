@@ -212,7 +212,7 @@ function cleanDatePart(value: string | null | undefined): string {
   return trimmed.toLowerCase() === "null" ? "" : trimmed;
 }
 
-function formatDateRange(start: string | null | undefined, end: string | null | undefined): string {
+export function formatDateRange(start: string | null | undefined, end: string | null | undefined): string {
   const cleanStart = cleanDatePart(start);
   const isPresent = typeof end === "string" && end.toLowerCase() === "present";
   const cleanEnd = isPresent ? "Present" : cleanDatePart(end);
@@ -220,7 +220,7 @@ function formatDateRange(start: string | null | undefined, end: string | null | 
   return cleanStart || cleanEnd;
 }
 
-function formatYearRange(start: number | string | null | undefined, end: number | string | null | undefined): string {
+export function formatYearRange(start: number | string | null | undefined, end: number | string | null | undefined): string {
   const isPresent = end === "present";
   const cleanStart = cleanDatePart(start != null ? String(start) : start);
   const cleanEnd = isPresent ? "Present" : cleanDatePart(end != null ? String(end) : end);
@@ -376,7 +376,7 @@ function SkillsSection({ skills, labels, cfg, styles }: { skills: ProfileSchema[
   );
 }
 
-interface Labels {
+export interface Labels {
   summary: string;
   experience: string;
   education: string;
@@ -394,7 +394,7 @@ interface Labels {
 // translated CV's own content is genuinely translated by lib/translate-
 // resume.ts, but without an entry here its section headers would silently
 // stay in English (the fallback) regardless of the target language chosen.
-const LABELS_BY_LANG: Record<string, Labels> = {
+export const LABELS_BY_LANG: Record<string, Labels> = {
   en: {
     summary: "Summary", experience: "Experience", education: "Education",
     certifications: "Certifications", skills: "Skills", skillsHard: "Technical",

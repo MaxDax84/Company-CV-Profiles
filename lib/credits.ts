@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 // Centralized so a pricing tweak is a one-line change, not a hunt through routes.
 export const CREDIT_COSTS = {
   pdfDownload: 1,
+  wordDownload: 1,
   tailor: 1,
   coverLetter: 1,
   translate: 1,

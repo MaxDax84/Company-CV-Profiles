@@ -32,6 +32,7 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   welcome: { it: "Credito di benvenuto", en: "Welcome credit" },
   welcome_promo_first10: { it: "Credito di benvenuto (promo primi 10)", en: "Welcome credit (first-10 promo)" },
   pdf_download: { it: "Download PDF", en: "PDF download" },
+  word_download: { it: "Download Word", en: "Word download" },
   tailor: { it: "Adattamento a un annuncio", en: "Job-posting tailoring" },
   cover_letter: { it: "Lettera di presentazione", en: "Cover letter" },
   translate: { it: "Traduzione CV", en: "CV translation" },
@@ -466,7 +467,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                 {paidDownloads.map((dl) => {
                   const row = profilesById.get(dl.profile_id);
                   if (!row) return null;
-                  const templateName = (lang === "en" ? PDF_TEMPLATES_EN[dl.template as PdfTemplate]?.name : PDF_TEMPLATES.find(t => t.id === dl.template)?.name) ?? dl.template;
+                  const templateName = dl.template === "docx"
+                    ? "Word (.docx)"
+                    : (lang === "en" ? PDF_TEMPLATES_EN[dl.template as PdfTemplate]?.name : PDF_TEMPLATES.find(t => t.id === dl.template)?.name) ?? dl.template;
                   const langEntry = row.kind === "translated" ? TRANSLATE_LANGUAGES.find(l => l.code === row.data.metadata.language) : null;
                   const languageLabel = langEntry ? (lang === "en" ? langEntry.labelEn : langEntry.label) : (row.kind === "translated" ? row.data.metadata.language : null);
                   return (
@@ -480,7 +483,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         </p>
                       </div>
                       <a
-                        href={`/api/pdf/${row.slug}?template=${dl.template}`}
+                        href={dl.template === "docx" ? `/api/cv-word/${row.slug}` : `/api/pdf/${row.slug}?template=${dl.template}`}
                         className="shrink-0 text-center px-3 py-1.5 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         {tr("Apri ↓", "Open ↓")}

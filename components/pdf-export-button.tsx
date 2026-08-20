@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
@@ -22,6 +22,41 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
+  const [paidTemplates, setPaidTemplates] = useState<string[] | null>(null);
+
+  // Re-downloading a template already paid for is free server-side (see
+  // app/api/pdf/[slug]/route.tsx) — without this check the "costs 1 credit"
+  // confirmation kept showing anyway, which reads as a false threat.
+  useEffect(() => {
+    if (!open || paidTemplates !== null) return;
+    fetch(`/api/pdf/${slug}/status`)
+      .then((res) => (res.ok ? res.json() : { paidTemplates: [] }))
+      .then((data) => setPaidTemplates(data.paidTemplates ?? []))
+      .catch(() => setPaidTemplates([]));
+  }, [open, paidTemplates, slug]);
+
+  async function startDownload() {
+    setDownloading(true);
+    try {
+      await triggerDownload(`/api/pdf/${slug}?template=${template}`);
+      setPaidTemplates((prev) => (prev && !prev.includes(template) ? [...prev, template] : prev));
+      onDownloaded?.();
+    } catch {
+      // Non-blocking — the credit spend already happened server-side
+      // if it reached that point; a network hiccup on the download
+      // itself isn't worth a dedicated error state here.
+    }
+    setDownloading(false);
+    setOpen(false);
+  }
+
+  function handleDownloadClick() {
+    if (paidTemplates?.includes(template)) {
+      startDownload();
+    } else {
+      setConfirming(true);
+    }
+  }
 
   if (!open) {
     return (
@@ -79,7 +114,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
       <div className="flex gap-2 pt-1">
         <button
           type="button"
-          onClick={() => setConfirming(true)}
+          onClick={handleDownloadClick}
           className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
@@ -101,17 +136,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
           onCancel={() => setConfirming(false)}
           onConfirm={async () => {
             setConfirming(false);
-            setDownloading(true);
-            try {
-              await triggerDownload(`/api/pdf/${slug}?template=${template}`);
-              onDownloaded?.();
-            } catch {
-              // Non-blocking — the credit spend already happened server-side
-              // if it reached that point; a network hiccup on the download
-              // itself isn't worth a dedicated error state here.
-            }
-            setDownloading(false);
-            setOpen(false);
+            await startDownload();
           }}
         />
       )}
