@@ -2,10 +2,12 @@
 
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
+import { useConsent } from './consent-provider'
 
 export default function Footer() {
   const { lang } = useLanguage()
   const t = translations[lang].footer
+  const { openBanner } = useConsent()
 
   return (
     // Always a Dark Navy block, independent of the site's light/dark theme
@@ -35,6 +37,13 @@ export default function Footer() {
             <a href="/cookies" className="text-xs text-white/60 hover:text-white transition-colors">
               Cookie Policy
             </a>
+            <button
+              type="button"
+              onClick={openBanner}
+              className="text-xs text-white/60 hover:text-white transition-colors"
+            >
+              {lang === 'en' ? 'Cookie preferences' : 'Preferenze Cookie'}
+            </button>
           </div>
 
           {/* Copyright */}

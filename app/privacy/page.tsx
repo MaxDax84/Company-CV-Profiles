@@ -125,6 +125,7 @@ export default function PrivacyPage() {
                   <li>Supabase Inc. — gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
                   <li>Anthropic PBC — elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
                   <li>Cloudflare Inc. — verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
+                  <li>Google Ireland Limited — statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Analytics nel banner cookie</li>
                 </ul>
               </div>
 
@@ -176,10 +177,12 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">9. Cookie</h3>
                 <p>
-                  Questo sito utilizza esclusivamente cookie strettamente necessari al funzionamento
-                  del servizio (es. mantenimento della sessione di accesso, verifica anti-bot). Non
-                  utilizza cookie di profilazione né strumenti di analisi di terze parti. Per maggiori
-                  informazioni consulta la nostra{' '}
+                  Questo sito utilizza cookie strettamente necessari al funzionamento del servizio
+                  (es. mantenimento della sessione di accesso, verifica anti-bot), sempre attivi, e
+                  — solo previo tuo consenso esplicito — cookie di Analytics (Google Analytics 4) per
+                  capire come viene usato il sito. Puoi dare, rifiutare o revocare il consenso in
+                  qualsiasi momento dal banner cookie o dal link &quot;Preferenze Cookie&quot; in fondo
+                  al sito. Per maggiori informazioni consulta la nostra{' '}
                   <Link href="/cookies" className="text-primary hover:underline">Cookie Policy</Link>.
                 </p>
               </div>
@@ -276,6 +279,7 @@ export default function PrivacyPage() {
                   <li>Supabase Inc. — account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
                   <li>Anthropic PBC — processing of CV text for profile extraction, improvement, and job tailoring</li>
                   <li>Cloudflare Inc. — bot verification (Turnstile) on the CV upload and job-tailoring forms</li>
+                  <li>Google Ireland Limited — aggregated, anonymised browsing statistics (Google Analytics 4), only if you've consented to the Analytics category in the cookie banner</li>
                 </ul>
               </div>
 
@@ -325,9 +329,12 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">9. Cookies</h3>
                 <p>
-                  This website only uses cookies strictly necessary for the service to function
-                  (e.g. keeping you signed in, bot verification). It does not use profiling cookies
-                  or third-party analytics tools. For full details see our{' '}
+                  This website uses cookies strictly necessary for the service to function (e.g.
+                  keeping you signed in, bot verification), always active, and — only with your
+                  explicit consent — Analytics cookies (Google Analytics 4) to understand how the
+                  site is used. You can give, decline, or withdraw consent at any time from the
+                  cookie banner or the &quot;Cookie preferences&quot; link at the bottom of the site.
+                  For full details see our{' '}
                   <Link href="/cookies" className="text-primary hover:underline">Cookie Policy</Link>.
                 </p>
               </div>

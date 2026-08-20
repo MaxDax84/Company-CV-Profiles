@@ -15,6 +15,9 @@ import '@fontsource/space-grotesk/500.css'
 import '@fontsource/space-grotesk/600.css'
 import '@fontsource/space-grotesk/700.css'
 import { LanguageProvider } from '@/components/language-provider'
+import { ConsentProvider } from '@/components/consent-provider'
+import CookieConsentBanner from '@/components/cookie-consent-banner'
+import GoogleAnalytics from '@/components/google-analytics'
 import ScrollToTop from '@/components/scroll-to-top'
 import './globals.css'
 
@@ -47,7 +50,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         <ScrollToTop />
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <ConsentProvider>
+            {children}
+            <CookieConsentBanner />
+            <GoogleAnalytics />
+          </ConsentProvider>
+        </LanguageProvider>
       </body>
     </html>
   )
