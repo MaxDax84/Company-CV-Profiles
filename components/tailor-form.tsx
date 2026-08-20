@@ -12,6 +12,7 @@ import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
+import ActionFeedbackPopup from "@/components/action-feedback-popup";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
@@ -315,6 +316,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
             ) : undefined
           }
         />
+        <ActionFeedbackPopup actionType="tailor" trigger={state === "done"} />
         </>
       ) : hasProfile && state === "uploading" ? (
         <div className="rounded-3xl border border-primary/20 bg-primary/5 p-12 space-y-5" style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}>

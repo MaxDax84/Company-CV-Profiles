@@ -13,9 +13,10 @@ interface PdfExportButtonProps {
   icon?: ReactNode;
   className?: string;
   credits: number;
+  onDownloaded?: () => void;
 }
 
-export default function PdfExportButton({ slug, label, icon, className, credits }: PdfExportButtonProps) {
+export default function PdfExportButton({ slug, label, icon, className, credits, onDownloaded }: PdfExportButtonProps) {
   const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -103,6 +104,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits 
             setDownloading(true);
             try {
               await triggerDownload(`/api/pdf/${slug}?template=${template}`);
+              onDownloaded?.();
             } catch {
               // Non-blocking — the credit spend already happened server-side
               // if it reached that point; a network hiccup on the download

@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import PdfExportButton from "@/components/pdf-export-button";
+import ActionFeedbackPopup from "@/components/action-feedback-popup";
 import { useLanguage } from "@/components/language-provider";
 
 interface OwnerToolbarProps {
@@ -26,8 +28,10 @@ interface OwnerToolbarProps {
 // white (Beta), dark green (Gamma), or navy (Delta).
 export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps) {
   const { lang } = useLanguage();
+  const [downloaded, setDownloaded] = useState(false);
 
   return (
+    <>
     <div
       className="fixed top-0 left-0 right-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 text-xs sm:text-sm"
       style={{ height: 64, zIndex: 200, background: "#6366f1", boxShadow: "0 2px 12px rgba(0,0,0,0.35)" }}
@@ -44,6 +48,7 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         label={lang === "en" ? "Download PDF ↓" : "Scarica PDF ↓"}
         credits={credits}
         className="font-semibold text-foreground transition-opacity hover:opacity-70"
+        onDownloaded={kind === "primary" ? () => setDownloaded(true) : undefined}
       />
       {kind === "primary" && (
         <>
@@ -54,5 +59,7 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         </>
       )}
     </div>
+    {kind === "primary" && <ActionFeedbackPopup actionType="generate" trigger={downloaded} />}
+    </>
   );
 }
