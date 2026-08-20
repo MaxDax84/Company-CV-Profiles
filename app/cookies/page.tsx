@@ -58,15 +58,15 @@ export default function CookiePage() {
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
-                    <strong className="text-foreground">Necessari</strong> — indispensabili al
+                    <strong className="text-foreground">Necessari</strong>, indispensabili al
                     funzionamento del sito; non richiedono consenso e non possono essere disattivati.
                   </li>
                   <li>
-                    <strong className="text-foreground">Analytics</strong> — ci aiutano a capire come
+                    <strong className="text-foreground">Analytics</strong>, ci aiutano a capire come
                     viene usato il sito, in forma aggregata; richiedono il tuo consenso preventivo.
                   </li>
                   <li>
-                    <strong className="text-foreground">Marketing</strong> — utilizzati per misurare
+                    <strong className="text-foreground">Marketing</strong>, utilizzati per misurare
                     l&apos;efficacia di eventuali campagne pubblicitarie; richiedono il tuo consenso
                     preventivo.
                   </li>
@@ -77,18 +77,18 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">2. Cookie necessari (sempre attivi)</h3>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
-                    <strong className="text-foreground">Cookie di sessione (Supabase Auth)</strong> —
+                    <strong className="text-foreground">Cookie di sessione (Supabase Auth)</strong>,
                     mantengono l&apos;accesso al tuo account durante la navigazione. Impostati solo se
                     hai effettuato l&apos;accesso o creato un account; scadono al logout o dopo un
                     periodo di inattività.
                   </li>
                   <li>
-                    <strong className="text-foreground">Cookie/token anti-bot (Cloudflare Turnstile)</strong> —
+                    <strong className="text-foreground">Cookie/token anti-bot (Cloudflare Turnstile)</strong>,
                     usati per distinguere un utente reale da un bot automatizzato nei moduli di
                     caricamento CV e adattamento a un annuncio, prevenendo abusi del servizio.
                   </li>
                   <li>
-                    <strong className="text-foreground">Cookie di consenso (jobli_cookie_consent)</strong> —
+                    <strong className="text-foreground">Cookie di consenso (jobli_cookie_consent)</strong>,
                     memorizza le tue scelte su questo banner per 6 mesi, così non te lo richiediamo a
                     ogni visita.
                   </li>
@@ -111,8 +111,8 @@ export default function CookiePage() {
                   non viene usato per la personalizzazione di annunci pubblicitari.
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li><strong className="text-foreground">_ga</strong> — distingue gli utenti; durata circa 2 anni.</li>
-                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong> — mantiene lo stato della sessione; durata circa 2 anni.</li>
+                  <li><strong className="text-foreground">_ga</strong>, distingue gli utenti; durata circa 2 anni.</li>
+                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong>, mantiene lo stato della sessione; durata circa 2 anni.</li>
                 </ul>
                 <p className="mt-3">
                   Se rifiuti questa categoria (o non rispondi), Google Analytics non viene caricato e
@@ -129,8 +129,8 @@ export default function CookiePage() {
                   Questa categoria è riservata per eventuali strumenti pubblicitari futuri (es. pixel
                   di remarketing). <strong className="text-foreground">Al momento nessuno strumento di
                   marketing è attivo</strong> sul sito, anche se hai concesso il consenso a questa
-                  categoria — la sezione verrà aggiornata con l&apos;elenco specifico dei cookie non
-                  appena uno strumento verrà effettivamente introdotto.
+                  categoria (la sezione verrà aggiornata con l&apos;elenco specifico dei cookie non
+                  appena uno strumento verrà effettivamente introdotto).
                 </p>
               </div>
 
@@ -224,15 +224,15 @@ export default function CookiePage() {
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
-                    <strong className="text-foreground">Necessary</strong> — required for the site to
+                    <strong className="text-foreground">Necessary</strong>, required for the site to
                     function; no consent is needed and they can&apos;t be turned off.
                   </li>
                   <li>
-                    <strong className="text-foreground">Analytics</strong> — help us understand how the
+                    <strong className="text-foreground">Analytics</strong>, help us understand how the
                     site is used, in aggregate form; require your prior consent.
                   </li>
                   <li>
-                    <strong className="text-foreground">Marketing</strong> — used to measure the
+                    <strong className="text-foreground">Marketing</strong>, used to measure the
                     effectiveness of any advertising campaigns; require your prior consent.
                   </li>
                 </ul>
@@ -242,17 +242,17 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">2. Necessary cookies (always active)</h3>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
-                    <strong className="text-foreground">Session cookies (Supabase Auth)</strong> —
+                    <strong className="text-foreground">Session cookies (Supabase Auth)</strong>,
                     keep you signed in to your account as you browse. Only set if you&apos;ve logged
                     in or created an account; expire on logout or after a period of inactivity.
                   </li>
                   <li>
-                    <strong className="text-foreground">Anti-bot cookies/tokens (Cloudflare Turnstile)</strong> —
+                    <strong className="text-foreground">Anti-bot cookies/tokens (Cloudflare Turnstile)</strong>,
                     used to distinguish a real user from an automated bot on the CV upload and
                     job-tailoring forms, preventing abuse of the service.
                   </li>
                   <li>
-                    <strong className="text-foreground">Consent cookie (jobli_cookie_consent)</strong> —
+                    <strong className="text-foreground">Consent cookie (jobli_cookie_consent)</strong>,
                     stores your choices on this banner for 6 months, so we don&apos;t ask again on
                     every visit.
                   </li>
@@ -274,8 +274,8 @@ export default function CookiePage() {
                   before storage (IP anonymization) and is not used for ad personalization.
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li><strong className="text-foreground">_ga</strong> — distinguishes users; expires after about 2 years.</li>
-                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong> — persists session state; expires after about 2 years.</li>
+                  <li><strong className="text-foreground">_ga</strong>, distinguishes users; expires after about 2 years.</li>
+                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong>, persists session state; expires after about 2 years.</li>
                 </ul>
                 <p className="mt-3">
                   If you decline this category (or don&apos;t respond), Google Analytics is never
@@ -292,9 +292,9 @@ export default function CookiePage() {
                 <p>
                   This category is reserved for any future advertising tools (e.g. remarketing
                   pixels). <strong className="text-foreground">No marketing tool is active</strong> on
-                  the site at this time, even if you&apos;ve consented to this category — this section
+                  the site at this time, even if you&apos;ve consented to this category (this section
                   will be updated with the specific cookie list as soon as a tool is actually
-                  introduced.
+                  introduced).
                 </p>
               </div>
 

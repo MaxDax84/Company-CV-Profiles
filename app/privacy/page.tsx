@@ -63,7 +63,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Il contenuto del CV caricato (esperienze, formazione, competenze, progetti, ecc.), estratto ed elaborato tramite intelligenza artificiale per costruire il tuo profilo</li>
                   <li>Nome del file PDF caricato, utilizzato per generare l&apos;indirizzo web della tua pagina profilo (modificabile in qualsiasi momento dal tuo account)</li>
-                  <li>Email e numero di telefono reali (non oscurati), utilizzati esclusivamente per il PDF scaricabile privatamente — la pagina web pubblica mostra sempre versioni oscurate di questi dati per limitare la raccolta automatizzata da parte di terzi</li>
+                  <li>Email e numero di telefono reali (non oscurati), utilizzati esclusivamente per il PDF scaricabile privatamente (la pagina web pubblica mostra sempre versioni oscurate di questi dati per limitare la raccolta automatizzata da parte di terzi)</li>
                   <li>Eventuali link a profili social (es. LinkedIn) se forniti</li>
                 </ul>
                 <p className="mt-3">
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
                   dell&apos;interessato (art. 6(1)(a) GDPR). I dati legati alla creazione e gestione
                   dell&apos;account, alla generazione del profilo e all&apos;adattamento del CV sono
                   trattati per l&apos;esecuzione del servizio richiesto dall&apos;utente (art. 6(1)(b)
-                  GDPR — esecuzione di un contratto/misure precontrattuali su richiesta
+                  GDPR, esecuzione di un contratto/misure precontrattuali su richiesta
                   dell&apos;interessato).
                 </p>
               </div>
@@ -108,8 +108,8 @@ export default function PrivacyPage() {
                   invece conservato <strong className="text-foreground">senza scadenza automatica</strong>,
                   fino a quando tu stesso non lo elimini. Puoi eliminare un singolo CV, o l&apos;intero
                   account (con tutti i CV, gli adattamenti e i crediti collegati) in qualsiasi momento,
-                  in autonomia, dalla pagina del tuo account — l&apos;eliminazione è immediata e
-                  irreversibile.
+                  in autonomia, dalla pagina del tuo account (l&apos;eliminazione è immediata e
+                  irreversibile).
                 </p>
               </div>
 
@@ -120,12 +120,12 @@ export default function PrivacyPage() {
                   qualità di responsabili del trattamento ai sensi dell&apos;art. 28 GDPR sono:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail) — ricezione messaggi dal modulo di contatto</li>
-                  <li>Vercel Inc. — hosting dell&apos;applicazione e conservazione temporanea delle anteprime non ancora collegate a un account</li>
-                  <li>Supabase Inc. — gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
-                  <li>Anthropic PBC — elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
-                  <li>Cloudflare Inc. — verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
-                  <li>Google Ireland Limited — statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Analytics nel banner cookie</li>
+                  <li>Google LLC (Gmail), ricezione messaggi dal modulo di contatto</li>
+                  <li>Vercel Inc., hosting dell&apos;applicazione e conservazione temporanea delle anteprime non ancora collegate a un account</li>
+                  <li>Supabase Inc., gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
+                  <li>Anthropic PBC, elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
+                  <li>Cloudflare Inc., verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
+                  <li>Google Ireland Limited, statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Analytics nel banner cookie</li>
                 </ul>
               </div>
 
@@ -145,8 +145,8 @@ export default function PrivacyPage() {
                 <p>Ai sensi degli artt. 15–22 GDPR, l&apos;interessato ha il diritto di:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Accedere ai propri dati personali (art. 15)</li>
-                  <li>Rettificarli (art. 16) — i dati anagrafici del tuo CV sono modificabili direttamente dalla pagina del tuo account</li>
-                  <li>Ottenerne la cancellazione (art. 17, &quot;diritto all&apos;oblio&quot;) — puoi eliminare un singolo CV o l&apos;intero account autonomamente, senza bisogno di richiederlo a noi</li>
+                  <li>Rettificarli (art. 16), i dati anagrafici del tuo CV sono modificabili direttamente dalla pagina del tuo account</li>
+                  <li>Ottenerne la cancellazione (art. 17, &quot;diritto all&apos;oblio&quot;), puoi eliminare un singolo CV o l&apos;intero account autonomamente, senza bisogno di richiederlo a noi</li>
                   <li>Limitarne il trattamento (art. 18)</li>
                   <li>Ricevere i propri dati in formato portabile (art. 20)</li>
                   <li>Opporsi al trattamento (art. 21)</li>
@@ -179,7 +179,7 @@ export default function PrivacyPage() {
                 <p>
                   Questo sito utilizza cookie strettamente necessari al funzionamento del servizio
                   (es. mantenimento della sessione di accesso, verifica anti-bot), sempre attivi, e
-                  — solo previo tuo consenso esplicito — cookie di Analytics (Google Analytics 4) per
+                  (solo previo tuo consenso esplicito) cookie di Analytics (Google Analytics 4) per
                   capire come viene usato il sito. Puoi dare, rifiutare o revocare il consenso in
                   qualsiasi momento dal banner cookie o dal link &quot;Preferenze Cookie&quot; in fondo
                   al sito. Per maggiori informazioni consulta la nostra{' '}
@@ -225,7 +225,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>The uploaded CV&apos;s content (experience, education, skills, projects, etc.), extracted and processed by AI to build your profile</li>
                   <li>The uploaded PDF&apos;s filename, used to generate your profile page&apos;s web address (editable at any time from your account)</li>
-                  <li>Your real (unredacted) email and phone number, used solely for the privately downloadable PDF — the public web page always shows redacted versions of these to limit automated scraping by third parties</li>
+                  <li>Your real (unredacted) email and phone number, used solely for the privately downloadable PDF (the public web page always shows redacted versions of these to limit automated scraping by third parties)</li>
                   <li>Any social profile links (e.g. LinkedIn) you provide</li>
                 </ul>
                 <p className="mt-3">
@@ -244,7 +244,7 @@ export default function PrivacyPage() {
                 <p>
                   Contact form data is processed on the basis of your explicit consent (Art. 6(1)(a)
                   GDPR). Data related to your account, profile generation, and CV tailoring is
-                  processed to perform the service you requested (Art. 6(1)(b) GDPR — performance of
+                  processed to perform the service you requested (Art. 6(1)(b) GDPR, performance of
                   a contract / pre-contractual steps taken at your request).
                 </p>
               </div>
@@ -264,7 +264,7 @@ export default function PrivacyPage() {
                   <strong className="text-foreground">indefinitely</strong>, until you delete it
                   yourself. You can delete a single CV, or your entire account (with every CV, every
                   tailored version, and your credits) at any time, on your own, from your account
-                  page — deletion is immediate and irreversible.
+                  page (deletion is immediate and irreversible).
                 </p>
               </div>
 
@@ -274,12 +274,12 @@ export default function PrivacyPage() {
                   Your data is not sold or shared with third parties. The processors (Art. 28 GDPR) are:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail) — receipt of contact form messages</li>
-                  <li>Vercel Inc. — application hosting and temporary storage of previews not yet linked to an account</li>
-                  <li>Supabase Inc. — account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
-                  <li>Anthropic PBC — processing of CV text for profile extraction, improvement, and job tailoring</li>
-                  <li>Cloudflare Inc. — bot verification (Turnstile) on the CV upload and job-tailoring forms</li>
-                  <li>Google Ireland Limited — aggregated, anonymised browsing statistics (Google Analytics 4), only if you've consented to the Analytics category in the cookie banner</li>
+                  <li>Google LLC (Gmail), receipt of contact form messages</li>
+                  <li>Vercel Inc., application hosting and temporary storage of previews not yet linked to an account</li>
+                  <li>Supabase Inc., account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
+                  <li>Anthropic PBC, processing of CV text for profile extraction, improvement, and job tailoring</li>
+                  <li>Cloudflare Inc., bot verification (Turnstile) on the CV upload and job-tailoring forms</li>
+                  <li>Google Ireland Limited, aggregated, anonymised browsing statistics (Google Analytics 4), only if you've consented to the Analytics category in the cookie banner</li>
                 </ul>
               </div>
 
@@ -298,8 +298,8 @@ export default function PrivacyPage() {
                 <p>Under Arts. 15–22 GDPR, you have the right to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Access your personal data (Art. 15)</li>
-                  <li>Rectify inaccurate data (Art. 16) — your CV&apos;s personal details can be edited directly from your account page</li>
-                  <li>Erasure / right to be forgotten (Art. 17) — you can delete a single CV or your entire account yourself, without needing to request it from us</li>
+                  <li>Rectify inaccurate data (Art. 16), your CV&apos;s personal details can be edited directly from your account page</li>
+                  <li>Erasure / right to be forgotten (Art. 17), you can delete a single CV or your entire account yourself, without needing to request it from us</li>
                   <li>Restriction of processing (Art. 18)</li>
                   <li>Data portability (Art. 20)</li>
                   <li>Object to processing (Art. 21)</li>
@@ -330,8 +330,8 @@ export default function PrivacyPage() {
                 <h3 className="font-semibold text-foreground mb-2">9. Cookies</h3>
                 <p>
                   This website uses cookies strictly necessary for the service to function (e.g.
-                  keeping you signed in, bot verification), always active, and — only with your
-                  explicit consent — Analytics cookies (Google Analytics 4) to understand how the
+                  keeping you signed in, bot verification), always active, and (only with your
+                  explicit consent) Analytics cookies (Google Analytics 4) to understand how the
                   site is used. You can give, decline, or withdraw consent at any time from the
                   cookie banner or the &quot;Cookie preferences&quot; link at the bottom of the site.
                   For full details see our{' '}
