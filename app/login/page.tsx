@@ -1,8 +1,13 @@
+"use client";
+
 import { Suspense } from "react";
 import Navigation from "@/components/navigation";
 import LoginForm from "@/components/login-form";
+import { useLanguage } from "@/components/language-provider";
 
 export default function LoginPage() {
+  const { lang } = useLanguage();
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
@@ -12,8 +17,12 @@ export default function LoginPage() {
       <div className="relative z-10 flex items-center justify-center px-6 py-32">
         <div className="w-full max-w-sm space-y-8">
           <div className="text-center space-y-2">
-            <h1 className="font-heading text-2xl font-bold tracking-tight">Bentornato</h1>
-            <p className="text-sm text-muted-foreground">Accedi al tuo profilo Jobli.</p>
+            <h1 className="font-heading text-2xl font-bold tracking-tight">
+              {lang === "en" ? "Welcome back" : "Bentornato"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {lang === "en" ? "Log in to your Jobli profile." : "Accedi al tuo profilo Jobli."}
+            </p>
           </div>
           <div className="glass-card rounded-2xl p-8">
             <Suspense fallback={null}>

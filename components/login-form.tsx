@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import GoogleAuthButton from "@/components/google-auth-button";
+import { useLanguage } from "@/components/language-provider";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -12,6 +13,7 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
+  const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +23,9 @@ export default function LoginForm() {
   // state as a failed password login, just a different source.
   const [error, setError] = useState<string | null>(
     searchParams.get("error") === "oauth_failed"
-      ? "Accesso con Google non riuscito. Riprova, o accedi con email e password."
+      ? (lang === "en"
+          ? "Google sign-in failed. Try again, or log in with email and password."
+          : "Accesso con Google non riuscito. Riprova, o accedi con email e password.")
       : null
   );
   const [claimFailed, setClaimFailed] = useState(false);
@@ -55,7 +59,7 @@ export default function LoginForm() {
         // Login succeeded even though claiming this specific CV failed
         // (e.g. expired preview, or the 4-CV limit) — stop and show why
         // instead of silently landing on the dashboard with no explanation.
-        setError(claimed.error ?? "Non è stato possibile salvare il profilo nel tuo account.");
+        setError(claimed.error ?? (lang === "en" ? "Could not save this profile to your account." : "Non è stato possibile salvare il profilo nel tuo account."));
         setClaimFailed(true);
         setLoading(false);
         return;
@@ -69,14 +73,14 @@ export default function LoginForm() {
   if (claimFailed) {
     return (
       <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
-        <p className="text-sm text-amber-700 dark:text-amber-400 font-semibold">Accesso effettuato</p>
+        <p className="text-sm text-amber-700 dark:text-amber-400 font-semibold">{lang === "en" ? "Signed in" : "Accesso effettuato"}</p>
         <p className="text-sm text-muted-foreground">{error}</p>
         <a
           href="/account"
           className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
-          Vai al tuo account →
+          {lang === "en" ? "Go to your account →" : "Vai al tuo account →"}
         </a>
       </div>
     );
@@ -93,7 +97,7 @@ export default function LoginForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="tu@email.com"
+          placeholder={lang === "en" ? "you@email.com" : "tu@email.com"}
           className={inputClass}
         />
       </div>
@@ -103,7 +107,7 @@ export default function LoginForm() {
             Password
           </label>
           <a href="/forgot-password" className="text-xs text-primary hover:underline">
-            Password dimenticata?
+            {lang === "en" ? "Forgot password?" : "Password dimenticata?"}
           </a>
         </div>
         <input
@@ -111,7 +115,7 @@ export default function LoginForm() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="La tua password"
+          placeholder={lang === "en" ? "Your password" : "La tua password"}
           className={inputClass}
         />
       </div>
@@ -124,21 +128,21 @@ export default function LoginForm() {
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ background: "var(--primary)", color: "var(--primary-foreground)", boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)" }}
       >
-        {loading ? "Accesso…" : "Accedi"}
+        {loading ? (lang === "en" ? "Signing in…" : "Accesso…") : (lang === "en" ? "Log in" : "Accedi")}
       </button>
 
       <div className="flex items-center gap-3 text-xs text-muted-foreground/50">
         <div className="flex-1 h-px bg-foreground/10" />
-        oppure
+        {lang === "en" ? "or" : "oppure"}
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
       <GoogleAuthButton claimToken={claimToken} />
 
       <p className="text-xs text-muted-foreground text-center">
-        Non hai un account?{" "}
+        {lang === "en" ? "Don't have an account?" : "Non hai un account?"}{" "}
         <a href={claimToken ? `/signup?claim=${claimToken}` : "/signup"} className="text-primary hover:underline">
-          Registrati gratis
+          {lang === "en" ? "Sign up for free" : "Registrati gratis"}
         </a>
       </p>
     </form>

@@ -1,7 +1,12 @@
+"use client";
+
 import Navigation from "@/components/navigation";
 import ForgotPasswordForm from "@/components/forgot-password-form";
+import { useLanguage } from "@/components/language-provider";
 
 export default function ForgotPasswordPage() {
+  const { lang } = useLanguage();
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
@@ -14,8 +19,12 @@ export default function ForgotPasswordPage() {
       <div className="relative z-10 flex items-center justify-center px-6 py-32">
         <div className="w-full max-w-sm space-y-8">
           <div className="text-center space-y-2">
-            <h1 className="font-heading text-2xl font-bold tracking-tight">Password dimenticata?</h1>
-            <p className="text-sm text-muted-foreground">Ti mandiamo un link per reimpostarla.</p>
+            <h1 className="font-heading text-2xl font-bold tracking-tight">
+              {lang === "en" ? "Forgot your password?" : "Password dimenticata?"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {lang === "en" ? "We'll send you a link to reset it." : "Ti mandiamo un link per reimpostarla."}
+            </p>
           </div>
           <div className="glass-card rounded-2xl p-8">
             <ForgotPasswordForm />

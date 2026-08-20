@@ -1,7 +1,12 @@
+"use client";
+
 import Navigation from "@/components/navigation";
 import ResetPasswordForm from "@/components/reset-password-form";
+import { useLanguage } from "@/components/language-provider";
 
 export default function ResetPasswordPage() {
+  const { lang } = useLanguage();
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <Navigation />
@@ -11,8 +16,12 @@ export default function ResetPasswordPage() {
       <div className="relative z-10 flex items-center justify-center px-6 py-32">
         <div className="w-full max-w-sm space-y-8">
           <div className="text-center space-y-2">
-            <h1 className="font-heading text-2xl font-bold tracking-tight">Reimposta password</h1>
-            <p className="text-sm text-muted-foreground">Scegli una nuova password per il tuo account.</p>
+            <h1 className="font-heading text-2xl font-bold tracking-tight">
+              {lang === "en" ? "Reset password" : "Reimposta password"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {lang === "en" ? "Choose a new password for your account." : "Scegli una nuova password per il tuo account."}
+            </p>
           </div>
           <div className="glass-card rounded-2xl p-8">
             <ResetPasswordForm />

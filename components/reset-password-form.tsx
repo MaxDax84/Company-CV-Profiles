@@ -4,12 +4,14 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
+import { useLanguage } from "@/components/language-provider";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
+  const { lang } = useLanguage();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [status, setStatus] = useState<"checking" | "ready" | "saving" | "success" | "error" | "invalid">("checking");
@@ -29,12 +31,12 @@ export default function ResetPasswordForm() {
     e.preventDefault();
     if (!isPasswordValid(password)) {
       setStatus("error");
-      setError("La password non rispetta tutti i requisiti richiesti.");
+      setError(lang === "en" ? "The password doesn't meet all the requirements." : "La password non rispetta tutti i requisiti richiesti.");
       return;
     }
     if (password !== confirm) {
       setStatus("error");
-      setError("Le password non coincidono.");
+      setError(lang === "en" ? "Passwords don't match." : "Le password non coincidono.");
       return;
     }
 
@@ -54,15 +56,15 @@ export default function ResetPasswordForm() {
   }
 
   if (status === "checking") {
-    return <p className="text-sm text-muted-foreground text-center">Verifica del link in corso…</p>;
+    return <p className="text-sm text-muted-foreground text-center">{lang === "en" ? "Checking the link…" : "Verifica del link in corso…"}</p>;
   }
 
   if (status === "invalid") {
     return (
       <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 text-center text-sm text-muted-foreground space-y-3">
-        <p>Questo link non è più valido — potrebbe essere scaduto o già usato.</p>
+        <p>{lang === "en" ? "This link is no longer valid — it may have expired or already been used." : "Questo link non è più valido — potrebbe essere scaduto o già usato."}</p>
         <a href="/forgot-password" className="text-primary hover:underline font-semibold">
-          Richiedi un nuovo link →
+          {lang === "en" ? "Request a new link →" : "Richiedi un nuovo link →"}
         </a>
       </div>
     );
@@ -71,7 +73,7 @@ export default function ResetPasswordForm() {
   if (status === "success") {
     return (
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center text-sm text-muted-foreground">
-        Password aggiornata ✓ — ti stiamo portando al tuo account…
+        {lang === "en" ? "Password updated ✓ — taking you to your account…" : "Password aggiornata ✓ — ti stiamo portando al tuo account…"}
       </div>
     );
   }
@@ -80,7 +82,7 @@ export default function ResetPasswordForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Nuova password
+          {lang === "en" ? "New password" : "Nuova password"}
         </label>
         <input
           type="password"
@@ -88,14 +90,14 @@ export default function ResetPasswordForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Crea una password sicura"
+          placeholder={lang === "en" ? "Create a secure password" : "Crea una password sicura"}
           className={inputClass}
         />
         <PasswordRequirements password={password} />
       </div>
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Conferma password
+          {lang === "en" ? "Confirm password" : "Conferma password"}
         </label>
         <input
           type="password"
@@ -103,7 +105,7 @@ export default function ResetPasswordForm() {
           minLength={8}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          placeholder="Ripeti la password"
+          placeholder={lang === "en" ? "Repeat the password" : "Ripeti la password"}
           className={inputClass}
         />
       </div>
@@ -116,7 +118,7 @@ export default function ResetPasswordForm() {
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ background: "var(--primary)", color: "var(--primary-foreground)", boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)" }}
       >
-        {status === "saving" ? "Salvataggio…" : "Imposta nuova password"}
+        {status === "saving" ? (lang === "en" ? "Saving…" : "Salvataggio…") : (lang === "en" ? "Set new password" : "Imposta nuova password")}
       </button>
     </form>
   );

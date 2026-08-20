@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 import GoogleAuthButton from "@/components/google-auth-button";
+import { useLanguage } from "@/components/language-provider";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -17,6 +18,7 @@ export default function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
+  const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,7 +85,7 @@ export default function SignupForm() {
         // this specific CV failed (e.g. expired preview, or the 4-CV
         // limit) — stop here instead of auto-redirecting, so the reason is
         // actually readable instead of flashing by before navigation.
-        setError(claimed.error ?? "Non è stato possibile salvare il profilo nel tuo account.");
+        setError(claimed.error ?? (lang === "en" ? "Could not save this profile to your account." : "Non è stato possibile salvare il profilo nel tuo account."));
         setStatus("claimFailed");
         setProgress(0);
         return;
@@ -99,7 +101,9 @@ export default function SignupForm() {
   if (status === "needsEmailConfirm") {
     return (
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center text-sm text-muted-foreground">
-        Ti abbiamo inviato un'email di conferma — clicca il link per attivare l'account, poi torna qui per accedere.
+        {lang === "en"
+          ? "We've sent you a confirmation email — click the link to activate your account, then come back here to log in."
+          : "Ti abbiamo inviato un'email di conferma — clicca il link per attivare l'account, poi torna qui per accedere."}
       </div>
     );
   }
@@ -107,14 +111,14 @@ export default function SignupForm() {
   if (status === "claimFailed") {
     return (
       <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
-        <p className="text-sm text-amber-700 dark:text-amber-400 font-semibold">Account creato</p>
+        <p className="text-sm text-amber-700 dark:text-amber-400 font-semibold">{lang === "en" ? "Account created" : "Account creato"}</p>
         <p className="text-sm text-muted-foreground">{error}</p>
         <a
           href="/account"
           className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
           style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
         >
-          Vai al tuo account →
+          {lang === "en" ? "Go to your account →" : "Vai al tuo account →"}
         </a>
       </div>
     );
@@ -131,7 +135,7 @@ export default function SignupForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="tu@email.com"
+          placeholder={lang === "en" ? "you@email.com" : "tu@email.com"}
           className={inputClass}
         />
       </div>
@@ -145,7 +149,7 @@ export default function SignupForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Crea una password sicura"
+          placeholder={lang === "en" ? "Create a secure password" : "Crea una password sicura"}
           className={inputClass}
         />
         <PasswordRequirements password={password} />
@@ -168,22 +172,24 @@ export default function SignupForm() {
           />
         )}
         <span className="relative">
-          {status === "loading" ? "Creazione account…" : "Crea account gratis"}
+          {status === "loading"
+            ? (lang === "en" ? "Creating account…" : "Creazione account…")
+            : (lang === "en" ? "Create free account" : "Crea account gratis")}
         </span>
       </button>
 
       <div className="flex items-center gap-3 text-xs text-muted-foreground/50">
         <div className="flex-1 h-px bg-foreground/10" />
-        oppure
+        {lang === "en" ? "or" : "oppure"}
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
       <GoogleAuthButton claimToken={claimToken} />
 
       <p className="text-xs text-muted-foreground text-center">
-        Hai già un account?{" "}
+        {lang === "en" ? "Already have an account?" : "Hai già un account?"}{" "}
         <a href={claimToken ? `/login?claim=${claimToken}` : "/login"} className="text-primary hover:underline">
-          Accedi
+          {lang === "en" ? "Log in" : "Accedi"}
         </a>
       </p>
     </form>

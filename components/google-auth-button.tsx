@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { useLanguage } from "@/components/language-provider";
 
 interface GoogleAuthButtonProps {
   // Same pending-CV claim token the password login/signup forms forward to
@@ -14,6 +15,7 @@ interface GoogleAuthButtonProps {
 
 export default function GoogleAuthButton({ claimToken }: GoogleAuthButtonProps) {
   const [loading, setLoading] = useState(false);
+  const { lang } = useLanguage();
 
   async function handleClick() {
     setLoading(true);
@@ -44,7 +46,9 @@ export default function GoogleAuthButton({ claimToken }: GoogleAuthButtonProps) 
         <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.2822-1.1168-.2822-1.71s.1023-1.17.2823-1.71V4.9582H.9573C.3477 6.1732 0 7.5477 0 9s.3477 2.8268.9573 4.0418L3.964 10.71z" />
         <path fill="#EA4335" d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5814C13.4632.8918 11.4259 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.964 7.29C4.6718 5.1627 6.6564 3.5795 9 3.5795z" />
       </svg>
-      {loading ? "Ti reindirizzo a Google…" : "Continua con Google"}
+      {loading
+        ? (lang === "en" ? "Redirecting to Google…" : "Ti reindirizzo a Google…")
+        : (lang === "en" ? "Continue with Google" : "Continua con Google")}
     </button>
   );
 }
