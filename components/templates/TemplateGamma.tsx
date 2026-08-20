@@ -432,7 +432,7 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
             )}
           </div>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', margin: 0 }}>
-            {isIT ? 'Progettato da' : 'Designed by'}{' '}
+            {isIT ? 'Offerto da' : 'Powered by'}{' '}
             <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
         </div>

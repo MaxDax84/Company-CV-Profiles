@@ -448,7 +448,7 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
             )}
           </div>
           <p style={{ fontSize: 12, color: inkMid, margin: 0, opacity: 0.6 }}>
-            {isIT ? 'Progettato da' : 'Designed by'}{' '}
+            {isIT ? 'Offerto da' : 'Powered by'}{' '}
             <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
         </div>
