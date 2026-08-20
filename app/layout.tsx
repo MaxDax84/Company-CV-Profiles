@@ -41,7 +41,7 @@ const THEME_INIT_SCRIPT = `(function(){try{if(localStorage.getItem('theme')==='d
 // not a bug. Doesn't suppress mismatches deeper in the tree.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="it" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
