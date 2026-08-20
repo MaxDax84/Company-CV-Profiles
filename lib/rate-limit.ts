@@ -33,6 +33,14 @@ export const contactRatelimit = new Ratelimit({
   prefix: "ratelimit:contact",
 });
 
+// Admin login: no captcha in front of it, so a slow brute-force cap per IP
+// matters more here than on the other forms above.
+export const adminLoginRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:admin-login",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
