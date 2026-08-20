@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 // Self-hosted (see app/layout.tsx)
 import '@fontsource/plus-jakarta-sans/300.css'
@@ -6,10 +8,94 @@ import '@fontsource/plus-jakarta-sans/500.css'
 import '@fontsource/plus-jakarta-sans/600.css'
 import '@fontsource/plus-jakarta-sans/700.css'
 import '@fontsource/plus-jakarta-sans/800.css'
+import { useLanguage } from '@/components/language-provider'
 
 const JAKARTA_FONT = "'Plus Jakarta Sans', sans-serif"
 
+const content = {
+  en: {
+    tag: 'Professional Athlete · Forward',
+    firstName: 'Cristiano',
+    lastName: 'Ronaldo',
+    subline: 'CR7 · Funchal, Madeira · Born 5 February 1985',
+    backLabel: '← Showcase',
+    stats: [['900+', 'Career Goals'], ['5×', 'Ballon d\'Or'], ['5×', 'Champions League'], ['35+', 'Trophies'], ['200+', 'International Caps']],
+    profileLabel: 'Professional Profile',
+    profile: 'One of the greatest footballers in history. Five-time Ballon d\'Or winner, all-time top scorer in international football (200+ goals for Portugal), and the highest-scoring player in Champions League history. Renowned for elite physical conditioning, relentless work ethic, and unparalleled goal-scoring ability — in the air, from distance, and under pressure.',
+    clubLabel: 'Club Career',
+    apps: 'APPS',
+    goals: 'GOALS',
+    clubs: [
+      { period: '2002–2003', club: 'Sporting CP', apps: '25', goals: '3', honors: 'Breakthrough season' },
+      { period: '2003–2009', club: 'Manchester United', apps: '292', goals: '118', honors: 'PL × 3, FA Cup, Champions League, Ballon d\'Or' },
+      { period: '2009–2018', club: 'Real Madrid', apps: '438', goals: '450', honors: 'La Liga × 2, Champions League × 4, Ballon d\'Or × 4' },
+      { period: '2018–2021', club: 'Juventus', apps: '133', goals: '101', honors: 'Serie A × 2, Coppa Italia' },
+      { period: '2021–2022', club: 'Manchester United', apps: '54', goals: '27', honors: 'Second stint — PL record scorer' },
+      { period: '2023 – Now', club: 'Al-Nassr FC', apps: '85+', goals: '75+', honors: 'Arab Champions Cup' },
+    ],
+    intlLabel: 'International Career — Portugal',
+    intlLine: 'Debut: June 20, 2003 · Caps: 200+ · Goals: 130+ (all-time world record)',
+    intlHonors: ['UEFA Euro 2016 — Winner 🏆', 'UEFA Nations League 2019 — Winner 🏆', 'FIFA World Cup 2006 — 4th place', 'Euro 2004 — Runner-up', 'Euro 2008, 2012, 2016, 2020, 2024 — Participant'],
+    personalLabel: 'Personal Info',
+    personal: [
+      ['Full Name', 'Cristiano Ronaldo dos Santos Aveiro'],
+      ['Position', 'Forward'],
+      ['Height', '187 cm'],
+      ['Nationality', 'Portuguese'],
+      ['Club', 'Al-Nassr FC'],
+      ['Number', '#7'],
+      ['Agent', 'Jorge Mendes'],
+    ],
+    attrsLabel: 'Key Attributes',
+    attrs: [['Finishing', 99], ['Speed', 95], ['Headers', 97], ['Free Kicks', 94], ['Physical', 98], ['Mentality', 99]] as [string, number][],
+    awardsLabel: 'Individual Awards',
+    awards: ['Ballon d\'Or × 5', 'UEFA Best Player × 4', 'FIFA Best × 2', 'PFA Players\' Player', 'Serie A MVP × 2', 'Champions League Top Scorer × 7'],
+    designedBy: 'Designed by',
+  },
+  it: {
+    tag: 'Atleta Professionista · Attaccante',
+    firstName: 'Cristiano',
+    lastName: 'Ronaldo',
+    subline: 'CR7 · Funchal, Madeira · Nato il 5 febbraio 1985',
+    backLabel: '← Showcase',
+    stats: [['900+', 'Gol in carriera'], ['5×', 'Pallone d\'Oro'], ['5×', 'Champions League'], ['35+', 'Trofei'], ['200+', 'Presenze in nazionale']],
+    profileLabel: 'Profilo professionale',
+    profile: 'Uno dei più grandi calciatori della storia. Vincitore di 5 Palloni d\'Oro, miglior marcatore di sempre nel calcio internazionale (oltre 200 gol con il Portogallo) e giocatore con più gol nella storia della Champions League. Rinomato per una condizione fisica d\'élite, un\'etica del lavoro instancabile e una capacità realizzativa senza pari — di testa, da lontano e sotto pressione.',
+    clubLabel: 'Carriera nei club',
+    apps: 'PRES.',
+    goals: 'GOL',
+    clubs: [
+      { period: '2002–2003', club: 'Sporting CP', apps: '25', goals: '3', honors: 'Stagione di lancio' },
+      { period: '2003–2009', club: 'Manchester United', apps: '292', goals: '118', honors: 'PL × 3, FA Cup, Champions League, Pallone d\'Oro' },
+      { period: '2009–2018', club: 'Real Madrid', apps: '438', goals: '450', honors: 'Liga × 2, Champions League × 4, Pallone d\'Oro × 4' },
+      { period: '2018–2021', club: 'Juventus', apps: '133', goals: '101', honors: 'Serie A × 2, Coppa Italia' },
+      { period: '2021–2022', club: 'Manchester United', apps: '54', goals: '27', honors: 'Secondo periodo — record di gol in PL' },
+      { period: '2023 – Oggi', club: 'Al-Nassr FC', apps: '85+', goals: '75+', honors: 'Arab Champions Cup' },
+    ],
+    intlLabel: 'Carriera in nazionale — Portogallo',
+    intlLine: 'Esordio: 20 giugno 2003 · Presenze: 200+ · Gol: 130+ (record mondiale assoluto)',
+    intlHonors: ['UEFA Euro 2016 — Vincitore 🏆', 'UEFA Nations League 2019 — Vincitore 🏆', 'Mondiale FIFA 2006 — 4° posto', 'Euro 2004 — Finalista', 'Euro 2008, 2012, 2016, 2020, 2024 — Partecipante'],
+    personalLabel: 'Informazioni personali',
+    personal: [
+      ['Nome completo', 'Cristiano Ronaldo dos Santos Aveiro'],
+      ['Ruolo', 'Attaccante'],
+      ['Altezza', '187 cm'],
+      ['Nazionalità', 'Portoghese'],
+      ['Club', 'Al-Nassr FC'],
+      ['Numero', '#7'],
+      ['Agente', 'Jorge Mendes'],
+    ],
+    attrsLabel: 'Attributi chiave',
+    attrs: [['Finalizzazione', 99], ['Velocità', 95], ['Colpi di testa', 97], ['Calci piazzati', 94], ['Fisico', 98], ['Mentalità', 99]] as [string, number][],
+    awardsLabel: 'Premi individuali',
+    awards: ['Pallone d\'Oro × 5', 'Miglior giocatore UEFA × 4', 'FIFA Best × 2', 'PFA Players\' Player', 'MVP Serie A × 2', 'Capocannoniere Champions League × 7'],
+    designedBy: 'Progettato da',
+  },
+}
+
 export default function CristianoRonaldoPage() {
+  const { lang } = useLanguage()
+  const t = content[lang]
   const gold = '#c9a84c'
   const goldLight = '#e0bc6e'
   const navy = '#0a0f1e'
@@ -51,30 +137,24 @@ export default function CristianoRonaldoPage() {
           <div className="cr-hero-top">
             <div>
               <p style={{ fontSize: 11, letterSpacing: '0.4em', color: gold, textTransform: 'uppercase', fontWeight: 600, margin: '0 0 12px' }}>
-                Professional Athlete · Forward
+                {t.tag}
               </p>
               <h1 style={{ fontSize: 'clamp(2.5rem, 7vw, 5rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.03em', lineHeight: 0.95, color: '#ffffff' }}>
-                Cristiano<br />
-                <span style={{ color: gold }}>Ronaldo</span>
+                {t.firstName}<br />
+                <span style={{ color: gold }}>{t.lastName}</span>
               </h1>
               <p style={{ margin: '16px 0 0', fontSize: 14, color: '#5a7090', letterSpacing: '0.08em' }}>
-                CR7 · Funchal, Madeira · Born 5 February 1985
+                {t.subline}
               </p>
             </div>
             <Link href="/showcase" className="cr-back-mobile" style={{ fontSize: 12, color: '#2a3c55', textDecoration: 'none' }}>
-              ← Showcase
+              {t.backLabel}
             </Link>
           </div>
 
           {/* Career stat bar */}
           <div className="cr-stat-bar">
-            {[
-              ['900+', 'Career Goals'],
-              ['5×', 'Ballon d\'Or'],
-              ['5×', 'Champions League'],
-              ['35+', 'Trophies'],
-              ['200+', 'International Caps'],
-            ].map(([val, label]) => (
+            {t.stats.map(([val, label]) => (
               <div key={label} style={{ background: navyCard, padding: '16px 12px', textAlign: 'center' }}>
                 <p style={{ fontSize: 22, fontWeight: 800, color: gold, margin: 0, lineHeight: 1 }}>{val}</p>
                 <p style={{ fontSize: 10, color: '#4a6080', margin: '4px 0 0', fontWeight: 600, letterSpacing: '0.05em' }}>{label}</p>
@@ -92,29 +172,19 @@ export default function CristianoRonaldoPage() {
             {/* Profile */}
             <section style={{ marginBottom: 36 }}>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 14, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 8 }}>
-                Professional Profile
+                {t.profileLabel}
               </h2>
               <p style={{ fontSize: 15, lineHeight: 1.85, color: '#8aa0bc', fontWeight: 300 }}>
-                One of the greatest footballers in history. Five-time Ballon d'Or winner, all-time top scorer
-                in international football (200+ goals for Portugal), and the highest-scoring player in
-                Champions League history. Renowned for elite physical conditioning, relentless work ethic,
-                and unparalleled goal-scoring ability — in the air, from distance, and under pressure.
+                {t.profile}
               </p>
             </section>
 
             {/* Club career */}
             <section style={{ marginBottom: 36 }}>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 20, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 8 }}>
-                Club Career
+                {t.clubLabel}
               </h2>
-              {[
-                { period: '2002–2003', club: 'Sporting CP', apps: '25', goals: '3', honors: 'Breakthrough season' },
-                { period: '2003–2009', club: 'Manchester United', apps: '292', goals: '118', honors: 'PL × 3, FA Cup, Champions League, Ballon d\'Or' },
-                { period: '2009–2018', club: 'Real Madrid', apps: '438', goals: '450', honors: 'La Liga × 2, Champions League × 4, Ballon d\'Or × 4' },
-                { period: '2018–2021', club: 'Juventus', apps: '133', goals: '101', honors: 'Serie A × 2, Coppa Italia' },
-                { period: '2021–2022', club: 'Manchester United', apps: '54', goals: '27', honors: 'Second stint — PL record scorer' },
-                { period: '2023 – Now', club: 'Al-Nassr FC', apps: '85+', goals: '75+', honors: 'Arab Champions Cup' },
-              ].map(({ period, club, apps, goals, honors }) => (
+              {t.clubs.map(({ period, club, apps, goals, honors }) => (
                 <div key={club} className="cr-club-row" style={{ padding: '12px 0', borderBottom: `1px solid ${navyBorder}` }}>
                   <span style={{ fontSize: 11, color: gold, fontWeight: 600 }}>{period}</span>
                   <div>
@@ -123,11 +193,11 @@ export default function CristianoRonaldoPage() {
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <p style={{ fontSize: 14, fontWeight: 700, color: '#e8edf5', margin: 0 }}>{apps}</p>
-                    <p style={{ fontSize: 9, color: '#4a6080', margin: '2px 0 0', letterSpacing: '0.1em' }}>APPS</p>
+                    <p style={{ fontSize: 9, color: '#4a6080', margin: '2px 0 0', letterSpacing: '0.1em' }}>{t.apps}</p>
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <p style={{ fontSize: 14, fontWeight: 700, color: gold, margin: 0 }}>{goals}</p>
-                    <p style={{ fontSize: 9, color: '#4a6080', margin: '2px 0 0', letterSpacing: '0.1em' }}>GOALS</p>
+                    <p style={{ fontSize: 9, color: '#4a6080', margin: '2px 0 0', letterSpacing: '0.1em' }}>{t.goals}</p>
                   </div>
                 </div>
               ))}
@@ -136,13 +206,13 @@ export default function CristianoRonaldoPage() {
             {/* International */}
             <section>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 14, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 8 }}>
-                International Career — Portugal
+                {t.intlLabel}
               </h2>
               <p style={{ fontSize: 14, color: '#8aa0bc', lineHeight: 1.7, fontWeight: 300, marginBottom: 12 }}>
-                Debut: June 20, 2003 · Caps: 200+ · Goals: 130+ (all-time world record)
+                {t.intlLine}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {['UEFA Euro 2016 — Winner 🏆', 'UEFA Nations League 2019 — Winner 🏆', 'FIFA World Cup 2006 — 4th place', 'Euro 2004 — Runner-up', 'Euro 2008, 2012, 2016, 2020, 2024 — Participant'].map(h => (
+                {t.intlHonors.map(h => (
                   <span key={h} style={{ fontSize: 12, padding: '5px 12px', background: `${gold}12`, border: `1px solid ${gold}30`, borderRadius: 6, color: '#8aa0bc' }}>{h}</span>
                 ))}
               </div>
@@ -154,17 +224,9 @@ export default function CristianoRonaldoPage() {
 
             <div>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 14, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 8 }}>
-                Personal Info
+                {t.personalLabel}
               </h2>
-              {[
-                ['Full Name', 'Cristiano Ronaldo dos Santos Aveiro'],
-                ['Position', 'Forward'],
-                ['Height', '187 cm'],
-                ['Nationality', 'Portuguese'],
-                ['Club', 'Al-Nassr FC'],
-                ['Number', '#7'],
-                ['Agent', 'Jorge Mendes'],
-              ].map(([k, v]) => (
+              {t.personal.map(([k, v]) => (
                 <div key={k} style={{ marginBottom: 10, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 10 }}>
                   <p style={{ fontSize: 10, color: '#2a3c55', margin: '0 0 2px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{k}</p>
                   <p style={{ fontSize: 13, color: '#8aa0bc', margin: 0 }}>{v}</p>
@@ -174,10 +236,10 @@ export default function CristianoRonaldoPage() {
 
             <div>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 14, borderBottom: `1px solid ${navyBorder}`, paddingBottom: 8 }}>
-                Key Attributes
+                {t.attrsLabel}
               </h2>
-              {[['Finishing', 99], ['Speed', 95], ['Headers', 97], ['Free Kicks', 94], ['Physical', 98], ['Mentality', 99]].map(([attr, val]) => (
-                <div key={attr as string} style={{ marginBottom: 10 }}>
+              {t.attrs.map(([attr, val]) => (
+                <div key={attr} style={{ marginBottom: 10 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
                     <span style={{ fontSize: 12, color: '#8aa0bc' }}>{attr}</span>
                     <span style={{ fontSize: 11, color: gold, fontWeight: 700 }}>{val}</span>
@@ -191,9 +253,9 @@ export default function CristianoRonaldoPage() {
 
             <div style={{ background: navyCard, border: `1px solid ${navyBorder}`, borderRadius: 8, padding: 16 }}>
               <h2 style={{ fontSize: 11, letterSpacing: '0.2em', color: gold, textTransform: 'uppercase', fontWeight: 600, marginBottom: 12 }}>
-                Individual Awards
+                {t.awardsLabel}
               </h2>
-              {['Ballon d\'Or × 5', 'UEFA Best Player × 4', 'FIFA Best × 2', 'PFA Players\' Player', 'Serie A MVP × 2', 'Champions League Top Scorer × 7'].map(a => (
+              {t.awards.map(a => (
                 <p key={a} style={{ fontSize: 12, color: '#4a6080', margin: '0 0 6px' }}>{a}</p>
               ))}
             </div>
@@ -203,7 +265,7 @@ export default function CristianoRonaldoPage() {
 
       <div style={{ borderTop: `1px solid ${navyBorder}`, padding: '16px 40px', textAlign: 'center' }}>
         <p style={{ fontSize: 11, color: '#1a2540', letterSpacing: '0.1em' }}>
-          Designed by <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobli</Link>
+          {t.designedBy} <Link href="/" style={{ color: gold, textDecoration: 'none' }}>Jobli</Link>
         </p>
       </div>
     </div>
