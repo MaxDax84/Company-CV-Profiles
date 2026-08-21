@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -12,7 +13,14 @@ function formatDate(iso: string): string {
 }
 
 export default function BlogIndexBody() {
-  const [category, setCategory] = useState<string | null>(null);
+  // Lets the nav's Blog dropdown (components/blog-nav-dropdown.tsx) link
+  // straight to a filtered category, e.g. /blog?category=ATS — read once on
+  // mount, then the filter is purely local state same as before.
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category");
+  const [category, setCategory] = useState<string | null>(
+    initialCategory && (BLOG_CATEGORIES as readonly string[]).includes(initialCategory) ? initialCategory : null
+  );
   const [query, setQuery] = useState("");
 
   const posts = useMemo(() => {

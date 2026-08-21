@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import BlogIndexBody from "./BlogIndexBody";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function BlogIndexPage() {
-  return <BlogIndexBody />;
+  return (
+    <Suspense>
+      <BlogIndexBody />
+    </Suspense>
+  );
 }

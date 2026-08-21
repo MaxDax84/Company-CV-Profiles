@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-posts";
+import { BLOG_CATEGORIES } from "@/lib/blog-posts";
 import { useLanguage } from "@/components/language-provider";
 
 interface BlogNavDropdownProps {
@@ -9,13 +9,12 @@ interface BlogNavDropdownProps {
   label: string;
 }
 
-// Desktop-only mega-menu for "Blog": groups the 70 articles by their real
-// category instead of dumping a single link to the index — mirrors the
-// click-to-toggle + click-outside pattern already used by
-// components/account-avatar-menu.tsx, so it behaves consistently with the
-// rest of the nav. Mobile keeps a plain "/blog" link (see navigation.tsx) —
-// hover/click mega-menus don't translate well to a touch accordion, and the
-// mobile menu already lists every link flat.
+// Desktop-only dropdown for "Blog": links straight to each macro-category
+// (via /blog?category=..., read by app/blog/BlogIndexBody.tsx) instead of
+// listing individual articles — same click-to-toggle + click-outside
+// pattern as components/account-avatar-menu.tsx. Mobile keeps a plain
+// "/blog" link (see navigation.tsx) — a dropdown doesn't translate well to
+// a touch accordion, and the mobile menu already lists every link flat.
 export default function BlogNavDropdown({ triggerClassName, label }: BlogNavDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -29,14 +28,6 @@ export default function BlogNavDropdown({ triggerClassName, label }: BlogNavDrop
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  const columns = BLOG_CATEGORIES.map((category) => ({
-    category,
-    posts: [...BLOG_POSTS]
-      .filter((p) => p.category === category)
-      .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-      .slice(0, 2),
-  }));
-
   return (
     <div className="relative" ref={ref}>
       <button type="button" onClick={() => setOpen((v) => !v)} className={triggerClassName}>
@@ -44,47 +35,26 @@ export default function BlogNavDropdown({ triggerClassName, label }: BlogNavDrop
       </button>
 
       {open && (
-        <div
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[620px] max-w-[92vw] rounded-2xl border border-border bg-background shadow-2xl z-50 p-5 grid grid-cols-3 gap-5"
-        >
-          {columns.map((col) => (
-            <div key={col.category} className="space-y-2.5 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">{col.category}</p>
-              <div className="space-y-2">
-                {col.posts.map((post) => (
-                  <a
-                    key={post.slug}
-                    href={`/blog/${post.slug}`}
-                    onClick={() => setOpen(false)}
-                    className="block group"
-                  >
-                    <p className="text-xs font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </p>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <div
-            className="rounded-xl p-4 flex flex-col justify-between gap-3"
-            style={{ background: "color-mix(in srgb, var(--primary) 8%, transparent)" }}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden py-1.5">
+          <a
+            href="/blog"
+            onClick={() => setOpen(false)}
+            className="block px-4 py-2.5 text-sm font-semibold hover:bg-foreground/[0.05] transition-colors"
+            style={{ color: "var(--primary)" }}
           >
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {lang === "en"
-                ? "Over 70 short, practical articles on interviews, resumes, ATS, LinkedIn and career growth."
-                : "Oltre 70 articoli brevi e pratici su colloqui, CV, ATS, LinkedIn e carriera."}
-            </p>
+            {lang === "en" ? "All articles" : "Tutti gli articoli"}
+          </a>
+          <div className="my-1.5 border-t border-border" />
+          {BLOG_CATEGORIES.map((category) => (
             <a
-              href="/blog"
+              key={category}
+              href={`/blog?category=${encodeURIComponent(category)}`}
               onClick={() => setOpen(false)}
-              className="inline-flex items-center text-xs font-semibold"
-              style={{ color: "var(--primary)" }}
+              className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
             >
-              {lang === "en" ? "See all articles →" : "Vedi tutti gli articoli →"}
+              {category}
             </a>
-          </div>
+          ))}
         </div>
       )}
     </div>
