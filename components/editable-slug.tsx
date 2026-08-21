@@ -61,7 +61,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
           </p>
         )}
         <div className={isHeading ? "flex items-center gap-2" : "flex items-center gap-2 text-xs text-muted-foreground/60"}>
-          <span className={isHeading ? "text-sm font-semibold truncate" : "truncate"}>{slug}</span>
+          <span className={isHeading ? "text-sm font-semibold break-words min-w-0" : "break-words min-w-0"}>{slug}</span>
           <button
             onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
             className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0 text-xs"

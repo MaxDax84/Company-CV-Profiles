@@ -193,7 +193,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   return (
                     <div key={row.id} className="glass-card rounded-xl p-4 flex items-center justify-between gap-3 flex-wrap">
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate">{row.slug}</p>
+                        <p className="text-sm font-semibold break-words">{row.slug}</p>
                         <p className="text-xs text-muted-foreground/60">
                           {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
@@ -263,15 +263,15 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               <div className="space-y-3">
                 {primaryProfiles.map((row) => (
                   <div key={row.id} className="glass-card rounded-2xl p-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center justify-between gap-3 flex-wrap">
+                      <div className="min-w-0">
                         <EditableSlug profileId={row.id} slug={row.slug} variant="heading" />
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
                           {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                       <p
-                        className="text-xs font-bold px-2.5 py-1 rounded-full"
+                        className="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"
                         style={{ color: scoreBadgeColor(displayedScore(row.data)), background: `${scoreBadgeColor(displayedScore(row.data))}18` }}
                       >
                         {displayedScore(row.data)}/100
@@ -475,7 +475,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   return (
                     <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">
+                        <p className="text-sm font-medium break-words">
                           {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotto in", "Translated to")} ${languageLabel}` : ""} · {templateName}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
@@ -519,7 +519,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   return (
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">
+                        <p className="text-sm font-medium break-words">
                           {tr("Lettera per", "Letter for")} {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotta in", "Translated to")} ${languageLabel}` : ""}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
