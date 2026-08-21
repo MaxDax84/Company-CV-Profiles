@@ -8,8 +8,7 @@ import { useLanguage } from "@/components/language-provider";
 import { translations } from "@/lib/i18n";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
 import ProfileResultPanel from "@/components/profile-result-panel";
-import PdfExportButton from "@/components/pdf-export-button";
-import WordExportButton from "@/components/word-export-button";
+import CvDownloadButton from "@/components/cv-download-button";
 import CoverLetterButton from "@/components/cover-letter-button";
 import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
@@ -120,7 +119,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   const needsPrivacy = hasJob && !privacy;
 
   // Tailoring itself is free — only downloading the resulting PDF/Word costs
-  // a credit (see PdfExportButton/WordExportButton). This still runs the
+  // a credit (see CvDownloadButton). This still runs the
   // free relevance-check first, and only interrupts with a popup when
   // there's something genuinely worth flagging (a low-relevance match, or an
   // exact repeat of an already-tailored CV+job combo, see lib/profile-store.ts's
@@ -306,16 +305,9 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           hideGenerateAnother
           extraActions={
             <div className="space-y-2">
-              <PdfExportButton
+              <CvDownloadButton
                 slug={slug}
-                label={t.downloadPdf}
-                credits={credits}
-                className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
-                onDownloaded={() => setPdfDownloaded(true)}
-              />
-              <WordExportButton
-                slug={slug}
-                label={lang === "en" ? "Download Word" : "Scarica Word"}
+                label={lang === "en" ? "Download CV ↓" : "Scarica il CV ↓"}
                 credits={credits}
                 className="block w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center border border-foreground/10 bg-foreground/[0.03] text-foreground/80 transition-all hover:bg-foreground/[0.06]"
                 onDownloaded={() => setPdfDownloaded(true)}

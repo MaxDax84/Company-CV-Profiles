@@ -1,7 +1,6 @@
 "use client";
 
-import PdfExportButton from "@/components/pdf-export-button";
-import WordExportButton from "@/components/word-export-button";
+import CvDownloadButton from "@/components/cv-download-button";
 import ActionFeedbackPopup from "@/components/action-feedback-popup";
 import { useLanguage } from "@/components/language-provider";
 
@@ -42,16 +41,9 @@ export default function OwnerToolbar({ slug, kind, credits }: OwnerToolbarProps)
         {lang === "en" ? "Your account" : "Il tuo account"}
       </a>
       <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
-      <PdfExportButton
+      <CvDownloadButton
         slug={slug}
-        label={lang === "en" ? "Download PDF ↓" : "Scarica PDF ↓"}
-        credits={credits}
-        className="font-semibold text-foreground transition-opacity hover:opacity-70"
-      />
-      <span style={{ color: "rgba(0,0,0,0.3)" }}>·</span>
-      <WordExportButton
-        slug={slug}
-        label={lang === "en" ? "Download Word ↓" : "Scarica Word ↓"}
+        label={lang === "en" ? "Download ↓" : "Scarica ↓"}
         credits={credits}
         className="font-semibold text-foreground transition-opacity hover:opacity-70"
       />
