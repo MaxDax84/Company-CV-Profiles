@@ -13,9 +13,9 @@ function formatDate(iso: string): string {
 }
 
 export default function BlogIndexBody() {
-  // Lets the nav's Blog dropdown (components/blog-nav-dropdown.tsx) link
-  // straight to a filtered category, e.g. /blog?category=ATS — read once on
-  // mount, then the filter is purely local state same as before.
+  // Lets the nav's Blog section (components/navigation.tsx) link straight
+  // to a filtered category, e.g. /blog?category=ATS — read once on mount,
+  // then the filter is purely local state same as before.
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category");
   const [category, setCategory] = useState<string | null>(

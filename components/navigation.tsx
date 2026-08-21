@@ -1,19 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { createBrowserSupabaseClient } from '@/lib/supabase/browser'
-import ThemeToggle from './theme-toggle'
+import { BLOG_CATEGORIES } from '@/lib/blog-posts'
 import AccountAvatarMenu from './account-avatar-menu'
-import BlogNavDropdown from './blog-nav-dropdown'
+import ThemeToggle from './theme-toggle'
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">{children}</p>
+}
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   const { lang, setLang } = useLanguage()
   const t = translations[lang].nav
   const pathname = usePathname()
@@ -23,6 +28,14 @@ export default function Navigation() {
     const handler = () => setScrolled(window.scrollY > 24)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
+  }, [])
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
 
   // The account/logged-in nav treatment used to be inferred purely from the
@@ -70,15 +83,12 @@ export default function Navigation() {
   // "Come funziona" always points at the homepage section now — the
   // account area no longer has its own copy of that content (removed as
   // redundant, see components/account-tabs.tsx).
-  // "Inizia Ora" lives only as the single pill button on the right (after
-  // the theme toggle) — not duplicated here as a text link too.
-  const links = [
+  const menuLinks = [
     { href: isHome ? '#' : '/', label: t.home },
     { href: href('#mission'), label: t.mission },
     { href: href('#services'), label: t.services },
     { href: href('#chi-siamo'), label: (t as { aboutUs?: string }).aboutUs ?? 'Chi siamo' },
     { href: href('#faq'), label: t.faq },
-    { href: '/blog', label: (t as { blog?: string }).blog ?? 'Blog' },
   ]
 
   // A signed-in visitor (anywhere on the site, not just on /account or
@@ -110,138 +120,119 @@ export default function Navigation() {
       )}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2 group">
-          {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
-          <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
-          <span className="font-heading font-bold text-lg tracking-tight">
-            Jobli
-          </span>
-        </a>
-
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
-          {links.filter((link) => link.href !== '/blog').map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              {link.label}
-            </a>
-          ))}
-          <BlogNavDropdown
-            label={(t as { blog?: string }).blog ?? 'Blog'}
-            triggerClassName="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-          />
-          {/* "Il tuo account" text link removed while logged in — the
-              avatar dropdown (top-right) already covers that entry point,
-              so this would just be a redundant second way to the same
-              place. generateLabel/generateHref are still used by the
-              mobile menu button below. */}
-        </div>
-
-        {/* Right side */}
-        <div className="flex items-center gap-3">
-          {/* Log in — for a returning user with an existing account, not
-              already covered by the "Il tuo account" link shown when
-              isAccountContext is true (they're already signed in there). */}
-          {!isAccountContext && (
-            <a
-              href="/login"
-              className="hidden sm:inline-block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
-            </a>
-          )}
-
-          {/* Language toggle — shows the language you'll switch TO, same
-              compact footprint as the theme toggle right next to it. */}
+        {/* Hamburger + logo — the single entry point for every nav item,
+            Blog category, and setting (see the dropdown below). Every link
+            that used to live in a separate desktop bar / mobile panel now
+            lives in this one menu, at every breakpoint. */}
+        <div className="relative flex items-center gap-3" ref={menuRef}>
           <button
             type="button"
-            onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
-            className="w-8 py-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 text-xs font-semibold"
-            aria-label={lang === 'it' ? 'Switch to English' : 'Passa all\'italiano'}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={lang === 'en' ? 'Toggle menu' : 'Apri il menu'}
+            className="p-1.5 -ml-1.5 rounded-md text-muted-foreground hover:text-foreground transition-colors"
           >
-            {lang === 'it' ? 'EN' : 'IT'}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
+          <a href="/" className="flex items-center gap-2 group">
+            {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
+            <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
+            <span className="font-heading font-bold text-lg tracking-tight">
+              Jobli
+            </span>
+          </a>
 
-          {/* Theme toggle */}
-          <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
+          {menuOpen && (
+            <div className="absolute top-full left-0 mt-2 w-72 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden">
+              <div className="max-h-[75vh] overflow-y-auto py-1.5">
+                <SectionLabel>{lang === 'en' ? 'Menu' : 'Menu'}</SectionLabel>
+                {menuLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ))}
 
-          {/* Get started button (desktop) — the single "Inizia Ora", always
-              right after the theme toggle. Hidden once signed in, since the
-              account nav link above already covers that case. */}
+                <div className="my-1.5 border-t border-border" />
+                <SectionLabel>Blog</SectionLabel>
+                <a
+                  href="/blog"
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-4 py-2.5 text-sm font-semibold hover:bg-foreground/[0.05] transition-colors"
+                  style={{ color: 'var(--primary)' }}
+                >
+                  {lang === 'en' ? 'All articles' : 'Tutti gli articoli'}
+                </a>
+                {BLOG_CATEGORIES.map((category) => (
+                  <a
+                    key={category}
+                    href={`/blog?category=${encodeURIComponent(category)}`}
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
+                  >
+                    {category}
+                  </a>
+                ))}
+
+                <div className="my-1.5 border-t border-border" />
+                <SectionLabel>{lang === 'en' ? 'Settings' : 'Impostazioni'}</SectionLabel>
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-sm text-foreground">{lang === 'en' ? 'Language' : 'Lingua'}</span>
+                  <button
+                    type="button"
+                    onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+                    className="w-8 py-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 text-xs font-semibold"
+                    aria-label={lang === 'it' ? 'Switch to English' : "Passa all'italiano"}
+                  >
+                    {lang === 'it' ? 'EN' : 'IT'}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-sm text-foreground">{lang === 'en' ? 'Theme' : 'Tema'}</span>
+                  <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
+                </div>
+
+                {!isAccountContext && (
+                  <>
+                    <div className="my-1.5 border-t border-border" />
+                    <a
+                      href="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    >
+                      {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
+                    </a>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right side — kept minimal on purpose: everything else now lives
+            in the single menu above. Signed-out visitors always keep the
+            "Get Started" CTA in view (never hidden behind the menu, since
+            it's the whole point of the page); signed-in visitors get the
+            avatar menu instead. */}
+        <div className="flex items-center gap-3">
           {!isAccountContext && (
             <a
               href="/generate"
-              className="hidden md:inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
+              className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
             >
               {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
             </a>
           )}
 
-          {/* Avatar + account dropdown — rightmost element, replaces the
-              old settings-gear icon that used to live inside the account
-              page itself. Shown on every page once signed in, not just
-              /account, since it's real session state (see isLoggedIn
-              above), not a path guess. */}
           {isAccountContext && (
             <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
           )}
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden bg-background/95 border-b border-border/60 px-6 py-5 flex flex-col gap-5">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href={generateHref}
-            className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-cyan text-accent-cyan-foreground text-sm font-semibold"
-            onClick={() => setMobileOpen(false)}
-          >
-            {generateLabel}
-          </a>
-          {!isAccountContext && (
-            <a
-              href="/login"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {lang === 'en' ? 'Log in / Sign up' : 'Accedi/Registrati'}
-            </a>
-          )}
-          <div className="flex items-center gap-4">
-            <ThemeToggle className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors" />
-            <button
-              type="button"
-              onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {lang === 'it' ? 'English' : 'Italiano'}
-            </button>
-          </div>
-        </div>
-      )}
     </nav>
   )
 }
+
