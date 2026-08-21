@@ -566,19 +566,27 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
             {tr(
-              "Utilizzi 1 credito per sbloccare per la prima volta un PDF, un documento Word, una lettera o una traduzione. Adattare il CV a un annuncio è sempre gratuito. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti. Hai bisogno di più crediti?",
-              "You spend 1 credit to unlock a PDF, a Word document, a letter, or a translation for the first time. Tailoring your CV to a job posting is always free. From then on, you can view or re-download it from the Download section any time, at no extra cost. Need more credits?"
-            )}{" "}
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline underline-offset-2" style={{ color: "var(--primary)" }}>
-              {tr("Scrivici", "Contact us")}
-            </a>
-            .
+              "Utilizzi 1 credito per sbloccare per la prima volta un PDF, un documento Word, una lettera o una traduzione. Adattare il CV a un annuncio è sempre gratuito. Da quel momento, potrai consultare i tuoi documenti o riscaricarli dalla sezione Download in qualsiasi momento, senza consumare altri crediti.",
+              "You spend 1 credit to unlock a PDF, a Word document, a letter, or a translation for the first time. Tailoring your CV to a job posting is always free. From then on, you can view or re-download it from the Download section any time, at no extra cost."
+            )}
           </p>
 
           <div className="space-y-3">
-            <SectionTitle>{tr("Offerte per te", "Offers for you")}</SectionTitle>
-            <div className="glass-card rounded-2xl p-6 text-center">
-              <p className="text-sm text-muted-foreground">{tr("Nessuna promozione attiva al momento.", "No active promotion right now.")}</p>
+            <SectionTitle>{tr("Ricarica crediti", "Recharge credits")}</SectionTitle>
+            <div className="glass-card rounded-2xl p-6 space-y-3">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {tr(
+                  "L'acquisto diretto di pacchetti di crediti o di un piano mensile è in arrivo. Per ora, se ti servono altri crediti, scrivici e ti aiutiamo noi a ricaricare il tuo account.",
+                  "Buying credit packs or a monthly plan directly is coming soon. For now, if you need more credits, just contact us and we'll top up your account."
+                )}
+              </p>
+              <a
+                href={`mailto:${SUPPORT_EMAIL}`}
+                className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+              >
+                {tr("Scrivici per ricaricare", "Contact us to recharge")}
+              </a>
             </div>
           </div>
 

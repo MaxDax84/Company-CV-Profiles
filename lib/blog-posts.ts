@@ -18,6 +18,7 @@ export interface BlogPost {
   publishedAt: string; // ISO date
   readingMinutes: number;
   content: ContentBlock[];
+  pinned?: boolean; // always shown first on the blog index, regardless of date
 }
 
 export const BLOG_CATEGORIES = ["Colloqui", "CV", "ATS", "LinkedIn", "Carriera"] as const;
@@ -51,6 +52,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "ATS",
     publishedAt: "2026-07-09",
     readingMinutes: 6,
+    pinned: true,
     content: [
       { type: "p", text: "La maggior parte delle grandi aziende, e un numero crescente di PMI, usa un ATS (Applicant Tracking System) per raccogliere e filtrare le candidature prima che arrivino a un recruiter umano. Il software non giudica il tuo CV: lo legge, lo trasforma in testo strutturato, e in alcuni casi lo classifica per parole chiave. Un CV che l'ATS legge male, semplicemente, arriva incompleto o non arriva affatto." },
       { type: "h2", text: "Il problema non è il contenuto, è la struttura" },

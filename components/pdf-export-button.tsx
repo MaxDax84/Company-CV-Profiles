@@ -24,6 +24,7 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
   const [downloading, setDownloading] = useState(false);
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [paidTemplates, setPaidTemplates] = useState<string[] | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Re-downloading a template already paid for is free server-side (see
   // app/api/pdf/[slug]/route.tsx) — without this check the "costs 1 credit"
@@ -38,17 +39,16 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
 
   async function startDownload() {
     setDownloading(true);
+    setErrorMsg(null);
     try {
       await triggerDownload(`/api/pdf/${slug}?template=${template}`);
       setPaidTemplates((prev) => (prev && !prev.includes(template) ? [...prev, template] : prev));
       onDownloaded?.();
-    } catch {
-      // Non-blocking — the credit spend already happened server-side
-      // if it reached that point; a network hiccup on the download
-      // itself isn't worth a dedicated error state here.
+      setOpen(false);
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : (lang === "en" ? "Download failed, try again." : "Download fallito, riprova."));
     }
     setDownloading(false);
-    setOpen(false);
   }
 
   function handleDownloadClick() {
@@ -110,6 +110,11 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
           );
         })}
       </div>
+      {errorMsg && (
+        <p className="text-[11px] rounded-lg px-3 py-2" style={{ background: "color-mix(in srgb, #ef4444 12%, transparent)", color: "#ef4444" }}>
+          {errorMsg}
+        </p>
+      )}
       <div className="flex gap-2 pt-1">
         <button
           type="button"

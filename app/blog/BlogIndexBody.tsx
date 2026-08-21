@@ -20,7 +20,7 @@ export default function BlogIndexBody() {
     return [...BLOG_POSTS]
       .filter((post) => !category || post.category === category)
       .filter((post) => !q || post.title.toLowerCase().includes(q) || post.excerpt.toLowerCase().includes(q))
-      .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+      .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.publishedAt.localeCompare(a.publishedAt));
   }, [category, query]);
 
   return (

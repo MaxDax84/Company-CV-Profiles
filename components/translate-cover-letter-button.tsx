@@ -27,6 +27,7 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [done, setDone] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { lang } = useLanguage();
 
   const selectedEntry = TRANSLATE_LANGUAGES.find((l) => l.code === language);
@@ -35,11 +36,12 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
   async function handleConfirm() {
     setConfirming(false);
     setDownloading(true);
+    setErrorMsg(null);
     try {
       await triggerDownload(`/api/cover-letter/${slug}?language=${language}`);
       setDone(true);
-    } catch {
-      // Non-blocking, same reasoning as pdf-export-button.tsx.
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : (lang === "en" ? "Download failed, try again." : "Download fallito, riprova."));
     }
     setDownloading(false);
   }
@@ -63,6 +65,11 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
       >
         {lang === "en" ? "Translate and download PDF" : "Traduci e scarica PDF"}
       </button>
+      {errorMsg && (
+        <p className="text-[11px] rounded-lg px-3 py-2 w-full" style={{ background: "color-mix(in srgb, #ef4444 12%, transparent)", color: "#ef4444" }}>
+          {errorMsg}
+        </p>
+      )}
       {confirming && (
         <CreditConfirmModal
           actionLabel={lang === "en"

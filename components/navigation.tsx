@@ -75,6 +75,7 @@ export default function Navigation() {
     { href: isHome ? '#' : '/', label: t.home },
     { href: href('#mission'), label: t.mission },
     { href: href('#services'), label: t.services },
+    { href: href('#chi-siamo'), label: (t as { aboutUs?: string }).aboutUs ?? 'Chi siamo' },
     { href: href('#faq'), label: t.faq },
     { href: '/blog', label: (t as { blog?: string }).blog ?? 'Blog' },
   ]

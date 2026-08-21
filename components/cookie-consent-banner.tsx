@@ -105,7 +105,9 @@ export default function CookieConsentBanner() {
       />
       <div
         className={`relative w-full sm:max-w-md mx-0 sm:mx-6 sm:mb-6 rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl transition-transform duration-300 ease-out max-h-[85vh] overflow-y-auto ${
-          bannerOpen ? "translate-y-0 pointer-events-auto" : "translate-y-full pointer-events-none"
+          bannerOpen
+            ? "translate-y-0 pointer-events-auto"
+            : "translate-y-full sm:translate-y-[calc(100%+1.5rem)] pointer-events-none"
         }`}
         style={{ background: "var(--background)", border: "1px solid var(--border)", color: "var(--foreground)" }}
       >

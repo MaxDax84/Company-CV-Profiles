@@ -24,6 +24,7 @@ export default function WordExportButton({ slug, label, icon, className, style, 
   const [confirming, setConfirming] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [alreadyPaid, setAlreadyPaid] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Shares the same paid_downloads status endpoint as PdfExportButton — the
   // "docx" template key shows up there once this exact CV's Word doc has
@@ -37,12 +38,13 @@ export default function WordExportButton({ slug, label, icon, className, style, 
 
   async function startDownload() {
     setDownloading(true);
+    setErrorMsg(null);
     try {
       await triggerDownload(`/api/cv-word/${slug}`);
       setAlreadyPaid(true);
       onDownloaded?.();
-    } catch {
-      // Non-blocking, same reasoning as pdf-export-button.tsx.
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : (lang === "en" ? "Download failed, try again." : "Download fallito, riprova."));
     }
     setDownloading(false);
   }
@@ -58,6 +60,11 @@ export default function WordExportButton({ slug, label, icon, className, style, 
         {icon}
         {icon ? <span className="text-[10px] leading-tight text-center line-clamp-2">{label}</span> : label}
       </button>
+      {errorMsg && (
+        <p className="text-[11px] rounded-lg px-3 py-2 mt-1" style={{ background: "color-mix(in srgb, #ef4444 12%, transparent)", color: "#ef4444" }}>
+          {errorMsg}
+        </p>
+      )}
       {confirming && (
         <CreditConfirmModal
           actionLabel={lang === "en" ? "Download the Word document?" : "Scaricare il documento Word?"}
