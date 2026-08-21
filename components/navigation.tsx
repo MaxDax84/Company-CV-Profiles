@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { createBrowserSupabaseClient } from '@/lib/supabase/browser'
 import ThemeToggle from './theme-toggle'
 import AccountAvatarMenu from './account-avatar-menu'
+import BlogNavDropdown from './blog-nav-dropdown'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
@@ -120,7 +121,7 @@ export default function Navigation() {
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
+          {links.filter((link) => link.href !== '/blog').map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -129,6 +130,10 @@ export default function Navigation() {
               {link.label}
             </a>
           ))}
+          <BlogNavDropdown
+            label={(t as { blog?: string }).blog ?? 'Blog'}
+            triggerClassName="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+          />
           {/* "Il tuo account" text link removed while logged in — the
               avatar dropdown (top-right) already covers that entry point,
               so this would just be a redundant second way to the same
