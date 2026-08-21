@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
@@ -76,15 +77,13 @@ export default function PdfExportButton({ slug, label, icon, className, credits,
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
           {lang === "en" ? "Choose the PDF template" : "Scegli il template PDF"}
         </p>
-        <a
+        <Link
           href="/pdf-templates"
-          target="_blank"
-          rel="noopener noreferrer"
           className="text-[10px] font-semibold shrink-0"
           style={{ color: "var(--primary)" }}
         >
           {lang === "en" ? "See all 3 formats →" : "Vedi i 3 formati →"}
-        </a>
+        </Link>
       </div>
       <div className="flex flex-col gap-1.5">
         {PDF_TEMPLATES.map(tpl => {

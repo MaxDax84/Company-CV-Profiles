@@ -50,6 +50,7 @@ export default function TranslateCoverLetterButton({ slug, credits, className, o
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
+        style={{ colorScheme: "light" }}
       >
         {TRANSLATE_LANGUAGES.map((l) => (
           <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>

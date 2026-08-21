@@ -90,6 +90,7 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
+        style={{ colorScheme: "light" }}
       >
         {TRANSLATE_LANGUAGES.map((l) => (
           <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>
@@ -99,6 +100,7 @@ export default function TranslateCvButton({ slug, credits, className, onGoToDown
         value={template}
         onChange={(e) => setTemplate(e.target.value as PdfTemplate)}
         className="bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-primary/50 cursor-pointer"
+        style={{ colorScheme: "light" }}
       >
         {PDF_TEMPLATES.map((t) => (
           <option key={t.id} value={t.id}>{lang === "en" ? PDF_TEMPLATES_EN[t.id].name : t.name}</option>

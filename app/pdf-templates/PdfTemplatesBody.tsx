@@ -1,15 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN } from "@/components/pdf/AtsResumeDocument";
 import PdfTemplateCard from "./PdfTemplateCard";
 import { useLanguage } from "@/components/language-provider";
 
 export default function PdfTemplatesBody() {
   const { lang } = useLanguage();
+  const router = useRouter();
 
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-secondary/20 py-12 px-6">
       <div className="max-w-6xl mx-auto space-y-8">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {lang === "en" ? "← Back" : "← Torna indietro"}
+        </button>
         <div className="text-center space-y-2">
           <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight">
             {lang === "en" ? "The 3 PDF templates" : "I 3 template PDF"}

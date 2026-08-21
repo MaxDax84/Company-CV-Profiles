@@ -265,6 +265,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
               value={sourceSlug}
               onChange={(e) => router.push(`/tailor?profile=${e.target.value}`)}
               className="font-semibold text-foreground/80 bg-transparent border border-foreground/10 rounded-lg px-2 py-1 outline-none focus:border-primary/50 cursor-pointer"
+              style={{ colorScheme: "light" }}
             >
               {availableProfiles.map((p) => (
                 <option key={p.slug} value={p.slug}>{p.slug}</option>

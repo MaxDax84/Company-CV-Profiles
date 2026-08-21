@@ -10,6 +10,14 @@ import { PDF_PREVIEW_ACCENT, PDF_PREVIEW_DEMO as demo } from "@/lib/pdf-preview-
 // rendering the real PDF — a live PDF-plugin preview would render
 // inconsistently across browsers and can't be panned with CSS the way a
 // plain HTML page can.
+//
+// Sizing is deliberately larger than a real print document's margins/type
+// scale would be: this renders into a fixed 1200x1697 canvas (see
+// PdfTemplateCard's SOURCE_WIDTH/HEIGHT) that gets scaled down to fit a
+// thumbnail card, and a realistically-sparse A4 layout left too much blank
+// canvas around and below the demo content at that size — content width and
+// every font size here are scaled up (~1.3x) purely so the thumbnail reads
+// as a full page, not a small block floating in white space.
 interface Props {
   params: Promise<{ template: string }>;
 }
@@ -33,13 +41,13 @@ export default async function PdfPreviewPage({ params }: Props) {
 
   const sectionTitleStyle: React.CSSProperties =
     template === "ats-core"
-      ? { color: "#232323", borderBottom: "1px solid #a3a3a3", paddingBottom: 5 }
+      ? { color: "#232323", borderBottom: "1px solid #a3a3a3", paddingBottom: 6 }
       : template === "executive"
-      ? { color: accent, borderTop: `1px solid ${accent}59`, borderBottom: `1px solid ${accent}59`, padding: "4px 0" }
-      : { color: accent, letterSpacing: "0.13em", background: `${accent}1a`, padding: "6px 10px", borderRadius: 3 };
+      ? { color: accent, borderTop: `1px solid ${accent}59`, borderBottom: `1px solid ${accent}59`, padding: "5px 0" }
+      : { color: accent, letterSpacing: "0.13em", background: `${accent}1a`, padding: "8px 13px", borderRadius: 4 };
 
   const entryStyle: React.CSSProperties =
-    template === "creative-tech" ? { paddingLeft: 14, position: "relative" } : { paddingLeft: 0 };
+    template === "creative-tech" ? { paddingLeft: 18, position: "relative" } : { paddingLeft: 0 };
 
   return (
     <div style={{ background: "#ffffff", color: "#232323", fontFamily: bodyFontFamily, minHeight: "100%" }}>
@@ -47,43 +55,43 @@ export default async function PdfPreviewPage({ params }: Props) {
         style={{
           background: template === "ats-core" ? "transparent" : `${accent}0f`,
           borderBottom: template === "ats-core" ? "1px solid #a3a3a3" : "none",
-          padding: `${generous ? 34 : 28}px 0 22px`,
+          padding: `${generous ? 44 : 36}px 0 28px`,
         }}
       >
-        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 48px", textAlign: centered ? "center" : "left" }}>
-          <p style={{ fontFamily: headerFontFamily, fontWeight: 700, fontSize: generous ? 32 : 30, color: accent, margin: 0 }}>{demo.fullName}</p>
-          <p style={{ fontFamily: headerFontFamily, fontSize: 15, color: "#4a4a4a", margin: "4px 0 10px" }}>{demo.title}</p>
-          <p style={{ fontSize: 11, color: "#5a5a5a", margin: "0 0 2px" }}>{demo.contact}</p>
-          <p style={{ fontSize: 11, color: accent, margin: 0, fontWeight: 700 }}>{demo.links}</p>
+        <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 60px", textAlign: centered ? "center" : "left" }}>
+          <p style={{ fontFamily: headerFontFamily, fontWeight: 700, fontSize: generous ? 42 : 39, color: accent, margin: 0 }}>{demo.fullName}</p>
+          <p style={{ fontFamily: headerFontFamily, fontSize: 19, color: "#4a4a4a", margin: "5px 0 13px" }}>{demo.title}</p>
+          <p style={{ fontSize: 14, color: "#5a5a5a", margin: "0 0 3px" }}>{demo.contact}</p>
+          <p style={{ fontSize: 14, color: accent, margin: 0, fontWeight: 700 }}>{demo.links}</p>
         </div>
       </div>
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: "6px 48px 60px" }}>
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "8px 60px 78px" }}>
         <Section title="Profilo" fontFamily={headerFontFamily} sectionTitleStyle={sectionTitleStyle}>
-          <p style={{ fontSize: 12, lineHeight: 1.6, margin: 0 }}>{demo.bio}</p>
+          <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0 }}>{demo.bio}</p>
         </Section>
 
         <Section title="Esperienza" fontFamily={headerFontFamily} sectionTitleStyle={sectionTitleStyle}>
           {demo.experience.map((exp) => (
-            <div key={exp.role} style={{ ...entryStyle, marginBottom: 16 }}>
+            <div key={exp.role} style={{ ...entryStyle, marginBottom: 20 }}>
               {template === "creative-tech" && (
-                <span style={{ position: "absolute", left: 0, top: 6, width: 6, height: 6, borderRadius: 999, background: accent }} />
+                <span style={{ position: "absolute", left: 0, top: 8, width: 8, height: 8, borderRadius: 999, background: accent }} />
               )}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>{exp.role}</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 15 }}>
+                <p style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>{exp.role}</p>
                 {template === "creative-tech" ? (
-                  <span style={{ fontSize: 10, fontWeight: 700, color: accent, background: `${accent}18`, padding: "2px 8px", borderRadius: 10 }}>{exp.dates}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: accent, background: `${accent}18`, padding: "3px 10px", borderRadius: 12 }}>{exp.dates}</span>
                 ) : (
-                  <span style={{ fontSize: 10.5, fontWeight: 700, color: accent }}>{exp.dates}</span>
+                  <span style={{ fontSize: 13.5, fontWeight: 700, color: accent }}>{exp.dates}</span>
                 )}
               </div>
-              <p style={{ fontSize: 11.5, color: "#555555", margin: "2px 0 6px" }}>{exp.company}</p>
+              <p style={{ fontSize: 15, color: "#555555", margin: "3px 0 8px" }}>{exp.company}</p>
               {exp.bullets.map((b) => (
-                <p key={b} style={{ fontSize: 11.5, lineHeight: 1.5, margin: "0 0 3px" }}>{bullet} {b}</p>
+                <p key={b} style={{ fontSize: 15, lineHeight: 1.5, margin: "0 0 4px" }}>{bullet} {b}</p>
               ))}
               {showTags ? (
                 <TagRow items={exp.tech.split(", ")} accent={accent} />
               ) : (
-                <p style={{ fontSize: 11, color: "#333333", margin: "4px 0 0" }}>{exp.tech}</p>
+                <p style={{ fontSize: 14, color: "#333333", margin: "5px 0 0" }}>{exp.tech}</p>
               )}
             </div>
           ))}
@@ -91,15 +99,15 @@ export default async function PdfPreviewPage({ params }: Props) {
 
         <Section title="Istruzione" fontFamily={headerFontFamily} sectionTitleStyle={sectionTitleStyle}>
           {demo.education.map((ed) => (
-            <div key={ed.degree} style={{ ...entryStyle, marginBottom: 12, position: "relative" }}>
+            <div key={ed.degree} style={{ ...entryStyle, marginBottom: 15, position: "relative" }}>
               {template === "creative-tech" && (
-                <span style={{ position: "absolute", left: 0, top: 6, width: 6, height: 6, borderRadius: 999, background: accent }} />
+                <span style={{ position: "absolute", left: 0, top: 8, width: 8, height: 8, borderRadius: 999, background: accent }} />
               )}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>{ed.degree}</p>
-                <span style={{ fontSize: 10.5, fontWeight: 700, color: accent }}>{ed.dates}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 15 }}>
+                <p style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>{ed.degree}</p>
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: accent }}>{ed.dates}</span>
               </div>
-              <p style={{ fontSize: 11.5, color: "#555555", margin: "2px 0 0" }}>{ed.school}{ed.grade ? ` — ${ed.grade}` : ""}</p>
+              <p style={{ fontSize: 15, color: "#555555", margin: "3px 0 0" }}>{ed.school}{ed.grade ? ` — ${ed.grade}` : ""}</p>
             </div>
           ))}
         </Section>
@@ -109,16 +117,16 @@ export default async function PdfPreviewPage({ params }: Props) {
             <TagRow items={[...demo.skills.hard.split(", "), ...demo.skills.tools.split(", ")]} accent={accent} />
           ) : (
             <>
-              <p style={{ fontSize: 11.5, lineHeight: 1.7, margin: 0 }}><b>Tecniche:</b> {demo.skills.hard}</p>
-              <p style={{ fontSize: 11.5, lineHeight: 1.7, margin: 0 }}><b>Strumenti:</b> {demo.skills.tools}</p>
+              <p style={{ fontSize: 15, lineHeight: 1.7, margin: 0 }}><b>Tecniche:</b> {demo.skills.hard}</p>
+              <p style={{ fontSize: 15, lineHeight: 1.7, margin: 0 }}><b>Strumenti:</b> {demo.skills.tools}</p>
             </>
           )}
-          <p style={{ fontSize: 11.5, lineHeight: 1.7, margin: showTags ? "6px 0 0" : 0 }}><b>Trasversali:</b> {demo.skills.soft}</p>
+          <p style={{ fontSize: 15, lineHeight: 1.7, margin: showTags ? "8px 0 0" : 0 }}><b>Trasversali:</b> {demo.skills.soft}</p>
         </Section>
 
         <Section title="Certificazioni" fontFamily={headerFontFamily} sectionTitleStyle={sectionTitleStyle}>
           {demo.certifications.map((c) => (
-            <p key={c} style={{ fontSize: 11.5, lineHeight: 1.7, margin: 0 }}>{c}</p>
+            <p key={c} style={{ fontSize: 15, lineHeight: 1.7, margin: 0 }}>{c}</p>
           ))}
         </Section>
       </div>
@@ -128,8 +136,8 @@ export default async function PdfPreviewPage({ params }: Props) {
 
 function Section({ title, fontFamily, sectionTitleStyle, children }: { title: string; fontFamily: string; sectionTitleStyle: React.CSSProperties; children: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 22 }}>
-      <p style={{ fontFamily, fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, ...sectionTitleStyle }}>
+    <div style={{ marginTop: 28 }}>
+      <p style={{ fontFamily, fontWeight: 700, fontSize: 15, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 13, ...sectionTitleStyle }}>
         {title}
       </p>
       {children}
@@ -139,9 +147,9 @@ function Section({ title, fontFamily, sectionTitleStyle, children }: { title: st
 
 function TagRow({ items, accent }: { items: string[]; accent: string }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 2, marginBottom: 4 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 3, marginBottom: 5 }}>
       {items.map((item) => (
-        <span key={item} style={{ fontSize: 10, fontWeight: 700, color: accent, background: `${accent}1a`, borderRadius: 8, padding: "3px 8px" }}>{item}</span>
+        <span key={item} style={{ fontSize: 13, fontWeight: 700, color: accent, background: `${accent}1a`, borderRadius: 10, padding: "4px 10px" }}>{item}</span>
       ))}
     </div>
   );
