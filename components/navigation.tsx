@@ -96,10 +96,6 @@ export default function Navigation() {
   // "Try Free" CTA aimed at brand-new anonymous visitors would be redundant
   // once they already have an account.
   const isAccountContext = isLoggedIn === true
-  const generateLabel = isAccountContext
-    ? (lang === 'en' ? 'Your Account' : 'Il tuo account')
-    : (t as { generate?: string }).generate ?? 'Try Free'
-  const generateHref = isAccountContext ? '/account' : '/generate'
 
   return (
     <nav
@@ -120,29 +116,49 @@ export default function Navigation() {
       )}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Hamburger + logo — the single entry point for every nav item,
-            Blog category, and setting (see the dropdown below). Every link
-            that used to live in a separate desktop bar / mobile panel now
-            lives in this one menu, at every breakpoint. */}
-        <div className="relative flex items-center gap-3" ref={menuRef}>
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={lang === 'en' ? 'Toggle menu' : 'Apri il menu'}
-            className="p-1.5 -ml-1.5 rounded-md text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-          <a href="/" className="flex items-center gap-2 group">
-            {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
-            <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
-            <span className="font-heading font-bold text-lg tracking-tight">
-              Jobli
-            </span>
-          </a>
+        {/* Logo only, on the left. */}
+        <a href="/" className="flex items-center gap-2 group">
+          {/* eslint-disable-next-line @next/next/no-img-element -- small fixed-size mark, same as the avatar treatment elsewhere */}
+          <img src="/icon.png" alt="" className="w-8 h-8 rounded-lg" />
+          <span className="font-heading font-bold text-lg tracking-tight">
+            Jobli
+          </span>
+        </a>
 
-          {menuOpen && (
-            <div className="absolute top-full left-0 mt-2 w-72 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden">
+        {/* Right side: CTA/avatar, then the hamburger menu — the single
+            entry point for every nav item, Blog category, and setting (see
+            the dropdown below). Every link that used to live in a separate
+            desktop bar / mobile panel now lives in this one menu, at every
+            breakpoint. Signed-out visitors always keep the "Get Started"
+            CTA in view (never hidden behind the menu, since it's the whole
+            point of the page); signed-in visitors get the avatar menu
+            instead — either way it sits to the left of the hamburger. */}
+        <div className="flex items-center gap-3">
+          {!isAccountContext && (
+            <a
+              href="/generate"
+              className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
+            >
+              {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
+            </a>
+          )}
+
+          {isAccountContext && (
+            <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
+          )}
+
+          <div className="relative" ref={menuRef}>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={lang === 'en' ? 'Toggle menu' : 'Apri il menu'}
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {menuOpen && (
+            <div className="absolute top-full right-0 mt-2 w-72 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden">
               <div className="max-h-[75vh] overflow-y-auto py-1.5">
                 <SectionLabel>{lang === 'en' ? 'Menu' : 'Menu'}</SectionLabel>
                 {menuLinks.map((link) => (
@@ -210,26 +226,7 @@ export default function Navigation() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right side — kept minimal on purpose: everything else now lives
-            in the single menu above. Signed-out visitors always keep the
-            "Get Started" CTA in view (never hidden behind the menu, since
-            it's the whole point of the page); signed-in visitors get the
-            avatar menu instead. */}
-        <div className="flex items-center gap-3">
-          {!isAccountContext && (
-            <a
-              href="/generate"
-              className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
-            >
-              {lang === 'en' ? 'Get Started' : 'Inizia Ora'}
-            </a>
-          )}
-
-          {isAccountContext && (
-            <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
-          )}
+          </div>
         </div>
       </div>
     </nav>

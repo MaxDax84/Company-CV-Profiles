@@ -17,9 +17,19 @@ import '@fontsource/space-grotesk/700.css'
 import { LanguageProvider } from '@/components/language-provider'
 import { ConsentProvider } from '@/components/consent-provider'
 import CookieConsentBanner from '@/components/cookie-consent-banner'
+import CookiebotScript from '@/components/cookiebot-script'
 import GoogleAnalytics from '@/components/google-analytics'
 import ScrollToTop from '@/components/scroll-to-top'
 import './globals.css'
+
+// Temporary Cookiebot-by-Usercentrics trial, toggled by one env var so it's
+// a one-line revert either way — nothing else in this file changes behavior
+// unless NEXT_PUBLIC_COOKIE_CMP is explicitly set to "cookiebot" in Vercel.
+// Our own CMP (ConsentProvider/CookieConsentBanner/lib/consent.ts, and the
+// /cookies policy page) is untouched either way, just skipped while this is
+// on. To go back permanently: delete this flag, cookiebot-script.tsx, and
+// the two NEXT_PUBLIC_COOKIEBOT_ID/NEXT_PUBLIC_COOKIE_CMP env vars.
+const USING_COOKIEBOT = process.env.NEXT_PUBLIC_COOKIE_CMP === 'cookiebot'
 
 export const metadata: Metadata = {
   title: 'Jobli | Più colloqui, con il CV che hai già',
@@ -46,16 +56,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="it" suppressHydrationWarning>
       <head>
+        {USING_COOKIEBOT && <CookiebotScript />}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="font-sans antialiased">
         <ScrollToTop />
         <LanguageProvider>
-          <ConsentProvider>
-            {children}
-            <CookieConsentBanner />
-            <GoogleAnalytics />
-          </ConsentProvider>
+          {USING_COOKIEBOT ? (
+            <>
+              {children}
+              <GoogleAnalytics />
+            </>
+          ) : (
+            <ConsentProvider>
+              {children}
+              <CookieConsentBanner />
+              <GoogleAnalytics />
+            </ConsentProvider>
+          )}
         </LanguageProvider>
       </body>
     </html>

@@ -10,6 +10,18 @@ export default function Footer() {
   const { lang } = useLanguage()
   const t = translations[lang].footer
   const { openBanner } = useConsent()
+  const usingCookiebot = process.env.NEXT_PUBLIC_COOKIE_CMP === "cookiebot"
+
+  // During the Cookiebot trial our own ConsentProvider isn't mounted (see
+  // app/layout.tsx), so openBanner() above would be a no-op — Cookiebot
+  // exposes its own global renew() to reopen its banner instead.
+  function openCookiePreferences() {
+    if (usingCookiebot) {
+      (window as unknown as { Cookiebot?: { renew?: () => void } }).Cookiebot?.renew?.();
+    } else {
+      openBanner();
+    }
+  }
 
   // Footer is shared by public pages (homepage, FAQ) and account pages —
   // Support is account-oriented (data/security/deletion FAQ), so it only
@@ -60,7 +72,7 @@ export default function Footer() {
             </a>
             <button
               type="button"
-              onClick={openBanner}
+              onClick={openCookiePreferences}
               className="text-xs text-white/60 hover:text-white transition-colors"
             >
               {lang === 'en' ? 'Cookie preferences' : 'Preferenze Cookie'}
