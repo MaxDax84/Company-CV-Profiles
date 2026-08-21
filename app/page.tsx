@@ -2,6 +2,7 @@ import Navigation from '@/components/navigation'
 import HeroSection from '@/components/hero-section'
 import MissionSection from '@/components/mission-section'
 import ServicesSection from '@/components/services-section'
+import TailorExampleSection from '@/components/tailor-example-section'
 import AboutSection from '@/components/about-section'
 import TestimonialsSection from '@/components/testimonials-section'
 import FaqSection from '@/components/faq-section'
@@ -15,6 +16,7 @@ export default function Home() {
       <HeroSection />
       <MissionSection />
       <ServicesSection />
+      <TailorExampleSection />
       <AboutSection />
       <TestimonialsSection />
       <FaqSection />
