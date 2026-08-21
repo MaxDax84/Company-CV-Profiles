@@ -44,6 +44,9 @@ export default function Footer() {
 
           {/* Nav links */}
           <div className="flex items-center gap-6 flex-wrap justify-center">
+            <a href="/blog" className="text-xs text-white/60 hover:text-white transition-colors">
+              Blog
+            </a>
             {isLoggedIn && (
               <a href="/support" className="text-xs text-white/60 hover:text-white transition-colors">
                 {lang === 'en' ? 'Support' : 'Supporto'}

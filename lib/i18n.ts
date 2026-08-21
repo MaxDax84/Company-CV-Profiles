@@ -12,6 +12,7 @@ export const translations = {
       generate: 'Try Free',
       tailorLink: 'Tailor to a Job',
       faq: 'FAQ',
+      blog: 'Blog',
     },
     trust: {
       autoDelete: 'Auto-deleted after 1 hour if unclaimed',
@@ -390,6 +391,7 @@ export const translations = {
       generate: 'Prova Gratis',
       tailorLink: 'Adatta a un annuncio',
       faq: 'FAQ',
+      blog: 'Blog',
     },
     trust: {
       autoDelete: 'Eliminato automaticamente dopo 1 ora se non registrato',

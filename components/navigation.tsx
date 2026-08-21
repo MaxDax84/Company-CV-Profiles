@@ -76,6 +76,7 @@ export default function Navigation() {
     { href: href('#mission'), label: t.mission },
     { href: href('#services'), label: t.services },
     { href: href('#faq'), label: t.faq },
+    { href: '/blog', label: (t as { blog?: string }).blog ?? 'Blog' },
   ]
 
   // A signed-in visitor (anywhere on the site, not just on /account or
