@@ -1,8 +1,9 @@
 # Procedura Interna di Gestione dei Data Breach (art. 33-34 GDPR)
 
 **BOZZA DI LAVORO — non è un documento legale definitivo.** Va rivisto e validato da un
-consulente privacy/legale. Pensata per un titolare singolo (Massimo Dassano), senza un team
-dedicato: il flusso è deliberatamente semplice, non calibrato su un'organizzazione con più persone.
+consulente privacy/legale. Pensata per un titolare di piccole dimensioni (Jobli Srl, in
+costituzione), senza un team dedicato: il flusso è deliberatamente semplice, non calibrato su
+un'organizzazione con più persone.
 
 Ultimo aggiornamento: 21 agosto 2026.
 

@@ -34,8 +34,9 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
                 <p>
-                  Il titolare del trattamento è <strong className="text-foreground">Jobli</strong>,
-                  gestito da Massimo Dassano, con sede in Italia.
+                  Il titolare del trattamento è{' '}
+                  <strong className="text-foreground">Jobli Srl (in costituzione)</strong>, con sede
+                  a Milano, Italia.
                   <br />
                   Email di contatto:{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
@@ -166,6 +167,15 @@ export default function PrivacyPage() {
                   artt. 44–49 GDPR, tramite le Standard Contractual Clauses (SCC) adottate dalla
                   Commissione Europea.
                 </p>
+                <p className="mt-2">
+                  In particolare, l&apos;utilizzo di Anthropic PBC per l&apos;elaborazione del testo
+                  del CV è disciplinato da un Data Processing Addendum pubblico che incorpora le SCC
+                  (Decisione della Commissione UE 2021/914, Modulo Due e/o Modulo Tre) e prevede
+                  espressamente che i contenuti inviati tramite l&apos;API non vengano utilizzati per
+                  addestrare i modelli, la cancellazione dei dati entro 30 giorni dalla cessazione del
+                  rapporto contrattuale, e la notifica di eventuali violazioni di sicurezza entro 48
+                  ore dalla scoperta.
+                </p>
               </div>
 
               <div>
@@ -239,8 +249,9 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
                 <p>
-                  The data controller is <strong className="text-foreground">Jobli</strong>,
-                  operated by Massimo Dassano, based in Italy.
+                  The data controller is{' '}
+                  <strong className="text-foreground">Jobli Srl (in costituzione)</strong>, based in
+                  Milan, Italy.
                   <br />
                   Contact email:{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
@@ -360,6 +371,14 @@ export default function PrivacyPage() {
                   infrastructure can be configured in various regions, including within the EU). Non-EU
                   transfers are carried out under the safeguards of Arts. 44–49 GDPR via Standard
                   Contractual Clauses (SCC) adopted by the European Commission.
+                </p>
+                <p className="mt-2">
+                  In particular, our use of Anthropic PBC for CV text processing is governed by a
+                  public Data Processing Addendum that incorporates the EU SCCs (European Commission
+                  Decision 2021/914, Module Two and/or Module Three) and expressly states that
+                  content submitted via the API is not used to train models, that customer data is
+                  deleted within 30 days of contract termination, and that any security breach is
+                  notified within 48 hours of discovery.
                 </p>
               </div>
 

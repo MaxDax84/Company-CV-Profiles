@@ -10,11 +10,16 @@ Ultimo aggiornamento: 21 agosto 2026.
 
 ## Titolare del trattamento
 
-- Nome/denominazione: `[DA COMPLETARE — nome e cognome o ragione sociale]`
-- Forma giuridica: `[DA COMPLETARE — persona fisica/ditta individuale/società]`
-- Sede legale: `[DA COMPLETARE]`
-- Codice fiscale/P.IVA: `[DA COMPLETARE]`
-- Email di contatto: support@jobli.it (da confermare indirizzo reale)
+- Nome/denominazione: Jobli Srl (in costituzione)
+- Forma giuridica: società a responsabilità limitata, **in fase di costituzione** — non ancora
+  iscritta al Registro delle Imprese al 21 agosto 2026. Fino al perfezionamento dell'iscrizione, la
+  società non ha personalità giuridica autonoma: verificare con un notaio/commercialista se, nel
+  frattempo, il titolare effettivo debba essere formalmente indicato come il socio fondatore/i
+  fondatori in proprio (prassi comune per le società "in costituzione").
+- Sede legale: Milano, Italia — indirizzo completo `[DA COMPLETARE]`
+- Codice fiscale/P.IVA: `[DA COMPLETARE — verosimilmente non ancora assegnata fino al
+  perfezionamento della costituzione]`
+- Email di contatto: info@jobli.it
 - PEC (se presente): `[DA COMPLETARE]`
 - DPO: non nominato — da valutare se applicabile in base a volumi/natura del trattamento
 
@@ -47,7 +52,33 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 - **Trasferimenti extra-UE**: sì (Anthropic, Vercel, Supabase se regione USA) — tramite SCC.
 - **Termine di conservazione**: anteprima non collegata ad account, 1 ora; CV collegato ad account, senza scadenza automatica fino a cancellazione da parte dell'utente.
 
-> **Nota aperta**: verificare se esiste un Data Processing Agreement firmato/accettato con Anthropic PBC per l'uso commerciale dell'API, e le condizioni relative a training sui dati, retention lato Anthropic, sub-processor di Anthropic stesso. `[DA VERIFICARE]`
+> **Verificato il 21 agosto 2026** — Anthropic pubblica un Data Processing Addendum (DPA) pubblico
+> all'indirizzo anthropic.com/legal/data-processing-addendum, incorporato per riferimento nei
+> Commercial Terms of Service (anthropic.com/legal/commercial-terms). Punti rilevanti confermati
+> direttamente dal testo pubblico:
+> - **Ruolo**: Anthropic agisce come responsabile del trattamento (processor), il cliente come
+>   titolare (controller) per i dati personali trattati tramite l'API (Sezione B.1 del DPA).
+> - **Nessun training sui dati**: i Commercial Terms of Service dichiarano esplicitamente che
+>   Anthropic non addestra i propri modelli sui contenuti inviati tramite l'API ("Anthropic may not
+>   train models on Customer Content from Services").
+> - **Trasferimenti extra-UE**: il DPA incorpora le Standard Contractual Clauses UE (Decisione
+>   Comm. 2021/914), Modulo Due (controller-to-processor) e/o Modulo Tre (processor-to-processor),
+>   con le opzioni previste dalla legge irlandese (Clausola 17, Opzione 1).
+> - **Sub-responsabili**: elenco pubblico e aggiornato su anthropic.com/subprocessors; i clienti
+>   ricevono notifica e hanno 15 giorni per opporsi a un nuovo sub-responsabile.
+> - **Conservazione**: cancellazione dei dati cliente entro 30 giorni dalla cessazione del
+>   rapporto contrattuale, salvo obblighi legali di conservazione o necessità di risolvere
+>   controversie.
+> - **Notifica violazioni**: entro 48 ore dalla scoperta di un incidente di sicurezza (più stringente
+>   delle 72 ore previste dall'art. 33 GDPR per la notifica al Garante).
+> - **Sicurezza**: cifratura AES-256 a riposo, TLS 1.2+ in transito, audit di terze parti annuali,
+>   report SOC 2 disponibili su trust.anthropic.com.
+>
+> **Resta da verificare** `[DA VERIFICARE]`: se l'account Anthropic effettivamente utilizzato da
+> Jobli ha formalmente accettato questi Commercial Terms of Service (tipicamente avviene
+> automaticamente all'attivazione di un account API a uso commerciale, ma va confermato lato
+> account/fatturazione), e se è stata richiesta/negoziata una DPA firmata separatamente (di solito
+> non necessaria: il DPA pubblico si applica per incorporazione ai Commercial Terms).
 
 ## 3. Generazione e pubblicazione della pagina profilo
 
@@ -102,7 +133,7 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 |---|---|---|---|---|
 | Supabase Inc. | Database, autenticazione, storage | USA (regione dati configurabile) | Sì (salvo regione EU configurata) | `[DA VERIFICARE]` |
 | Vercel Inc. | Hosting applicazione | USA | Sì | `[DA VERIFICARE]` |
-| Anthropic PBC | Elaborazione AI del testo del CV | USA | Sì | `[DA VERIFICARE]` |
+| Anthropic PBC | Elaborazione AI del testo del CV | USA | Sì (SCC Modulo 2/3, EU 2021/914) | Sì — DPA pubblico incorporato nei Commercial Terms, verificato 21/08/2026 |
 | Cloudflare Inc. | Verifica anti-bot (Turnstile) | USA (rete globale) | Sì | `[DA VERIFICARE]` |
 | Google LLC | Ricezione email modulo contatto (Gmail) | USA | Sì | Google offre DPA standard per Workspace/Gmail — verificare se applicabile all'account usato |
 | Google Ireland Limited | Google Analytics 4 (solo previo consenso) | UE (Irlanda), dati minimizzati | Parziale (infrastruttura Google globale) | Google fornisce DPA standard per GA4 |
