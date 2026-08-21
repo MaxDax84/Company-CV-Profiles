@@ -376,7 +376,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Crafting professional web presences, one profile at a time.',
-      rights: '© 2026 Jobli. All rights reserved.',
+      rights: '© 2026 Jobli Srls (in costituzione). All rights reserved.',
     },
   },
 
@@ -745,7 +745,7 @@ export const translations = {
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',
-      rights: '© 2026 Jobli. Tutti i diritti riservati.',
+      rights: '© 2026 Jobli Srls (in costituzione). Tutti i diritti riservati.',
     },
   },
 } as const

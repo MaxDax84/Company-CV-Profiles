@@ -10,7 +10,7 @@ Ultimo aggiornamento: 21 agosto 2026.
 
 ## Titolare del trattamento
 
-- Nome/denominazione: Jobli Srl (in costituzione)
+- Nome/denominazione: Jobli Srls (in costituzione)
 - Forma giuridica: società a responsabilità limitata, **in fase di costituzione** — non ancora
   iscritta al Registro delle Imprese al 21 agosto 2026. Fino al perfezionamento dell'iscrizione, la
   società non ha personalità giuridica autonoma: verificare con un notaio/commercialista se, nel

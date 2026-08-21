@@ -30,7 +30,7 @@ export default function TermsPage() {
             <>
               <p>
                 I presenti Termini di Servizio regolano l&apos;utilizzo della piattaforma{' '}
-                <strong className="text-foreground">Jobli</strong>, gestita da Jobli Srl (in
+                <strong className="text-foreground">Jobli</strong>, gestita da Jobli Srls (in
                 costituzione) (di seguito &quot;Fornitore&quot;), da parte di chiunque acceda o
                 utilizzi i servizi offerti tramite il sito.
               </p>
@@ -186,7 +186,7 @@ export default function TermsPage() {
             <>
               <p>
                 These Terms of Service govern the use of the{' '}
-                <strong className="text-foreground">Jobli</strong> platform, operated by Jobli Srl
+                <strong className="text-foreground">Jobli</strong> platform, operated by Jobli Srls
                 (in costituzione) (the &quot;Provider&quot;), by anyone who accesses or uses the
                 services offered through this website.
               </p>

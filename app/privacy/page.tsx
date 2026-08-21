@@ -35,7 +35,7 @@ export default function PrivacyPage() {
                 <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
                 <p>
                   Il titolare del trattamento è{' '}
-                  <strong className="text-foreground">Jobli Srl (in costituzione)</strong>, con sede
+                  <strong className="text-foreground">Jobli Srls (in costituzione)</strong>, con sede
                   a Milano, Italia.
                   <br />
                   Email di contatto:{' '}
@@ -250,7 +250,7 @@ export default function PrivacyPage() {
                 <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
                 <p>
                   The data controller is{' '}
-                  <strong className="text-foreground">Jobli Srl (in costituzione)</strong>, based in
+                  <strong className="text-foreground">Jobli Srls (in costituzione)</strong>, based in
                   Milan, Italy.
                   <br />
                   Contact email:{' '}
