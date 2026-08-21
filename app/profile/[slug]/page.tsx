@@ -46,5 +46,6 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: `${full_name} — ${title}`,
     description: profile.personal_info.bio,
+    robots: { index: false, follow: false },
   };
 }

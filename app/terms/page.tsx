@@ -90,6 +90,16 @@ export default function TermsPage() {
                   dell&apos;utente verificare l&apos;accuratezza del contenuto generato prima di
                   utilizzarlo (es. per candidature di lavoro).
                 </p>
+                <p className="mt-2">
+                  In conformità agli obblighi di trasparenza previsti dal Regolamento UE 2024/1689
+                  (AI Act) per i sistemi di intelligenza artificiale destinati a interagire con
+                  persone fisiche, Jobli dichiara espressamente che i contenuti (punteggio, testi
+                  della pagina profilo, versioni adattate del CV) sono generati o elaborati tramite
+                  sistemi di intelligenza artificiale, e non da un revisore umano. Jobli è uno
+                  strumento che il candidato utilizza volontariamente su se stesso per migliorare i
+                  propri materiali di candidatura: non è un sistema utilizzato da datori di lavoro o
+                  recruiter per selezionare, filtrare o valutare candidati altrui.
+                </p>
               </div>
 
               <div>
@@ -230,6 +240,15 @@ export default function TermsPage() {
                   said, as with any AI-based tool, the Provider does not guarantee the complete
                   absence of errors or inaccuracies. You are responsible for reviewing the accuracy
                   of generated content before relying on it (e.g. for job applications).
+                </p>
+                <p className="mt-2">
+                  In line with the transparency obligations of EU Regulation 2024/1689 (the AI Act)
+                  for AI systems intended to interact with natural persons, Jobli expressly discloses
+                  that its content (score, profile page text, tailored CV versions) is generated or
+                  processed by artificial intelligence systems, not by a human reviewer. Jobli is a
+                  tool candidates use voluntarily on themselves to improve their own application
+                  materials: it is not a system used by employers or recruiters to screen, filter, or
+                  evaluate other candidates.
                 </p>
               </div>
 

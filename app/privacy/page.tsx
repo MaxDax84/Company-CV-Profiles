@@ -74,21 +74,39 @@ export default function PrivacyPage() {
                   l&apos;elaborazione.
                 </p>
                 <p className="mt-3">
-                  Non vengono raccolti dati sensibili ai sensi dell&apos;art. 9 GDPR.
-                  Non vengono effettuate profilazioni automatizzate a fini commerciali né decisioni
-                  automatizzate con effetti giuridici sull&apos;utente.
+                  Il servizio non richiede né sollecita dati appartenenti a categorie particolari
+                  (art. 9 GDPR: origine razziale o etnica, opinioni politiche, convinzioni religiose,
+                  appartenenza sindacale, dati relativi alla salute, alla vita sessuale o
+                  all&apos;orientamento sessuale). Se il tuo CV li contiene comunque (ad esempio
+                  perché citati in un&apos;esperienza di volontariato o per spiegare un periodo di
+                  congedo), ti invitiamo a non includerli quando non necessari: non vengono richiesti,
+                  non sono utilizzati per generare punteggi o consigli, e puoi rimuoverli in autonomia
+                  modificando i dati del tuo profilo dal tuo account.
+                </p>
+                <p className="mt-3">
+                  Il servizio assegna al CV un punteggio automatizzato su criteri oggettivi (risultati
+                  misurabili, chiarezza, struttura ATS, competenze specifiche) e suggerisce ruoli in
+                  linea con la tua esperienza: si tratta di un trattamento automatizzato che valuta
+                  aspetti professionali ai sensi dell&apos;art. 4(4) GDPR, svolto su tua esplicita
+                  richiesta e a tuo esclusivo beneficio. Non costituisce una decisione automatizzata
+                  con effetti giuridici o significativamente analoghi ai sensi dell&apos;art. 22 GDPR:
+                  il punteggio e i suggerimenti restano informazioni che leggi e utilizzi tu, non una
+                  decisione presa nei tuoi confronti da terzi (es. un datore di lavoro) sulla base di
+                  un processo automatizzato.
                 </p>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">3. Finalità e Base Giuridica</h3>
                 <p>
-                  I dati del modulo di contatto sono trattati sulla base del consenso esplicito
-                  dell&apos;interessato (art. 6(1)(a) GDPR). I dati legati alla creazione e gestione
-                  dell&apos;account, alla generazione del profilo e all&apos;adattamento del CV sono
-                  trattati per l&apos;esecuzione del servizio richiesto dall&apos;utente (art. 6(1)(b)
-                  GDPR, esecuzione di un contratto/misure precontrattuali su richiesta
-                  dell&apos;interessato).
+                  I dati del modulo di contatto sono trattati sulla base dell&apos;art. 6(1)(b) GDPR
+                  (misure precontrattuali adottate su richiesta dell&apos;interessato) oppure, quando
+                  non ricorre un rapporto contrattuale, dell&apos;art. 6(1)(f) GDPR (legittimo
+                  interesse a rispondere a una richiesta di informazioni volontariamente inviata
+                  dall&apos;utente). I dati legati alla creazione e gestione dell&apos;account, alla
+                  generazione del profilo e all&apos;adattamento del CV sono trattati per
+                  l&apos;esecuzione del servizio richiesto dall&apos;utente (art. 6(1)(b) GDPR,
+                  esecuzione di un contratto/misure precontrattuali su richiesta dell&apos;interessato).
                 </p>
               </div>
 
@@ -106,10 +124,20 @@ export default function PrivacyPage() {
                 <p className="mt-2">
                   Un CV collegato a un account (registrandoti o accedendo dopo averlo caricato) viene
                   invece conservato <strong className="text-foreground">senza scadenza automatica</strong>,
-                  fino a quando tu stesso non lo elimini. Puoi eliminare un singolo CV, o l&apos;intero
+                  per tutta la durata del rapporto con il tuo account: il criterio di conservazione è
+                  la persistenza dell&apos;account stesso, poiché il servizio è pensato per restare
+                  utilizzabile (riscaricare un PDF, ri-adattare un CV) in qualsiasi momento futuro,
+                  anche a distanza di mesi o anni. Puoi eliminare un singolo CV, o l&apos;intero
                   account (con tutti i CV, gli adattamenti e i crediti collegati) in qualsiasi momento,
-                  in autonomia, dalla pagina del tuo account (l&apos;eliminazione è immediata e
-                  irreversibile).
+                  in piena autonomia, dalla pagina del tuo account: l&apos;eliminazione è immediata e
+                  irreversibile, e non richiede di contattarci o attendere alcun intervento da parte
+                  nostra.
+                </p>
+                <p className="mt-2">
+                  Copie di backup dell&apos;infrastruttura (mantenute dai nostri fornitori di hosting e
+                  database per finalità di disaster recovery) e i log tecnici applicativi vengono
+                  conservati secondo i cicli di rotazione standard dei rispettivi fornitori e non sono
+                  accessibili per un uso diverso dal ripristino in caso di guasto.
                 </p>
               </div>
 
@@ -249,18 +277,35 @@ export default function PrivacyPage() {
                   your CV, but is not retained by us beyond the time needed to complete that processing.
                 </p>
                 <p className="mt-3">
-                  No special category data (Art. 9 GDPR) is collected. No automated decision-making
-                  with legal effects on you takes place, and no profiling for commercial purposes.
+                  The service does not request or solicit special category data (Art. 9 GDPR: racial
+                  or ethnic origin, political opinions, religious beliefs, trade union membership,
+                  health data, sex life or sexual orientation). If your CV happens to contain any of
+                  this (for example mentioned in a volunteering experience, or to explain a career
+                  gap), please avoid including it when not necessary: it is never requested, never
+                  used to generate scores or suggestions, and you can remove it yourself by editing
+                  your profile&apos;s data from your account.
+                </p>
+                <p className="mt-3">
+                  The service assigns your CV an automated score against objective criteria
+                  (quantified results, clarity, ATS structure, specific skills) and suggests roles
+                  that fit your experience: this is automated processing that evaluates professional
+                  aspects under Art. 4(4) GDPR, carried out at your explicit request and solely for
+                  your own benefit. It does not amount to automated decision-making producing legal or
+                  similarly significant effects under Art. 22 GDPR: the score and suggestions remain
+                  information for you to read and use, not a decision made about you by a third party
+                  (e.g. an employer) based on an automated process.
                 </p>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">3. Purpose and Legal Basis</h3>
                 <p>
-                  Contact form data is processed on the basis of your explicit consent (Art. 6(1)(a)
-                  GDPR). Data related to your account, profile generation, and CV tailoring is
-                  processed to perform the service you requested (Art. 6(1)(b) GDPR, performance of
-                  a contract / pre-contractual steps taken at your request).
+                  Contact form data is processed on the basis of Art. 6(1)(b) GDPR (steps taken at
+                  your request prior to entering into a relationship with us) or, where no contractual
+                  relationship is in place, Art. 6(1)(f) GDPR (legitimate interest in responding to an
+                  inquiry you voluntarily sent us). Data related to your account, profile generation,
+                  and CV tailoring is processed to perform the service you requested (Art. 6(1)(b)
+                  GDPR, performance of a contract / pre-contractual steps taken at your request).
                 </p>
               </div>
 
@@ -276,10 +321,20 @@ export default function PrivacyPage() {
                 </p>
                 <p className="mt-2">
                   A CV linked to an account (by signing up or logging in after uploading it) is kept{' '}
-                  <strong className="text-foreground">indefinitely</strong>, until you delete it
-                  yourself. You can delete a single CV, or your entire account (with every CV, every
-                  tailored version, and your credits) at any time, on your own, from your account
-                  page (deletion is immediate and irreversible).
+                  <strong className="text-foreground">indefinitely</strong>, for as long as your
+                  account exists: the retention criterion is the account&apos;s own persistence, since
+                  the service is meant to stay usable (re-downloading a PDF, re-tailoring a CV) at any
+                  point in the future, even months or years later. You can delete a single CV, or your
+                  entire account (with every CV, every tailored version, and your credits) at any
+                  time, entirely on your own, from your account page: deletion is immediate and
+                  irreversible, and doesn&apos;t require contacting us or waiting on anything from our
+                  side.
+                </p>
+                <p className="mt-2">
+                  Infrastructure backup copies (kept by our hosting and database providers for
+                  disaster-recovery purposes) and technical application logs are retained according to
+                  each provider&apos;s standard rotation cycle, and are never accessed for any purpose
+                  other than restoring service after a failure.
                 </p>
               </div>
 

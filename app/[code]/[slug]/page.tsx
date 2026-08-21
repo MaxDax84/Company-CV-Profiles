@@ -40,10 +40,15 @@ async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored
 
 export default async function AccountProfilePage({ params }: Props) {
   const { code, slug } = await params;
-  const [profile, ownerInfo] = await Promise.all([getProfileByAccountCode(code, slug), getOwnerInfo(slug)]);
+  const [result, ownerInfo] = await Promise.all([getProfileByAccountCode(code, slug), getOwnerInfo(slug)]);
 
-  if (!profile) notFound();
+  if (!result) notFound();
+  // A page the owner has taken private (see 0018_profile_visibility) still
+  // renders for the owner themselves — otherwise there'd be no way to
+  // preview it — but 404s for anyone else, same as it not existing at all.
+  if (!result.isPublic && !ownerInfo) notFound();
 
+  const profile = result.profile;
   const Template = TEMPLATE_MAP[profile.metadata.template] ?? TemplateAlpha;
 
   return (
@@ -56,13 +61,17 @@ export default async function AccountProfilePage({ params }: Props) {
 
 export async function generateMetadata({ params }: Props) {
   const { code, slug } = await params;
-  const profile = await getProfileByAccountCode(code, slug);
-  if (!profile) return {};
+  const result = await getProfileByAccountCode(code, slug);
+  if (!result) return {};
 
-  const { full_name, title } = profile.personal_info;
+  const { full_name, title } = result.profile.personal_info;
 
   return {
     title: `${full_name} — ${title}`,
-    description: profile.personal_info.bio,
+    description: result.profile.personal_info.bio,
+    // Meant to be reachable by direct link (shared with a recruiter), not
+    // publicly searchable — a CV's personal/professional details shouldn't
+    // end up in a search index just because the page exists.
+    robots: { index: false, follow: false },
   };
 }

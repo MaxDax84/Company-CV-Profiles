@@ -73,7 +73,17 @@ export const getProfileBySlug = cache(async (slug: string): Promise<ProfileSchem
 // cache()-wrapped for the same reason as getProfileBySlug above — the page
 // component and generateMetadata both call this with the same (code, slug),
 // which otherwise meant 2 extra Supabase round-trips per page view.
-export const getProfileByAccountCode = cache(async (code: string, slug: string): Promise<ProfileSchema | null> => {
+export interface AccountProfileResult {
+  profile: ProfileSchema;
+  // false once the owner has taken this specific page offline (see
+  // supabase/migrations/0018_profile_visibility.sql) — the row and its data
+  // still exist, only the public page stops resolving for anyone but the
+  // owner. Callers decide what "not public" means for them: the page route
+  // 404s for a non-owner viewer but still renders for the owner themselves.
+  isPublic: boolean;
+}
+
+export const getProfileByAccountCode = cache(async (code: string, slug: string): Promise<AccountProfileResult | null> => {
   if (!isSupabaseConfigured()) return null;
   try {
     const service = createServiceSupabaseClient();
@@ -86,7 +96,7 @@ export const getProfileByAccountCode = cache(async (code: string, slug: string):
 
     const { data } = await service
       .from("profiles")
-      .select("data, kind")
+      .select("data, kind, is_public")
       .eq("user_id", account.user_id)
       .eq("slug", slug)
       .maybeSingle();
@@ -97,7 +107,7 @@ export const getProfileByAccountCode = cache(async (code: string, slug: string):
     // slug that doesn't exist.
     if (data.kind === "tailored" || data.kind === "translated") return null;
 
-    return stripPII(data.data as ProfileSchema);
+    return { profile: stripPII(data.data as ProfileSchema), isPublic: data.is_public !== false };
   } catch (err) {
     console.error("[getProfileByAccountCode] Postgres lookup failed", err);
     return null;
@@ -131,14 +141,14 @@ export async function getOwnedProfileRow(
 export async function getOwnedPrimaryProfiles(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string; is_public: boolean }[]> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data, created_at")
+    .select("id, slug, data, created_at, is_public")
     .eq("user_id", userId)
     .eq("kind", "primary")
     .order("created_at", { ascending: false });
-  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
+  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string; is_public: boolean }[];
 }
 
 // Same as above, looked up by slug instead of kind — used by the PDF route,

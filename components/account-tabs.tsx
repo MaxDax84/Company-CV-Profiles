@@ -16,6 +16,7 @@ import CoverLetterButton from "@/components/cover-letter-button";
 import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import TranslateCoverLetterButton from "@/components/translate-cover-letter-button";
 import EditableSlug from "@/components/editable-slug";
+import ProfileVisibilityToggle from "@/components/profile-visibility-toggle";
 import { DeleteProfileButton } from "@/components/account-actions";
 import { SUPPORT_EMAIL } from "@/lib/contact";
 import { cvLabel } from "@/lib/download-filename";
@@ -60,7 +61,7 @@ function displayedScore(profile: ProfileSchema): number {
   return floorScoreAgainst(computeCvScore(profile), profile.metadata.score_before).total;
 }
 
-type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
+type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string; is_public?: boolean };
 
 // Commercial sections — the ones used often — stay as visible tabs. Account
 // settings (rarely touched) moved into a separate drawer, see SETTINGS_ICON
@@ -269,6 +270,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
                           {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                         </p>
+                        <div className="mt-1.5">
+                          <ProfileVisibilityToggle profileId={row.id} initialIsPublic={row.is_public ?? true} />
+                        </div>
                       </div>
                       <p
                         className="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"

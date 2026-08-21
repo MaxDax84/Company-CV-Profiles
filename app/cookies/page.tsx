@@ -75,29 +75,47 @@ export default function CookiePage() {
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">2. Cookie necessari (sempre attivi)</h3>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>
-                    <strong className="text-foreground">Cookie di sessione (Supabase Auth)</strong>,
-                    mantengono l&apos;accesso al tuo account durante la navigazione. Impostati solo se
-                    hai effettuato l&apos;accesso o creato un account; scadono al logout o dopo un
-                    periodo di inattività.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Cookie/token anti-bot (Cloudflare Turnstile)</strong>,
-                    usati per distinguere un utente reale da un bot automatizzato nei moduli di
-                    caricamento CV e adattamento a un annuncio, prevenendo abusi del servizio.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Cookie di consenso (jobli_cookie_consent)</strong>,
-                    memorizza le tue scelte su questo banner per 6 mesi, così non te lo richiediamo a
-                    ogni visita.
-                  </li>
-                </ul>
-                <p className="mt-3">
+                <p>
                   Questi cookie sono esentati dall&apos;obbligo di consenso preventivo ai sensi delle
                   Linee Guida del Garante del 2021, in quanto strettamente necessari al servizio
                   richiesto dall&apos;utente.
                 </p>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Nome</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Provider</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Finalità</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Durata</th>
+                        <th className="py-2 font-semibold text-foreground">Parte</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">sb-&lt;progetto&gt;-auth-token</td>
+                        <td className="py-2 pr-3 align-top">Supabase</td>
+                        <td className="py-2 pr-3 align-top">Mantiene l&apos;accesso al tuo account. Impostato solo se hai effettuato l&apos;accesso o creato un account.</td>
+                        <td className="py-2 pr-3 align-top">Logout o inattività prolungata</td>
+                        <td className="py-2 align-top">Prima</td>
+                      </tr>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">Token anti-bot (sessione)</td>
+                        <td className="py-2 pr-3 align-top">Cloudflare (Turnstile)</td>
+                        <td className="py-2 pr-3 align-top">Distingue un utente reale da un bot automatizzato nei moduli di caricamento CV e adattamento a un annuncio.</td>
+                        <td className="py-2 pr-3 align-top">Sessione</td>
+                        <td className="py-2 align-top">Terza</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                        <td className="py-2 pr-3 align-top">Jobli</td>
+                        <td className="py-2 pr-3 align-top">Memorizza le tue scelte su questo banner, così non te lo richiediamo a ogni visita.</td>
+                        <td className="py-2 pr-3 align-top">6 mesi</td>
+                        <td className="py-2 align-top">Prima</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               <div>
@@ -110,10 +128,35 @@ export default function CookiePage() {
                   L&apos;indirizzo IP viene troncato prima della memorizzazione (IP anonymization) e
                   non viene usato per la personalizzazione di annunci pubblicitari.
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li><strong className="text-foreground">_ga</strong>, distingue gli utenti; durata circa 2 anni.</li>
-                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong>, mantiene lo stato della sessione; durata circa 2 anni.</li>
-                </ul>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Nome</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Provider</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Finalità</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Durata</th>
+                        <th className="py-2 font-semibold text-foreground">Parte</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">_ga</td>
+                        <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
+                        <td className="py-2 pr-3 align-top">Distingue gli utenti tra loro.</td>
+                        <td className="py-2 pr-3 align-top">~2 anni</td>
+                        <td className="py-2 align-top">Terza</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">_ga_&lt;container-id&gt;</td>
+                        <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
+                        <td className="py-2 pr-3 align-top">Mantiene lo stato della sessione di navigazione.</td>
+                        <td className="py-2 pr-3 align-top">~2 anni</td>
+                        <td className="py-2 align-top">Terza</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
                 <p className="mt-3">
                   Se rifiuti questa categoria (o non rispondi), Google Analytics non viene caricato e
                   nessuno di questi cookie viene impostato. Maggiori informazioni nella{' '}
@@ -240,28 +283,47 @@ export default function CookiePage() {
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">2. Necessary cookies (always active)</h3>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>
-                    <strong className="text-foreground">Session cookies (Supabase Auth)</strong>,
-                    keep you signed in to your account as you browse. Only set if you&apos;ve logged
-                    in or created an account; expire on logout or after a period of inactivity.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Anti-bot cookies/tokens (Cloudflare Turnstile)</strong>,
-                    used to distinguish a real user from an automated bot on the CV upload and
-                    job-tailoring forms, preventing abuse of the service.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Consent cookie (jobli_cookie_consent)</strong>,
-                    stores your choices on this banner for 6 months, so we don&apos;t ask again on
-                    every visit.
-                  </li>
-                </ul>
-                <p className="mt-3">
+                <p>
                   These cookies are exempt from the prior-consent requirement under the Italian Data
                   Protection Authority&apos;s 2021 Guidelines, as they are strictly necessary for the
                   service you requested.
                 </p>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Name</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Provider</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Purpose</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Duration</th>
+                        <th className="py-2 font-semibold text-foreground">Party</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">sb-&lt;project&gt;-auth-token</td>
+                        <td className="py-2 pr-3 align-top">Supabase</td>
+                        <td className="py-2 pr-3 align-top">Keeps you signed in to your account. Only set if you&apos;ve logged in or created an account.</td>
+                        <td className="py-2 pr-3 align-top">Logout or prolonged inactivity</td>
+                        <td className="py-2 align-top">First</td>
+                      </tr>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">Anti-bot token (session)</td>
+                        <td className="py-2 pr-3 align-top">Cloudflare (Turnstile)</td>
+                        <td className="py-2 pr-3 align-top">Distinguishes a real user from an automated bot on the CV upload and job-tailoring forms.</td>
+                        <td className="py-2 pr-3 align-top">Session</td>
+                        <td className="py-2 align-top">Third</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                        <td className="py-2 pr-3 align-top">Jobli</td>
+                        <td className="py-2 pr-3 align-top">Stores your choices on this banner, so we don&apos;t ask again on every visit.</td>
+                        <td className="py-2 pr-3 align-top">6 months</td>
+                        <td className="py-2 align-top">First</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               <div>
@@ -273,10 +335,35 @@ export default function CookiePage() {
                   (pages visited, traffic source, session duration). Your IP address is truncated
                   before storage (IP anonymization) and is not used for ad personalization.
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li><strong className="text-foreground">_ga</strong>, distinguishes users; expires after about 2 years.</li>
-                  <li><strong className="text-foreground">_ga_&lt;container-id&gt;</strong>, persists session state; expires after about 2 years.</li>
-                </ul>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Name</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Provider</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Purpose</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Duration</th>
+                        <th className="py-2 font-semibold text-foreground">Party</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">_ga</td>
+                        <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
+                        <td className="py-2 pr-3 align-top">Distinguishes users from one another.</td>
+                        <td className="py-2 pr-3 align-top">~2 years</td>
+                        <td className="py-2 align-top">Third</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">_ga_&lt;container-id&gt;</td>
+                        <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
+                        <td className="py-2 pr-3 align-top">Persists browsing session state.</td>
+                        <td className="py-2 pr-3 align-top">~2 years</td>
+                        <td className="py-2 align-top">Third</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
                 <p className="mt-3">
                   If you decline this category (or don&apos;t respond), Google Analytics is never
                   loaded and none of these cookies are set. See{' '}
