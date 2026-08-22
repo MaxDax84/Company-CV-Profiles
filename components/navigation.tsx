@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
@@ -11,13 +11,43 @@ import { BLOG_CATEGORIES } from '@/lib/blog-posts'
 import AccountAvatarMenu from './account-avatar-menu'
 import ThemeToggle from './theme-toggle'
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">{children}</p>
+type SectionKey = 'menu' | 'blog' | 'settings'
+
+// Top-level row that reveals its own items as a second level — hovering
+// opens it (mouse users), and it also toggles on click so it works on
+// touch, where hover never fires. Only one section stays open at a time.
+function SectionRow({
+  label,
+  active,
+  onOpen,
+  onToggle,
+  children,
+}: {
+  label: string
+  active: boolean
+  onOpen: () => void
+  onToggle: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <div onMouseEnter={onOpen}>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-foreground/[0.05] transition-colors"
+      >
+        {label}
+        <ChevronDown className={cn('w-3.5 h-3.5 text-muted-foreground transition-transform duration-200', active && 'rotate-180')} />
+      </button>
+      {active && <div className="pb-1">{children}</div>}
+    </div>
+  )
 }
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openSection, setOpenSection] = useState<SectionKey | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const { lang, setLang } = useLanguage()
   const t = translations[lang].nav
@@ -32,7 +62,10 @@ export default function Navigation() {
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+        setOpenSection(null)
+      }
     }
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
@@ -150,7 +183,10 @@ export default function Navigation() {
           <div className="relative" ref={menuRef}>
             <button
               type="button"
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() => {
+                setMenuOpen((v) => !v)
+                setOpenSection(null)
+              }}
               aria-label={lang === 'en' ? 'Toggle menu' : 'Apri il menu'}
               className="p-1.5 rounded-md text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -158,62 +194,83 @@ export default function Navigation() {
             </button>
 
             {menuOpen && (
-            <div className="absolute top-full right-0 mt-2 w-72 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden">
+            <div
+              className="absolute top-full right-0 mt-2 w-64 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden"
+              onMouseLeave={() => setOpenSection(null)}
+            >
               <div className="max-h-[75vh] overflow-y-auto py-1.5">
-                <SectionLabel>{lang === 'en' ? 'Menu' : 'Menu'}</SectionLabel>
-                {menuLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-
-                <div className="my-1.5 border-t border-border" />
-                <SectionLabel>Blog</SectionLabel>
-                <a
-                  href="/blog"
-                  onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm font-semibold hover:bg-foreground/[0.05] transition-colors"
-                  style={{ color: 'var(--primary)' }}
+                <SectionRow
+                  label={lang === 'en' ? 'Menu' : 'Menu'}
+                  active={openSection === 'menu'}
+                  onOpen={() => setOpenSection('menu')}
+                  onToggle={() => setOpenSection((v) => (v === 'menu' ? null : 'menu'))}
                 >
-                  {lang === 'en' ? 'All articles' : 'Tutti gli articoli'}
-                </a>
-                {BLOG_CATEGORIES.map((category) => (
-                  <a
-                    key={category}
-                    href={`/blog?category=${encodeURIComponent(category)}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
-                  >
-                    {category}
-                  </a>
-                ))}
+                  {menuLinks.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block pl-7 pr-4 py-2 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </SectionRow>
 
-                <div className="my-1.5 border-t border-border" />
-                <SectionLabel>{lang === 'en' ? 'Settings' : 'Impostazioni'}</SectionLabel>
-                <div className="flex items-center justify-between px-4 py-2">
-                  <span className="text-sm text-foreground">{lang === 'en' ? 'Language' : 'Lingua'}</span>
-                  <button
-                    type="button"
-                    onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
-                    className="w-8 py-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 text-xs font-semibold"
-                    aria-label={lang === 'it' ? 'Switch to English' : "Passa all'italiano"}
+                <div className="my-1 border-t border-border" />
+                <SectionRow
+                  label="Blog"
+                  active={openSection === 'blog'}
+                  onOpen={() => setOpenSection('blog')}
+                  onToggle={() => setOpenSection((v) => (v === 'blog' ? null : 'blog'))}
+                >
+                  <a
+                    href="/blog"
+                    onClick={() => setMenuOpen(false)}
+                    className="block pl-7 pr-4 py-2 text-sm font-semibold hover:bg-foreground/[0.05] transition-colors"
+                    style={{ color: 'var(--primary)' }}
                   >
-                    {lang === 'it' ? 'EN' : 'IT'}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between px-4 py-2">
-                  <span className="text-sm text-foreground">{lang === 'en' ? 'Theme' : 'Tema'}</span>
-                  <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
-                </div>
+                    {lang === 'en' ? 'All articles' : 'Tutti gli articoli'}
+                  </a>
+                  {BLOG_CATEGORIES.map((category) => (
+                    <a
+                      key={category}
+                      href={`/blog?category=${encodeURIComponent(category)}`}
+                      onClick={() => setMenuOpen(false)}
+                      className="block pl-7 pr-4 py-2 text-sm text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    >
+                      {category}
+                    </a>
+                  ))}
+                </SectionRow>
+
+                <div className="my-1 border-t border-border" />
+                <SectionRow
+                  label={lang === 'en' ? 'Settings' : 'Impostazioni'}
+                  active={openSection === 'settings'}
+                  onOpen={() => setOpenSection('settings')}
+                  onToggle={() => setOpenSection((v) => (v === 'settings' ? null : 'settings'))}
+                >
+                  <div className="flex items-center justify-between pl-7 pr-4 py-2">
+                    <span className="text-sm text-foreground">{lang === 'en' ? 'Language' : 'Lingua'}</span>
+                    <button
+                      type="button"
+                      onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+                      className="w-8 py-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200 text-xs font-semibold"
+                      aria-label={lang === 'it' ? 'Switch to English' : "Passa all'italiano"}
+                    >
+                      {lang === 'it' ? 'EN' : 'IT'}
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between pl-7 pr-4 py-2">
+                    <span className="text-sm text-foreground">{lang === 'en' ? 'Theme' : 'Tema'}</span>
+                    <ThemeToggle className="p-1.5 rounded-md border border-border/60 hover:border-primary/50 text-muted-foreground hover:text-primary transition-all duration-200" />
+                  </div>
+                </SectionRow>
 
                 {!isAccountContext && (
                   <>
-                    <div className="my-1.5 border-t border-border" />
+                    <div className="my-1 border-t border-border" />
                     <a
                       href="/login"
                       onClick={() => setMenuOpen(false)}
