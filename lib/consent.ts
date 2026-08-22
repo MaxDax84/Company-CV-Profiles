@@ -18,6 +18,12 @@ export const DEFAULT_CONSENT: ConsentState = {
   marketing: false,
 };
 
+// Bump this whenever the /cookies policy text materially changes — sent
+// alongside every consent-log entry (see lib/log-consent.ts) so we can
+// always answer "which version of the policy did this person actually see
+// when they agreed?", not just what analytics/marketing they chose.
+export const COOKIE_POLICY_VERSION = "2026-08";
+
 // The consent record itself is a strictly-necessary cookie (recording a
 // choice about cookies doesn't require consent to set) — not the same
 // category as what it's recording. 6 months, the interval commonly
@@ -25,14 +31,21 @@ export const DEFAULT_CONSENT: ConsentState = {
 export const CONSENT_COOKIE_NAME = "jobli_cookie_consent";
 const CONSENT_COOKIE_MAX_AGE_DAYS = 180;
 
-export function readConsentCookie(): ConsentState | null {
+export interface StoredConsent extends ConsentState {
+  // Anonymous, not personally identifying — see
+  // supabase/migrations/0019_cookie_consent_log.sql for why this exists and
+  // what it does (and doesn't) prove.
+  consentId: string;
+}
+
+export function readConsentCookie(): StoredConsent | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_COOKIE_NAME}=([^;]*)`));
   if (!match) return null;
   try {
     const parsed = JSON.parse(decodeURIComponent(match[1]));
-    if (typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean") {
-      return { necessary: true, analytics: parsed.analytics, marketing: parsed.marketing };
+    if (typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean" && typeof parsed.consentId === "string") {
+      return { necessary: true, analytics: parsed.analytics, marketing: parsed.marketing, consentId: parsed.consentId };
     }
   } catch {
     // Malformed/tampered cookie — treat as no prior consent.
@@ -40,9 +53,18 @@ export function readConsentCookie(): ConsentState | null {
   return null;
 }
 
-export function writeConsentCookie(consent: ConsentState): void {
+// Reuses the existing consentId across repeated visits/re-consents so the
+// server-side log (and the ID shown back to the user) stays one continuous
+// trail per browser, instead of a new disconnected ID every time.
+export function getOrCreateConsentId(): string {
+  const existing = readConsentCookie();
+  if (existing) return existing.consentId;
+  return crypto.randomUUID();
+}
+
+export function writeConsentCookie(consent: ConsentState, consentId: string): void {
   if (typeof document === "undefined") return;
-  const value = encodeURIComponent(JSON.stringify({ analytics: consent.analytics, marketing: consent.marketing }));
+  const value = encodeURIComponent(JSON.stringify({ analytics: consent.analytics, marketing: consent.marketing, consentId }));
   const maxAge = CONSENT_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60;
   document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
 }

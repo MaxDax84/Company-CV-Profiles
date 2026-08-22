@@ -1,7 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { DEFAULT_CONSENT, readConsentCookie, writeConsentCookie, type ConsentState } from "@/lib/consent";
+import {
+  DEFAULT_CONSENT,
+  COOKIE_POLICY_VERSION,
+  readConsentCookie,
+  writeConsentCookie,
+  getOrCreateConsentId,
+  type ConsentState,
+} from "@/lib/consent";
 
 interface ConsentContextType {
   consent: ConsentState;
@@ -49,11 +56,31 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  function persist(next: ConsentState) {
+  // "method" only affects the server-side proof-of-consent record (see
+  // supabase/migrations/0019_cookie_consent_log.sql) — the cookie itself
+  // just stores the resulting booleans, same as before.
+  function persist(next: ConsentState, method: "accept_all" | "reject_all" | "custom") {
+    const consentId = getOrCreateConsentId();
     setConsent(next);
     setHasResponded(true);
-    writeConsentCookie(next);
+    writeConsentCookie(next, consentId);
     setBannerOpen(false);
+
+    fetch("/api/consent-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        consentId,
+        analytics: next.analytics,
+        marketing: next.marketing,
+        method,
+        policyVersion: COOKIE_POLICY_VERSION,
+      }),
+    }).catch(() => {
+      // Non-blocking — the visitor's own cookie is already saved above;
+      // losing the server-side audit copy of one visit isn't worth
+      // surfacing an error for.
+    });
   }
 
   return (
@@ -64,9 +91,9 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         bannerOpen,
         openBanner: () => setBannerOpen(true),
         closeBanner: () => setBannerOpen(false),
-        savePreferences: (next) => persist({ necessary: true, ...next }),
-        acceptAll: () => persist({ necessary: true, analytics: true, marketing: true }),
-        rejectAll: () => persist({ necessary: true, analytics: false, marketing: false }),
+        savePreferences: (next) => persist({ necessary: true, ...next }, "custom"),
+        acceptAll: () => persist({ necessary: true, analytics: true, marketing: true }, "accept_all"),
+        rejectAll: () => persist({ necessary: true, analytics: false, marketing: false }, "reject_all"),
       }}
     >
       {children}

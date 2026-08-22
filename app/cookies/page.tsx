@@ -116,6 +116,12 @@ export default function CookiePage() {
                     </tbody>
                   </table>
                 </div>
+                <p className="mt-3">
+                  Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
+                  (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
+                  verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
+                  hai effettuato l&apos;accesso nel momento in cui scegli.
+                </p>
               </div>
 
               <div>
@@ -324,6 +330,12 @@ export default function CookiePage() {
                     </tbody>
                   </table>
                 </div>
+                <p className="mt-3">
+                  Besides the cookie, we keep a technical record of every consent choice on our servers (an
+                  anonymous identifier, date and time, the categories chosen), so we can produce it if ever
+                  needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
+                  account if you happened to be signed in at the moment you chose.
+                </p>
               </div>
 
               <div>
