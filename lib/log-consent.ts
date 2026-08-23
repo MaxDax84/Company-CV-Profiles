@@ -9,7 +9,8 @@ export type ConsentMethod = "accept_all" | "reject_all" | "custom";
 
 export interface ConsentLogEntry {
   consentId: string;
-  analytics: boolean;
+  preferences: boolean;
+  statistics: boolean;
   marketing: boolean;
   method: ConsentMethod;
   policyVersion: string;
@@ -44,7 +45,8 @@ export function logConsent(entry: ConsentLogEntry): void {
     .insert({
       consent_id: entry.consentId,
       user_id: entry.userId ?? null,
-      analytics: entry.analytics,
+      preferences: entry.preferences,
+      statistics: entry.statistics,
       marketing: entry.marketing,
       method: entry.method,
       policy_version: entry.policyVersion,

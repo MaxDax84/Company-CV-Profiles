@@ -22,7 +22,7 @@ interface ConsentContextType {
   bannerOpen: boolean;
   openBanner: () => void;
   closeBanner: () => void;
-  savePreferences: (next: Pick<ConsentState, "analytics" | "marketing">) => void;
+  savePreferences: (next: Pick<ConsentState, "preferences" | "statistics" | "marketing">) => void;
   acceptAll: () => void;
   rejectAll: () => void;
 }
@@ -71,7 +71,8 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         consentId,
-        analytics: next.analytics,
+        preferences: next.preferences,
+        statistics: next.statistics,
         marketing: next.marketing,
         method,
         policyVersion: COOKIE_POLICY_VERSION,
@@ -92,8 +93,8 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         openBanner: () => setBannerOpen(true),
         closeBanner: () => setBannerOpen(false),
         savePreferences: (next) => persist({ necessary: true, ...next }, "custom"),
-        acceptAll: () => persist({ necessary: true, analytics: true, marketing: true }, "accept_all"),
-        rejectAll: () => persist({ necessary: true, analytics: false, marketing: false }, "reject_all"),
+        acceptAll: () => persist({ necessary: true, preferences: true, statistics: true, marketing: true }, "accept_all"),
+        rejectAll: () => persist({ necessary: true, preferences: false, statistics: false, marketing: false }, "reject_all"),
       }}
     >
       {children}

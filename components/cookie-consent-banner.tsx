@@ -16,7 +16,8 @@ const content = {
     prefsBody: "Scegli quali categorie di cookie autorizzare. I cookie necessari non possono essere disattivati, perché indispensabili al funzionamento del sito.",
     categories: {
       necessary: { label: "Necessari", desc: "Accesso all'account (Supabase) e verifica anti-bot (Cloudflare Turnstile). Sempre attivi." },
-      analytics: { label: "Analytics", desc: "Ci aiutano a capire come viene usato il sito (Google Analytics), in forma aggregata." },
+      preferences: { label: "Preferenze", desc: "Ricorderebbero scelte di visualizzazione (es. lingua, tema) tra una visita e l'altra. Non ancora attivi." },
+      statistics: { label: "Statistiche", desc: "Ci aiutano a capire come viene usato il sito (Google Analytics), in forma aggregata." },
       marketing: { label: "Marketing", desc: "Usati per misurare l'efficacia di eventuali future campagne pubblicitarie. Non ancora attivi." },
     },
     alwaysOn: "Sempre attivo",
@@ -34,7 +35,8 @@ const content = {
     prefsBody: "Choose which cookie categories to allow. Necessary cookies can't be turned off, since they're required for the site to work.",
     categories: {
       necessary: { label: "Necessary", desc: "Account login (Supabase) and anti-bot verification (Cloudflare Turnstile). Always active." },
-      analytics: { label: "Analytics", desc: "Help us understand how the site is used (Google Analytics), in aggregate form." },
+      preferences: { label: "Preferences", desc: "Would remember display choices (e.g. language, theme) between visits. Not active yet." },
+      statistics: { label: "Statistics", desc: "Help us understand how the site is used (Google Analytics), in aggregate form." },
       marketing: { label: "Marketing", desc: "Used to measure the effectiveness of any future ad campaigns. Not active yet." },
     },
     alwaysOn: "Always on",
@@ -67,7 +69,7 @@ export default function CookieConsentBanner() {
   const t = content[lang];
   const { consent, hasResponded, bannerOpen, closeBanner, savePreferences, acceptAll, rejectAll } = useConsent();
   const [customizing, setCustomizing] = useState(false);
-  const [draft, setDraft] = useState({ analytics: consent.analytics, marketing: consent.marketing });
+  const [draft, setDraft] = useState({ preferences: consent.preferences, statistics: consent.statistics, marketing: consent.marketing });
 
   // Re-sync the draft toggles from the real stored consent every time the
   // sheet opens — the initial useState above only ever captures whatever
@@ -75,7 +77,7 @@ export default function CookieConsentBanner() {
   // default), which would otherwise silently reset a returning visitor's
   // saved choices back to "off" in the panel.
   useEffect(() => {
-    if (bannerOpen) setDraft({ analytics: consent.analytics, marketing: consent.marketing });
+    if (bannerOpen) setDraft({ preferences: consent.preferences, statistics: consent.statistics, marketing: consent.marketing });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bannerOpen]);
 
@@ -168,10 +170,18 @@ export default function CookieConsentBanner() {
 
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium">{t.categories.analytics.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t.categories.analytics.desc}</p>
+                  <p className="text-sm font-medium">{t.categories.preferences.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t.categories.preferences.desc}</p>
                 </div>
-                <Toggle checked={draft.analytics} onChange={(v) => setDraft(d => ({ ...d, analytics: v }))} />
+                <Toggle checked={draft.preferences} onChange={(v) => setDraft(d => ({ ...d, preferences: v }))} />
+              </div>
+
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium">{t.categories.statistics.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t.categories.statistics.desc}</p>
+                </div>
+                <Toggle checked={draft.statistics} onChange={(v) => setDraft(d => ({ ...d, statistics: v }))} />
               </div>
 
               <div className="flex items-start justify-between gap-4">

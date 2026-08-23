@@ -5,9 +5,23 @@ import { useLanguage } from '@/components/language-provider'
 import { useConsent } from '@/components/consent-provider'
 import { SUPPORT_EMAIL } from '@/lib/contact'
 
+const USING_COOKIEBOT = process.env.NEXT_PUBLIC_COOKIE_CMP === 'cookiebot'
+
 export default function CookiePage() {
   const { lang } = useLanguage()
   const { openBanner } = useConsent()
+
+  // Mirrors components/footer.tsx: while Cookiebot is active our own
+  // ConsentProvider isn't mounted (see app/layout.tsx), so openBanner()
+  // would be a dead no-op — Cookiebot's own renew() reopens its banner
+  // instead.
+  function openCookiePreferences() {
+    if (USING_COOKIEBOT) {
+      (window as unknown as { Cookiebot?: { renew?: () => void } }).Cookiebot?.renew?.();
+    } else {
+      openBanner();
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -39,10 +53,14 @@ export default function CookiePage() {
                 <p className="text-foreground font-medium mb-2">Gestisci le tue preferenze</p>
                 <p className="mb-3">
                   Puoi scegliere in qualsiasi momento quali categorie di cookie autorizzare, oltre a
-                  quelli strettamente necessari.
+                  quelli strettamente necessari.{' '}
+                  {USING_COOKIEBOT && (
+                    <>Il banner di consenso è oggi gestito da Cookiebot (Usercentrics A/S), non
+                    direttamente da noi.</>
+                  )}
                 </p>
                 <button
-                  onClick={openBanner}
+                  onClick={openCookiePreferences}
                   className="inline-flex px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
                 >
@@ -54,7 +72,7 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">1. Cosa sono i cookie</h3>
                 <p>
                   I cookie sono piccoli file di testo che i siti web salvano sul dispositivo
-                  dell&apos;utente durante la navigazione. Questo sito li raggruppa in tre categorie:
+                  dell&apos;utente durante la navigazione. Questo sito li raggruppa in quattro categorie:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
@@ -62,7 +80,12 @@ export default function CookiePage() {
                     funzionamento del sito; non richiedono consenso e non possono essere disattivati.
                   </li>
                   <li>
-                    <strong className="text-foreground">Analytics</strong>, ci aiutano a capire come
+                    <strong className="text-foreground">Preferenze</strong>, ricorderebbero scelte di
+                    visualizzazione (es. lingua, tema) tra una visita e l&apos;altra; richiedono il tuo
+                    consenso preventivo. Nessun cookie di questa categoria è attivo al momento.
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Statistiche</strong>, ci aiutano a capire come
                     viene usato il sito, in forma aggregata; richiedono il tuo consenso preventivo.
                   </li>
                   <li>
@@ -99,35 +122,63 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">Logout o inattività prolungata</td>
                         <td className="py-2 align-top">Prima</td>
                       </tr>
-                      <tr className="border-b border-foreground/5">
-                        <td className="py-2 pr-3 align-top">Token anti-bot (sessione)</td>
-                        <td className="py-2 pr-3 align-top">Cloudflare (Turnstile)</td>
-                        <td className="py-2 pr-3 align-top">Distingue un utente reale da un bot automatizzato nei moduli di caricamento CV e adattamento a un annuncio.</td>
-                        <td className="py-2 pr-3 align-top">Sessione</td>
-                        <td className="py-2 align-top">Terza</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
-                        <td className="py-2 pr-3 align-top">Jobli</td>
-                        <td className="py-2 pr-3 align-top">Memorizza le tue scelte su questo banner, così non te lo richiediamo a ogni visita.</td>
-                        <td className="py-2 pr-3 align-top">6 mesi</td>
-                        <td className="py-2 align-top">Prima</td>
-                      </tr>
+                      {USING_COOKIEBOT ? (
+                        <tr>
+                          <td className="py-2 pr-3 align-top">CookieConsent</td>
+                          <td className="py-2 pr-3 align-top">Usercentrics A/S (Cookiebot)</td>
+                          <td className="py-2 pr-3 align-top">Memorizza le tue scelte sul banner cookie attualmente in uso, così non te lo richiediamo a ogni visita.</td>
+                          <td className="py-2 pr-3 align-top">1 anno</td>
+                          <td className="py-2 align-top">Terza</td>
+                        </tr>
+                      ) : (
+                        <tr>
+                          <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                          <td className="py-2 pr-3 align-top">Jobli</td>
+                          <td className="py-2 pr-3 align-top">Memorizza le tue scelte su questo banner, così non te lo richiediamo a ogni visita.</td>
+                          <td className="py-2 pr-3 align-top">6 mesi</td>
+                          <td className="py-2 align-top">Prima</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
+                {USING_COOKIEBOT ? (
+                  <p className="mt-3">
+                    Il nostro sistema interno di gestione del consenso (incluso il registro di prova
+                    tecnica del consenso) è temporaneamente in stand-by mentre usiamo Cookiebot: non
+                    riceve nuove scelte finché questa configurazione resta attiva.
+                  </p>
+                ) : (
+                  <p className="mt-3">
+                    Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
+                    (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
+                    verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
+                    hai effettuato l&apos;accesso nel momento in cui scegli.
+                  </p>
+                )}
                 <p className="mt-3">
-                  Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
-                  (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
-                  verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
-                  hai effettuato l&apos;accesso nel momento in cui scegli.
+                  I moduli di caricamento CV e adattamento a un annuncio usano inoltre Cloudflare
+                  Turnstile per la verifica anti-bot: per come è progettato da Cloudflare, Turnstile
+                  non imposta un cookie sul tuo browser, quindi non compare in questa tabella.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Cookie di Analytics (previo consenso)</h3>
+                <h3 className="font-semibold text-foreground mb-2">3. Cookie di Preferenze (previo consenso)</h3>
                 <p>
-                  Se acconsenti alla categoria Analytics, attiviamo{' '}
+                  Questa categoria è riservata a eventuali cookie funzionali futuri (es. ricordare la
+                  lingua o il tema scelti tra una visita e l&apos;altra, oggi già gestiti senza cookie).{' '}
+                  <strong className="text-foreground">Al momento nessun cookie di questa categoria è
+                  attivo</strong> sul sito, anche se hai concesso il consenso a questa categoria (la
+                  sezione verrà aggiornata con l&apos;elenco specifico non appena un cookie verrà
+                  effettivamente introdotto).
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">4. Cookie di Statistiche (previo consenso)</h3>
+                <p>
+                  Se acconsenti alla categoria Statistiche, attiviamo{' '}
                   <strong className="text-foreground">Google Analytics 4</strong>, fornito da Google
                   Ireland Limited, per raccogliere statistiche aggregate e anonimizzate sulla
                   navigazione (pagine visitate, provenienza del traffico, durata della sessione).
@@ -173,7 +224,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Cookie di Marketing (previo consenso)</h3>
+                <h3 className="font-semibold text-foreground mb-2">5. Cookie di Marketing (previo consenso)</h3>
                 <p>
                   Questa categoria è riservata per eventuali strumenti pubblicitari futuri (es. pixel
                   di remarketing). <strong className="text-foreground">Al momento nessuno strumento di
@@ -184,7 +235,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Cookie tecnici dell&apos;infrastruttura di hosting</h3>
+                <h3 className="font-semibold text-foreground mb-2">6. Cookie tecnici dell&apos;infrastruttura di hosting</h3>
                 <p>
                   Il sito è ospitato su infrastruttura cloud (Vercel Inc., San Francisco, USA). La
                   piattaforma di hosting potrebbe impostare cookie tecnici di sessione necessari al
@@ -195,7 +246,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Come gestire i cookie dal browser</h3>
+                <h3 className="font-semibold text-foreground mb-2">7. Come gestire i cookie dal browser</h3>
                 <p>
                   Oltre al pannello preferenze di questo sito, puoi disabilitare o eliminare i cookie
                   in qualsiasi momento tramite le impostazioni del tuo browser. Nota: disabilitare i
@@ -218,7 +269,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Modifiche alla Cookie Policy</h3>
+                <h3 className="font-semibold text-foreground mb-2">8. Modifiche alla Cookie Policy</h3>
                 <p>
                   Il Titolare si riserva il diritto di aggiornare la presente Cookie Policy in
                   qualsiasi momento, in particolare in caso di modifiche normative, tecnologiche o
@@ -228,7 +279,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Contatti</h3>
+                <h3 className="font-semibold text-foreground mb-2">9. Contatti</h3>
                 <p>
                   Per qualsiasi domanda relativa alla presente Cookie Policy, scrivere a{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
@@ -254,10 +305,14 @@ export default function CookiePage() {
                 <p className="text-foreground font-medium mb-2">Manage your preferences</p>
                 <p className="mb-3">
                   You can choose at any time which cookie categories to allow, beyond the strictly
-                  necessary ones.
+                  necessary ones.{' '}
+                  {USING_COOKIEBOT && (
+                    <>The consent banner is currently managed by Cookiebot (Usercentrics A/S), not
+                    directly by us.</>
+                  )}
                 </p>
                 <button
-                  onClick={openBanner}
+                  onClick={openCookiePreferences}
                   className="inline-flex px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
                 >
@@ -269,7 +324,7 @@ export default function CookiePage() {
                 <h3 className="font-semibold text-foreground mb-2">1. What are cookies?</h3>
                 <p>
                   Cookies are small text files stored on your device when you visit a website. This
-                  site groups them into three categories:
+                  site groups them into four categories:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>
@@ -277,7 +332,12 @@ export default function CookiePage() {
                     function; no consent is needed and they can&apos;t be turned off.
                   </li>
                   <li>
-                    <strong className="text-foreground">Analytics</strong>, help us understand how the
+                    <strong className="text-foreground">Preferences</strong>, would remember display
+                    choices (e.g. language, theme) between visits; require your prior consent. No
+                    cookie in this category is active at this time.
+                  </li>
+                  <li>
+                    <strong className="text-foreground">Statistics</strong>, help us understand how the
                     site is used, in aggregate form; require your prior consent.
                   </li>
                   <li>
@@ -313,35 +373,63 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">Logout or prolonged inactivity</td>
                         <td className="py-2 align-top">First</td>
                       </tr>
-                      <tr className="border-b border-foreground/5">
-                        <td className="py-2 pr-3 align-top">Anti-bot token (session)</td>
-                        <td className="py-2 pr-3 align-top">Cloudflare (Turnstile)</td>
-                        <td className="py-2 pr-3 align-top">Distinguishes a real user from an automated bot on the CV upload and job-tailoring forms.</td>
-                        <td className="py-2 pr-3 align-top">Session</td>
-                        <td className="py-2 align-top">Third</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
-                        <td className="py-2 pr-3 align-top">Jobli</td>
-                        <td className="py-2 pr-3 align-top">Stores your choices on this banner, so we don&apos;t ask again on every visit.</td>
-                        <td className="py-2 pr-3 align-top">6 months</td>
-                        <td className="py-2 align-top">First</td>
-                      </tr>
+                      {USING_COOKIEBOT ? (
+                        <tr>
+                          <td className="py-2 pr-3 align-top">CookieConsent</td>
+                          <td className="py-2 pr-3 align-top">Usercentrics A/S (Cookiebot)</td>
+                          <td className="py-2 pr-3 align-top">Stores your choices on the cookie banner currently in use, so it doesn&apos;t ask again on every visit.</td>
+                          <td className="py-2 pr-3 align-top">1 year</td>
+                          <td className="py-2 align-top">Third</td>
+                        </tr>
+                      ) : (
+                        <tr>
+                          <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                          <td className="py-2 pr-3 align-top">Jobli</td>
+                          <td className="py-2 pr-3 align-top">Stores your choices on this banner, so we don&apos;t ask again on every visit.</td>
+                          <td className="py-2 pr-3 align-top">6 months</td>
+                          <td className="py-2 align-top">First</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
+                {USING_COOKIEBOT ? (
+                  <p className="mt-3">
+                    Our own in-house consent-management system (including the technical proof-of-consent
+                    record) is temporarily in standby while we use Cookiebot — it doesn&apos;t receive new
+                    choices while this configuration is active.
+                  </p>
+                ) : (
+                  <p className="mt-3">
+                    Besides the cookie, we keep a technical record of every consent choice on our servers (an
+                    anonymous identifier, date and time, the categories chosen), so we can produce it if ever
+                    needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
+                    account if you happened to be signed in at the moment you chose.
+                  </p>
+                )}
                 <p className="mt-3">
-                  Besides the cookie, we keep a technical record of every consent choice on our servers (an
-                  anonymous identifier, date and time, the categories chosen), so we can produce it if ever
-                  needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
-                  account if you happened to be signed in at the moment you chose.
+                  The CV upload and job-tailoring forms also use Cloudflare Turnstile for bot
+                  verification: by Cloudflare&apos;s own design, Turnstile does not set a cookie in
+                  your browser, so it doesn&apos;t appear in this table.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Analytics cookies (opt-in)</h3>
+                <h3 className="font-semibold text-foreground mb-2">3. Preferences cookies (opt-in)</h3>
                 <p>
-                  If you consent to the Analytics category, we activate{' '}
+                  This category is reserved for any future functional cookies (e.g. remembering the
+                  language or theme you chose between visits, both currently handled without a
+                  cookie). <strong className="text-foreground">No cookie in this category is active</strong>{' '}
+                  on the site at this time, even if you&apos;ve consented to this category (this
+                  section will be updated with the specific list as soon as a cookie is actually
+                  introduced).
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">4. Statistics cookies (opt-in)</h3>
+                <p>
+                  If you consent to the Statistics category, we activate{' '}
                   <strong className="text-foreground">Google Analytics 4</strong>, provided by Google
                   Ireland Limited, to collect aggregated, anonymised statistics about site usage
                   (pages visited, traffic source, session duration). Your IP address is truncated
@@ -387,7 +475,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Marketing cookies (opt-in)</h3>
+                <h3 className="font-semibold text-foreground mb-2">5. Marketing cookies (opt-in)</h3>
                 <p>
                   This category is reserved for any future advertising tools (e.g. remarketing
                   pixels). <strong className="text-foreground">No marketing tool is active</strong> on
@@ -398,7 +486,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Hosting infrastructure cookies</h3>
+                <h3 className="font-semibold text-foreground mb-2">6. Hosting infrastructure cookies</h3>
                 <p>
                   This site is hosted on Vercel Inc. (San Francisco, USA). The hosting platform may
                   set technical session cookies required for the correct operation of the web
@@ -408,7 +496,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Managing cookies in your browser</h3>
+                <h3 className="font-semibold text-foreground mb-2">7. Managing cookies in your browser</h3>
                 <p>
                   Besides this site&apos;s preferences panel, you can disable or delete cookies at any
                   time through your browser settings. Note: disabling necessary cookies will prevent
@@ -431,7 +519,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Changes to this policy</h3>
+                <h3 className="font-semibold text-foreground mb-2">8. Changes to this policy</h3>
                 <p>
                   We reserve the right to update this Cookie Policy at any time, particularly in
                   response to regulatory, technological, or infrastructure changes. The updated
@@ -440,7 +528,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Contact</h3>
+                <h3 className="font-semibold text-foreground mb-2">9. Contact</h3>
                 <p>
                   For any questions about this Cookie Policy, write to{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">

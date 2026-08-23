@@ -6,15 +6,22 @@
 // for a service the user actively requested), so blocking them on a
 // rejected/unanswered banner would break the site rather than protect
 // anyone's privacy.
+// 4 categories, matching the split Cookiebot uses (necessary / preferences /
+// statistics / marketing) rather than our original 3 — "preferences" is wired
+// the same way "marketing" already was: present in the banner and the policy
+// page, gating nothing yet, ready for the day a functional/UX cookie (e.g. a
+// server-persisted theme or language choice) actually needs consent.
 export interface ConsentState {
   necessary: true;
-  analytics: boolean;
+  preferences: boolean;
+  statistics: boolean;
   marketing: boolean;
 }
 
 export const DEFAULT_CONSENT: ConsentState = {
   necessary: true,
-  analytics: false,
+  preferences: false,
+  statistics: false,
   marketing: false,
 };
 
@@ -22,7 +29,7 @@ export const DEFAULT_CONSENT: ConsentState = {
 // alongside every consent-log entry (see lib/log-consent.ts) so we can
 // always answer "which version of the policy did this person actually see
 // when they agreed?", not just what analytics/marketing they chose.
-export const COOKIE_POLICY_VERSION = "2026-08";
+export const COOKIE_POLICY_VERSION = "2026-08-23";
 
 // The consent record itself is a strictly-necessary cookie (recording a
 // choice about cookies doesn't require consent to set) — not the same
@@ -44,8 +51,19 @@ export function readConsentCookie(): StoredConsent | null {
   if (!match) return null;
   try {
     const parsed = JSON.parse(decodeURIComponent(match[1]));
-    if (typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean" && typeof parsed.consentId === "string") {
-      return { necessary: true, analytics: parsed.analytics, marketing: parsed.marketing, consentId: parsed.consentId };
+    if (
+      typeof parsed.preferences === "boolean" &&
+      typeof parsed.statistics === "boolean" &&
+      typeof parsed.marketing === "boolean" &&
+      typeof parsed.consentId === "string"
+    ) {
+      return {
+        necessary: true,
+        preferences: parsed.preferences,
+        statistics: parsed.statistics,
+        marketing: parsed.marketing,
+        consentId: parsed.consentId,
+      };
     }
   } catch {
     // Malformed/tampered cookie — treat as no prior consent.
@@ -64,7 +82,12 @@ export function getOrCreateConsentId(): string {
 
 export function writeConsentCookie(consent: ConsentState, consentId: string): void {
   if (typeof document === "undefined") return;
-  const value = encodeURIComponent(JSON.stringify({ analytics: consent.analytics, marketing: consent.marketing, consentId }));
+  const value = encodeURIComponent(JSON.stringify({
+    preferences: consent.preferences,
+    statistics: consent.statistics,
+    marketing: consent.marketing,
+    consentId,
+  }));
   const maxAge = CONSENT_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60;
   document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
 }

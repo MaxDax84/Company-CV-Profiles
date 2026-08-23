@@ -15,14 +15,16 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
     const consentId = body?.consentId;
-    const analytics = body?.analytics;
+    const preferences = body?.preferences;
+    const statistics = body?.statistics;
     const marketing = body?.marketing;
     const method = body?.method as ConsentMethod;
     const policyVersion = body?.policyVersion;
 
     if (
       typeof consentId !== "string" ||
-      typeof analytics !== "boolean" ||
+      typeof preferences !== "boolean" ||
+      typeof statistics !== "boolean" ||
       typeof marketing !== "boolean" ||
       typeof policyVersion !== "string" ||
       !["accept_all", "reject_all", "custom"].includes(method)
@@ -37,7 +39,8 @@ export async function POST(req: NextRequest) {
 
     logConsent({
       consentId,
-      analytics,
+      preferences,
+      statistics,
       marketing,
       method,
       policyVersion,
