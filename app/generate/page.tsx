@@ -38,8 +38,18 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// A real popup window (fixed size, no browser chrome) rather than a new tab
+// — reusing the same window name means clicking a different template's
+// preview replaces the content of the same popup instead of stacking new
+// windows.
+function openTemplatePreview(url: string) {
+  window.open(url, "jobli-template-preview", "width=480,height=840,resizable=yes,scrollbars=yes,noopener,noreferrer");
+}
+
 export default function GeneratePage() {
-  const [template, setTemplate] = useState<TemplateStyle>("alpha");
+  // No default template — forces an explicit choice on the picker instead of
+  // silently shipping everyone off with whichever one happened to be first.
+  const [template, setTemplate] = useState<TemplateStyle | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
   const [pdfThumbnailError, setPdfThumbnailError] = useState<string | null>(null);
@@ -224,7 +234,10 @@ export default function GeneratePage() {
   const t = translations[lang].generate;
   const stepLabels = translations[lang].steps;
   const genericError = lang === "en" ? "Unknown error" : "Errore sconosciuto";
-  const selected = TEMPLATES.find(t => t.id === template)!;
+  // Falls back to the first template purely for accent-color styling in
+  // states before the picker is even shown (idle/analyzing/scored) — it is
+  // never treated as an actual selection.
+  const selected = TEMPLATES.find(t => t.id === template) ?? TEMPLATES[0];
   const canAnalyze = !!file && privacy && !!turnstileToken && state === "idle";
   const needsPrivacy = !!file && !privacy;
 
@@ -572,16 +585,17 @@ export default function GeneratePage() {
                       <p className="text-xs font-semibold text-foreground/80 leading-tight">{tpl.name}</p>
                       <p className="text-[10px] text-foreground/50 leading-tight">{(t.templates as Record<string, string>)[tpl.id]}</p>
                       <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
-                        <a
-                          href={`/profile/${tpl.demoSlug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={e => e.stopPropagation()}
+                        <button
+                          type="button"
+                          onClick={e => {
+                            e.stopPropagation();
+                            openTemplatePreview(`/profile/${tpl.demoSlug}`);
+                          }}
                           className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md transition-opacity hover:opacity-80"
                           style={{ background: `${tpl.accent}22`, color: tpl.accent, border: `1px solid ${tpl.accent}40` }}
                         >
                           Preview ↗
-                        </a>
+                        </button>
                       </div>
                     </div>
                     {template === tpl.id && (
@@ -606,9 +620,13 @@ export default function GeneratePage() {
               </div>
             )}
 
+            {!template && (
+              <p className="text-xs text-center text-muted-foreground/70">{t.selectTemplateHint}</p>
+            )}
+
             <button
               onClick={handleCreate}
-              disabled={isCreating}
+              disabled={isCreating || !template}
               className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
             >

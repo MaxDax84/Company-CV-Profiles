@@ -91,7 +91,7 @@ const content = {
         achievements: [
           'Promoted from HR Generalist after 18 months; responsible for a team of 3 HR coordinators.',
           'Full employee cycle management for two production sites — recruitment, contracts, disciplinary, offboarding.',
-          'Implemented HRIS (Zucchetti) across both sites, digitalising a fully paper-based process.',
+          'Implemented HRIS (PeopleFlow) across both sites, digitalising a fully paper-based process.',
         ],
       },
       {
@@ -129,11 +129,11 @@ const content = {
       },
       {
         label: 'Systems & Analytics',
-        skills: ['HRIS · Zucchetti', 'HR Analytics', 'Payroll Coordination', 'Contract Management', 'Compliance'],
+        skills: ['HRIS · PeopleFlow', 'HR Analytics', 'Payroll Coordination', 'Contract Management', 'Compliance'],
       },
     ],
     certsLabel: 'Certifications',
-    certs: ['SHRM-CP · 2019', 'Coaching Fundamentals · ICF · 2020', 'Zucchetti HRIS Certified · 2015'],
+    certs: ['HRP-C · 2019', 'Coaching Fundamentals · Global Coaching Guild · 2020', 'HRIS Platform Certified · 2015'],
     numbersLabel: 'Impact',
     numbersHeading: 'The numbers speak.',
     numbersHeadingAccent: 'I listen to them.',
@@ -145,8 +145,8 @@ const content = {
     ],
     eduLabel: 'Education',
     education: [
-      { degree: 'MSc Work & Organisational Psychology', school: 'Università degli Studi di Milano', year: '2010 – 2012', note: 'Summa cum laude' },
-      { degree: 'BSc Psychology', school: 'Università degli Studi di Torino', year: '2007 – 2010', note: '' },
+      { degree: 'MSc Work & Organisational Psychology', school: 'Università Metropolitana di Milano', year: '2010 – 2012', note: 'Summa cum laude' },
+      { degree: 'BSc Psychology', school: 'Università Metropolitana di Torino', year: '2007 – 2010', note: '' },
     ],
     contactLabel: 'Contact',
     contactHeading: 'Let\'s build something',
@@ -223,7 +223,7 @@ const content = {
         achievements: [
           'Promossa da HR Generalist dopo 18 mesi; responsabile di un team di 3 HR coordinator.',
           'Gestione del ciclo completo del dipendente per due stabilimenti produttivi — selezione, contratti, disciplinare, offboarding.',
-          'Implementato HRIS (Zucchetti) in entrambi i siti, digitalizzando un processo completamente cartaceo.',
+          'Implementato HRIS (PeopleFlow) in entrambi i siti, digitalizzando un processo completamente cartaceo.',
         ],
       },
       {
@@ -261,11 +261,11 @@ const content = {
       },
       {
         label: 'Sistemi & Analytics',
-        skills: ['HRIS · Zucchetti', 'HR Analytics', 'Payroll Coordination', 'Contract Management', 'Compliance'],
+        skills: ['HRIS · PeopleFlow', 'HR Analytics', 'Payroll Coordination', 'Contract Management', 'Compliance'],
       },
     ],
     certsLabel: 'Certificazioni',
-    certs: ['SHRM-CP · 2019', 'Coaching Fundamentals · ICF · 2020', 'Zucchetti HRIS Certified · 2015'],
+    certs: ['HRP-C · 2019', 'Coaching Fundamentals · Global Coaching Guild · 2020', 'HRIS Platform Certified · 2015'],
     numbersLabel: 'Impatto',
     numbersHeading: 'I numeri parlano.',
     numbersHeadingAccent: 'Io li ascolto.',
@@ -277,8 +277,8 @@ const content = {
     ],
     eduLabel: 'Formazione',
     education: [
-      { degree: 'MSc Psicologia del Lavoro e delle Organizzazioni', school: 'Università degli Studi di Milano', year: '2010 – 2012', note: '110/110 cum laude' },
-      { degree: 'Laurea Triennale in Psicologia', school: 'Università degli Studi di Torino', year: '2007 – 2010', note: '' },
+      { degree: 'MSc Psicologia del Lavoro e delle Organizzazioni', school: 'Università Metropolitana di Milano', year: '2010 – 2012', note: '110/110 cum laude' },
+      { degree: 'Laurea Triennale in Psicologia', school: 'Università Metropolitana di Torino', year: '2007 – 2010', note: '' },
     ],
     contactLabel: 'Contatti',
     contactHeading: 'Costruiamo qualcosa',

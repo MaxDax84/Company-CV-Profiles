@@ -4,7 +4,6 @@ import { TemplateAlpha, TemplateBeta, TemplateGamma, TemplateDelta } from "@/com
 import { getProfileByAccountCode, getOwnedProfileBySlug } from "@/lib/profile-store";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
-import { getCreditBalance } from "@/lib/credits";
 import OwnerToolbar from "@/components/owner-toolbar";
 
 const TEMPLATE_MAP: Record<TemplateStyle, React.ComponentType<{ profile: ProfileSchema }>> = {
@@ -23,7 +22,7 @@ interface Props {
 // needed here: ownership only depends on whether the *currently signed-in*
 // user owns a profile with this slug, same check regardless of whose code
 // got them to this page.
-async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored" | "translated"; credits: number } | null> {
+async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored" | "translated" } | null> {
   if (!isSupabaseConfigured()) return null;
   try {
     const supabase = await createServerSupabaseClient();
@@ -31,8 +30,7 @@ async function getOwnerInfo(slug: string): Promise<{ kind: "primary" | "tailored
     if (!user) return null;
     const row = await getOwnedProfileBySlug(supabase, user.id, slug);
     if (!row) return null;
-    const credits = await getCreditBalance(supabase, user.id);
-    return { kind: row.kind, credits };
+    return { kind: row.kind };
   } catch {
     return null;
   }
@@ -53,7 +51,7 @@ export default async function AccountProfilePage({ params }: Props) {
 
   return (
     <>
-      {ownerInfo && <OwnerToolbar slug={slug} kind={ownerInfo.kind} credits={ownerInfo.credits} />}
+      {ownerInfo && <OwnerToolbar kind={ownerInfo.kind} />}
       <Template profile={profile} />
     </>
   );

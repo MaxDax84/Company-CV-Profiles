@@ -45,12 +45,12 @@ export const PDF_PREVIEW_DEMO = {
     },
   ],
   education: [
-    { degree: "Laurea Magistrale — Ingegneria Gestionale", school: "Politecnico di Torino", dates: "2014 – 2016", grade: "110/110 con lode" },
-    { degree: "Laurea Triennale — Ingegneria Gestionale", school: "Politecnico di Torino", dates: "2011 – 2014", grade: undefined as string | undefined },
+    { degree: "Laurea Magistrale — Ingegneria Gestionale", school: "Politecnico Nazionale di Ingegneria", dates: "2014 – 2016", grade: "110/110 con lode" },
+    { degree: "Laurea Triennale — Ingegneria Gestionale", school: "Politecnico Nazionale di Ingegneria", dates: "2011 – 2014", grade: undefined as string | undefined },
   ],
   certifications: [
-    "Certified Scrum Product Owner (CSPO) — Scrum Alliance, 2021",
-    "Product Management Certificate — Reforge, 2020",
+    "Certified Product Owner Professional — Agile Guild, 2021",
+    "Product Management Certificate — Growth Academy, 2020",
   ],
   skills: {
     hard: "Product Strategy, Roadmapping, Data Analysis, A/B Testing, SQL",

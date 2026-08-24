@@ -22,7 +22,7 @@ export default function SignupForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm" | "claimFailed">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm" | "alreadyRegistered" | "claimFailed">("idle");
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -61,8 +61,18 @@ export default function SignupForm() {
     }
 
     if (!data.session) {
-      // "Confirm email" is on in Supabase — no session yet, can't claim the
-      // pending profile until the user verifies. See project plan notes.
+      // With "Confirm email" on, Supabase never tells signUp() outright that
+      // an email is already registered (that would let anyone probe which
+      // emails have accounts) — instead it returns this same shape as a
+      // genuine new signup, but with an empty identities array, whether the
+      // existing account uses a password or only Google. That's the only
+      // client-visible signal to catch it here instead of showing a
+      // "confirmation email sent" message that's actively misleading for an
+      // account that already exists (nothing new was actually sent).
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        setStatus("alreadyRegistered");
+        return;
+      }
       setStatus("needsEmailConfirm");
       return;
     }
@@ -104,6 +114,33 @@ export default function SignupForm() {
         {lang === "en"
           ? "We've sent you a confirmation email — click the link to activate your account, then come back here to log in."
           : "Ti abbiamo inviato un'email di conferma — clicca il link per attivare l'account, poi torna qui per accedere."}
+      </div>
+    );
+  }
+
+  if (status === "alreadyRegistered") {
+    return (
+      <div className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-6 text-center space-y-3">
+        <p className="text-sm text-amber-700 dark:text-amber-400 font-semibold">
+          {lang === "en" ? "You're already registered" : "Sei già registrato"}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {lang === "en"
+            ? "This email already has a Jobli account (possibly via Google sign-in). Log in below, or reset your password if you don't remember it."
+            : "Questa email ha già un account Jobli (magari con l'accesso Google). Accedi qui sotto, oppure recupera la password se non la ricordi."}
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <a
+            href={claimToken ? `/login?claim=${claimToken}` : "/login"}
+            className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+            style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+          >
+            {lang === "en" ? "Log in" : "Accedi"}
+          </a>
+          <a href="/forgot-password" className="text-sm text-primary hover:underline">
+            {lang === "en" ? "Reset password" : "Recupera password"}
+          </a>
+        </div>
       </div>
     );
   }

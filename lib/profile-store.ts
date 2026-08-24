@@ -32,17 +32,46 @@ export function toSlug(fullName: string): string {
     .replace(/\s+/g, "-");
 }
 
+// A link to a shared multi-tenant platform's bare homepage (no profile path)
+// rather than to the person's actual page there. This happens when the
+// source CV only shows a "LinkedIn"-style label/icon with the real URL
+// living in a PDF hyperlink annotation the extraction never sees (Claude's
+// PDF ingestion reads the rendered page, not embedded link targets) — the
+// model has no real URL to extract, and a bare "https://linkedin.com" is
+// worse than no link at all: it renders as a working button that actually
+// goes nowhere useful for the visitor.
+const GENERIC_PLATFORM_HOSTS = ["linkedin.com", "github.com", "twitter.com", "x.com"];
+function isGenericPlatformUrl(url: string): boolean {
+  try {
+    const { hostname, pathname } = new URL(url);
+    const host = hostname.replace(/^www\./, "");
+    return GENERIC_PLATFORM_HOSTS.includes(host) && pathname.replace(/\/+$/, "") === "";
+  } catch {
+    return false;
+  }
+}
+
 // personal_info.email/phone are the real, non-obfuscated contact details —
 // meant for the owner's own downloadable PDF only, never for a page a
 // stranger can load. Strip before anything leaves the server for public
-// consumption (the public /profile/[slug] page, its metadata, etc).
+// consumption (the public /profile/[slug] page, its metadata, etc). Also
+// drops any social link that only points at a generic platform homepage
+// (see isGenericPlatformUrl) — same reasoning, just for a link that's
+// technically present but not actually useful to a visitor.
 function stripPII(profile: ProfileSchema): ProfileSchema {
+  const social = profile.personal_info.social_links;
   return {
     ...profile,
     personal_info: {
       ...profile.personal_info,
       email: undefined,
       phone: undefined,
+      social_links: {
+        ...social,
+        linkedin: social?.linkedin && !isGenericPlatformUrl(social.linkedin) ? social.linkedin : undefined,
+        github: social?.github && !isGenericPlatformUrl(social.github) ? social.github : undefined,
+        twitter: social?.twitter && !isGenericPlatformUrl(social.twitter) ? social.twitter : undefined,
+      },
     },
   };
 }

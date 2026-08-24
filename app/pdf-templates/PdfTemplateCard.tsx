@@ -8,10 +8,14 @@ import Image from "next/image";
 // which mattered here: 3 full-size iframes scaling under mobile pinch-zoom
 // could exhaust memory and crash the tab. A plain bitmap doesn't have that
 // failure mode.
+//
+// Cropped tight to the CV's own content box (no surrounding browser-viewport
+// void) — the aspect ratio now lands close to a real A4 page (~0.71), so the
+// image fills this card edge to edge instead of floating in extra whitespace.
 const IMAGE_DIMENSIONS: Record<string, { width: number; height: number }> = {
-  "ats-core": { width: 1280, height: 423 },
-  "executive": { width: 1280, height: 435 },
-  "creative-tech": { width: 1280, height: 435 },
+  "ats-core": { width: 290, height: 415 },
+  "executive": { width: 343, height: 519 },
+  "creative-tech": { width: 345, height: 519 },
 };
 
 interface Props {
@@ -21,10 +25,10 @@ interface Props {
 }
 
 export default function PdfTemplateCard({ templateId, name, description }: Props) {
-  const dims = IMAGE_DIMENSIONS[templateId] ?? { width: 1280, height: 430 };
+  const dims = IMAGE_DIMENSIONS[templateId] ?? { width: 293, height: 420 };
 
   return (
-    <div className="space-y-3 w-full max-w-[552px]">
+    <div className="space-y-3 w-full max-w-[420px]">
       <div className="text-center">
         <p className="text-sm font-semibold">{name}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
@@ -36,7 +40,7 @@ export default function PdfTemplateCard({ templateId, name, description }: Props
           width={dims.width}
           height={dims.height}
           className="w-full h-auto block"
-          sizes="(min-width: 768px) 552px, 100vw"
+          sizes="(min-width: 768px) 420px, 100vw"
         />
       </div>
     </div>

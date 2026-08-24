@@ -17,7 +17,7 @@ const DEMO_PROFILE: ProfileSchema = {
   },
   experience: [
     {
-      company: "Satispay",
+      company: "Flowpay",
       role: "Senior Software Engineer",
       start_date: "2021-03",
       end_date: "present",
@@ -31,14 +31,14 @@ const DEMO_PROFILE: ProfileSchema = {
       location: "Milano",
     },
     {
-      company: "Musixmatch",
+      company: "SonoWave",
       role: "Full-Stack Developer",
       start_date: "2018-06",
       end_date: "2021-02",
       description: [
         "Sviluppato il nuovo sistema di ingestion dei testi musicali in Python",
         "Costruito dashboard analytics interne in React con dati real-time",
-        "Integrato API di terze parti (Spotify, Apple Music) per sincronizzazione dati",
+        "Integrato API di terze parti per sincronizzazione dati",
       ],
       technologies: ["Python", "React", "TypeScript", "Redis", "Elasticsearch"],
       location: "Bologna",
@@ -46,7 +46,7 @@ const DEMO_PROFILE: ProfileSchema = {
   ],
   education: [
     {
-      institution: "Politecnico di Milano",
+      institution: "Politecnico Nazionale di Ingegneria",
       degree: "Laurea Magistrale",
       field: "Ingegneria Informatica",
       start_year: 2013,
@@ -56,13 +56,13 @@ const DEMO_PROFILE: ProfileSchema = {
   ],
   certifications: [
     {
-      name: "AWS Solutions Architect – Associate",
-      issuer: "Amazon Web Services",
+      name: "Cloud Solutions Architect – Professional",
+      issuer: "CloudNova Certification Board",
       year: 2022,
     },
     {
-      name: "Certified Kubernetes Administrator",
-      issuer: "CNCF",
+      name: "Certified Container Orchestration Specialist",
+      issuer: "Open Container Alliance",
       year: 2023,
     },
   ],

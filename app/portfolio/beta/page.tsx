@@ -51,7 +51,7 @@ const content = {
     infoRows: [
       ['📍', 'Milan, Italy (available across Europe)'],
       ['🏛', 'Independent Strategy Advisor (current)'],
-      ['🎓', 'MSc Management Consulting · SDA Bocconi'],
+      ['🎓', 'MSc Management Consulting · SDA Vantage'],
       ['✉', 'sofia.conti@mail.com'],
       ['🔗', 'linkedin.com/in/sofiaconti'],
     ],
@@ -113,8 +113,8 @@ const content = {
       { icon: '🌍', title: 'International Expansion', desc: 'Internationalisation strategies across Europe, MENA and Asia-Pacific.' },
     ],
     education: [
-      { degree: 'MSc Management Consulting', school: 'SDA Bocconi School of Management', year: '2011 – 2013', note: 'Distinction' },
-      { degree: 'BSc Economics & Management', school: 'Università Commerciale Luigi Bocconi', year: '2008 – 2011', note: '108/110' },
+      { degree: 'MSc Management Consulting', school: 'Vantage School of Management', year: '2011 – 2013', note: 'Distinction' },
+      { degree: 'BSc Economics & Management', school: 'Università Commerciale Vantage', year: '2008 – 2011', note: '108/110' },
     ],
     numbersRow: [
       { value: '40+', label: 'Projects delivered' },
@@ -153,7 +153,7 @@ const content = {
     infoRows: [
       ['📍', 'Milano, Italia (disponibile in tutta Europa)'],
       ['🏛', 'Strategy Advisor Indipendente (attuale)'],
-      ['🎓', 'MSc Management Consulting · SDA Bocconi'],
+      ['🎓', 'MSc Management Consulting · SDA Vantage'],
       ['✉', 'sofia.conti@mail.com'],
       ['🔗', 'linkedin.com/in/sofiaconti'],
     ],
@@ -215,8 +215,8 @@ const content = {
       { icon: '🌍', title: 'International Expansion', desc: 'Strategie di internazionalizzazione in Europa, MENA e Asia-Pacific.' },
     ],
     education: [
-      { degree: 'MSc Management Consulting', school: 'SDA Bocconi School of Management', year: '2011 – 2013', note: 'Distinction' },
-      { degree: 'Laurea in Economia e Management', school: 'Università Commerciale Luigi Bocconi', year: '2008 – 2011', note: '108/110' },
+      { degree: 'MSc Management Consulting', school: 'Vantage School of Management', year: '2011 – 2013', note: 'Distinction' },
+      { degree: 'Laurea in Economia e Management', school: 'Università Commerciale Vantage', year: '2008 – 2011', note: '108/110' },
     ],
     numbersRow: [
       { value: '40+', label: 'Progetti consegnati' },

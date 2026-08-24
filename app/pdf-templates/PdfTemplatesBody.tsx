@@ -30,7 +30,7 @@ export default function PdfTemplatesBody() {
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center items-start gap-8">
+        <div className="flex flex-col items-center gap-10">
           {PDF_TEMPLATES.map((tpl) => {
             const label = lang === "en" ? PDF_TEMPLATES_EN[tpl.id] : tpl;
             return (

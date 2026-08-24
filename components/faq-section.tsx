@@ -31,6 +31,10 @@ const FAQ_ITEMS_IT: { q: string; a: string }[] = [
     a: 'Gli ATS (Applicant Tracking System) sono i software che le aziende usano per leggere e filtrare i CV prima che arrivino a un recruiter umano. Un CV con struttura chiara, testo selezionabile e parole chiave pertinenti ha più probabilità di superare questo primo filtro automatico.',
   },
   {
+    q: 'Come viene calcolato il punteggio del mio CV?',
+    a: 'Il punteggio va da 0 a 100 ed è la somma di 4 criteri, ciascuno su 25 punti: Risultati misurabili (quanti dei tuoi risultati sono accompagnati da numeri o percentuali concrete, e quante frasi iniziano con un verbo d\'azione forte), Chiarezza (quanto è chiaro il tuo profilo professionale e quanto è scorrevole leggere le tue esperienze), Struttura ATS (quanto il layout del documento originale è leggibile dai sistemi automatici di selezione, senza tabelle o colonne multiple che rischiano di confondere il parser) e Competenze specifiche (quante competenze tecniche concrete nomini esplicitamente, e quante sono anche dimostrate all\'interno delle tue esperienze, non solo elencate). Trovi il dettaglio dei 4 criteri anche accanto a ciascuna barra nel punteggio, toccando l\'icona (i).',
+  },
+  {
     q: 'Quanto conta il layout di un CV?',
     a: 'Meno di quanto si pensi. Un layout elaborato non ti fa guadagnare punti — ma può farti perdere informazioni: colonne multiple, tabelle, caselle di testo o grafiche possono confondere un ATS al punto da leggere i dati nel campo sbagliato, saltare intere sezioni o mescolare l\'ordine del testo. Per questo i nostri template PDF sono volutamente semplici ed essenziali: colonna singola, struttura lineare, niente elementi grafici che rischiano di essere letti male. A fare davvero la differenza per farti notare è il contenuto: come sono scritte le informazioni, quali parole chiave usi, quanto sono concreti i risultati che racconti — non l\'estetica della pagina.',
   },
@@ -72,6 +76,10 @@ const FAQ_ITEMS_EN: { q: string; a: string }[] = [
   {
     q: 'What are ATS filters and why optimize your CV for them?',
     a: 'ATS (Applicant Tracking Systems) are the software companies use to read and filter CVs before they ever reach a human recruiter. A CV with clear structure, selectable text, and relevant keywords is more likely to pass this first automatic filter.',
+  },
+  {
+    q: 'How is my CV score calculated?',
+    a: 'The score runs from 0 to 100 and is the sum of 4 criteria, each worth 25 points: Quantified results (how many of your achievements include concrete numbers or percentages, and how many bullets open with a strong action verb), Clarity (how clear your professional summary is, and how easy your experience is to read through), ATS structure (how well the original document\'s layout can be read by automated screening systems, without tables or multiple columns that risk confusing the parser), and Specific skills (how many concrete technical skills you name explicitly, and how many are also demonstrated within your experience, not just listed). You\'ll also find each criterion explained next to its bar in the score card, by tapping the (i) icon.',
   },
   {
     q: 'How much does a CV\'s layout matter?',

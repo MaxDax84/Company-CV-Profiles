@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Info } from "lucide-react";
 import type { CvScoreBreakdown } from "@/lib/cv-score";
 import { getScoreComment, ATS_TARGET_SCORE } from "@/lib/score-comments";
 import { useLanguage } from "@/components/language-provider";
@@ -21,16 +23,20 @@ interface CvScoreCardProps {
     clarity: string;
     atsStructure: string;
     specificSkills: string;
+    quantifiedResultsDesc: string;
+    clarityDesc: string;
+    atsStructureDesc: string;
+    specificSkillsDesc: string;
     beforeLabel: string;
     afterLabel: string;
   };
 }
 
-const CRITERIA: { key: keyof Omit<CvScoreBreakdown, "total">; labelKey: keyof CvScoreCardProps["labels"] }[] = [
-  { key: "quantifiedResults", labelKey: "quantifiedResults" },
-  { key: "clarity", labelKey: "clarity" },
-  { key: "atsStructure", labelKey: "atsStructure" },
-  { key: "specificSkills", labelKey: "specificSkills" },
+const CRITERIA: { key: keyof Omit<CvScoreBreakdown, "total">; labelKey: keyof CvScoreCardProps["labels"]; descKey: keyof CvScoreCardProps["labels"] }[] = [
+  { key: "quantifiedResults", labelKey: "quantifiedResults", descKey: "quantifiedResultsDesc" },
+  { key: "clarity", labelKey: "clarity", descKey: "clarityDesc" },
+  { key: "atsStructure", labelKey: "atsStructure", descKey: "atsStructureDesc" },
+  { key: "specificSkills", labelKey: "specificSkills", descKey: "specificSkillsDesc" },
 ];
 
 export default function CvScoreCard({ before, after, accentColor, labels, cvName, variant = "full" }: CvScoreCardProps) {
@@ -38,6 +44,9 @@ export default function CvScoreCard({ before, after, accentColor, labels, cvName
   const isTeaser = variant === "teaser";
   const current = isTeaser ? (before ?? after) : after;
   const delta = !isTeaser && before ? after.total - before.total : null;
+  // Which criterion's "what does this mean" description is expanded — at
+  // most one at a time, closed by default so the card stays compact.
+  const [openInfo, setOpenInfo] = useState<string | null>(null);
 
   return (
     <div className="text-left rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 space-y-5">
@@ -92,18 +101,33 @@ export default function CvScoreCard({ before, after, accentColor, labels, cvName
 
       {/* Per-criterion bars */}
       <div className="space-y-3">
-        {CRITERIA.map(({ key, labelKey }) => {
+        {CRITERIA.map(({ key, labelKey, descKey }) => {
           const afterVal = after[key];
           const beforeVal = before?.[key];
           const displayVal = isTeaser ? current[key] : afterVal;
+          const isOpen = openInfo === key;
           return (
             <div key={key}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-muted-foreground">{labels[labelKey]}</span>
+                <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                  {labels[labelKey]}
+                  <button
+                    type="button"
+                    onClick={() => setOpenInfo(isOpen ? null : key)}
+                    aria-label={labels[labelKey]}
+                    aria-expanded={isOpen}
+                    className="text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+                  >
+                    <Info className="w-3 h-3" />
+                  </button>
+                </span>
                 <span className="text-xs font-semibold text-muted-foreground/70">
                   {isTeaser ? `${displayVal}/25` : `${beforeVal !== undefined ? `${beforeVal} → ` : ""}${afterVal}/25`}
                 </span>
               </div>
+              {isOpen && (
+                <p className="text-[11px] text-muted-foreground/70 leading-relaxed mb-1.5">{labels[descKey]}</p>
+              )}
               <div className="relative h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
                 {!isTeaser && beforeVal !== undefined && (
                   <div

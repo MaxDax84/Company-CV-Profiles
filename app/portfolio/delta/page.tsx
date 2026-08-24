@@ -45,7 +45,7 @@ const content = {
     infoRows: [
       ['📍', 'Milan, Italy'],
       ['🏢', 'CPO · Meridio (current)'],
-      ['🎓', 'MSc Computer Engineering · Politecnico di Milano'],
+      ['🎓', 'MSc Computer Engineering · Politecnico Nazionale di Ingegneria'],
       ['✉', 'luca.romano@mail.com'],
       ['🔗', 'linkedin.com/in/lucaromano'],
     ],
@@ -125,10 +125,10 @@ const content = {
       },
     ],
     education: [
-      { degree: 'MSc Computer Engineering', school: 'Politecnico di Milano', year: '2011 – 2013', note: '110/110 cum laude' },
-      { degree: 'BSc Computer Engineering', school: 'Politecnico di Milano', year: '2008 – 2011', note: '' },
+      { degree: 'MSc Computer Engineering', school: 'Politecnico Nazionale di Ingegneria', year: '2011 – 2013', note: '110/110 cum laude' },
+      { degree: 'BSc Computer Engineering', school: 'Politecnico Nazionale di Ingegneria', year: '2008 – 2011', note: '' },
     ],
-    certs: ['AWS Certified Solutions Architect · 2021', 'Reforge Growth Series · 2020', 'CSPO · Scrum Alliance · 2018'],
+    certs: ['Cloud Solutions Architect Certified · 2021', 'Growth Academy Program · 2020', 'Certified Product Owner · Agile Guild · 2018'],
     numbersLabel: 'Impact',
     numbers: [
       { value: '€60M', label: 'ARR under ownership', note: 'Meridio · 2024' },
@@ -166,7 +166,7 @@ const content = {
     infoRows: [
       ['📍', 'Milano, Italia'],
       ['🏢', 'CPO · Meridio (attuale)'],
-      ['🎓', 'MSc Ingegneria Informatica · Politecnico di Milano'],
+      ['🎓', 'MSc Ingegneria Informatica · Politecnico Nazionale di Ingegneria'],
       ['✉', 'luca.romano@mail.com'],
       ['🔗', 'linkedin.com/in/lucaromano'],
     ],
@@ -246,10 +246,10 @@ const content = {
       },
     ],
     education: [
-      { degree: 'MSc Ingegneria Informatica', school: 'Politecnico di Milano', year: '2011 – 2013', note: '110/110 cum laude' },
-      { degree: 'BSc Ingegneria Informatica', school: 'Politecnico di Milano', year: '2008 – 2011', note: '' },
+      { degree: 'MSc Ingegneria Informatica', school: 'Politecnico Nazionale di Ingegneria', year: '2011 – 2013', note: '110/110 cum laude' },
+      { degree: 'BSc Ingegneria Informatica', school: 'Politecnico Nazionale di Ingegneria', year: '2008 – 2011', note: '' },
     ],
-    certs: ['AWS Certified Solutions Architect · 2021', 'Reforge Growth Series · 2020', 'CSPO · Scrum Alliance · 2018'],
+    certs: ['Cloud Solutions Architect Certified · 2021', 'Growth Academy Program · 2020', 'Certified Product Owner · Agile Guild · 2018'],
     numbersLabel: 'Impatto',
     numbers: [
       { value: '€60M', label: 'ARR gestito', note: 'Meridio · 2024' },
