@@ -47,7 +47,9 @@ function useInView(forceVisible = false) {
 interface Props { profile: ProfileSchema; forceVisible?: boolean }
 
 export default function TemplateDelta({ profile, forceVisible }: Props) {
-  const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
+  // projects/certifications default to [] — see TemplateBeta.tsx for why
+  // (ProfileSchema declares both required, but extraction can omit them).
+  const { personal_info: p, experience, education, skills, projects = [], certifications = [], other, metadata } = profile
 
   const accent   = metadata.primary_color
   const navy     = '#0a1628'

@@ -89,10 +89,11 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+        <label htmlFor="login-email" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Email
         </label>
         <input
+          id="login-email"
           type="email"
           required
           value={email}
@@ -103,7 +104,7 @@ export default function LoginForm() {
       </div>
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label htmlFor="login-password" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Password
           </label>
           <a href="/forgot-password" className="text-xs text-primary hover:underline">
@@ -111,6 +112,7 @@ export default function LoginForm() {
           </a>
         </div>
         <input
+          id="login-password"
           type="password"
           required
           value={password}

@@ -77,7 +77,7 @@ function buildSourceCorpus(source: ProfileSchema): string {
     source.personal_info.bio,
     source.personal_info.bio_original ?? "",
     ...source.experience.flatMap((e) => [e.role, ...e.description]),
-    ...source.projects.map((p) => `${p.title} ${p.description} ${p.tags.join(" ")}`),
+    ...(source.projects ?? []).map((p) => `${p.title} ${p.description} ${p.tags.join(" ")}`),
     ...(source.other ?? []),
   ];
   return parts.join(" \n ").toLowerCase();

@@ -164,10 +164,11 @@ export default function SignupForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+        <label htmlFor="signup-email" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Email
         </label>
         <input
+          id="signup-email"
           type="email"
           required
           value={email}
@@ -177,10 +178,11 @@ export default function SignupForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+        <label htmlFor="signup-password" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Password
         </label>
         <input
+          id="signup-password"
           type="password"
           required
           minLength={8}

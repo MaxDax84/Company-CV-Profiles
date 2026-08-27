@@ -56,7 +56,9 @@ function contactLine(profile: ProfileSchema): Paragraph {
 
 export async function buildCvDocxBuffer(profile: ProfileSchema): Promise<Buffer> {
   const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
-  const { personal_info, experience, education, certifications, skills, projects, other } = profile;
+  // projects/certifications default to [] — see components/templates/TemplateBeta.tsx
+  // for why (ProfileSchema declares both required, but extraction can omit them).
+  const { personal_info, experience, education, certifications = [], skills, projects = [], other } = profile;
 
   const children: Paragraph[] = [
     new Paragraph({

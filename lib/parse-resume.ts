@@ -162,6 +162,17 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     profile.metadata.generated_at = new Date().toISOString();
   }
 
+  // ProfileSchema declares these as required arrays, but the extraction
+  // prompt tells the model to omit optional fields entirely when the CV has
+  // no such section (e.g. no "Projects" or "Certifications" — common for
+  // non-technical roles) — the model follows that literally and drops the
+  // key rather than returning []. Every consumer (the 4 web templates, the
+  // PDF/Word exporters, tailor-resume) trusted the schema and called
+  // `.length`/`.map` unguarded, which crashed the whole render for any CV
+  // missing one of these sections. Normalize here, once, at the source.
+  profile.projects ??= [];
+  profile.certifications ??= [];
+
   // Sum ourselves rather than trusting the model to also report a correct
   // total — it's only ever asked for the 4 individual criteria.
   if (cv_score_before) {

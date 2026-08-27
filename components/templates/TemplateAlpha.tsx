@@ -59,7 +59,9 @@ function yearsOfExp(experience: ProfileSchema['experience']): string {
 interface Props { profile: ProfileSchema; forceVisible?: boolean }
 
 export default function TemplateAlpha({ profile, forceVisible }: Props) {
-  const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
+  // projects/certifications default to [] — see TemplateBeta.tsx for why
+  // (ProfileSchema declares both required, but extraction can omit them).
+  const { personal_info: p, experience, education, skills, projects = [], certifications = [], other, metadata } = profile
 
   // ── Design tokens (same structure as delta, accent from metadata) ─────
   const accent = metadata.primary_color  // hex, e.g. "#6366f1"

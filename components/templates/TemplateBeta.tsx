@@ -47,7 +47,14 @@ function useInView(forceVisible = false) {
 interface Props { profile: ProfileSchema; forceVisible?: boolean }
 
 export default function TemplateBeta({ profile, forceVisible }: Props) {
-  const { personal_info: p, experience, education, skills, projects, certifications, other, metadata } = profile
+  // projects/certifications default to [] here rather than trusting the
+  // stored data to always include them: ProfileSchema declares both as
+  // required arrays, but the extraction prompt (lib/parse-resume.ts) allows
+  // omitting them entirely when the source CV has no such section (common
+  // for non-technical roles) — an unguarded `.length`/`.map` on a genuinely
+  // missing field crashed the whole render, both in the /generate live
+  // preview and on the final public page.
+  const { personal_info: p, experience, education, skills, projects = [], certifications = [], other, metadata } = profile
 
   const accent      = metadata.primary_color
   const white       = '#ffffff'

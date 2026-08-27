@@ -439,7 +439,9 @@ export const LABELS_BY_LANG: Record<string, Labels> = {
 
 export function AtsResumeDocument({ profile, template = "ats-core" }: { profile: ProfileSchema; template?: PdfTemplate }) {
   const t = LABELS_BY_LANG[profile.metadata.language] ?? LABELS_BY_LANG.en;
-  const { personal_info, experience, education, certifications, skills, projects, other } = profile;
+  // projects/certifications default to [] — see components/templates/TemplateBeta.tsx
+  // for why (ProfileSchema declares both required, but extraction can omit them).
+  const { personal_info, experience, education, certifications = [], skills, projects = [], other } = profile;
   const cfg = VARIANTS[template];
   const accent = resolveAccent(profile, cfg);
   const accentSoft = hexToRgba(accent, 0.5);
