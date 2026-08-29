@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { createServiceSupabaseClient } from "./supabase/service";
 
 // Backs the "re-download without paying again" flow (see
 // supabase/migrations/0006_paid_downloads.sql) — a PDF re-render costs us
@@ -27,12 +28,17 @@ export async function hasPaidDownload(
   return data != null;
 }
 
+// Service-role only (see supabase/migrations/0021_lock_down_payment_writes.sql):
+// the RLS insert-own policy on this table was removed because it let any
+// authenticated user pre-insert a fake "already paid" row for themselves via
+// the browser's own Supabase client, skipping the credit charge entirely in
+// the PDF/Word download routes. This must never take a user-scoped client.
 export async function recordPaidDownload(
-  supabase: SupabaseClient,
   userId: string,
   profileId: string,
   template: string
 ): Promise<void> {
+  const supabase = createServiceSupabaseClient();
   // onConflict ignore: a race between two near-simultaneous first downloads
   // of the same (profile, template) should never surface a duplicate-key
   // error to the user — the unique index already guarantees only one row.

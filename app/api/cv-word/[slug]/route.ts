@@ -48,7 +48,7 @@ export async function GET(
       }
       throw err;
     }
-    await recordPaidDownload(supabase, user.id, row.id, WORD_TEMPLATE_KEY);
+    await recordPaidDownload(user.id, row.id, WORD_TEMPLATE_KEY);
   }
 
   const buffer = await buildCvDocxBuffer(row.data);

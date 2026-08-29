@@ -97,7 +97,7 @@ export async function GET(
       }
       letterText = await generateCoverLetter(row.data);
     }
-    await rememberCoverLetter(supabase, user.id, row.id, targetLanguage, letterText);
+    await rememberCoverLetter(user.id, row.id, targetLanguage, letterText);
   }
 
   const buffer = await renderToBuffer(

@@ -17,7 +17,7 @@ interface UsageRow {
 const MAX_ROWS = 20000;
 
 export async function GET(req: NextRequest) {
-  if (!verifyAdminSession(req)) {
+  if (!(await verifyAdminSession(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!isSupabaseConfigured()) {

@@ -17,6 +17,11 @@ const nextConfig = {
           // Don't leak the full referring URL (which can contain slugs/
           // account codes) to third-party destinations.
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // Forces HTTPS for a year, including subdomains, and opts into
+          // browser preload lists — closes the window an attacker on the
+          // same network gets on a user's very first HTTP request before
+          // any redirect would normally kick in.
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
         ],
       },
       {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getAccountCode } from "@/lib/credits";
+import { requestDomainRatelimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,14 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !user.email) {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    }
+
+    const { success, reset } = await requestDomainRatelimit.limit(user.id);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
+      );
     }
 
     const body = await req.json().catch(() => null);

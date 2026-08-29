@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminPassword, getAdminSessionCookieValue, ADMIN_SESSION_COOKIE, SESSION_MAX_AGE_SECONDS } from "@/lib/admin-auth";
+import { verifyAdminPassword, createAdminSession, ADMIN_SESSION_COOKIE, SESSION_MAX_AGE_SECONDS } from "@/lib/admin-auth";
 import { adminLoginRatelimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Wrong password." }, { status: 401 });
   }
 
-  const token = getAdminSessionCookieValue()!;
+  const token = await createAdminSession();
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_SESSION_COOKIE, token, {
     httpOnly: true,

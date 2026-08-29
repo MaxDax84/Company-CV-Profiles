@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     // paid so the client's immediate GET to /api/pdf/[newSlug] (which is
     // what actually streams the file) doesn't spend a second credit for
     // what is, from the user's perspective, one single "translate" action.
-    await recordPaidDownload(supabase, user.id, newProfileId, template);
+    await recordPaidDownload(user.id, newProfileId, template);
 
     const code = await getAccountCode(supabase, user.id);
 

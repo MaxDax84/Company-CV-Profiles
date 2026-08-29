@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getClientIp } from "@/lib/rate-limit";
+import { getClientIp, consentLogRatelimit } from "@/lib/rate-limit";
 import { logConsent, type ConsentMethod } from "@/lib/log-consent";
 
 export const runtime = "nodejs";
@@ -13,6 +13,11 @@ export const runtime = "nodejs";
 // audit trail on top.
 export async function POST(req: NextRequest) {
   try {
+    const { success } = await consentLogRatelimit.limit(getClientIp(req));
+    if (!success) {
+      return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+    }
+
     const body = await req.json().catch(() => null);
     const consentId = body?.consentId;
     const preferences = body?.preferences;

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { createServiceSupabaseClient } from "./supabase/service";
 
 // Backs "pay once, re-download free" for cover letters (see
 // supabase/migrations/0008_cover_letters.sql / 0011_cover_letter_language.sql)
@@ -24,13 +25,19 @@ export async function getRememberedCoverLetter(
   return (data?.letter_text as string | undefined) ?? null;
 }
 
+// Service-role only (see supabase/migrations/0021_lock_down_payment_writes.sql):
+// the RLS insert-own policy on this table was removed because it let any
+// authenticated user pre-insert a fake cached letter for themselves via the
+// browser's own Supabase client, skipping the credit charge entirely — the
+// cover-letter route treats any cached row as "already generated". This must
+// never take a user-scoped client.
 export async function rememberCoverLetter(
-  supabase: SupabaseClient,
   userId: string,
   profileId: string,
   language: string,
   letterText: string
 ): Promise<void> {
+  const supabase = createServiceSupabaseClient();
   // ignoreDuplicates: a race between two near-simultaneous first requests
   // for the same (profile, language) should never surface a duplicate-key
   // error — the unique (profile_id, language) constraint already guarantees

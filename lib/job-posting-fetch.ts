@@ -1,9 +1,12 @@
 // Best-effort SSRF-guarded fetch of a job-posting URL the user pasted, plus
-// a lightweight HTML→text extraction. Edge-runtime compatible only (no
-// `dns.lookup`/Node `net` APIs), which caps what SSRF mitigation is actually
-// possible here — see the KNOWN LIMITATION note below. Never throws: every
-// failure path returns { ok: false, reason }, so the caller always has a
-// clean "please paste the text instead" fallback.
+// a lightweight HTML→text extraction. Requires the Node runtime (uses
+// `dns.promises.lookup` to catch a hostname that resolves to a private IP,
+// not just a literal IP-address hostname) — both current callers
+// (app/api/tailor-resume, app/api/relevance-check) already run on Node by
+// default (neither declares `export const runtime = "edge"`). Never throws:
+// every failure path returns { ok: false, reason }, so the caller always has
+// a clean "please paste the text instead" fallback.
+import { lookup as dnsLookup } from "node:dns/promises";
 
 export type JobPostingFetchResult = { ok: true; text: string } | { ok: false; reason: string };
 
@@ -34,11 +37,6 @@ function isPrivateIPv6(hostname: string): boolean {
   return false;
 }
 
-// KNOWN LIMITATION: without DNS resolution (unavailable on the edge
-// runtime), a domain name that simply *points at* a private/internal IP
-// (or DNS-rebinds after this check) is not caught here — only literal
-// IP-address hostnames and the well-known local names are blocked. This is
-// a best-effort mitigation, not a guarantee.
 function isBlockedHostname(hostname: string): boolean {
   const h = hostname.toLowerCase();
   if (PRIVATE_HOSTNAMES.has(h)) return true;
@@ -47,11 +45,40 @@ function isBlockedHostname(hostname: string): boolean {
   return false;
 }
 
-function validateUrl(url: URL): string | null {
+// Catches the much more common real-world case this check used to miss: a
+// domain name (not a literal IP) that simply *resolves to* a private/internal
+// address — e.g. a job-posting URL pointing at an attacker-controlled domain
+// whose DNS record is just "169.254.169.254". Checks every resolved address,
+// not just the first, since a hostname can resolve to multiple.
+//
+// REMAINING KNOWN LIMITATION: this doesn't pin the connection to the address
+// it just validated — a true DNS-rebinding attack (the resolver returns a
+// public IP for this lookup, then a private one moments later for the fetch()
+// call itself) isn't caught. Closing that fully would mean resolving once and
+// connecting to that exact IP via a custom fetch dispatcher, which risks
+// breaking legitimate job postings served behind IP-based/SNI-sensitive CDNs
+// — a real rebinding attack also requires the attacker to control DNS with a
+// very short TTL and precise timing, a meaningfully harder bar than "point a
+// domain at an internal IP", which is what this closes.
+async function isBlockedHostnameByDns(hostname: string): Promise<boolean> {
+  try {
+    const results = await dnsLookup(hostname, { all: true, verbatim: true });
+    return results.some(({ address }) => isPrivateIPv4(address) || isPrivateIPv6(address));
+  } catch {
+    // Couldn't resolve at all — let the actual fetch() below fail naturally
+    // with its own "couldn't reach that URL" message, not a false block.
+    return false;
+  }
+}
+
+async function validateUrl(url: URL): Promise<string | null> {
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     return "Only http/https URLs are supported.";
   }
   if (isBlockedHostname(url.hostname)) {
+    return "That URL points at a location we can't fetch.";
+  }
+  if (await isBlockedHostnameByDns(url.hostname)) {
     return "That URL points at a location we can't fetch.";
   }
   return null;
@@ -108,7 +135,7 @@ export async function fetchJobPostingText(input: string): Promise<JobPostingFetc
   }
 
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-    const blockReason = validateUrl(url);
+    const blockReason = await validateUrl(url);
     if (blockReason) return { ok: false, reason: blockReason };
 
     const controller = new AbortController();

@@ -56,7 +56,7 @@ export async function GET(
       }
       throw err;
     }
-    await recordPaidDownload(supabase, user.id, row.id, template);
+    await recordPaidDownload(user.id, row.id, template);
   }
 
   const buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} />);

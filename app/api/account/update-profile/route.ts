@@ -28,6 +28,10 @@ export async function PATCH(req: NextRequest) {
     if (full_name === "") {
       return NextResponse.json({ error: "Il nome non può essere vuoto." }, { status: 400 });
     }
+    const MAX_LEN = 200;
+    if ((full_name?.length ?? 0) > MAX_LEN || (title?.length ?? 0) > MAX_LEN || (location?.length ?? 0) > MAX_LEN) {
+      return NextResponse.json({ error: `Ogni campo può contenere al massimo ${MAX_LEN} caratteri.` }, { status: 400 });
+    }
 
     const row = await getOwnedProfileRow(supabase, user.id, "primary");
     if (!row) {
