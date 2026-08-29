@@ -37,6 +37,14 @@ function getByPath(profile: ProfileSchema, path: string): unknown {
 
 export default function CvChat({ profile, credits }: CvChatProps) {
   const router = useRouter();
+  // Snapshotted once on mount, deliberately never updated from the `profile`
+  // prop again — the "done" screen's before/after diff compares against
+  // this. Without the snapshot, router.refresh() (called right after a
+  // successful finish, to update the rest of the account page) re-fetches
+  // the server data and hands this component the ALREADY-rewritten profile
+  // as its new `profile` prop, which made "before" and "after" the same
+  // value and silently emptied every diff card.
+  const [originalProfile] = useState(profile);
   const [phase, setPhase] = useState<Phase>("intro");
   const [transcript, setTranscript] = useState<ChatTurn[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<{ question: string; targetField: string } | null>(null);
@@ -295,7 +303,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
           <p className="text-sm font-semibold text-center" style={{ color: "var(--primary)" }}>CV aggiornato ✓</p>
           <div className="space-y-3">
             {transcript.map((turn, i) => {
-              const before = getByPath(profile, turn.targetField);
+              const before = getByPath(originalProfile, turn.targetField);
               const after = getByPath(finalProfile, turn.targetField);
               const beforeText = Array.isArray(before) ? before.join(" · ") : String(before ?? "");
               const afterText = Array.isArray(after) ? after.join(" · ") : String(after ?? "");

@@ -52,23 +52,37 @@ const TurnstileWidget = forwardRef<TurnstileHandle, {
     if (!scriptLoaded || !containerRef.current || !window.turnstile) return;
 
     setStatus("loading");
-    const id = window.turnstile.render(containerRef.current, {
-      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-      theme: "auto",
-      language,
-      callback: (token: string) => {
-        setStatus("ready");
-        onVerify(token);
-      },
-      "expired-callback": () => {
-        setStatus("loading");
-        onVerify(null);
-      },
-      "error-callback": () => {
-        setStatus("stuck");
-        onVerify(null);
-      },
-    });
+
+    // A missing site key (env var not set in this deployment/environment)
+    // makes Cloudflare's own render() throw synchronously and uncaught,
+    // which previously took the whole page down with it instead of just
+    // this widget failing — wrapped defensively so a config gap degrades to
+    // "verification unavailable" instead of a hard crash.
+    let id: string;
+    try {
+      id = window.turnstile.render(containerRef.current, {
+        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+        theme: "auto",
+        language,
+        callback: (token: string) => {
+          setStatus("ready");
+          onVerify(token);
+        },
+        "expired-callback": () => {
+          setStatus("loading");
+          onVerify(null);
+        },
+        "error-callback": () => {
+          setStatus("stuck");
+          onVerify(null);
+        },
+      });
+    } catch (err) {
+      console.error("[TurnstileWidget] render() failed", err);
+      setStatus("stuck");
+      onVerify(null);
+      return;
+    }
     widgetId.current = id;
 
     const timeout = setTimeout(() => {
