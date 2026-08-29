@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles, Send, SkipForward } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
+import { useLanguage } from "@/components/language-provider";
 
 interface ChatTurn {
   question: string;
@@ -18,8 +19,6 @@ interface CvChatProps {
   profile: ProfileSchema;
   credits: number;
 }
-
-const SKIP_ANSWER = "Non lo so / preferisco non rispondere";
 
 // Resolves a target_field path like "experience[1].description[2]" or
 // "personal_info.bio" against a real profile object — used only to render
@@ -37,6 +36,15 @@ function getByPath(profile: ProfileSchema, path: string): unknown {
 
 export default function CvChat({ profile, credits }: CvChatProps) {
   const router = useRouter();
+  const { lang } = useLanguage();
+  const tr = (it: string, en: string) => (lang === "en" ? en : it);
+  // Sent as the literal "answer" text when the user skips a question — kept
+  // in whichever language the UI itself is in, since it ends up in the
+  // transcript alongside the user's own real answers.
+  const skipAnswer = tr("Non lo so / preferisco non rispondere", "I don't know / I'd rather not answer");
+  const genericError = tr("Errore, riprova.", "Something went wrong, try again.");
+  const networkError = tr("Errore di rete, riprova.", "Network error, try again.");
+
   // Snapshotted once on mount, deliberately never updated from the `profile`
   // prop again — the "done" screen's before/after diff compares against
   // this. Without the snapshot, router.refresh() (called right after a
@@ -64,7 +72,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error ?? "Errore, riprova.");
+        setErrorMsg(data.error ?? genericError);
         setPhase("error");
         return;
       }
@@ -76,7 +84,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       setCurrentQuestion({ question: data.question, targetField: data.targetField });
       setPhase("asking");
     } catch {
-      setErrorMsg("Errore di rete, riprova.");
+      setErrorMsg(networkError);
       setPhase("error");
     }
   }
@@ -104,7 +112,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       const res = await fetch("/api/cv-chat/finish", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error ?? "Errore, riprova.");
+        setErrorMsg(data.error ?? genericError);
         setPhase("error");
         return;
       }
@@ -112,7 +120,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       setPhase("done");
       router.refresh();
     } catch {
-      setErrorMsg("Errore di rete, riprova.");
+      setErrorMsg(networkError);
       setPhase("error");
     }
   }
@@ -136,9 +144,12 @@ export default function CvChat({ profile, credits }: CvChatProps) {
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
           <div className="space-y-2 max-w-md mx-auto">
-            <h3 className="font-heading text-lg font-bold">Rifinisci il tuo CV con l'AI</h3>
+            <h3 className="font-heading text-lg font-bold">{tr("Rifinisci il tuo CV con l'AI", "Refine your CV with AI")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Ti faccio qualche domanda mirata (massimo 6) per far emergere numeri e risultati concreti che mancano nel tuo CV — solo quello che mi dici tu, mai inventato. Alla fine riscrivo i punti coinvolti per 1 credito, speso solo se confermi.
+              {tr(
+                "Ti faccio qualche domanda mirata (massimo 6) per far emergere numeri e risultati concreti che mancano nel tuo CV — solo quello che mi dici tu, mai inventato. Alla fine riscrivo i punti coinvolti per 1 credito, speso solo se confermi.",
+                "I'll ask a few targeted questions (up to 6) to surface concrete numbers and results missing from your CV — only what you tell me, never invented. At the end I rewrite the relevant parts for 1 credit, spent only if you confirm."
+              )}
             </p>
           </div>
           <button
@@ -148,7 +159,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
             style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
           >
             <Sparkles className="w-4 h-4" />
-            Inizia
+            {tr("Inizia", "Start")}
           </button>
         </div>
       )}
@@ -178,7 +189,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
             )}
             {phase === "loading" && (
               <div className="flex justify-start">
-                <p className="text-xs text-muted-foreground/50 px-4 py-2">Sto pensando alla prossima domanda…</p>
+                <p className="text-xs text-muted-foreground/50 px-4 py-2">{tr("Sto pensando alla prossima domanda…", "Thinking of the next question…")}</p>
               </div>
             )}
           </div>
@@ -196,14 +207,14 @@ export default function CvChat({ profile, credits }: CvChatProps) {
                   type="text"
                   value={answerInput}
                   onChange={(e) => setAnswerInput(e.target.value)}
-                  placeholder="Scrivi la tua risposta…"
+                  placeholder={tr("Scrivi la tua risposta…", "Write your answer…")}
                   autoFocus
                   className="flex-1 px-4 py-2.5 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200"
                 />
                 <button
                   type="submit"
                   disabled={!answerInput.trim()}
-                  aria-label="Invia risposta"
+                  aria-label={tr("Invia risposta", "Send answer")}
                   className="p-2.5 rounded-xl disabled:opacity-40 transition-opacity"
                   style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
@@ -213,11 +224,11 @@ export default function CvChat({ profile, credits }: CvChatProps) {
               <div className="flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={() => submitAnswer(SKIP_ANSWER)}
+                  onClick={() => submitAnswer(skipAnswer)}
                   className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <SkipForward className="w-3.5 h-3.5" />
-                  Non lo so / salta
+                  {tr("Non lo so / salta", "I don't know / skip")}
                 </button>
                 {answeredCount > 0 && (
                   <button
@@ -226,7 +237,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
                     className="text-xs font-semibold"
                     style={{ color: "var(--primary)" }}
                   >
-                    Ho finito, applica le risposte →
+                    {tr("Ho finito, applica le risposte →", "I'm done, apply the answers →")}
                   </button>
                 )}
               </div>
@@ -259,8 +270,8 @@ export default function CvChat({ profile, credits }: CvChatProps) {
               <div className="text-center space-y-3 pt-2 border-t border-foreground/10">
                 <p className="text-sm text-muted-foreground">
                   {answeredCount === 1
-                    ? "Ho una risposta da applicare al tuo CV."
-                    : `Ho ${answeredCount} risposte da applicare al tuo CV.`}
+                    ? tr("Ho una risposta da applicare al tuo CV.", "I have one answer to apply to your CV.")
+                    : tr(`Ho ${answeredCount} risposte da applicare al tuo CV.`, `I have ${answeredCount} answers to apply to your CV.`)}
                 </p>
                 <button
                   type="button"
@@ -269,14 +280,17 @@ export default function CvChat({ profile, credits }: CvChatProps) {
                   style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
                   <Sparkles className="w-4 h-4" />
-                  Conferma e riscrivi il CV
+                  {tr("Conferma e riscrivi il CV", "Confirm and rewrite my CV")}
                 </button>
               </div>
             </>
           ) : (
             <div className="text-center space-y-3 py-4">
               <p className="text-sm text-muted-foreground">
-                Il tuo CV sembra già ben quantificato — non ho trovato altro da chiederti.
+                {tr(
+                  "Il tuo CV sembra già ben quantificato — non ho trovato altro da chiederti.",
+                  "Your CV already looks well quantified — I couldn't find anything else worth asking."
+                )}
               </p>
               <button
                 type="button"
@@ -284,7 +298,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
                 className="text-xs font-semibold"
                 style={{ color: "var(--primary)" }}
               >
-                ← Torna indietro
+                {tr("← Torna indietro", "← Go back")}
               </button>
             </div>
           )}
@@ -294,13 +308,13 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       {phase === "finishing" && (
         <div className="text-center py-8 space-y-3">
           <div className="w-8 h-8 rounded-full border-2 border-foreground/15 border-t-primary animate-spin mx-auto" />
-          <p className="text-sm text-muted-foreground">Sto riscrivendo il tuo CV…</p>
+          <p className="text-sm text-muted-foreground">{tr("Sto riscrivendo il tuo CV…", "Rewriting your CV…")}</p>
         </div>
       )}
 
       {phase === "done" && finalProfile && (
         <div className="space-y-5">
-          <p className="text-sm font-semibold text-center" style={{ color: "var(--primary)" }}>CV aggiornato ✓</p>
+          <p className="text-sm font-semibold text-center" style={{ color: "var(--primary)" }}>{tr("CV aggiornato ✓", "CV updated ✓")}</p>
           <div className="space-y-3">
             {transcript.map((turn, i) => {
               const before = getByPath(originalProfile, turn.targetField);
@@ -310,7 +324,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
               if (beforeText === afterText) return null;
               return (
                 <div key={i} className="rounded-xl border border-foreground/10 p-3 space-y-1.5 text-xs">
-                  <p className="text-muted-foreground/60 line-through decoration-muted-foreground/30">{beforeText || "(vuoto)"}</p>
+                  <p className="text-muted-foreground/60 line-through decoration-muted-foreground/30">{beforeText || tr("(vuoto)", "(empty)")}</p>
                   <p className="font-medium">{afterText}</p>
                 </div>
               );
@@ -323,7 +337,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
               className="text-sm font-semibold"
               style={{ color: "var(--primary)" }}
             >
-              Fatto
+              {tr("Fatto", "Done")}
             </button>
           </div>
         </div>
@@ -338,14 +352,14 @@ export default function CvChat({ profile, credits }: CvChatProps) {
             className="text-xs font-semibold"
             style={{ color: "var(--primary)" }}
           >
-            ← Ricomincia
+            {tr("← Ricomincia", "← Start over")}
           </button>
         </div>
       )}
 
       {confirming && (
         <CreditConfirmModal
-          actionLabel="Riscrivere il CV con queste risposte?"
+          actionLabel={tr("Riscrivere il CV con queste risposte?", "Rewrite the CV with these answers?")}
           cost={1}
           balance={credits}
           onCancel={() => setConfirming(false)}
