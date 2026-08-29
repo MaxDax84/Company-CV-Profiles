@@ -16,6 +16,7 @@ interface ChatTurn {
 type Phase = "intro" | "asking" | "loading" | "ready" | "finishing" | "done" | "error";
 
 interface CvChatProps {
+  slug: string;
   profile: ProfileSchema;
   credits: number;
 }
@@ -34,7 +35,7 @@ function getByPath(profile: ProfileSchema, path: string): unknown {
   return cur;
 }
 
-export default function CvChat({ profile, credits }: CvChatProps) {
+export default function CvChat({ slug, profile, credits }: CvChatProps) {
   const router = useRouter();
   const { lang } = useLanguage();
   const tr = (it: string, en: string) => (lang === "en" ? en : it);
@@ -68,7 +69,7 @@ export default function CvChat({ profile, credits }: CvChatProps) {
       const res = await fetch("/api/cv-chat/next-question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ slug, ...body }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -109,7 +110,11 @@ export default function CvChat({ profile, credits }: CvChatProps) {
     setPhase("finishing");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/cv-chat/finish", { method: "POST" });
+      const res = await fetch("/api/cv-chat/finish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug }),
+      });
       const data = await res.json();
       if (!res.ok) {
         setErrorMsg(data.error ?? genericError);

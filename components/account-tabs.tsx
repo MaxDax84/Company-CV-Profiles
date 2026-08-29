@@ -74,7 +74,6 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 const TABS = [
   { id: "dashboard", labelIt: "Riepilogo", labelEn: "Overview", titleIt: "Dashboard", titleEn: "Dashboard", icon: LayoutDashboard },
   { id: "cv", labelIt: "I miei CV", labelEn: "My CVs", titleIt: "I miei CV", titleEn: "My CVs", icon: FileText },
-  { id: "chat", labelIt: "Assistente AI", labelEn: "AI Assistant", titleIt: "Assistente AI", titleEn: "AI Assistant", icon: Sparkles },
   { id: "adapted", labelIt: "CV Adattati", labelEn: "Tailored CVs", titleIt: "CV adattati alle offerte", titleEn: "CVs tailored to job postings", icon: Target },
   { id: "downloads", labelIt: "Download", labelEn: "Downloads", titleIt: "Download", titleEn: "Downloads", icon: Download },
   { id: "credits", labelIt: "Crediti", labelEn: "Credits", titleIt: "Crediti", titleEn: "Credits", icon: Wallet },
@@ -124,6 +123,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
   const tr = (it: string, en: string) => (lang === "en" ? en : it);
   const dateLocale = lang === "en" ? "en-US" : "it-IT";
   const [limitModalOpen, setLimitModalOpen] = useState(false);
+  const [chatOpenFor, setChatOpenFor] = useState<string | null>(null);
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([
@@ -333,7 +333,20 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setChatOpenFor(chatOpenFor === row.id ? null : row.id)}
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Assistente AI", "AI Assistant")}</span>
+                      </button>
                     </div>
+                    {chatOpenFor === row.id && (
+                      <div className="pt-2 border-t border-foreground/10">
+                        <CvChat slug={row.slug} profile={row.data} credits={credits} />
+                      </div>
+                    )}
                     <div className="pt-2 border-t border-foreground/10 space-y-1.5">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
                         {tr(
@@ -389,27 +402,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             )}
           </div>
 
-        </div>
-      )}
-
-      {/* ── Tab: Assistente AI ────────────────────────────────────────── */}
-      {tab === "chat" && (
-        <div className="space-y-3">
-          <SectionTitle>{tr("Assistente AI", "AI Assistant")}</SectionTitle>
-          {profileRow ? (
-            <CvChat profile={profileRow.data} credits={credits} />
-          ) : (
-            <div className="glass-card rounded-2xl p-6 text-center space-y-3">
-              <p className="text-sm text-muted-foreground">{tr("Carica prima un CV per usare l'assistente AI.", "Upload a CV first to use the AI assistant.")}</p>
-              <a
-                href="/generate"
-                className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
-                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
-              >
-                {tr("Carica il tuo CV →", "Upload your CV →")}
-              </a>
-            </div>
-          )}
         </div>
       )}
 

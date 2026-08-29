@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getOwnedProfileRow } from "@/lib/profile-store";
+import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { getActiveChatSession, saveChatTurn } from "@/lib/cv-chat-store";
 import { getNextQuestion, MAX_QUESTIONS, type ChatTurn } from "@/lib/cv-chat-question";
 
@@ -25,12 +25,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
     }
 
-    const row = await getOwnedProfileRow(supabase, user.id, "primary");
-    if (!row) {
-      return NextResponse.json({ error: "No primary profile." }, { status: 404 });
+    const body = await req.json().catch(() => null);
+    const slug = typeof body?.slug === "string" ? body.slug : undefined;
+    if (!slug) {
+      return NextResponse.json({ error: "Missing slug." }, { status: 400 });
     }
 
-    const body = await req.json().catch(() => null);
+    // Refines one specific CV the caller picked (see components/account-tabs.tsx
+    // — a button per uploaded CV, not an implicit "most recent" guess). Only
+    // ever a primary (uploaded) CV, never a tailored/translated one — a
+    // crafted slug pointing at those is treated as not found, same pattern
+    // as app/api/tailor-resume/route.ts's own source-row guard.
+    let row = await getOwnedProfileBySlug(supabase, user.id, slug);
+    if (row && row.kind !== "primary") {
+      row = null;
+    }
+    if (!row) {
+      return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+    }
+
     const answer = typeof body?.answer === "string" ? body.answer.trim() : undefined;
     const pendingQuestion = typeof body?.pendingQuestion === "string" ? body.pendingQuestion : undefined;
     const pendingTargetField = typeof body?.pendingTargetField === "string" ? body.pendingTargetField : undefined;

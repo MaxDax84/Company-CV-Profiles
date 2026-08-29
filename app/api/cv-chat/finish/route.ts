@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getOwnedProfileRow } from "@/lib/profile-store";
+import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
 import { getActiveChatSession, markChatSessionCompleted } from "@/lib/cv-chat-store";
 import { reformulateProfileFromChat } from "@/lib/cv-chat-reformulate";
@@ -26,9 +26,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
     }
 
-    const row = await getOwnedProfileRow(supabase, user.id, "primary");
+    const body = await req.json().catch(() => null);
+    const slug = typeof body?.slug === "string" ? body.slug : undefined;
+    if (!slug) {
+      return NextResponse.json({ error: "Missing slug." }, { status: 400 });
+    }
+
+    // Same slug-scoped, primary-only guard as next-question/route.ts.
+    let row = await getOwnedProfileBySlug(supabase, user.id, slug);
+    if (row && row.kind !== "primary") {
+      row = null;
+    }
     if (!row) {
-      return NextResponse.json({ error: "No primary profile." }, { status: 404 });
+      return NextResponse.json({ error: "Profile not found." }, { status: 404 });
     }
 
     const session = await getActiveChatSession(supabase, row.id);
