@@ -447,8 +447,6 @@ export const translations = {
             'Scarica il PDF ottimizzato per i sistemi ATS scegliendo tra 3 template, oppure condividi direttamente la tua pagina web in ogni candidatura.',
         },
       ],
-      wipBadge: 'Work in progress',
-      wipNote: 'Presto potrai anche dialogare con l\'AI: ti farà domande mirate per aggiungere numeri e risultati concreti alle esperienze più rilevanti — ad esempio "di quanto sono aumentate le revenue nell\'ultimo anno fiscale? 15%? 30%?" — così il tuo CV diventa più preciso, senza dover partire da un annuncio specifico.',
     },
     about: {
       sectionLabel: 'Chi siamo',

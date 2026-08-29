@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   UploadCloud, Target, Download, ExternalLink, Mail, X,
-  LayoutDashboard, FileText, Wallet,
+  LayoutDashboard, FileText, Wallet, Sparkles,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
@@ -18,6 +18,7 @@ import TranslateCoverLetterButton from "@/components/translate-cover-letter-butt
 import EditableSlug from "@/components/editable-slug";
 import ProfileVisibilityToggle from "@/components/profile-visibility-toggle";
 import { DeleteProfileButton } from "@/components/account-actions";
+import CvChat from "@/components/cv-chat";
 import { SUPPORT_EMAIL } from "@/lib/contact";
 import { cvLabel } from "@/lib/download-filename";
 import { useLanguage } from "@/components/language-provider";
@@ -38,6 +39,7 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   cover_letter: { it: "Lettera di presentazione", en: "Cover letter" },
   translate: { it: "Traduzione CV", en: "CV translation" },
   translate_cover_letter: { it: "Traduzione lettera di presentazione", en: "Cover letter translation" },
+  chat_refine: { it: "Rifinitura CV via chat AI", en: "CV refinement via AI chat" },
   manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 
@@ -72,6 +74,7 @@ type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: s
 const TABS = [
   { id: "dashboard", labelIt: "Riepilogo", labelEn: "Overview", titleIt: "Dashboard", titleEn: "Dashboard", icon: LayoutDashboard },
   { id: "cv", labelIt: "I miei CV", labelEn: "My CVs", titleIt: "I miei CV", titleEn: "My CVs", icon: FileText },
+  { id: "chat", labelIt: "Assistente AI", labelEn: "AI Assistant", titleIt: "Assistente AI", titleEn: "AI Assistant", icon: Sparkles },
   { id: "adapted", labelIt: "CV Adattati", labelEn: "Tailored CVs", titleIt: "CV adattati alle offerte", titleEn: "CVs tailored to job postings", icon: Target },
   { id: "downloads", labelIt: "Download", labelEn: "Downloads", titleIt: "Download", titleEn: "Downloads", icon: Download },
   { id: "credits", labelIt: "Crediti", labelEn: "Credits", titleIt: "Crediti", titleEn: "Credits", icon: Wallet },
@@ -386,6 +389,27 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             )}
           </div>
 
+        </div>
+      )}
+
+      {/* ── Tab: Assistente AI ────────────────────────────────────────── */}
+      {tab === "chat" && (
+        <div className="space-y-3">
+          <SectionTitle>{tr("Assistente AI", "AI Assistant")}</SectionTitle>
+          {profileRow ? (
+            <CvChat profile={profileRow.data} credits={credits} />
+          ) : (
+            <div className="glass-card rounded-2xl p-6 text-center space-y-3">
+              <p className="text-sm text-muted-foreground">{tr("Carica prima un CV per usare l'assistente AI.", "Upload a CV first to use the AI assistant.")}</p>
+              <a
+                href="/generate"
+                className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
+                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+              >
+                {tr("Carica il tuo CV →", "Upload your CV →")}
+              </a>
+            </div>
+          )}
         </div>
       )}
 
