@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual, randomBytes } from "crypto";
+import { timingSafeEqual, randomBytes } from "crypto";
 import type { NextRequest } from "next/server";
 import { kv } from "./kv";
 

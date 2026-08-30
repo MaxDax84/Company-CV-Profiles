@@ -1,6 +1,13 @@
+import { timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
 import type { ProfileSchema } from "@/lib/schema";
+
+function secretMatches(candidate: string, expected: string): boolean {
+  const a = Buffer.from(candidate);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 const DEMO_PROFILE: ProfileSchema = {
   personal_info: {
@@ -123,7 +130,7 @@ const DEMO_DELTA: ProfileSchema = {
 // hand on the rare occasion the demo content changes.
 export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
-  if (!process.env.SEED_DEMO_SECRET || secret !== process.env.SEED_DEMO_SECRET) {
+  if (!process.env.SEED_DEMO_SECRET || !secret || !secretMatches(secret, process.env.SEED_DEMO_SECRET)) {
     return NextResponse.json({ error: "Not found." }, { status: 404 });
   }
 

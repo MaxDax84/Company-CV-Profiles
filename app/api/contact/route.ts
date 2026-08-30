@@ -14,6 +14,15 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#039;')
 }
 
+// A raw CR/LF in a value that ends up inside an email header (only `subject`
+// here — `text`/`html` are body content, not headers) lets a submitted form
+// field inject extra header lines into the outgoing message. Strips them
+// rather than rejecting the request, since a pasted name with a stray
+// newline is a much more common, innocent case than an actual attack.
+function stripHeaderInjection(text: string): string {
+  return text.replace(/[\r\n]+/g, ' ').trim()
+}
+
 export async function POST(req: NextRequest) {
   const clientIp = getClientIp(req)
   const { success, reset } = await contactRatelimit.limit(clientIp)
@@ -49,6 +58,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
   }
 
+  if (name.length > 200 || message.length > 10_000 || existingSite.length > 300) {
+    return NextResponse.json({ error: 'One of the fields is too long.' }, { status: 400 })
+  }
+
   if (attachment && attachment.size > MAX_FILE_SIZE) {
     return NextResponse.json({ error: 'File exceeds 5MB limit.' }, { status: 400 })
   }
@@ -74,7 +87,7 @@ export async function POST(req: NextRequest) {
       from: `"Jobli Contact" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: email,
-      subject: `New enquiry from ${escapeHtml(name)} — Jobli`,
+      subject: `New enquiry from ${escapeHtml(stripHeaderInjection(name))} — Jobli`,
       text: `Name: ${name}\nEmail: ${email}\n${existingSite ? `Existing site: ${existingSite}\n` : ''}\nMessage:\n${message}${attachment ? `\n\nAttachment: ${attachment.name}` : ''}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #0a0b14; color: #f0f0f5; padding: 32px; border-radius: 12px; border: 1px solid #2a2d3e;">
