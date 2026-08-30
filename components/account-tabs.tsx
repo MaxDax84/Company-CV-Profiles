@@ -312,6 +312,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         <ExternalLink className="w-4 h-4" />
                         <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Apri profilo", "Open profile")}</span>
                       </a>
+                      <button
+                        type="button"
+                        onClick={() => setChatOpenFor(chatOpenFor === row.id ? null : row.id)}
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Assistente AI", "AI Assistant")}</span>
+                      </button>
                       <a
                         href={`/tailor?profile=${row.slug}`}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
@@ -333,14 +341,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setChatOpenFor(chatOpenFor === row.id ? null : row.id)}
-                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      >
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Assistente AI", "AI Assistant")}</span>
-                      </button>
                     </div>
                     {chatOpenFor === row.id && (
                       <div className="pt-2 border-t border-foreground/10">
