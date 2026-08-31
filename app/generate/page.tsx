@@ -351,7 +351,7 @@ export default function GeneratePage() {
                     <p>{lang === "en" ? "Create a free account to:" : "Crea un account gratuito per:"}</p>
                     <ul className="space-y-1 pl-4">
                       <li className="list-disc">{lang === "en" ? "Save this improved profile forever" : "Salvare questo profilo migliorato per sempre"}</li>
-                      <li className="list-disc">{lang === "en" ? "Download the PDF choosing your preferred template (1 free credit included)" : "Scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (1 credito omaggio incluso)"}</li>
+                      <li className="list-disc">{lang === "en" ? "Download the PDF with your preferred template (3 free credits included)" : "Scaricare il PDF scegliendo il template che preferisci tra quelli disponibili (3 crediti omaggio inclusi)"}</li>
                       <li className="list-disc">{lang === "en" ? "Tailor the CV to a specific job posting" : "Adattare il CV a un annuncio di lavoro specifico"}</li>
                     </ul>
                   </div>

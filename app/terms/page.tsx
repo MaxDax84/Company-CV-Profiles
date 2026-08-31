@@ -58,7 +58,7 @@ export default function TermsPage() {
                 <p>
                   L&apos;utilizzo di alcune funzionalità (salvataggio permanente del CV, download del
                   PDF o di un documento Word) richiede la creazione di un account con email e
-                  password. Ogni nuovo account riceve un credito gratuito; il download del PDF, il
+                  password. Ogni nuovo account riceve 3 crediti gratuiti; il download del PDF, il
                   download del documento Word, la generazione di una lettera di presentazione e la
                   traduzione consumano un credito ciascuno. L&apos;adattamento del CV a un annuncio di
                   lavoro è invece sempre gratuito. L&apos;utente è responsabile della riservatezza

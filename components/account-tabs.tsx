@@ -3,10 +3,10 @@
 import { useState } from "react";
 import {
   UploadCloud, Target, Download, ExternalLink, Mail, X,
-  LayoutDashboard, FileText, Wallet, Sparkles,
+  LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
-import type { CreditLedgerEntry } from "@/lib/credits";
+import { CREDITS_REQUEST_COOLDOWN_HOURS, type CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
@@ -63,6 +63,30 @@ function displayedScore(profile: ProfileSchema): number {
   return floorScoreAgainst(computeCvScore(profile), profile.metadata.score_before).total;
 }
 
+// UX audit finding: the dashboard listed available actions but never
+// pointed at which one to try next — same static list whether someone just
+// signed up or has already tried everything. A cheap fix using only data
+// already loaded here: walk through the funnel in the order that actually
+// matters (a CV worth improving beats a CV worth adapting) and surface the
+// first thing not yet done. Returns null once there's genuinely nothing
+// left to suggest, rather than forcing a suggestion that isn't useful.
+type NextAction = "improve-score" | "try-tailor" | "try-download" | "try-cover-letter";
+
+function getNextBestAction(
+  primaryProfiles: ProfileRow[],
+  tailoredProfiles: ProfileRow[],
+  coverLetters: GeneratedCoverLetterEntry[],
+  paidDownloads: PaidDownloadEntry[]
+): NextAction | null {
+  if (primaryProfiles.length === 0) return null;
+  const lowestScore = Math.min(...primaryProfiles.map(row => displayedScore(row.data)));
+  if (lowestScore < 70) return "improve-score";
+  if (tailoredProfiles.length === 0) return "try-tailor";
+  if (paidDownloads.length === 0) return "try-download";
+  if (coverLetters.length === 0) return "try-cover-letter";
+  return null;
+}
+
 type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string; is_public?: boolean };
 
 // Commercial sections — the ones used often — stay as visible tabs. Account
@@ -100,6 +124,7 @@ interface AccountTabsProps {
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
   coverLetters: GeneratedCoverLetterEntry[];
+  creditsLastRequestedAt: string | null;
   // Owned by AccountShell — account settings are now their own page (see
   // app/account/settings/page.tsx), reached via the avatar dropdown in the
   // global nav, so this component only needs the commercial tab itself.
@@ -115,7 +140,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, tab, setTab }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt, tab, setTab }: AccountTabsProps) {
   const { lang } = useLanguage();
   // Compact helper for this file's many one-off strings — full ternaries
   // everywhere else in the codebase, but this component alone has ~60+
@@ -124,6 +149,27 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
   const dateLocale = lang === "en" ? "en-US" : "it-IT";
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const [chatOpenFor, setChatOpenFor] = useState<string | null>(null);
+  const [creditsRequestedAt, setCreditsRequestedAt] = useState(creditsLastRequestedAt);
+  const [requestingCredits, setRequestingCredits] = useState(false);
+  const [requestCreditsError, setRequestCreditsError] = useState<string | null>(null);
+  const creditsRequestPending = creditsRequestedAt
+    ? (Date.now() - new Date(creditsRequestedAt).getTime()) / (1000 * 60 * 60) < CREDITS_REQUEST_COOLDOWN_HOURS
+    : false;
+
+  async function handleRequestCredits() {
+    setRequestingCredits(true);
+    setRequestCreditsError(null);
+    try {
+      const res = await fetch("/api/account/request-credits", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? tr("Errore, riprova.", "Something went wrong, try again."));
+      setCreditsRequestedAt(data.requestedAt as string);
+    } catch (err) {
+      setRequestCreditsError(err instanceof Error ? err.message : tr("Errore, riprova.", "Something went wrong, try again."));
+    } finally {
+      setRequestingCredits(false);
+    }
+  }
   const profileRow = primaryProfiles[0] ?? null;
   const usedTotal = ledger.filter(e => e.amount < 0).reduce((sum, e) => sum + Math.abs(e.amount), 0);
   const profilesById = new Map([
@@ -180,6 +226,59 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
               </a>
             )}
           </div>
+
+          {(() => {
+            const action = getNextBestAction(primaryProfiles, tailoredProfiles, coverLetters, paidDownloads);
+            if (!action) return null;
+            const COPY: Record<NextAction, { title: string; body: string; ctaLabel: string; onClick: () => void }> = {
+              "improve-score": {
+                title: tr("Il tuo CV può migliorare ancora", "Your CV can still improve"),
+                body: tr("Il punteggio di almeno uno dei tuoi CV è sotto i 70/100 — l'Assistente AI ti fa le domande giuste per alzarlo.", "At least one of your CVs is scoring under 70/100 — the AI Assistant asks the right questions to raise it."),
+                ctaLabel: tr("Vai ai miei CV →", "Go to my CVs →"),
+                onClick: () => setTab("cv"),
+              },
+              "try-tailor": {
+                title: tr("Prova ad adattare il tuo CV a un annuncio", "Try tailoring your CV to a job posting"),
+                body: tr("È sempre gratis: paghi solo se poi scarichi il risultato.", "It's always free — you only pay if you actually download the result."),
+                ctaLabel: tr("Adatta a un annuncio →", "Tailor to a job posting →"),
+                onClick: () => setTab("cv"),
+              },
+              "try-download": {
+                title: tr("Scarica il tuo CV ottimizzato", "Download your optimized CV"),
+                body: tr("Hai un CV pronto ma non l'hai ancora scaricato in PDF o Word.", "You have a ready CV but haven't downloaded it as a PDF or Word file yet."),
+                ctaLabel: tr("Vai ai miei CV →", "Go to my CVs →"),
+                onClick: () => setTab("cv"),
+              },
+              "try-cover-letter": {
+                title: tr("Genera una lettera di presentazione", "Generate a cover letter"),
+                body: tr("Hai già adattato o scaricato un CV — una lettera su misura completa la candidatura.", "You've already tailored or downloaded a CV — a matching cover letter completes the application."),
+                ctaLabel: tr("Vai ai miei CV →", "Go to my CVs →"),
+                onClick: () => setTab("cv"),
+              },
+            };
+            const c = COPY[action];
+            return (
+              <div className="glass-card rounded-2xl p-6 flex items-start gap-4 border" style={{ borderColor: "var(--primary)", background: "color-mix(in srgb, var(--primary) 6%, transparent)" }}>
+                <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/15 flex items-center justify-center">
+                  <Lightbulb className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                    {tr("Prossimo passo consigliato", "Suggested next step")}
+                  </p>
+                  <h3 className="font-semibold text-sm mb-1">{c.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{c.body}</p>
+                  <button
+                    onClick={c.onClick}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    {c.ctaLabel} <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -592,17 +691,39 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             <div className="glass-card rounded-2xl p-6 space-y-3">
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {tr(
-                  "L'acquisto diretto di pacchetti di crediti o di un piano mensile è in arrivo. Per ora, se ti servono altri crediti, scrivici e ti aiutiamo noi a ricaricare il tuo account.",
-                  "Buying credit packs or a monthly plan directly is coming soon. For now, if you need more credits, just contact us and we'll top up your account."
+                  "L'acquisto diretto di pacchetti di crediti o di un piano mensile è in arrivo. Per ora, puoi richiedere 10 crediti extra con un click: verifichiamo la richiesta a mano e te li accreditiamo.",
+                  "Buying credit packs or a monthly plan directly is coming soon. For now, you can request 10 extra credits with one click — we review it by hand and add them to your balance."
                 )}
               </p>
-              <a
-                href={`mailto:${SUPPORT_EMAIL}`}
-                className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
-              >
-                {tr("Scrivici per ricaricare", "Contact us to recharge")}
-              </a>
+              {creditsRequestPending ? (
+                <p className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
+                  {tr(
+                    "Richiesta inviata — la verifichiamo a breve e ti accreditiamo i crediti.",
+                    "Request sent — we'll review it shortly and add the credits."
+                  )}
+                </p>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleRequestCredits}
+                    disabled={requestingCredits}
+                    className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-60"
+                    style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                  >
+                    {requestingCredits
+                      ? tr("Invio richiesta…", "Sending request…")
+                      : tr("Richiedi 10 crediti extra", "Request 10 extra credits")}
+                  </button>
+                  {requestCreditsError && (
+                    <p className="text-xs text-red-500">{requestCreditsError}</p>
+                  )}
+                </>
+              )}
+              <p className="text-xs text-muted-foreground/60">
+                {tr("Serve altro? Scrivici a ", "Need something else? Email us at ")}
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="underline hover:text-foreground">{SUPPORT_EMAIL}</a>.
+              </p>
             </div>
           </div>
 

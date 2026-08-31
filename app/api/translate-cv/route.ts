@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug, saveTranslatedProfile } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
+import { CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
+import { spendCredits } from "@/lib/credits-server";
 import { translateResume } from "@/lib/translate-resume";
 import { recordPaidDownload } from "@/lib/paid-downloads";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";

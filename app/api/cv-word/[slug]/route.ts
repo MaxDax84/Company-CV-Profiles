@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { spendCredits } from "@/lib/credits-server";
 import { hasPaidDownload, recordPaidDownload } from "@/lib/paid-downloads";
 import { buildCvDocxBuffer } from "@/lib/word-cv-document";
 import { buildCvWordFilename } from "@/lib/download-filename";

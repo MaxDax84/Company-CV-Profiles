@@ -6,7 +6,7 @@ import AccountShell from "@/components/account-shell";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles, getOwnedTranslatedProfiles } from "@/lib/profile-store";
-import { getCreditBalance, getCreditLedger, getAccountCode } from "@/lib/credits";
+import { getCreditBalance, getCreditLedger, getAccountCode, getCreditsLastRequestedAt } from "@/lib/credits";
 import { getPaidDownloads } from "@/lib/paid-downloads";
 import { getGeneratedCoverLetters } from "@/lib/cover-letters";
 
@@ -17,7 +17,7 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, accountCode, paidDownloads, coverLetters] = await Promise.all([
+  const [primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, accountCode, paidDownloads, coverLetters, creditsLastRequestedAt] = await Promise.all([
     getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
     getOwnedTranslatedProfiles(supabase, user.id),
@@ -26,6 +26,7 @@ export default async function AccountPage() {
     getAccountCode(supabase, user.id),
     getPaidDownloads(supabase, user.id),
     getGeneratedCoverLetters(supabase, user.id),
+    getCreditsLastRequestedAt(supabase, user.id),
   ]);
 
   return (
@@ -44,6 +45,7 @@ export default async function AccountPage() {
           ledger={ledger}
           paidDownloads={paidDownloads}
           coverLetters={coverLetters}
+          creditsLastRequestedAt={creditsLastRequestedAt}
         />
       </div>
       <Footer />

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, Coins } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from './language-provider'
 import { translations } from '@/lib/i18n'
@@ -82,6 +82,12 @@ export default function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [avatarLabel, setAvatarLabel] = useState('')
+  // Was invisible outside Account → Crediti, so an action could hit
+  // "insufficient credits" as a surprise — see the UX audit. Re-fetched on
+  // every route change and tab-focus (not just on mount) so it stays
+  // reasonably fresh after a spend elsewhere without needing a shared
+  // global store just for this one number.
+  const [credits, setCredits] = useState<number | null>(null)
   useEffect(() => {
     const supabase = createBrowserSupabaseClient()
 
@@ -90,12 +96,12 @@ export default function Navigation() {
       setIsLoggedIn(!!data.user)
       if (data.user) {
         setAvatarLabel(data.user.email ?? '')
-        const { data: settings } = await supabase
-          .from('account_settings')
-          .select('avatar_url')
-          .eq('user_id', data.user.id)
-          .maybeSingle()
+        const [{ data: settings }, { data: accountCredits }] = await Promise.all([
+          supabase.from('account_settings').select('avatar_url').eq('user_id', data.user.id).maybeSingle(),
+          supabase.from('account_credits').select('credits').eq('user_id', data.user.id).maybeSingle(),
+        ])
         setAvatarUrl((settings?.avatar_url as string | undefined) ?? null)
+        setCredits((accountCredits?.credits as number | undefined) ?? null)
       }
     }
     loadUser()
@@ -105,9 +111,24 @@ export default function Navigation() {
       if (!session?.user) {
         setAvatarUrl(null)
         setAvatarLabel('')
+        setCredits(null)
       }
     })
     return () => sub.subscription.unsubscribe()
+  }, [pathname])
+
+  useEffect(() => {
+    function onFocus() {
+      if (document.visibilityState !== 'visible') return
+      const supabase = createBrowserSupabaseClient()
+      supabase.auth.getUser().then(({ data }) => {
+        if (!data.user) return
+        supabase.from('account_credits').select('credits').eq('user_id', data.user.id).maybeSingle()
+          .then(({ data: row }) => setCredits((row?.credits as number | undefined) ?? null))
+      })
+    }
+    document.addEventListener('visibilitychange', onFocus)
+    return () => document.removeEventListener('visibilitychange', onFocus)
   }, [])
 
   // On non-home pages, anchor links must include the path
@@ -120,6 +141,7 @@ export default function Navigation() {
     { href: isHome ? '#' : '/', label: t.home },
     { href: href('#mission'), label: t.mission },
     { href: href('#services'), label: t.services },
+    { href: href('#pricing'), label: t.pricing },
     { href: href('#chi-siamo'), label: (t as { aboutUs?: string }).aboutUs ?? 'Chi siamo' },
     { href: href('#faq'), label: t.faq },
   ]
@@ -177,7 +199,19 @@ export default function Navigation() {
           )}
 
           {isAccountContext && (
-            <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
+            <>
+              {credits !== null && (
+                <a
+                  href="/account?tab=credits"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/50 text-sm font-semibold text-foreground transition-all duration-200"
+                  title={lang === 'en' ? 'Your credit balance' : 'Il tuo saldo crediti'}
+                >
+                  <Coins className="w-3.5 h-3.5 text-primary" />
+                  {credits}
+                </a>
+              )}
+              <AccountAvatarMenu avatarUrl={avatarUrl} displayName={avatarLabel} />
+            </>
           )}
 
           <div className="relative" ref={menuRef}>

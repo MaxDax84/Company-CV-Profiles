@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
-import { spendCredits, CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
+import { spendCredits } from "@/lib/credits-server";
 import { getActiveChatSession, markChatSessionCompleted } from "@/lib/cv-chat-store";
 import { reformulateProfileFromChat } from "@/lib/cv-chat-reformulate";
 

@@ -24,7 +24,7 @@ const FAQ_ITEMS_IT: { q: string; a: string }[] = [
   },
   {
     q: 'Cosa sono i crediti e quanto costano?',
-    a: 'Ogni account riceve un credito di benvenuto gratuito. Un credito si usa per scaricare un PDF o un documento Word, generare una lettera di presentazione o tradurre il CV o la lettera in un\'altra lingua. Adattare il CV a un annuncio è sempre gratuito, paghi solo quando scarichi il risultato. Siamo in fase beta: per ora il servizio è gratuito, i costi verranno introdotti più avanti.',
+    a: 'Ogni account riceve 3 crediti di benvenuto gratuiti. Un credito si usa per scaricare un PDF o un documento Word, generare una lettera di presentazione o tradurre il CV o la lettera in un\'altra lingua. Adattare il CV a un annuncio è sempre gratuito, paghi solo quando scarichi il risultato. Siamo in fase beta: il servizio è gratuito, non è ancora possibile acquistare crediti. Se ti servono altri crediti, dalla sezione Crediti del tuo account puoi richiederne altri 10 con un click: verifichiamo la richiesta a mano e te li accreditiamo.',
   },
   {
     q: 'Cosa sono i filtri ATS e perché ottimizzare il CV per loro?',
@@ -71,7 +71,7 @@ const FAQ_ITEMS_EN: { q: string; a: string }[] = [
   },
   {
     q: 'What are credits and how much do they cost?',
-    a: 'Every account gets one free welcome credit. A credit is used to download a PDF or Word document, generate a cover letter, or translate your CV or cover letter into another language. Tailoring your CV to a job posting is always free, you only pay when you download the result. We\'re in beta: the service is currently free, pricing will be introduced later.',
+    a: 'Every account gets 3 free welcome credits. A credit is used to download a PDF or Word document, generate a cover letter, or translate your CV or cover letter into another language. Tailoring your CV to a job posting is always free — you only pay when you download the result. We\'re in beta, so the service is free, but buying credits directly isn\'t possible yet. If you need more, you can request 10 more with one click from your account\'s Credits section — we review the request by hand and add them to your balance.',
   },
   {
     q: 'What are ATS filters and why optimize your CV for them?',

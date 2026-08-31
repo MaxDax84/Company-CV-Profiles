@@ -22,8 +22,8 @@ export default function SignupPage() {
             </h1>
             <p className="text-sm text-muted-foreground">
               {lang === "en"
-                ? "Free: save your profile page and get 1 welcome credit."
-                : "Gratis: salva la tua pagina profilo e ricevi 1 credito di benvenuto."}
+                ? "Free: save your profile page and get 3 welcome credits."
+                : "Gratis: salva la tua pagina profilo e ricevi 3 crediti di benvenuto."}
             </p>
           </div>
           <div className="glass-card rounded-2xl p-8">

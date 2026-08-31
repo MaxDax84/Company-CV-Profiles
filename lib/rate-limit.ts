@@ -63,6 +63,16 @@ export const consentLogRatelimit = new Ratelimit({
   prefix: "ratelimit:consent-log",
 });
 
+// "Request 10 more credits": the real throttle is account_credits.
+// credits_last_requested_at (a 24h cooldown, see lib/credits.ts) — this is
+// just a tight belt-and-suspenders cap against a burst of double-clicks
+// landing before the UI has a chance to disable the button.
+export const requestCreditsRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(3, "1 h"),
+  prefix: "ratelimit:request-credits",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

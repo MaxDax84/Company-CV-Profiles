@@ -21,13 +21,14 @@ interface AccountShellProps {
   ledger: CreditLedgerEntry[];
   paidDownloads: PaidDownloadEntry[];
   coverLetters: GeneratedCoverLetterEntry[];
+  creditsLastRequestedAt: string | null;
 }
 
 // Account settings now live on their own page (app/account/settings), not a
 // drawer here — reached via the avatar dropdown in the global nav (see
 // components/account-avatar-menu.tsx), so this shell only owns which
 // commercial tab is showing.
-export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters }: AccountShellProps) {
+export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt }: AccountShellProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lang } = useLanguage();
@@ -59,6 +60,7 @@ export default function AccountShell({ userEmail, accountCode, primaryProfiles, 
         ledger={ledger}
         paidDownloads={paidDownloads}
         coverLetters={coverLetters}
+        creditsLastRequestedAt={creditsLastRequestedAt}
         tab={tab}
         setTab={setTab}
       />
