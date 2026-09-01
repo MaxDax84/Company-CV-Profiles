@@ -113,15 +113,20 @@ async function callClaude(messages: unknown[], systemPrompt: string): Promise<Cl
 }
 
 // Tool-use responses interleave server_tool_use / *_tool_result blocks
-// around the model's actual text — unlike tailor-resume's single-shot JSON
-// reply, the real answer is whichever "text" block comes LAST, not first.
-function extractLastJsonObject(content: ClaudeToolResponse["content"]): InterviewPrepContent {
+// around the model's actual text — and, unlike tailor-resume's single-shot
+// JSON reply, the final JSON can itself land split across more than one
+// separate "text" block (e.g. the model pauses mid-sentence to run one more
+// tool call, then continues). Concatenating every text block in order
+// before searching for the outer braces reconstructs that split correctly;
+// reading only the last block (an earlier version of this function) failed
+// whenever the JSON's tail was pushed into its own trailing block, leaving
+// the reconstructed string starting mid-field with no opening "{" at all.
+function extractJsonObject(content: ClaudeToolResponse["content"]): InterviewPrepContent {
   const textBlocks = content.filter((b): b is { type: "text"; text: string } => b.type === "text" && typeof b.text === "string");
-  const last = textBlocks[textBlocks.length - 1];
-  if (!last) throw new Error("No text response from model");
+  if (textBlocks.length === 0) throw new Error("No text response from model");
 
-  const raw = last.text.trim();
-  const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+  const raw = textBlocks.map((b) => b.text).join("");
+  const cleaned = raw.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   const start = cleaned.indexOf("{");
   const end = cleaned.lastIndexOf("}");
   if (start === -1 || end === -1) {
@@ -170,8 +175,11 @@ export async function generateInterviewPrep(
   if (response.stop_reason === "refusal") {
     throw new Error("The model declined to research this job posting.");
   }
+  if (response.stop_reason === "max_tokens") {
+    throw new Error("The report was too long to finish generating — please try again.");
+  }
 
-  const content = extractLastJsonObject(response.content);
+  const content = extractJsonObject(response.content);
   // Set from the caller's explicit choice rather than trusted to the
   // model's own JSON output — the prompt no longer even asks for it.
   content.language = language;

@@ -80,6 +80,11 @@ export default function InterviewPrepAnonymousForm() {
           setState("idle");
           return;
         }
+        if (res.status >= 500) {
+          // A 500 means something genuinely broke server-side — never
+          // surface the raw internal error text to the visitor.
+          throw new Error(lang === "en" ? "Something went wrong while researching the company. Please try again." : "Qualcosa è andato storto durante la ricerca sull'azienda. Riprova.");
+        }
         throw new Error(data.error ?? (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
       }
       setContent(data.content);

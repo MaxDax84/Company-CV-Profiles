@@ -81,6 +81,11 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
         if (data?.code === "JOB_FETCH_FAILED") {
           setJobSource("text");
           setError(data.error);
+        } else if (res.status >= 500) {
+          // A 500 here means something genuinely unexpected broke server-side
+          // (a real bug, not a validation/credits message written to be
+          // shown to a user) — never surface the raw internal error text.
+          throw new Error(lang === "en" ? "Something went wrong while researching the company. Please try again." : "Qualcosa è andato storto durante la ricerca sull'azienda. Riprova.");
         } else {
           throw new Error(data?.error ?? (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
         }
