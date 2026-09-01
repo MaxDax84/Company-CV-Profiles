@@ -318,8 +318,8 @@ export default function InterviewPrepAnonymousForm() {
             </p>
             <p className="text-sm text-muted-foreground">
               {lang === "en"
-                ? `The report itself is free to generate. Saving it and downloading the PDF afterward will require a free account and cost ${COST} credits (new accounts start with 3 free credits).`
-                : `Generare il report è gratis. Salvarlo e scaricare il PDF dopo richiederà un account gratuito e costerà ${COST} crediti (i nuovi account partono con 3 crediti omaggio).`}
+                ? `This report costs ${COST} credits. Continue?`
+                : `Questo report costa ${COST} crediti. Procediamo?`}
             </p>
             <div className="flex gap-2 justify-center pt-1">
               <button
