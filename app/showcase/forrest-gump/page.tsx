@@ -63,14 +63,14 @@ export default function ForrestGumpPage() {
               {[
                 ['Born', 'June 6, 1944'],
                 ['Hometown', 'Greenbow, Alabama'],
-                ['IQ', '75 (but who&apos;s counting)'],
+                ['IQ', "75 (but who's counting)"],
                 ['Best Friend', 'Bubba Blue (†)'],
                 ['Son', 'Forrest Jr.'],
                 ['Love', 'Jenny Curran'],
               ].map(([k, v]) => (
                 <div key={k} style={{ marginBottom: 10 }}>
                   <p style={{ fontSize: 10, color: '#a16207', margin: '0 0 1px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{k}</p>
-                  <p style={{ fontSize: 14, color: brown, margin: 0 }} dangerouslySetInnerHTML={{ __html: v }} />
+                  <p style={{ fontSize: 14, color: brown, margin: 0 }}>{v}</p>
                 </div>
               ))}
             </div>
