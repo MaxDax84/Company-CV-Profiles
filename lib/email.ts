@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { buildUnsubscribeUrl } from "./unsubscribe";
 
 // Only used to build links inside emails sent from places with no request
 // object to read the real origin from (e.g. lib/credits.ts, mid-spend).
@@ -72,12 +73,20 @@ export async function sendMail(opts: SendMailOptions): Promise<void> {
 // Shared visual wrapper so every lifecycle/notification email looks like it
 // came from the same product instead of each route hand-rolling its own
 // inline-styled div (see contact/request-domain's own copies of this shape).
-export function emailShell(opts: { title: string; bodyHtml: string }): string {
+// unsubscribeUrl is only set by the 3 lifecycle emails below (welcome,
+// zero-balance, inactivity reminder) — request-credits' email goes to the
+// site owner, not a user, so it must never carry an "unsubscribe" footer.
+export function emailShell(opts: { title: string; bodyHtml: string; unsubscribeUrl?: string }): string {
   return `
     <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #ffffff; color: #0f172a; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0;">
       <h2 style="margin: 0 0 4px; color: #123bff; font-size: 20px;">${escapeHtml(opts.title)}</h2>
       <p style="margin: 0 0 24px; color: #64748b; font-size: 14px;">Jobli</p>
       ${opts.bodyHtml}
+      ${opts.unsubscribeUrl ? `
+      <p style="margin: 28px 0 0; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+        Ricevi questa email perché hai un account su Jobli.
+        <a href="${opts.unsubscribeUrl}" style="color: #94a3b8; text-decoration: underline;">Non voglio più ricevere queste email</a>.
+      </p>` : ""}
     </div>
   `;
 }
@@ -89,7 +98,10 @@ function ctaButtonHtml(label: string, url: string): string {
 // UX audit finding: the only emails this project sent went to the site
 // owner, never to users — no welcome email beyond Supabase's own signup
 // confirmation. Triggered once per account from app/auth/callback/route.ts.
-export async function sendWelcomeEmail(to: string, siteUrl: string): Promise<void> {
+// userId is only used to build the unsubscribe link (legal audit finding —
+// see lib/unsubscribe.ts), never sent anywhere itself.
+export async function sendWelcomeEmail(to: string, siteUrl: string, userId: string): Promise<void> {
+  const unsubscribeUrl = buildUnsubscribeUrl(userId, siteUrl);
   await sendMail({
     to,
     fromLabel: "Jobli",
@@ -100,9 +112,11 @@ export async function sendWelcomeEmail(to: string, siteUrl: string): Promise<voi
       "1. Se non l'hai ancora fatto, carica il PDF del tuo CV su " + siteUrl + "/generate\n" +
       "2. Guarda il punteggio e lascia che l'AI ti segnali cosa migliorare\n" +
       "3. Prova ad adattarlo a un annuncio specifico: è sempre gratis, paghi solo se scarichi il risultato\n\n" +
-      "Il tuo account: " + siteUrl + "/account",
+      "Il tuo account: " + siteUrl + "/account\n\n" +
+      "Non vuoi più ricevere queste email? " + unsubscribeUrl,
     html: emailShell({
       title: "Benvenuto su Jobli 👋",
+      unsubscribeUrl,
       bodyHtml: `
         <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6;">
           Hai <strong>3 crediti gratuiti</strong> pronti da usare. Ecco da dove iniziare:
@@ -121,7 +135,11 @@ export async function sendWelcomeEmail(to: string, siteUrl: string): Promise<voi
 // Sent once per account, at most, by the daily inactivity-reminder cron
 // (app/api/cron/inactivity-reminder/route.ts) to anyone who signed up 7+
 // days ago and never downloaded a PDF/Word file or generated a cover letter.
-export async function sendInactivityReminderEmail(to: string, siteUrl: string): Promise<void> {
+// The one of the three that most resembles a re-engagement/marketing nudge
+// rather than a strict transactional notice — the unsubscribe link here is
+// the one Art. 130 Codice Privacy's "soft opt-in" exception actually hinges on.
+export async function sendInactivityReminderEmail(to: string, siteUrl: string, userId: string): Promise<void> {
+  const unsubscribeUrl = buildUnsubscribeUrl(userId, siteUrl);
   await sendMail({
     to,
     fromLabel: "Jobli",
@@ -129,9 +147,11 @@ export async function sendInactivityReminderEmail(to: string, siteUrl: string): 
     text:
       "Hai iniziato a creare il tuo profilo su Jobli ma non hai ancora scaricato nulla.\n\n" +
       "Torna al tuo account per continuare: " + siteUrl + "/account\n" +
-      "Hai ancora crediti gratuiti pronti da usare.",
+      "Hai ancora crediti gratuiti pronti da usare.\n\n" +
+      "Non vuoi più ricevere queste email? " + unsubscribeUrl,
     html: emailShell({
       title: "Il tuo CV ti aspetta ancora",
+      unsubscribeUrl,
       bodyHtml: `
         <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6;">
           Hai iniziato a creare il tuo profilo su Jobli ma non hai ancora scaricato nulla.
@@ -147,7 +167,8 @@ export async function sendInactivityReminderEmail(to: string, siteUrl: string): 
 // Fires once per exhaustion event (see 0026_lifecycle_email_tracking.sql's
 // comment on why no dedup column is needed) from lib/credits.ts right after
 // a spend brings the balance to 0.
-export async function sendZeroBalanceEmail(to: string, siteUrl: string): Promise<void> {
+export async function sendZeroBalanceEmail(to: string, siteUrl: string, userId: string): Promise<void> {
+  const unsubscribeUrl = buildUnsubscribeUrl(userId, siteUrl);
   await sendMail({
     to,
     fromLabel: "Jobli",
@@ -155,9 +176,11 @@ export async function sendZeroBalanceEmail(to: string, siteUrl: string): Promise
     text:
       "Hai usato tutti i tuoi crediti Jobli.\n\n" +
       "Puoi richiederne altri 10 gratis dalla sezione Crediti del tuo account: " + siteUrl + "/account?tab=credits\n" +
-      "Verifichiamo la richiesta a mano e te li accreditiamo.",
+      "Verifichiamo la richiesta a mano e te li accreditiamo.\n\n" +
+      "Non vuoi più ricevere queste email? " + unsubscribeUrl,
     html: emailShell({
       title: "Hai finito i crediti",
+      unsubscribeUrl,
       bodyHtml: `
         <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6;">
           Hai usato tutti i tuoi crediti Jobli. Siamo in fase beta: puoi richiederne altri

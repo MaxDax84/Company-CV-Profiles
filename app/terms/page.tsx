@@ -22,7 +22,7 @@ export default function TermsPage() {
           {lang === 'it' ? 'Termini di Servizio' : 'Terms of Service'}
         </h1>
         <p className="text-muted-foreground text-sm mb-12">
-          {lang === 'it' ? 'Ultimo aggiornamento: Agosto 2026' : 'Last updated: August 2026'}
+          {lang === 'it' ? 'Ultimo aggiornamento: Settembre 2026' : 'Last updated: September 2026'}
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed text-muted-foreground">
@@ -63,6 +63,13 @@ export default function TermsPage() {
                   traduzione consumano un credito ciascuno. L&apos;adattamento del CV a un annuncio di
                   lavoro è invece sempre gratuito. L&apos;utente è responsabile della riservatezza
                   delle proprie credenziali di accesso.
+                </p>
+                <p className="mt-2">
+                  Il servizio è riservato a chi ha compiuto almeno 14 anni, età minima per prestare
+                  validamente da soli il consenso al trattamento dei propri dati personali online ai
+                  sensi dell&apos;art. 2-quinquies del D.Lgs. 196/2003. Chi ha tra i 14 e i 17 anni
+                  dichiara, creando un account, di avere la capacità di agire necessaria per i
+                  contratti relativi a un servizio digitale gratuito come questo.
                 </p>
                 <p className="mt-2">
                   L&apos;utente può eliminare in autonomia un singolo CV o l&apos;intero account, con
@@ -130,10 +137,10 @@ export default function TermsPage() {
                   Il servizio è fornito &quot;così com&apos;è&quot;. Il Fornitore non è responsabile
                   per interruzioni causate da fornitori terzi (hosting, autenticazione, intelligenza
                   artificiale), né per l&apos;esito di candidature o colloqui di lavoro basati sui
-                  contenuti generati. La responsabilità complessiva del Fornitore, ove applicabile,
-                  non potrà in alcun caso superare l&apos;importo eventualmente pagato dall&apos;utente
-                  per il servizio oggetto della contestazione. Il Fornitore non è responsabile per
-                  danni indiretti, perdita di dati o mancato guadagno.
+                  contenuti generati. Salvi i casi di dolo o colpa grave, la responsabilità complessiva
+                  del Fornitore, ove applicabile, non potrà in alcun caso superare l&apos;importo
+                  eventualmente pagato dall&apos;utente per il servizio oggetto della contestazione. Il
+                  Fornitore non è responsabile per danni indiretti, perdita di dati o mancato guadagno.
                 </p>
               </div>
 
@@ -214,9 +221,16 @@ export default function TermsPage() {
                 <p>
                   Some features (permanently saving your CV, downloading the PDF or a Word document)
                   require creating an account with an email and password. Each new account receives
-                  one free credit; downloading a PDF, downloading a Word document, generating a cover
+                  3 free credits; downloading a PDF, downloading a Word document, generating a cover
                   letter, and translating each cost one credit. Tailoring your CV to a job posting is
                   always free. You are responsible for keeping your login credentials confidential.
+                </p>
+                <p className="mt-2">
+                  The service is restricted to people aged 14 or over, the minimum age to validly
+                  consent on your own to the processing of your personal data online under Italian law
+                  (Art. 2-quinquies, Legislative Decree 196/2003). By creating an account, users aged
+                  14 to 17 represent that they have the legal capacity required to enter into an
+                  agreement for a free digital service of this kind.
                 </p>
                 <p className="mt-2">
                   You can delete a single CV or your entire account yourself, with immediate and
@@ -278,10 +292,11 @@ export default function TermsPage() {
                 <p>
                   The service is provided &quot;as is&quot;. The Provider is not liable for
                   interruptions caused by third-party providers (hosting, authentication, AI), nor
-                  for the outcome of job applications or interviews based on generated content. The
-                  Provider&apos;s total liability, where applicable, shall not exceed any amount you
-                  paid for the specific service in dispute. The Provider is not liable for indirect
-                  damages, data loss, or loss of profit.
+                  for the outcome of job applications or interviews based on generated content. Except
+                  in cases of wilful misconduct or gross negligence, the Provider&apos;s total
+                  liability, where applicable, shall not exceed any amount you paid for the specific
+                  service in dispute. The Provider is not liable for indirect damages, data loss, or
+                  loss of profit.
                 </p>
               </div>
 

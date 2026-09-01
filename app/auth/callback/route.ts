@@ -4,6 +4,7 @@ import { claimPendingProfile } from "@/lib/profile-store";
 import { getAccountCode } from "@/lib/credits";
 import { claimWelcomeEmailSlot } from "@/lib/credits-server";
 import { sendWelcomeEmail } from "@/lib/email";
+import { isOptedOutOfLifecycleEmails } from "@/lib/account-settings";
 
 export const runtime = "nodejs";
 
@@ -42,7 +43,9 @@ export async function GET(req: NextRequest) {
   if (user?.email) {
     try {
       const won = await claimWelcomeEmailSlot(user.id);
-      if (won) await sendWelcomeEmail(user.email, origin);
+      if (won && !(await isOptedOutOfLifecycleEmails(supabase, user.id))) {
+        await sendWelcomeEmail(user.email, origin, user.id);
+      }
     } catch (err) {
       console.error("[auth/callback] welcome email failed", err);
     }

@@ -8,7 +8,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { getOwnedProfileRow } from "@/lib/profile-store";
 import { getAccountCode } from "@/lib/credits";
-import { getAvatarUrl } from "@/lib/account-settings";
+import { getAvatarUrl, isOptedOutOfLifecycleEmails } from "@/lib/account-settings";
 
 export default async function AccountSettingsPage() {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
@@ -17,10 +17,11 @@ export default async function AccountSettingsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileRow, accountCode, avatarUrl] = await Promise.all([
+  const [profileRow, accountCode, avatarUrl, lifecycleEmailsOptedOut] = await Promise.all([
     getOwnedProfileRow(supabase, user.id, "primary"),
     getAccountCode(supabase, user.id),
     getAvatarUrl(supabase, user.id),
+    isOptedOutOfLifecycleEmails(supabase, user.id),
   ]);
 
   return (
@@ -37,6 +38,7 @@ export default async function AccountSettingsPage() {
           avatarUrl={avatarUrl}
           accountCode={accountCode}
           profileRow={profileRow}
+          lifecycleEmailsOptedOut={lifecycleEmailsOptedOut}
         />
       </div>
       <Footer />

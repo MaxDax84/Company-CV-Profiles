@@ -73,6 +73,15 @@ export const requestCreditsRatelimit = new Ratelimit({
   prefix: "ratelimit:request-credits",
 });
 
+// One-click email unsubscribe (app/api/account/unsubscribe): the HMAC token
+// itself is unguessable, so this is defense-in-depth against noise/scraping
+// rather than a real brute-force concern.
+export const unsubscribeRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(20, "10 m"),
+  prefix: "ratelimit:unsubscribe",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

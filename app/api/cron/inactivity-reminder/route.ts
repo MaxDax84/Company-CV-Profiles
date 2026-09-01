@@ -60,19 +60,22 @@ export async function GET(req: NextRequest) {
   }
 
   const ids = notYetEvaluated.map(c => c.id);
-  const [{ data: downloads, error: downloadsError }, { data: letters, error: lettersError }] = await Promise.all([
+  const [{ data: downloads, error: downloadsError }, { data: letters, error: lettersError }, { data: settingsRows, error: settingsError }] = await Promise.all([
     service.from("paid_downloads").select("user_id").in("user_id", ids),
     service.from("cover_letters").select("user_id").in("user_id", ids),
+    service.from("account_settings").select("user_id, lifecycle_emails_opt_out").in("user_id", ids),
   ]);
   if (downloadsError) throw downloadsError;
   if (lettersError) throw lettersError;
+  if (settingsError) throw settingsError;
   const activeUserIds = new Set([...(downloads ?? []).map(d => d.user_id), ...(letters ?? []).map(l => l.user_id)]);
+  const optedOutUserIds = new Set((settingsRows ?? []).filter(r => r.lifecycle_emails_opt_out).map(r => r.user_id));
 
   let reminded = 0;
   for (const candidate of notYetEvaluated) {
-    if (!activeUserIds.has(candidate.id)) {
+    if (!activeUserIds.has(candidate.id) && !optedOutUserIds.has(candidate.id)) {
       try {
-        await sendInactivityReminderEmail(candidate.email, SITE_URL);
+        await sendInactivityReminderEmail(candidate.email, SITE_URL, candidate.id);
         reminded++;
       } catch (err) {
         console.error("[cron/inactivity-reminder] send failed", candidate.id, err);

@@ -36,7 +36,7 @@ export default function CookiePage() {
 
         <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">Cookie Policy</h1>
         <p className="text-muted-foreground text-sm mb-12">
-          {lang === 'it' ? 'Ultimo aggiornamento: Agosto 2026' : 'Last updated: August 2026'}
+          {lang === 'it' ? 'Ultimo aggiornamento: Settembre 2026' : 'Last updated: September 2026'}
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed text-muted-foreground">
@@ -153,7 +153,9 @@ export default function CookiePage() {
                     Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
                     (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
                     verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
-                    hai effettuato l&apos;accesso nel momento in cui scegli.
+                    hai effettuato l&apos;accesso nel momento in cui scegli. Conserviamo questo registro per
+                    5 anni dalla data della scelta, in linea con gli ordinari termini di prescrizione, decorsi
+                    i quali viene eliminato automaticamente.
                   </p>
                 )}
                 <p className="mt-3">
@@ -404,7 +406,9 @@ export default function CookiePage() {
                     Besides the cookie, we keep a technical record of every consent choice on our servers (an
                     anonymous identifier, date and time, the categories chosen), so we can produce it if ever
                     needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
-                    account if you happened to be signed in at the moment you chose.
+                    account if you happened to be signed in at the moment you chose. We keep this record for
+                    5 years from the date of the choice, in line with ordinary statute-of-limitations periods,
+                    after which it is automatically deleted.
                   </p>
                 )}
                 <p className="mt-3">

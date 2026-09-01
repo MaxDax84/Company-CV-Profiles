@@ -6,6 +6,7 @@ import ChangeEmailForm from "@/components/change-email-form";
 import ChangePasswordForm from "@/components/change-password-form";
 import RequestDomainForm from "@/components/request-domain-form";
 import AvatarUploadForm from "@/components/avatar-upload-form";
+import LifecycleEmailsToggle from "@/components/lifecycle-emails-toggle";
 import { DeleteAccountButton } from "@/components/account-actions";
 import type { ProfileSchema } from "@/lib/schema";
 import { useLanguage } from "@/components/language-provider";
@@ -24,13 +25,14 @@ interface AccountSettingsViewProps {
   avatarUrl: string | null;
   accountCode: string;
   profileRow: { data: ProfileSchema } | null;
+  lifecycleEmailsOptedOut: boolean;
 }
 
 // A full page (see app/account/settings/page.tsx) rather than the sliding
 // drawer this used to be — the rarely-touched, "technical" account sections,
 // reached via the avatar dropdown's "Account" item (components/
 // account-avatar-menu.tsx) from anywhere on the site.
-export default function AccountSettingsView({ userId, userEmail, avatarUrl, accountCode, profileRow }: AccountSettingsViewProps) {
+export default function AccountSettingsView({ userId, userEmail, avatarUrl, accountCode, profileRow, lifecycleEmailsOptedOut }: AccountSettingsViewProps) {
   const [editingEmail, setEditingEmail] = useState(false);
   const { lang } = useLanguage();
   const tr = (it: string, en: string) => (lang === "en" ? en : it);
@@ -113,6 +115,13 @@ export default function AccountSettingsView({ userId, userEmail, avatarUrl, acco
           <span className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20">
             {tr("In arrivo", "Coming soon")}
           </span>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <SectionTitle>{tr("Preferenze email", "Email preferences")}</SectionTitle>
+        <div className="glass-card rounded-2xl p-5">
+          <LifecycleEmailsToggle userId={userId} initialOptedOut={lifecycleEmailsOptedOut} />
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { InsufficientCreditsError } from "./credits";
 import { createServiceSupabaseClient } from "./supabase/service";
 import { sendZeroBalanceEmail, SITE_URL } from "./email";
+import { isOptedOutOfLifecycleEmails } from "./account-settings";
 
 // Server-only half of lib/credits.ts — split out because both functions
 // here pull in nodemailer (via lib/email.ts), which breaks the client
@@ -36,8 +37,8 @@ export async function spendCredits(
   // dedup tracking needed (see 0026_lifecycle_email_tracking.sql).
   if (newBalance === 0) {
     const { data: { user } } = await supabase.auth.getUser();
-    if (user?.email) {
-      await sendZeroBalanceEmail(user.email, SITE_URL);
+    if (user?.email && !(await isOptedOutOfLifecycleEmails(supabase, user.id))) {
+      await sendZeroBalanceEmail(user.email, SITE_URL, user.id);
     }
   }
 

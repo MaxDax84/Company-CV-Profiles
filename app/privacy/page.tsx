@@ -20,7 +20,7 @@ export default function PrivacyPage() {
 
         <h1 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-2">Privacy Policy</h1>
         <p className="text-muted-foreground text-sm mb-12">
-          {lang === 'it' ? 'Ultimo aggiornamento: Agosto 2026' : 'Last updated: August 2026'}
+          {lang === 'it' ? 'Ultimo aggiornamento: Settembre 2026' : 'Last updated: September 2026'}
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed text-muted-foreground">
@@ -42,6 +42,11 @@ export default function PrivacyPage() {
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
                     {SUPPORT_EMAIL}
                   </a>
+                </p>
+                <p className="mt-2">
+                  Il Titolare non ha nominato un Responsabile della Protezione dei Dati (DPO), non
+                  obbligatorio in base alla natura, all&apos;ambito e alle finalità del trattamento
+                  svolto attualmente (art. 37 GDPR).
                 </p>
               </div>
 
@@ -109,6 +114,23 @@ export default function PrivacyPage() {
                   l&apos;esecuzione del servizio richiesto dall&apos;utente (art. 6(1)(b) GDPR,
                   esecuzione di un contratto/misure precontrattuali su richiesta dell&apos;interessato).
                 </p>
+                <p className="mt-2">
+                  Se hai un account, ti inviamo inoltre alcune comunicazioni di servizio via email
+                  (es. email di benvenuto, avviso quando i crediti sono esauriti, un promemoria se non
+                  hai ancora completato il tuo profilo), sulla base del legittimo interesse a mantenerti
+                  informato sull&apos;uso del servizio che hai richiesto (art. 6(1)(f) GDPR). Puoi
+                  opporti in qualsiasi momento, senza alcuna conseguenza sul funzionamento del tuo
+                  account, tramite il link presente in calce a ciascuna di queste email o dalla sezione
+                  &quot;Preferenze email&quot; delle impostazioni del tuo account.
+                </p>
+                <p className="mt-2">
+                  Alcuni moduli del sito (caricamento del CV, adattamento a un annuncio) limitano il
+                  numero di richieste consentite da uno stesso indirizzo IP in un dato intervallo di
+                  tempo, per prevenire abusi automatizzati. Questo trattamento dell&apos;indirizzo IP,
+                  temporaneo e non collegato alla tua identità se non sei autenticato, si basa sul
+                  legittimo interesse alla sicurezza e all&apos;integrità del servizio (art. 6(1)(f)
+                  GDPR).
+                </p>
               </div>
 
               <div>
@@ -149,8 +171,8 @@ export default function PrivacyPage() {
                   qualità di responsabili del trattamento ai sensi dell&apos;art. 28 GDPR sono:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail), ricezione messaggi dal modulo di contatto</li>
-                  <li>Vercel Inc., hosting dell&apos;applicazione e conservazione temporanea delle anteprime non ancora collegate a un account</li>
+                  <li>Google LLC (Gmail), ricezione messaggi dal modulo di contatto e invio delle comunicazioni di servizio relative al tuo account descritte al punto 3</li>
+                  <li>Vercel Inc., hosting dell&apos;applicazione, conservazione temporanea delle anteprime non ancora collegate a un account, e limitazione del numero di richieste per indirizzo IP sui moduli più sensibili</li>
                   <li>Supabase Inc., gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
                   <li>Anthropic PBC, elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
                   <li>Cloudflare Inc., verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
@@ -260,6 +282,11 @@ export default function PrivacyPage() {
                     {SUPPORT_EMAIL}
                   </a>
                 </p>
+                <p className="mt-2">
+                  The Controller has not appointed a Data Protection Officer (DPO), not mandatory
+                  given the nature, scope, and purposes of the processing currently carried out
+                  (Art. 37 GDPR).
+                </p>
               </div>
 
               <div>
@@ -320,6 +347,21 @@ export default function PrivacyPage() {
                   and CV tailoring is processed to perform the service you requested (Art. 6(1)(b)
                   GDPR, performance of a contract / pre-contractual steps taken at your request).
                 </p>
+                <p className="mt-2">
+                  If you have an account, we also send you a small number of service emails (e.g. a
+                  welcome email, a notice when your credits run out, a reminder if you haven&apos;t
+                  finished your profile yet), based on our legitimate interest in keeping you informed
+                  about the service you requested (Art. 6(1)(f) GDPR). You can object at any time,
+                  with no effect on your account, via the link at the bottom of each such email or
+                  from the &quot;Email preferences&quot; section of your account settings.
+                </p>
+                <p className="mt-2">
+                  Some forms on the site (CV upload, job-posting tailoring) limit how many requests a
+                  single IP address can make in a given time window, to prevent automated abuse. This
+                  temporary processing of your IP address, not linked to your identity unless you are
+                  signed in, is based on our legitimate interest in the security and integrity of the
+                  service (Art. 6(1)(f) GDPR).
+                </p>
               </div>
 
               <div>
@@ -357,8 +399,8 @@ export default function PrivacyPage() {
                   Your data is not sold or shared with third parties. The processors (Art. 28 GDPR) are:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail), receipt of contact form messages</li>
-                  <li>Vercel Inc., application hosting and temporary storage of previews not yet linked to an account</li>
+                  <li>Google LLC (Gmail), receipt of contact form messages and delivery of the account service emails described in point 3</li>
+                  <li>Vercel Inc., application hosting, temporary storage of previews not yet linked to an account, and per-IP-address rate limiting on the more sensitive forms</li>
                   <li>Supabase Inc., account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
                   <li>Anthropic PBC, processing of CV text for profile extraction, improvement, and job tailoring</li>
                   <li>Cloudflare Inc., bot verification (Turnstile) on the CV upload and job-tailoring forms</li>

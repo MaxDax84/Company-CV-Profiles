@@ -4,7 +4,7 @@
 privacy/legale prima di essere considerato il registro ufficiale del Titolare, in particolare per
 le parti segnate `[DA COMPLETARE]`.
 
-Ultimo aggiornamento: 21 agosto 2026.
+Ultimo aggiornamento: 1 settembre 2026.
 
 ---
 
@@ -125,17 +125,82 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 - **Destinatari**: Cloudflare Inc.
 - **Trasferimenti extra-UE**: sì, tramite SCC.
 
+## 9. Comunicazioni di servizio via email
+
+- **Finalità**: informare il titolare di un account sullo stato del proprio utilizzo del servizio —
+  email di benvenuto al primo accesso, avviso quando i crediti sono esauriti, promemoria se il CV
+  caricato non è mai stato scaricato entro 7 giorni. Aggiunta il 1 settembre 2026 (v. audit legale
+  interno); prima di questa data l'unica corrispondenza email andava dall'utente verso il Titolare
+  (moduli contatti e richiesta dominio), mai in direzione opposta.
+- **Base giuridica**: legittimo interesse a mantenere l'utente informato sull'uso del servizio
+  richiesto (art. 6(1)(f) GDPR). Il promemoria di inattività, per il contenuto e per l'iniziativa
+  che è del Titolare e non dell'utente, si avvicina più delle altre due a una comunicazione di
+  re-engagement: per questo tutte e tre le email, non solo questa, includono un meccanismo di
+  opposizione a ogni invio (v. sotto), in applicazione prudenziale dell'art. 130 Codice Privacy.
+- **Categorie di interessati**: utenti registrati che non hanno disattivato questa categoria di
+  comunicazioni.
+- **Categorie di dati**: indirizzo email, stato dell'account (saldo crediti, data di creazione,
+  presenza di download/lettere), usati solo per decidere se e quale email inviare — mai inclusi nel
+  corpo del messaggio oltre a quanto strettamente pertinente.
+- **Meccanismo di opposizione**: link di disiscrizione non autenticato in calce a ogni email
+  (`app/api/account/unsubscribe`, token univoco per utente) più un interruttore nelle impostazioni
+  dell'account (`account_settings.lifecycle_emails_opt_out`); l'opposizione ha effetto immediato su
+  tutte e tre le comunicazioni insieme.
+- **Destinatari**: Google LLC (Gmail), invio tecnico del messaggio.
+- **Termine di conservazione**: l'indirizzo email non viene conservato separatamente per questa
+  finalità (è già il dato di accesso all'account); la sola data dell'ultimo invio di ciascun tipo di
+  email è conservata finché l'account esiste, per garantire che ogni email sia inviata al massimo
+  una volta.
+
 ---
 
 ## Elenco sintetico sub-processor (fornitori terzi)
 
 | Fornitore | Ruolo | Sede | Trasferimento extra-UE | DPA verificato |
 |---|---|---|---|---|
-| Supabase Inc. | Database, autenticazione, storage | USA (regione dati configurabile) | Sì (salvo regione EU configurata) | `[DA VERIFICARE]` |
-| Vercel Inc. | Hosting applicazione | USA | Sì | `[DA VERIFICARE]` |
+| Supabase Inc. | Database, autenticazione, storage | USA (regione dati configurabile) | Sì (salvo regione EU configurata) | Sì — verificato 01/09/2026, v. sotto |
+| Vercel Inc. | Hosting applicazione, rate limiting IP | USA | Sì | Sì (piano da confermare) — verificato 01/09/2026, v. sotto |
 | Anthropic PBC | Elaborazione AI del testo del CV | USA | Sì (SCC Modulo 2/3, EU 2021/914) | Sì — DPA pubblico incorporato nei Commercial Terms, verificato 21/08/2026 |
-| Cloudflare Inc. | Verifica anti-bot (Turnstile) | USA (rete globale) | Sì | `[DA VERIFICARE]` |
-| Google LLC | Ricezione email modulo contatto (Gmail) | USA | Sì | Google offre DPA standard per Workspace/Gmail — verificare se applicabile all'account usato |
-| Google Ireland Limited | Google Analytics 4 (solo previo consenso) | UE (Irlanda), dati minimizzati | Parziale (infrastruttura Google globale) | Google fornisce DPA standard per GA4 |
+| Cloudflare Inc. | Verifica anti-bot (Turnstile) | USA (rete globale) | Sì | Sì (probabile, v. nota) — verificato 01/09/2026, v. sotto |
+| Google LLC | Ricezione/invio email (Gmail) | USA | Sì | `[DA VERIFICARE]` — dipende dal tipo di account, v. nota sotto |
+| Google Ireland Limited | Google Analytics 4 (solo previo consenso) | UE (Irlanda), dati minimizzati | Parziale (infrastruttura Google globale) | Sì, se Jobli è stabilita in UE/SEE/UK/Svizzera — verificato 01/09/2026, v. sotto |
 
-**Prossimo passo consigliato**: richiedere/verificare formalmente il DPA (Data Processing Agreement) di ciascun fornitore sopra elencato dove non già confermato, e archiviarne una copia.
+> **Verificato il 1 settembre 2026** — letti i DPA pubblici di ciascun fornitore. Punti rilevanti:
+>
+> - **Supabase**: DPA pubblico su supabase.com/legal/dpa, si applica automaticamente all'accettazione
+>   dei Termini (nessuna firma separata necessaria). Supabase processor, cliente controller. SCC
+>   incorporate; su richiesta il cliente può indirizzare l'elaborazione a una regione specifica.
+>   Elenco sub-responsabili pubblico, preavviso di 30 giorni per nuovi sub-responsabili, 5 giorni per
+>   opporsi. Notifica incidenti di sicurezza entro 48 ore. **Da confermare**: in quale regione dati è
+>   effettivamente configurato il progetto Supabase usato da Jobli.
+> - **Vercel**: DPA pubblico su vercel.com/legal/dpa, si applica automaticamente all'accettazione dei
+>   Termini. Vercel processor per i "Customer Data" sui piani **Pro ed Enterprise** — il testo del DPA
+>   non specifica esplicitamente se e come si applica al piano Hobby/gratuito. SCC Modulo Due
+>   incorporate. Elenco sub-responsabili pubblico su security.vercel.com, preavviso 30 giorni,
+>   5 giorni per opporsi. Notifica incidenti "senza ingiustificato ritardo" (nessun termine fisso in
+>   ore dichiarato pubblicamente). **Da confermare**: su quale piano Vercel gira il progetto Jobli —
+>   se Hobby, verificare con il supporto Vercel se il DPA si applica comunque.
+> - **Cloudflare**: DPA pubblico su cloudflare.com/cloudflare-customer-dpa/, cliente controller e
+>   Cloudflare processor. SCC Modulo Due/Tre incorporate. Elenco sub-responsabili pubblico, preavviso
+>   30 giorni, 10 giorni per opporsi. Notifica incidenti "senza ingiustificato ritardo". Il testo non
+>   distingue esplicitamente Turnstile (prodotto gratuito) dagli altri servizi Cloudflare a pagamento
+>   — ragionevole ritenere che il DPA generale si applichi comunque tramite l'accordo standard che si
+>   accetta creando un account Cloudflare, ma non è stato trovato un riferimento esplicito a Turnstile.
+> - **Google — Google Analytics 4**: le "Data Processing Terms" di Google per i servizi pubblicitari/
+>   di misurazione **si applicano automaticamente, senza bisogno di accettazione manuale**, alle
+>   aziende stabilite nell'UE/SEE, nel Regno Unito o in Svizzera — condizione soddisfatta da Jobli in
+>   quanto attività con sede in Italia. Le aziende stabilite altrove devono invece accettarle
+>   manualmente dalle impostazioni dell'account. Nessuna azione necessaria per Jobli su questo punto.
+> - **Google — Gmail (invio email)**: **qui il DPA verificato per Google Workspace (cloud.google.com/
+>   terms/data-processing-addendum) si applica solo agli account Google Workspace/Cloud Identity a
+>   pagamento**, non a un normale account Gmail personale gratuito (@gmail.com). Non è stato
+>   possibile determinare da qui se l'account usato da Jobli per inviare le email (`GMAIL_USER`) sia
+>   un account Workspace o un Gmail personale gratuito — la differenza cambia la risposta a questa
+>   riga della tabella. **Se è un Gmail personale gratuito, non esiste un DPA formale equivalente**:
+>   resta comunque coperto dai Termini di Servizio e dalla Privacy Policy generali di Google per i
+>   consumatori, ma non dalle garanzie contrattuali specifiche dell'art. 28 GDPR (SCC esplicite,
+>   elenco sub-responsabili, termine di notifica violazioni). Da chiarire con il Titolare quale dei
+>   due tipi di account sia effettivamente in uso.
+
+**Prossimo passo consigliato**: confermare il piano Vercel e il tipo di account Gmail in uso (le due
+uniche caselle rimaste aperte sopra); archiviare una copia o un link permanente di ciascun DPA citato.
