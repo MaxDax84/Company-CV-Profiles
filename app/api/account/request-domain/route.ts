@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getAccountCode } from "@/lib/credits";
 import { requestDomainRatelimit } from "@/lib/rate-limit";
+import { sendMail, escapeHtml } from "@/lib/email";
 
 export const runtime = "nodejs";
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
 // Authenticated users ask for a custom domain on their CV page — this is a
 // manual request routed to the site owner's inbox, not a self-service flow
@@ -40,17 +31,9 @@ export async function POST(req: NextRequest) {
 
     const accountCode = await getAccountCode(supabase, user.id);
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Jobli — Richieste dominio" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
+    await sendMail({
+      to: process.env.SMTP_USER ?? "",
+      fromLabel: "Jobli — Richieste dominio",
       replyTo: user.email,
       subject: `Richiesta dominio personalizzato — ${user.email}`,
       text: `Account: ${user.email} (codice ${accountCode})\nDominio desiderato: ${desiredDomain || "non specificato"}\n\nNote:\n${note || "—"}`,

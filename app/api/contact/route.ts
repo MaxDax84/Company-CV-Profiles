@@ -1,27 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
 import { contactRatelimit, getClientIp } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/turnstile'
+import { sendMail, escapeHtml, stripHeaderInjection } from '@/lib/email'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-}
-
-// A raw CR/LF in a value that ends up inside an email header (only `subject`
-// here — `text`/`html` are body content, not headers) lets a submitted form
-// field inject extra header lines into the outgoing message. Strips them
-// rather than rejecting the request, since a pasted name with a stray
-// newline is a much more common, innocent case than an actual attack.
-function stripHeaderInjection(text: string): string {
-  return text.replace(/[\r\n]+/g, ' ').trim()
-}
 
 export async function POST(req: NextRequest) {
   const clientIp = getClientIp(req)
@@ -66,14 +48,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'File exceeds 5MB limit.' }, { status: 400 })
   }
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  })
-
   // Build attachments array
   type Attachment = { filename: string; content: Buffer }
   const attachments: Attachment[] = []
@@ -83,12 +57,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await transporter.sendMail({
-      from: `"Jobli Contact" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
+    await sendMail({
+      to: process.env.SMTP_USER ?? '',
+      fromLabel: 'Jobli Contact',
       replyTo: email,
-      subject: `New enquiry from ${escapeHtml(stripHeaderInjection(name))} — Jobli`,
+      subject: `New enquiry from ${stripHeaderInjection(name)} — Jobli`,
       text: `Name: ${name}\nEmail: ${email}\n${existingSite ? `Existing site: ${existingSite}\n` : ''}\nMessage:\n${message}${attachment ? `\n\nAttachment: ${attachment.name}` : ''}`,
+      attachments,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; background: #0a0b14; color: #f0f0f5; padding: 32px; border-radius: 12px; border: 1px solid #2a2d3e;">
           <div style="margin-bottom: 24px;">
@@ -119,7 +94,6 @@ export async function POST(req: NextRequest) {
           </div>
         </div>
       `,
-      attachments,
     })
 
     return NextResponse.json({ success: true })

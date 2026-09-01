@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
 
     await sendMail({
-      to: process.env.GMAIL_USER ?? "",
+      to: process.env.SMTP_USER ?? "",
       replyTo: user.email,
       fromLabel: "Jobli — Richieste crediti",
       subject: `Richiesta di ${EXTRA_CREDITS} crediti — ${user.email}`,

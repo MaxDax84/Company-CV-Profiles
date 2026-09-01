@@ -171,7 +171,7 @@ export default function PrivacyPage() {
                   qualità di responsabili del trattamento ai sensi dell&apos;art. 28 GDPR sono:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail), ricezione messaggi dal modulo di contatto e invio delle comunicazioni di servizio relative al tuo account descritte al punto 3</li>
+                  <li>Aruba S.p.A., gestore della casella email del Titolare: ricezione messaggi dal modulo di contatto e invio delle comunicazioni di servizio relative al tuo account descritte al punto 3</li>
                   <li>Vercel Inc., hosting dell&apos;applicazione, conservazione temporanea delle anteprime non ancora collegate a un account, e limitazione del numero di richieste per indirizzo IP sui moduli più sensibili</li>
                   <li>Supabase Inc., gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
                   <li>Anthropic PBC, elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
@@ -186,8 +186,8 @@ export default function PrivacyPage() {
                 <p>
                   La maggior parte dei fornitori sopra indicati ha sede negli Stati Uniti
                   (l&apos;infrastruttura dati di Supabase può essere configurata in diverse regioni,
-                  incluse quelle europee; Usercentrics A/S ha invece sede in Danimarca, quindi non
-                  comporta un trasferimento extra-UE). Per i fornitori extra-UE, i trasferimenti sono
+                  incluse quelle europee; Usercentrics A/S ha sede in Danimarca e Aruba S.p.A. ha sede
+                  in Italia, quindi non comportano un trasferimento extra-UE). Per i fornitori extra-UE, i trasferimenti sono
                   effettuati nel rispetto delle garanzie previste dagli artt. 44–49 GDPR, tramite le
                   Standard Contractual Clauses (SCC) adottate dalla Commissione Europea.
                 </p>
@@ -399,7 +399,7 @@ export default function PrivacyPage() {
                   Your data is not sold or shared with third parties. The processors (Art. 28 GDPR) are:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Google LLC (Gmail), receipt of contact form messages and delivery of the account service emails described in point 3</li>
+                  <li>Aruba S.p.A., operator of the Controller&apos;s mailbox: receipt of contact form messages and delivery of the account service emails described in point 3</li>
                   <li>Vercel Inc., application hosting, temporary storage of previews not yet linked to an account, and per-IP-address rate limiting on the more sensitive forms</li>
                   <li>Supabase Inc., account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
                   <li>Anthropic PBC, processing of CV text for profile extraction, improvement, and job tailoring</li>
@@ -414,8 +414,8 @@ export default function PrivacyPage() {
                 <p>
                   Most of the processors listed above are based in the United States (Supabase&apos;s
                   data infrastructure can be configured in various regions, including within the EU;
-                  Usercentrics A/S, by contrast, is based in Denmark, so it does not involve a non-EU
-                  transfer). For non-EU processors, transfers are carried out under the safeguards of
+                  Usercentrics A/S is based in Denmark and Aruba S.p.A. is based in Italy, so neither
+                  involves a non-EU transfer). For non-EU processors, transfers are carried out under the safeguards of
                   Arts. 44–49 GDPR via Standard Contractual Clauses (SCC) adopted by the European
                   Commission.
                 </p>

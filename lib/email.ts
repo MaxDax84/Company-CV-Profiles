@@ -6,11 +6,10 @@ import { buildUnsubscribeUrl } from "./unsubscribe";
 // Routes that do have one (app/auth/callback) pass their own origin instead.
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jobli.it";
 
-// Shared by every route that sends mail through the site's own Gmail
-// account (app/api/contact, app/api/account/request-domain keep their own
-// copies of this — this module exists for the request-credits/lifecycle
-// email routes added afterwards, so as not to touch those two already-
-// verified flows without a reason).
+// Shared by every route that sends mail through the site's own mailbox —
+// the single place that knows how to talk to the SMTP provider, so
+// switching providers (as happened moving off a personal Gmail account onto
+// info@jobli.it on Aruba, September 2026) is a one-file change.
 
 export function escapeHtml(text: string): string {
   return text
@@ -28,12 +27,19 @@ export function stripHeaderInjection(text: string): string {
   return text.replace(/[\r\n]+/g, " ").trim();
 }
 
+// Generic SMTP (not a nodemailer "service" shorthand, which only exists for
+// providers like Gmail) — works with any mailbox, currently Aruba's
+// info@jobli.it. Host/port stay overridable via env in case the mailbox
+// ever moves to yet another provider, but default to Aruba's standard
+// values so only SMTP_USER/SMTP_PASSWORD are strictly required.
 function getTransporter() {
   return nodemailer.createTransport({
-    service: "gmail",
+    host: process.env.SMTP_HOST ?? "smtps.aruba.it",
+    port: Number(process.env.SMTP_PORT ?? 465),
+    secure: true,
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD,
     },
   });
 }
@@ -45,25 +51,27 @@ interface SendMailOptions {
   html: string;
   replyTo?: string;
   fromLabel?: string;
+  attachments?: { filename: string; content: Buffer }[];
 }
 
 // Fire-and-log, never throws — every caller of this treats email as a
 // courtesy notification, not something worth failing the whole request
-// over (a spend or a signup must still succeed even if Gmail is down).
+// over (a spend or a signup must still succeed even if the mailbox is down).
 export async function sendMail(opts: SendMailOptions): Promise<void> {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.error("[email] GMAIL_USER/GMAIL_APP_PASSWORD not configured, skipping send");
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.error("[email] SMTP_USER/SMTP_PASSWORD not configured, skipping send");
     return;
   }
   try {
     const transporter = getTransporter();
     await transporter.sendMail({
-      from: `"${opts.fromLabel ?? "Jobli"}" <${process.env.GMAIL_USER}>`,
+      from: `"${opts.fromLabel ?? "Jobli"}" <${process.env.SMTP_USER}>`,
       to: opts.to,
       replyTo: opts.replyTo,
       subject: stripHeaderInjection(opts.subject),
       text: opts.text,
       html: opts.html,
+      attachments: opts.attachments,
     });
   } catch (err) {
     console.error("[email] send failed", err);

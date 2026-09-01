@@ -108,7 +108,7 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 - **Finalità**: rispondere a richieste di informazioni o supporto inviate volontariamente dall'utente.
 - **Base giuridica**: art. 6(1)(b) GDPR (misure precontrattuali su richiesta dell'interessato) o art. 6(1)(f) GDPR (legittimo interesse a rispondere), a seconda del contesto della richiesta.
 - **Categorie di dati**: nome, email, testo del messaggio, eventuale CV allegato.
-- **Destinatari**: Google LLC (Gmail, ricezione email).
+- **Destinatari**: Aruba S.p.A. (ricezione email tramite la casella info@jobli.it).
 - **Termine di conservazione**: non archiviato in un database; conservato solo nella casella email di destinazione secondo le policy di retention email standard.
 
 ## 7. Cookie e analytics
@@ -146,7 +146,7 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
   (`app/api/account/unsubscribe`, token univoco per utente) più un interruttore nelle impostazioni
   dell'account (`account_settings.lifecycle_emails_opt_out`); l'opposizione ha effetto immediato su
   tutte e tre le comunicazioni insieme.
-- **Destinatari**: Google LLC (Gmail), invio tecnico del messaggio.
+- **Destinatari**: Aruba S.p.A., invio tecnico del messaggio tramite la casella info@jobli.it.
 - **Termine di conservazione**: l'indirizzo email non viene conservato separatamente per questa
   finalità (è già il dato di accesso all'account); la sola data dell'ultimo invio di ciascun tipo di
   email è conservata finché l'account esiste, per garantire che ogni email sia inviata al massimo
@@ -162,7 +162,7 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 | Vercel Inc. | Hosting applicazione, rate limiting IP | USA | Sì | Sì (piano da confermare) — verificato 01/09/2026, v. sotto |
 | Anthropic PBC | Elaborazione AI del testo del CV | USA | Sì (SCC Modulo 2/3, EU 2021/914) | Sì — DPA pubblico incorporato nei Commercial Terms, verificato 21/08/2026 |
 | Cloudflare Inc. | Verifica anti-bot (Turnstile) | USA (rete globale) | Sì | Sì (probabile, v. nota) — verificato 01/09/2026, v. sotto |
-| Google LLC | Ricezione/invio email (Gmail) | USA | Sì | `[DA VERIFICARE]` — dipende dal tipo di account, v. nota sotto |
+| Aruba S.p.A. | Ricezione/invio email (casella info@jobli.it) | Italia | No — fornitore italiano | Sì, in via generale — verificato 01/09/2026, nomina formale da confermare, v. sotto |
 | Google Ireland Limited | Google Analytics 4 (solo previo consenso) | UE (Irlanda), dati minimizzati | Parziale (infrastruttura Google globale) | Sì, se Jobli è stabilita in UE/SEE/UK/Svizzera — verificato 01/09/2026, v. sotto |
 
 > **Verificato il 1 settembre 2026** — letti i DPA pubblici di ciascun fornitore. Punti rilevanti:
@@ -191,16 +191,17 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 >   aziende stabilite nell'UE/SEE, nel Regno Unito o in Svizzera — condizione soddisfatta da Jobli in
 >   quanto attività con sede in Italia. Le aziende stabilite altrove devono invece accettarle
 >   manualmente dalle impostazioni dell'account. Nessuna azione necessaria per Jobli su questo punto.
-> - **Google — Gmail (invio email)**: **qui il DPA verificato per Google Workspace (cloud.google.com/
->   terms/data-processing-addendum) si applica solo agli account Google Workspace/Cloud Identity a
->   pagamento**, non a un normale account Gmail personale gratuito (@gmail.com). Non è stato
->   possibile determinare da qui se l'account usato da Jobli per inviare le email (`GMAIL_USER`) sia
->   un account Workspace o un Gmail personale gratuito — la differenza cambia la risposta a questa
->   riga della tabella. **Se è un Gmail personale gratuito, non esiste un DPA formale equivalente**:
->   resta comunque coperto dai Termini di Servizio e dalla Privacy Policy generali di Google per i
->   consumatori, ma non dalle garanzie contrattuali specifiche dell'art. 28 GDPR (SCC esplicite,
->   elenco sub-responsabili, termine di notifica violazioni). Da chiarire con il Titolare quale dei
->   due tipi di account sia effettivamente in uso.
+> - **Aruba (invio/ricezione email)**: sostituisce Google LLC/Gmail dal 1 settembre 2026 — la casella
+>   info@jobli.it, ospitata da Aruba S.p.A. (Ponte San Pietro, BG, Italia), è ora l'unico indirizzo
+>   usato sia per la corrispondenza in arrivo (moduli contatti, richieste dominio/crediti) sia per le
+>   comunicazioni di servizio in uscita verso gli utenti. Aruba tratta i dati dei clienti in qualità di
+>   responsabile del trattamento ex art. 28 GDPR, con nomina prevista dal contratto di fornitura del
+>   servizio. Essendo un fornitore con sede in Italia, questo trattamento **non comporta alcun
+>   trasferimento extra-UE** — un miglioramento reale rispetto alla situazione precedente con Gmail
+>   (USA). **Da confermare**: che la nomina formale di Aruba a responsabile del trattamento sia stata
+>   effettivamente accettata in fase di attivazione della casella (normalmente inclusa nelle condizioni
+>   generali di fornitura, ma vale la pena verificarlo nel pannello di gestione del servizio Aruba).
 
-**Prossimo passo consigliato**: confermare il piano Vercel e il tipo di account Gmail in uso (le due
-uniche caselle rimaste aperte sopra); archiviare una copia o un link permanente di ciascun DPA citato.
+**Prossimo passo consigliato**: confermare il piano Vercel in uso e la nomina formale di Aruba a
+responsabile del trattamento (le due uniche caselle rimaste aperte sopra); archiviare una copia o un
+link permanente di ciascun DPA citato.
