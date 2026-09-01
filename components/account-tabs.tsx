@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  UploadCloud, Target, Download, ExternalLink, Mail, X, Globe,
+  UploadCloud, Target, Download, ExternalLink, X, Globe,
   LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight, MessageSquareText,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
@@ -434,13 +434,6 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         slug={row.slug}
                         label={tr("Download", "Download")}
                         icon={<Download className="w-4 h-4" />}
-                        credits={credits}
-                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      />
-                      <CoverLetterButton
-                        slug={row.slug}
-                        label={tr("Lettera di presentazione", "Cover letter")}
-                        icon={<Mail className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />

@@ -16,16 +16,21 @@ interface DownloadMenuButtonProps {
   onDownloaded?: () => void;
 }
 
-type Step = "closed" | "format" | "template";
+type Step = "closed" | "kind" | "format" | "template";
+type Kind = "cv" | "letter";
 type Format = "pdf" | "word";
 
-// Consolidates PdfExportButton (3 templates) and WordExportButton (single
-// layout, see its own comment for why) behind one "Download" entry point —
-// PDF asks which of the 3 templates, Word skips straight to the confirm
-// step since there's only one layout to download.
+// Consolidates PdfExportButton (3 templates), WordExportButton (single
+// layout, see its own comment for why), and CoverLetterButton behind one
+// "Download" entry point — first asks CV or cover letter; CV continues into
+// the format/template steps below, cover letter skips straight to the
+// confirm step since it has no format choice (single PDF layout, see
+// components/cover-letter-button.tsx, still used as-is in the "CV Adattati"
+// tab).
 export default function DownloadMenuButton({ slug, label, icon, className, credits, onDownloaded }: DownloadMenuButtonProps) {
   const { lang } = useLanguage();
   const [step, setStep] = useState<Step>("closed");
+  const [kind, setKind] = useState<Kind>("cv");
   const [format, setFormat] = useState<Format>("pdf");
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [confirming, setConfirming] = useState(false);
@@ -34,7 +39,9 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Same "already paid" status endpoint used by PdfExportButton/WordExportButton
-  // — "docx" is the Word slot, template ids are the PDF slots.
+  // — "docx" is the Word slot, template ids are the PDF slots. Cover letters
+  // have their own, separate server-side caching (see /api/cover-letter),
+  // so this fetch is irrelevant to that branch.
   useEffect(() => {
     if (step === "closed" || paidTemplates !== null) return;
     fetch(`/api/pdf/${slug}/status`)
@@ -45,6 +52,7 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
 
   function close() {
     setStep("closed");
+    setKind("cv");
     setFormat("pdf");
     setTemplate(PDF_TEMPLATES[0].id);
     setErrorMsg(null);
@@ -69,6 +77,22 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
     setDownloading(false);
   }
 
+  // Mirrors CoverLetterButton's own startDownload exactly — no format/
+  // template choice, no client-side "already paid" check (the server
+  // decides for real whether this exact letter was already generated).
+  async function startLetterDownload() {
+    setDownloading(true);
+    setErrorMsg(null);
+    try {
+      await triggerDownload(`/api/cover-letter/${slug}`);
+      onDownloaded?.();
+      close();
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : (lang === "en" ? "Download failed, try again." : "Download fallito, riprova."));
+    }
+    setDownloading(false);
+  }
+
   const paidKey = format === "pdf" ? template : "docx";
   function handleDownloadClick() {
     if (paidTemplates?.includes(paidKey)) {
@@ -80,7 +104,7 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
 
   if (step === "closed") {
     return (
-      <button type="button" onClick={() => setStep("format")} className={className}>
+      <button type="button" onClick={() => setStep("kind")} className={className}>
         {icon}
         {icon ? <span className="text-[10px] leading-tight text-center line-clamp-2">{label}</span> : label}
       </button>
@@ -92,11 +116,52 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
       className="w-full rounded-xl border border-foreground/10 p-3 space-y-2.5 text-left"
       style={{ background: "var(--background)", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}
     >
-      {step === "format" && (
+      {step === "kind" && (
         <>
           <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-            {lang === "en" ? "Choose a format" : "Scegli un formato"}
+            {lang === "en" ? "What do you want to download?" : "Cosa vuoi scaricare?"}
           </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => { setKind("cv"); setStep("format"); }}
+              className="flex-1 rounded-lg border border-foreground/10 px-3 py-3 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+            >
+              {lang === "en" ? "CV" : "CV"}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setKind("letter"); setConfirming(true); }}
+              className="flex-1 rounded-lg border border-foreground/10 px-3 py-3 text-sm font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+            >
+              {lang === "en" ? "Cover letter" : "Lettera di presentazione"}
+            </button>
+          </div>
+          {errorMsg && (
+            <p className="text-[11px] rounded-lg px-3 py-2" style={{ background: "color-mix(in srgb, #ef4444 12%, transparent)", color: "#ef4444" }}>
+              {errorMsg}
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={close}
+            className="w-full text-center py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {lang === "en" ? "Cancel" : "Annulla"}
+          </button>
+        </>
+      )}
+
+      {step === "format" && (
+        <>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+              {lang === "en" ? "Choose a format" : "Scegli un formato"}
+            </p>
+            <button type="button" onClick={() => setStep("kind")} className="text-[10px] font-semibold shrink-0" style={{ color: "var(--primary)" }}>
+              {lang === "en" ? "← Back" : "← Indietro"}
+            </button>
+          </div>
           <div className="flex gap-2">
             <button
               type="button"
@@ -215,7 +280,9 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
       {confirming && (
         <CreditConfirmModal
           actionLabel={
-            format === "pdf"
+            kind === "letter"
+              ? (lang === "en" ? "Generate the cover letter?" : "Generare la lettera di presentazione?")
+              : format === "pdf"
               ? (lang === "en" ? "Download the PDF?" : "Scaricare il PDF?")
               : (lang === "en" ? "Download the Word document?" : "Scaricare il documento Word?")
           }
@@ -224,13 +291,23 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
           onCancel={() => setConfirming(false)}
           onConfirm={async () => {
             setConfirming(false);
-            await startDownload();
+            if (kind === "letter") {
+              await startLetterDownload();
+            } else {
+              await startDownload();
+            }
           }}
         />
       )}
       {downloading && (
         <DownloadLoadingOverlay
-          label={format === "pdf" ? (lang === "en" ? "Preparing your PDF…" : "Sto preparando il tuo PDF…") : (lang === "en" ? "Preparing your Word document…" : "Sto preparando il tuo documento Word…")}
+          label={
+            kind === "letter"
+              ? (lang === "en" ? "Writing your letter…" : "Sto scrivendo la tua lettera…")
+              : format === "pdf"
+              ? (lang === "en" ? "Preparing your PDF…" : "Sto preparando il tuo PDF…")
+              : (lang === "en" ? "Preparing your Word document…" : "Sto preparando il tuo documento Word…")
+          }
         />
       )}
     </div>

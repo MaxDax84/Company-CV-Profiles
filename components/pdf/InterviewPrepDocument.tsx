@@ -61,6 +61,61 @@ const LABELS = {
     sources: "Sources",
     unknownCompany: "Company not identified from the posting",
   },
+  es: {
+    eyebrow: "Preparación de la entrevista",
+    company: "La empresa",
+    market: "Mercado y posicionamiento",
+    culture: "Cultura y valores",
+    news: "Noticias recientes",
+    focus: "Puntos clave de la oferta",
+    questions: "Posibles preguntas de la entrevista",
+    sources: "Fuentes",
+    unknownCompany: "Empresa no identificada en la oferta",
+  },
+  fr: {
+    eyebrow: "Préparation à l'entretien",
+    company: "L'entreprise",
+    market: "Marché et positionnement",
+    culture: "Culture et valeurs",
+    news: "Actualités récentes",
+    focus: "Points clés de l'offre",
+    questions: "Questions d'entretien possibles",
+    sources: "Sources",
+    unknownCompany: "Entreprise non identifiée dans l'offre",
+  },
+  de: {
+    eyebrow: "Vorbereitung auf das Vorstellungsgespräch",
+    company: "Das Unternehmen",
+    market: "Markt und Positionierung",
+    culture: "Kultur und Werte",
+    news: "Aktuelle Nachrichten",
+    focus: "Wichtige Punkte der Stellenanzeige",
+    questions: "Mögliche Interviewfragen",
+    sources: "Quellen",
+    unknownCompany: "Unternehmen aus der Anzeige nicht identifiziert",
+  },
+  pt: {
+    eyebrow: "Preparação para a entrevista",
+    company: "A empresa",
+    market: "Mercado e posicionamento",
+    culture: "Cultura e valores",
+    news: "Notícias recentes",
+    focus: "Pontos-chave da vaga",
+    questions: "Possíveis perguntas da entrevista",
+    sources: "Fontes",
+    unknownCompany: "Empresa não identificada na vaga",
+  },
+  zh: {
+    eyebrow: "面试准备",
+    company: "公司简介",
+    market: "市场与定位",
+    culture: "文化与价值观",
+    news: "最新动态",
+    focus: "职位要点",
+    questions: "可能的面试问题",
+    sources: "参考来源",
+    unknownCompany: "无法从职位信息中识别公司",
+  },
 } as const;
 
 interface InterviewPrepDocumentProps {
@@ -68,8 +123,7 @@ interface InterviewPrepDocumentProps {
 }
 
 export function InterviewPrepDocument({ content }: InterviewPrepDocumentProps) {
-  const lang = content.language === "en" ? "en" : "it";
-  const t = LABELS[lang];
+  const t = LABELS[content.language as keyof typeof LABELS] ?? LABELS.en;
 
   return (
     <Document>

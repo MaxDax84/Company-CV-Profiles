@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Building2 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
+import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import { triggerDownload } from "@/lib/trigger-download";
 
 type JobSource = "text" | "url";
@@ -27,14 +28,30 @@ interface InterviewPrepPanelProps {
 export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPanelProps) {
   const router = useRouter();
   const { lang } = useLanguage();
+  const [reportLanguage, setReportLanguage] = useState(lang === "en" ? "en" : "it");
   const [jobSource, setJobSource] = useState<JobSource>("url");
   const [jobText, setJobText] = useState("");
   const [jobUrl, setJobUrl] = useState("");
   const [confirming, setConfirming] = useState(false);
   const [working, setWorking] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [duplicate, setDuplicate] = useState<{ slug: string; createdAt: string } | null>(null);
   const [redownloadingSlug, setRedownloadingSlug] = useState<string | null>(null);
+
+  // Eases toward ~90% while the real research call is in flight (real web
+  // searches, no granular progress available) — jumps to 100% right before
+  // the overlay is dismissed, same pattern as signup-form.tsx's account
+  // creation bar. A bare spinner alone starts to read as "stuck" past a few
+  // seconds on a call that can genuinely take 20-40s.
+  useEffect(() => {
+    if (!working) { setProgress(0); return; }
+    setProgress(8);
+    const id = setInterval(() => {
+      setProgress((p) => (p < 90 ? p + (90 - p) * 0.08 : p));
+    }, 400);
+    return () => clearInterval(id);
+  }, [working]);
 
   const hasJob = jobSource === "text" ? jobText.trim().length >= JOB_TEXT_MIN : jobUrl.trim().length > 0;
 
@@ -50,6 +67,7 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
           jobSource,
           jobText: jobSource === "text" ? jobText.trim() : undefined,
           jobUrl: jobSource === "url" ? jobUrl.trim() : undefined,
+          language: reportLanguage,
           forceRegenerate,
         }),
       });
@@ -103,6 +121,22 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
       </div>
 
       <div className="max-w-xl mx-auto space-y-4">
+        <div className="space-y-1.5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+            {lang === "en" ? "Report language" : "Lingua del report"}
+          </p>
+          <select
+            value={reportLanguage}
+            onChange={(e) => setReportLanguage(e.target.value)}
+            className="w-full sm:w-auto bg-foreground/[0.03] border border-foreground/10 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary/50 cursor-pointer"
+            style={{ colorScheme: "light" }}
+          >
+            {TRANSLATE_LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="grid grid-cols-2 gap-2">
           {(["url", "text"] as const).map((src) => (
             <button
@@ -229,6 +263,7 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
       {working && (
         <DownloadLoadingOverlay
           label={lang === "en" ? "Researching the company…" : "Sto studiando l'azienda…"}
+          progress={progress}
         />
       )}
     </div>

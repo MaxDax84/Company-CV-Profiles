@@ -25,10 +25,27 @@ export interface InterviewPrepContent {
   role_focus_points: string[];
   likely_questions: string[];
   sources: InterviewPrepSource[];
-  language: "it" | "en";
+  // One of LANGUAGE_NAMES's keys below — set programmatically from the
+  // caller's requested language, not trusted to the model (see
+  // generateInterviewPrep).
+  language: string;
 }
 
-const SYSTEM_PROMPT = `You help a job candidate prepare for an interview by researching the hiring company behind a job posting and summarizing what they need to know before walking in. You will be given the job posting as plain text. Use the web_search and web_fetch tools to research the company using real, current, public sources (the company's own website, its LinkedIn page, recent press coverage) — never rely on prior knowledge alone for anything that could be outdated (team size, products, leadership, recent moves).
+// Same 7 languages offered by components/translate-cv-button.tsx's
+// TRANSLATE_LANGUAGES — kept as a separate map here (English names, for the
+// prompt) rather than importing that client component into server code.
+const LANGUAGE_NAMES: Record<string, string> = {
+  it: "Italian",
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  pt: "Portuguese",
+  zh: "Simplified Chinese",
+};
+
+function buildSystemPrompt(languageName: string): string {
+  return `You help a job candidate prepare for an interview by researching the hiring company behind a job posting and summarizing what they need to know before walking in. You will be given the job posting as plain text. Use the web_search and web_fetch tools to research the company using real, current, public sources (the company's own website, its LinkedIn page, recent press coverage) — never rely on prior knowledge alone for anything that could be outdated (team size, products, leadership, recent moves).
 
 WHAT TO PRODUCE (all from real sources you actually searched/fetched, never invented):
 - The company's name and the role title, read from the job posting itself. If the job posting is anonymized or a generic listing with no identifiable company, set company_name to null and say so plainly in company_summary rather than guessing.
@@ -45,7 +62,7 @@ RULES:
 - Keep every field concise — the final output becomes a 1-2 page PDF the candidate skims right before the interview, not a research dossier. company_summary, market, and culture_values should each be 2-4 sentences at most. Each item in recent_news/role_focus_points/likely_questions should be one sentence.
 - Do not write any commentary, preamble, or explanation of your research process in your visible text — only use text to reason briefly if needed, then output nothing but the final JSON object as your last message.
 
-LANGUAGE: write every text field in the SAME LANGUAGE as the job posting text you were given.
+LANGUAGE: write every text field in ${languageName}, regardless of the language the job posting itself is written in — the candidate chose ${languageName} explicitly for this report.
 
 OUTPUT FORMAT — your final message must be ONLY a single valid JSON object matching this shape, no markdown, no explanation, no code fences:
 {
@@ -57,9 +74,9 @@ OUTPUT FORMAT — your final message must be ONLY a single valid JSON object mat
   "recent_news": string[],
   "role_focus_points": string[],
   "likely_questions": string[],
-  "sources": [{ "title": string, "url": string }],
-  "language": "it" | "en"
+  "sources": [{ "title": string, "url": string }]
 }`;
+}
 
 interface ClaudeToolResponse {
   stop_reason: string;
@@ -67,7 +84,7 @@ interface ClaudeToolResponse {
   usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
 }
 
-async function callClaude(messages: unknown[]): Promise<ClaudeToolResponse> {
+async function callClaude(messages: unknown[], systemPrompt: string): Promise<ClaudeToolResponse> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -78,7 +95,7 @@ async function callClaude(messages: unknown[]): Promise<ClaudeToolResponse> {
     body: JSON.stringify({
       model: "claude-sonnet-5",
       max_tokens: 8192,
-      system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       output_config: { effort: "high" },
       tools: [
         { type: "web_search_20250305", name: "web_search", max_uses: 4 },
@@ -122,7 +139,13 @@ function extractLastJsonObject(content: ClaudeToolResponse["content"]): Intervie
 
 const MAX_CONTINUATIONS = 4;
 
-export async function generateInterviewPrep(jobPostingText: string, userId?: string | null): Promise<InterviewPrepContent> {
+export async function generateInterviewPrep(
+  jobPostingText: string,
+  language: string,
+  userId?: string | null
+): Promise<InterviewPrepContent> {
+  const languageName = LANGUAGE_NAMES[language] ?? LANGUAGE_NAMES.it;
+  const systemPrompt = buildSystemPrompt(languageName);
   const messages: unknown[] = [
     {
       role: "user",
@@ -130,7 +153,7 @@ export async function generateInterviewPrep(jobPostingText: string, userId?: str
     },
   ];
 
-  let response = await callClaude(messages);
+  let response = await callClaude(messages, systemPrompt);
   logClaudeUsage("interview_prep", "claude-sonnet-5", response.usage, userId);
 
   // Server-tool turns can pause after their internal iteration cap — resend
@@ -139,7 +162,7 @@ export async function generateInterviewPrep(jobPostingText: string, userId?: str
   let continuations = 0;
   while (response.stop_reason === "pause_turn" && continuations < MAX_CONTINUATIONS) {
     messages.push({ role: "assistant", content: response.content });
-    response = await callClaude(messages);
+    response = await callClaude(messages, systemPrompt);
     logClaudeUsage("interview_prep", "claude-sonnet-5", response.usage, userId);
     continuations++;
   }
@@ -148,5 +171,9 @@ export async function generateInterviewPrep(jobPostingText: string, userId?: str
     throw new Error("The model declined to research this job posting.");
   }
 
-  return extractLastJsonObject(response.content);
+  const content = extractLastJsonObject(response.content);
+  // Set from the caller's explicit choice rather than trusted to the
+  // model's own JSON output — the prompt no longer even asks for it.
+  content.language = language;
+  return content;
 }

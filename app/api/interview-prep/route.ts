@@ -13,6 +13,9 @@ export const maxDuration = 120;
 
 const JOB_TEXT_MIN = 200;
 const JOB_TEXT_MAX = 20_000;
+// Only ever ISO 639-1 codes from components/translate-cv-button.tsx's fixed
+// language list (e.g. "it", "es", "zh") — never free text.
+const MAX_LANGUAGE_CODE_LENGTH = 8;
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,6 +40,11 @@ export async function POST(req: NextRequest) {
     const jobSource = body?.jobSource;
     if (jobSource !== "text" && jobSource !== "url") {
       return NextResponse.json({ error: "Invalid or missing jobSource." }, { status: 400 });
+    }
+
+    const language = typeof body?.language === "string" ? body.language.trim() : "";
+    if (!language || language.length > MAX_LANGUAGE_CODE_LENGTH) {
+      return NextResponse.json({ error: "Invalid language." }, { status: 400 });
     }
 
     let jobPostingText: string;
@@ -91,7 +99,7 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    const content = await generateInterviewPrep(jobPostingText, user.id);
+    const content = await generateInterviewPrep(jobPostingText, language, user.id);
     const { slug } = await saveInterviewPrep(supabase, user.id, content, jobHash);
     const code = await getAccountCode(supabase, user.id);
 

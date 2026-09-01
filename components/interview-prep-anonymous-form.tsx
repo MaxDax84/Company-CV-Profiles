@@ -5,20 +5,25 @@ import { Sparkles, Building2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { useLanguage } from "@/components/language-provider";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/turnstile-widget";
+import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import type { InterviewPrepContent } from "@/lib/interview-prep";
 
 type JobSource = "text" | "url";
 type State = "idle" | "working" | "done" | "error";
 const JOB_TEXT_MIN = 200;
 const ACCENT = "var(--primary)";
+const COST = 2;
 
 export default function InterviewPrepAnonymousForm() {
   const { lang } = useLanguage();
+  const [reportLanguage, setReportLanguage] = useState(lang === "en" ? "en" : "it");
   const [jobSource, setJobSource] = useState<JobSource>("url");
   const [jobText, setJobText] = useState("");
   const [jobUrl, setJobUrl] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
+  const [confirming, setConfirming] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [content, setContent] = useState<InterviewPrepContent | null>(null);
   const [claimToken, setClaimToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +38,18 @@ export default function InterviewPrepAnonymousForm() {
     supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user));
   }, []);
 
+  // Same eased-progress pattern as interview-prep-panel.tsx (the logged-in
+  // version of this flow) — a bare spinner reads as stuck once the real
+  // web-research call runs past a few seconds.
+  useEffect(() => {
+    if (state !== "working") { setProgress(0); return; }
+    setProgress(8);
+    const id = setInterval(() => {
+      setProgress((p) => (p < 90 ? p + (90 - p) * 0.08 : p));
+    }, 400);
+    return () => clearInterval(id);
+  }, [state]);
+
   const hasJob = jobSource === "text" ? jobText.trim().length >= JOB_TEXT_MIN : jobUrl.trim().length > 0;
   const canGenerate = hasJob && privacy && !!turnstileToken && state !== "working";
 
@@ -46,6 +63,7 @@ export default function InterviewPrepAnonymousForm() {
     formData.append("jobSource", jobSource);
     if (jobSource === "text") formData.append("jobText", jobText.trim());
     if (jobSource === "url") formData.append("jobUrl", jobUrl.trim());
+    formData.append("language", reportLanguage);
 
     try {
       const res = await fetch("/api/interview-prep/anonymous", { method: "POST", body: formData });
@@ -115,13 +133,13 @@ export default function InterviewPrepAnonymousForm() {
           <p className="text-sm font-semibold" style={{ color: ACCENT }}>
             {lang === "en" ? "This is just a preview" : "Questa è solo un'anteprima"}
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            {lang === "en"
-              ? "Create a free account to save this report and download the full 1-2 page PDF (2 credits — new accounts start with 3 free credits)."
-              : "Crea un account gratuito per salvare questo report e scaricare il PDF completo di 1-2 pagine (2 crediti — i nuovi account partono con 3 crediti omaggio)."}
-          </p>
           {isLoggedIn === true ? (
             <>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {lang === "en"
+                  ? `Save this report to your account and download the full 1-2 page PDF (${COST} credits).`
+                  : `Salva questo report nel tuo account e scarica il PDF completo di 1-2 pagine (${COST} crediti).`}
+              </p>
               {claimError && <p className="text-xs text-destructive">{claimError}</p>}
               <button
                 onClick={handleProceedLoggedIn}
@@ -133,13 +151,20 @@ export default function InterviewPrepAnonymousForm() {
               </button>
             </>
           ) : (
-            <a
-              href={`/signup?claim=${claimToken}&kind=interview`}
-              className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
-              style={{ background: ACCENT, color: "var(--primary-foreground)" }}
-            >
-              {lang === "en" ? "Create a free account or log in →" : "Crea account gratis o accedi →"}
-            </a>
+            <>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {lang === "en"
+                  ? `Create a free account to save this report and download the full 1-2 page PDF (${COST} credits — new accounts start with 3 free credits).`
+                  : `Crea un account gratuito per salvare questo report e scaricare il PDF completo di 1-2 pagine (${COST} crediti — i nuovi account partono con 3 crediti omaggio).`}
+              </p>
+              <a
+                href={`/signup?claim=${claimToken}&kind=interview`}
+                className="block w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
+                style={{ background: ACCENT, color: "var(--primary-foreground)" }}
+              >
+                {lang === "en" ? "Create a free account or log in →" : "Crea account gratis o accedi →"}
+              </a>
+            </>
           )}
         </div>
       </div>
@@ -171,9 +196,31 @@ export default function InterviewPrepAnonymousForm() {
           <p className="text-sm text-muted-foreground">
             {lang === "en" ? "Researching the company…" : "Sto studiando l'azienda…"}
           </p>
+          <div className="h-1.5 rounded-full bg-foreground/10 overflow-hidden max-w-xs mx-auto">
+            <div
+              className="h-full rounded-full transition-[width] duration-300 ease-out"
+              style={{ width: `${progress}%`, background: "var(--primary)" }}
+            />
+          </div>
         </div>
       ) : (
         <>
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              {lang === "en" ? "Report language" : "Lingua del report"}
+            </p>
+            <select
+              value={reportLanguage}
+              onChange={(e) => setReportLanguage(e.target.value)}
+              className="w-full sm:w-auto bg-foreground/[0.03] border border-foreground/10 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary/50 cursor-pointer"
+              style={{ colorScheme: "light" }}
+            >
+              {TRANSLATE_LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>{lang === "en" ? l.labelEn : l.label}</option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             {(["url", "text"] as const).map((src) => (
               <button
@@ -245,7 +292,7 @@ export default function InterviewPrepAnonymousForm() {
           )}
 
           <button
-            onClick={handleGenerate}
+            onClick={() => setConfirming(true)}
             disabled={!canGenerate}
             className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed"
             style={canGenerate ? {
@@ -256,6 +303,38 @@ export default function InterviewPrepAnonymousForm() {
             {lang === "en" ? "Prepare the interview" : "Prepara il colloquio"}
           </button>
         </>
+      )}
+
+      {confirming && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setConfirming(false)}>
+          <div className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center" onClick={(e) => e.stopPropagation()}>
+            <p className="text-sm font-semibold">
+              {lang === "en" ? "Prepare this interview?" : "Preparare questo colloquio?"}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {lang === "en"
+                ? `The report itself is free to generate. Saving it and downloading the PDF afterward will require a free account and cost ${COST} credits (new accounts start with 3 free credits).`
+                : `Generare il report è gratis. Salvarlo e scaricare il PDF dopo richiederà un account gratuito e costerà ${COST} crediti (i nuovi account partono con 3 crediti omaggio).`}
+            </p>
+            <div className="flex gap-2 justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => setConfirming(false)}
+                className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {lang === "en" ? "Cancel" : "Annulla"}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setConfirming(false); handleGenerate(); }}
+                className="px-4 py-2 rounded-lg text-sm font-semibold"
+                style={{ background: ACCENT, color: "var(--primary-foreground)" }}
+              >
+                {lang === "en" ? "Confirm" : "Conferma"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -15,6 +15,7 @@ export const maxDuration = 120;
 
 const JOB_TEXT_MIN = 200;
 const JOB_TEXT_MAX = 20_000;
+const MAX_LANGUAGE_CODE_LENGTH = 8;
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,6 +44,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid or missing jobSource." }, { status: 400 });
     }
 
+    const languageRaw = formData.get("language");
+    const language = typeof languageRaw === "string" ? languageRaw.trim() : "";
+    if (!language || language.length > MAX_LANGUAGE_CODE_LENGTH) {
+      return NextResponse.json({ error: "Invalid language." }, { status: 400 });
+    }
+
     let jobPostingText: string;
     if (jobSource === "text") {
       const jobText = formData.get("jobText");
@@ -69,7 +76,7 @@ export async function POST(req: NextRequest) {
       jobPostingText = fetched.text;
     }
 
-    const content = await generateInterviewPrep(jobPostingText);
+    const content = await generateInterviewPrep(jobPostingText, language);
     const { slug, claimToken } = await savePendingInterviewPrep(content);
 
     return NextResponse.json({ slug, claimToken, content });
