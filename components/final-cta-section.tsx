@@ -53,7 +53,7 @@ export default function FinalCtaSection() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => router.push('/generate')}
+            onClick={() => router.push('/start')}
             className="px-8 py-3.5 rounded-xl bg-[#c7f36b] text-[#101996] font-semibold text-sm hover:bg-[#c7f36b]/90 transition-all duration-200 hover:shadow-xl hover:shadow-[#c7f36b]/30 hover:-translate-y-0.5"
           >
             {t.ctaPrimary}

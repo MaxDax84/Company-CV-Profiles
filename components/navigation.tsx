@@ -191,7 +191,7 @@ export default function Navigation() {
         <div className="flex items-center gap-3">
           {!isAccountContext && (
             <a
-              href="/generate"
+              href="/start"
               className="inline-flex items-center px-4 py-1.5 rounded-full bg-accent-cyan hover:bg-accent-cyan/90 text-accent-cyan-foreground text-sm font-semibold transition-all duration-200"
             >
               {lang === 'en' ? 'Get Started' : 'Inizia Ora'}

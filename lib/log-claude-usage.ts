@@ -25,15 +25,18 @@ export type ClaudeOperation =
   | "translate_resume"
   | "translate_cover_letter"
   | "cv_chat_question"
-  | "cv_chat_finish";
+  | "cv_chat_finish"
+  | "interview_prep";
 
-// $ per million tokens. Current list/intro prices as of 2026-08 — update
-// here if pricing changes; cache reads are billed at a fraction of the
-// input rate, cache writes at a premium over it, per Anthropic's standard
-// scheme.
+// $ per million tokens — list prices. Update here if pricing changes; cache
+// reads are billed at a fraction of the input rate, cache writes at a
+// premium over it, per Anthropic's standard scheme.
 const PRICING: Record<string, { input: number; output: number; cacheWrite: number; cacheRead: number }> = {
   "claude-haiku-4-5-20251001": { input: 1.0, output: 5.0, cacheWrite: 1.25, cacheRead: 0.1 },
-  "claude-sonnet-5": { input: 2.0, output: 10.0, cacheWrite: 2.5, cacheRead: 0.2 }, // intro pricing through 2026-08-31
+  // Sonnet 5's $2/$10 intro pricing ended 2026-08-31 — back to list price.
+  // Rows logged before this date (found while pricing credits, 2026-09-01)
+  // are understated by ~33% and don't get retroactively recomputed.
+  "claude-sonnet-5": { input: 3.0, output: 15.0, cacheWrite: 3.75, cacheRead: 0.3 },
 };
 
 function computeCostUsd(model: string, usage: ClaudeUsage, cacheWrite: number, cacheRead: number): number {

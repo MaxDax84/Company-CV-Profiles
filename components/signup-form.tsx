@@ -18,6 +18,11 @@ export default function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
+  // "interview" for a pending "Prepara il colloquio" report (see
+  // /interview-prep's anonymous flow); omitted/anything else means the
+  // original pending-CV claim.
+  const claimKind = searchParams.get("kind");
+  const loginHref = claimToken ? `/login?claim=${claimToken}${claimKind ? `&kind=${claimKind}` : ""}` : "/login";
   const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
@@ -46,7 +51,7 @@ export default function SignupForm() {
     setError(null);
 
     const supabase = createBrowserSupabaseClient();
-    const emailRedirectTo = `${window.location.origin}/auth/callback${claimToken ? `?claim=${encodeURIComponent(claimToken)}` : ""}`;
+    const emailRedirectTo = `${window.location.origin}/auth/callback${claimToken ? `?claim=${encodeURIComponent(claimToken)}${claimKind ? `&kind=${encodeURIComponent(claimKind)}` : ""}` : ""}`;
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -82,13 +87,13 @@ export default function SignupForm() {
         const res = await fetch("/api/claim", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ claimToken }),
+          body: JSON.stringify({ claimToken, kind: claimKind ?? undefined }),
         });
         const claimed = await res.json();
         if (res.ok) {
           setProgress(100);
           await delay(300);
-          router.push(`/${claimed.code}/${claimed.slug}`);
+          router.push(claimed.kind === "interview" ? "/account?tab=interview" : `/${claimed.code}/${claimed.slug}`);
           return;
         }
         // The account itself was created successfully even though claiming
@@ -131,7 +136,7 @@ export default function SignupForm() {
         </p>
         <div className="flex items-center justify-center gap-4">
           <a
-            href={claimToken ? `/login?claim=${claimToken}` : "/login"}
+            href={loginHref}
             className="inline-flex px-5 py-2.5 rounded-xl font-semibold text-sm"
             style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
           >
@@ -223,11 +228,11 @@ export default function SignupForm() {
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
-      <GoogleAuthButton claimToken={claimToken} />
+      <GoogleAuthButton claimToken={claimToken} claimKind={claimKind} />
 
       <p className="text-xs text-muted-foreground text-center">
         {lang === "en" ? "Already have an account?" : "Hai già un account?"}{" "}
-        <a href={claimToken ? `/login?claim=${claimToken}` : "/login"} className="text-primary hover:underline">
+        <a href={loginHref} className="text-primary hover:underline">
           {lang === "en" ? "Log in" : "Accedi"}
         </a>
       </p>

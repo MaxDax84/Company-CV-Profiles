@@ -53,3 +53,7 @@ export function buildCoverLetterFilename(profile: ProfileSchema, cvName: string)
     `${profile.personal_info.full_name} - Lettera - ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`
   );
 }
+
+export function buildInterviewPrepFilename(companyName: string | null): string {
+  return sanitize(`Colloquio - ${companyName ?? "Preparazione"} - ${todayLabel()}.pdf`);
+}

@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const slug = body?.slug;
     const targetLanguage = typeof body?.targetLanguage === "string" ? body.targetLanguage.trim() : "";
+    const format = body?.format === "word" ? "word" : "pdf";
     const template = parseTemplate(body?.template);
 
     if (typeof slug !== "string" || !slug) {
@@ -64,15 +65,17 @@ export async function POST(req: NextRequest) {
 
     const { slug: newSlug, id: newProfileId } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated);
 
-    // The 1 credit above already paid for this exact PDF — pre-mark it as
-    // paid so the client's immediate GET to /api/pdf/[newSlug] (which is
-    // what actually streams the file) doesn't spend a second credit for
-    // what is, from the user's perspective, one single "translate" action.
-    await recordPaidDownload(user.id, newProfileId, template);
+    // The 1 credit above already paid for this exact file — pre-mark it as
+    // paid so the client's immediate GET to /api/pdf/[newSlug] or
+    // /api/cv-word/[newSlug] (whichever actually streams the file) doesn't
+    // spend a second credit for what is, from the user's perspective, one
+    // single "translate" action. "docx" mirrors the same slot key
+    // /api/cv-word/[slug] itself checks for a Word download.
+    await recordPaidDownload(user.id, newProfileId, format === "word" ? "docx" : template);
 
     const code = await getAccountCode(supabase, user.id);
 
-    return NextResponse.json({ slug: newSlug, code, template });
+    return NextResponse.json({ slug: newSlug, code, template, format });
   } catch (err) {
     console.error("[translate-cv]", err);
     return NextResponse.json(

@@ -6,6 +6,7 @@ import type { ProfileSchema } from "@/lib/schema";
 import type { CreditLedgerEntry } from "@/lib/credits";
 import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
+import type { InterviewPrepListItem } from "@/components/interview-prep-panel";
 import AccountTabs, { isTabId, getTabTitle, type TabId } from "@/components/account-tabs";
 import { useLanguage } from "@/components/language-provider";
 
@@ -22,13 +23,14 @@ interface AccountShellProps {
   paidDownloads: PaidDownloadEntry[];
   coverLetters: GeneratedCoverLetterEntry[];
   creditsLastRequestedAt: string | null;
+  interviewPreps: InterviewPrepListItem[];
 }
 
 // Account settings now live on their own page (app/account/settings), not a
 // drawer here — reached via the avatar dropdown in the global nav (see
 // components/account-avatar-menu.tsx), so this shell only owns which
 // commercial tab is showing.
-export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt }: AccountShellProps) {
+export default function AccountShell({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt, interviewPreps }: AccountShellProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lang } = useLanguage();
@@ -61,6 +63,7 @@ export default function AccountShell({ userEmail, accountCode, primaryProfiles, 
         paidDownloads={paidDownloads}
         coverLetters={coverLetters}
         creditsLastRequestedAt={creditsLastRequestedAt}
+        interviewPreps={interviewPreps}
         tab={tab}
         setTab={setTab}
       />

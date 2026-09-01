@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import {
-  UploadCloud, Target, Download, ExternalLink, Mail, X,
-  LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight,
+  UploadCloud, Target, Download, ExternalLink, Mail, X, Globe,
+  LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight, MessageSquareText,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import { CREDITS_REQUEST_COOLDOWN_HOURS, type CreditLedgerEntry } from "@/lib/credits";
@@ -11,14 +11,15 @@ import type { PaidDownloadEntry } from "@/lib/paid-downloads";
 import type { GeneratedCoverLetterEntry } from "@/lib/cover-letters";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
-import PdfExportButton from "@/components/pdf-export-button";
 import CoverLetterButton from "@/components/cover-letter-button";
-import TranslateCvButton, { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
-import TranslateCoverLetterButton from "@/components/translate-cover-letter-button";
+import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
+import DownloadMenuButton from "@/components/download-menu-button";
+import TranslateMenuButton from "@/components/translate-menu-button";
 import EditableSlug from "@/components/editable-slug";
 import ProfileVisibilityToggle from "@/components/profile-visibility-toggle";
 import { DeleteProfileButton } from "@/components/account-actions";
 import CvChat from "@/components/cv-chat";
+import InterviewPrepPanel, { type InterviewPrepListItem } from "@/components/interview-prep-panel";
 import { SUPPORT_EMAIL } from "@/lib/contact";
 import { cvLabel } from "@/lib/download-filename";
 import { useLanguage } from "@/components/language-provider";
@@ -40,6 +41,7 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   translate: { it: "Traduzione CV", en: "CV translation" },
   translate_cover_letter: { it: "Traduzione lettera di presentazione", en: "Cover letter translation" },
   chat_refine: { it: "Rifinitura CV via chat AI", en: "CV refinement via AI chat" },
+  interview_prep: { it: "Preparazione colloquio", en: "Interview prep" },
   manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 
@@ -101,6 +103,7 @@ const TABS = [
   { id: "adapted", labelIt: "CV Adattati", labelEn: "Tailored CVs", titleIt: "CV adattati alle offerte", titleEn: "CVs tailored to job postings", icon: Target },
   { id: "downloads", labelIt: "Download", labelEn: "Downloads", titleIt: "Download", titleEn: "Downloads", icon: Download },
   { id: "credits", labelIt: "Crediti", labelEn: "Credits", titleIt: "Crediti", titleEn: "Credits", icon: Wallet },
+  { id: "interview", labelIt: "Prepara il colloquio", labelEn: "Prepare interview", titleIt: "Prepara il colloquio", titleEn: "Prepare for the interview", icon: MessageSquareText },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
@@ -125,6 +128,7 @@ interface AccountTabsProps {
   paidDownloads: PaidDownloadEntry[];
   coverLetters: GeneratedCoverLetterEntry[];
   creditsLastRequestedAt: string | null;
+  interviewPreps: InterviewPrepListItem[];
   // Owned by AccountShell — account settings are now their own page (see
   // app/account/settings/page.tsx), reached via the avatar dropdown in the
   // global nav, so this component only needs the commercial tab itself.
@@ -140,7 +144,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt, tab, setTab }: AccountTabsProps) {
+export default function AccountTabs({ userEmail, accountCode, primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, paidDownloads, coverLetters, creditsLastRequestedAt, interviewPreps, tab, setTab }: AccountTabsProps) {
   const { lang } = useLanguage();
   // Compact helper for this file's many one-off strings — full ternaries
   // everywhere else in the codebase, but this component alone has ~60+
@@ -417,18 +421,18 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         <Sparkles className="w-4 h-4" />
-                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Assistente AI", "AI Assistant")}</span>
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Migliora CV con l'AI", "Improve CV with AI")}</span>
                       </button>
                       <a
                         href={`/tailor?profile=${row.slug}`}
-                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-primary/40 text-primary font-semibold hover:bg-primary/8 transition-all duration-200"
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       >
                         <Target className="w-4 h-4" />
                         <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Adatta a un annuncio", "Tailor to a job posting")}</span>
                       </a>
-                      <PdfExportButton
+                      <DownloadMenuButton
                         slug={row.slug}
-                        label={tr("Scarica PDF", "Download PDF")}
+                        label={tr("Download", "Download")}
                         icon={<Download className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
@@ -440,40 +444,20 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
+                      <TranslateMenuButton
+                        slug={row.slug}
+                        label={tr("Traduzione", "Translate")}
+                        icon={<Globe className="w-4 h-4" />}
+                        credits={credits}
+                        onGoToDownloads={() => setTab("downloads")}
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      />
                     </div>
                     {chatOpenFor === row.id && (
                       <div className="pt-2 border-t border-foreground/10">
                         <CvChat slug={row.slug} profile={row.data} credits={credits} />
                       </div>
                     )}
-                    <div className="pt-2 border-t border-foreground/10 space-y-1.5">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                        {tr(
-                          "Traduci in un'altra lingua (1 credito) — genera un PDF, disponibile poi in Download",
-                          "Translate into another language (1 credit) — generates a PDF, then available in Downloads"
-                        )}
-                      </p>
-                      <TranslateCvButton
-                        slug={row.slug}
-                        credits={credits}
-                        onGoToDownloads={() => setTab("downloads")}
-                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      />
-                    </div>
-                    <div className="pt-2 border-t border-foreground/10 space-y-1.5">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                        {tr(
-                          "Traduci la lettera di presentazione (1 credito) — genera un PDF, disponibile poi in Download",
-                          "Translate the cover letter (1 credit) — generates a PDF, then available in Downloads"
-                        )}
-                      </p>
-                      <TranslateCoverLetterButton
-                        slug={row.slug}
-                        credits={credits}
-                        onGoToDownloads={() => setTab("downloads")}
-                        className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
-                      />
-                    </div>
                     <div className="pt-2 border-t border-foreground/10">
                       <DeleteProfileButton
                         profileId={row.id}
@@ -539,9 +523,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   </div>
                   <EditableSlug profileId={row.id} slug={row.slug} />
                   <div className="flex flex-wrap items-center gap-2">
-                    <PdfExportButton
+                    <DownloadMenuButton
                       slug={row.slug}
-                      label="PDF ↓"
+                      label={tr("Download", "Download")}
                       credits={credits}
                       className="px-3 py-1.5 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                     />
@@ -751,6 +735,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
             </div>
           )}
         </div>
+      )}
+
+      {/* ── Tab: Prepara il colloquio ─────────────────────────────────── */}
+      {tab === "interview" && (
+        <InterviewPrepPanel credits={credits} reports={interviewPreps} />
       )}
 
       {/* Shown instead of navigating to /generate once MAX_CVS is reached —

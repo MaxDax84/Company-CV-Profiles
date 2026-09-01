@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { claimPendingProfile } from "@/lib/profile-store";
+import { claimPendingInterviewPrep } from "@/lib/interview-prep-store";
 import { getAccountCode } from "@/lib/credits";
 
 export const runtime = "nodejs";
@@ -17,6 +18,33 @@ export async function POST(req: NextRequest) {
     const claimToken = body?.claimToken;
     if (typeof claimToken !== "string" || !claimToken) {
       return NextResponse.json({ error: "Missing claim token." }, { status: 400 });
+    }
+
+    // "interview" claims a pending "Prepara il colloquio" report instead of
+    // a pending CV — see /interview-prep's anonymous flow. Defaults to the
+    // original CV behavior for every existing caller that doesn't send it.
+    if (body?.kind === "interview") {
+      const result = await claimPendingInterviewPrep(supabase, user.id, claimToken);
+      if ("error" in result) {
+        if (result.error === "expired") {
+          return NextResponse.json(
+            { error: "This preview has expired — prepare the interview again." },
+            { status: 410 }
+          );
+        }
+        if (result.error === "insufficient_credits") {
+          return NextResponse.json(
+            { error: "Not enough credits to save this report to your account.", code: "INSUFFICIENT_CREDITS" },
+            { status: 402 }
+          );
+        }
+        return NextResponse.json(
+          { error: "Could not save this report to your account. Please try again." },
+          { status: 500 }
+        );
+      }
+      const code = await getAccountCode(supabase, user.id);
+      return NextResponse.json({ slug: result.slug, code, kind: "interview" });
     }
 
     const result = await claimPendingProfile(supabase, user.id, claimToken);

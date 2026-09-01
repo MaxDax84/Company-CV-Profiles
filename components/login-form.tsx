@@ -13,6 +13,8 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
+  const claimKind = searchParams.get("kind");
+  const signupHref = claimToken ? `/signup?claim=${claimToken}${claimKind ? `&kind=${claimKind}` : ""}` : "/signup";
   const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
@@ -49,11 +51,11 @@ export default function LoginForm() {
         const res = await fetch("/api/claim", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ claimToken }),
+          body: JSON.stringify({ claimToken, kind: claimKind ?? undefined }),
         });
         const claimed = await res.json();
         if (res.ok) {
-          router.push(`/${claimed.code}/${claimed.slug}`);
+          router.push(claimed.kind === "interview" ? "/account?tab=interview" : `/${claimed.code}/${claimed.slug}`);
           return;
         }
         // Login succeeded even though claiming this specific CV failed
@@ -139,11 +141,11 @@ export default function LoginForm() {
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
-      <GoogleAuthButton claimToken={claimToken} />
+      <GoogleAuthButton claimToken={claimToken} claimKind={claimKind} />
 
       <p className="text-xs text-muted-foreground text-center">
         {lang === "en" ? "Don't have an account?" : "Non hai un account?"}{" "}
-        <a href={claimToken ? `/signup?claim=${claimToken}` : "/signup"} className="text-primary hover:underline">
+        <a href={signupHref} className="text-primary hover:underline">
           {lang === "en" ? "Sign up for free" : "Registrati gratis"}
         </a>
       </p>

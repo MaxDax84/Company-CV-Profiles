@@ -9,6 +9,7 @@ import { getOwnedPrimaryProfiles, getOwnedTailoredProfiles, getOwnedTranslatedPr
 import { getCreditBalance, getCreditLedger, getAccountCode, getCreditsLastRequestedAt } from "@/lib/credits";
 import { getPaidDownloads } from "@/lib/paid-downloads";
 import { getGeneratedCoverLetters } from "@/lib/cover-letters";
+import { getOwnedInterviewPreps } from "@/lib/interview-prep-store";
 
 export default async function AccountPage() {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;
@@ -17,7 +18,7 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, accountCode, paidDownloads, coverLetters, creditsLastRequestedAt] = await Promise.all([
+  const [primaryProfiles, tailoredProfiles, translatedProfiles, credits, ledger, accountCode, paidDownloads, coverLetters, creditsLastRequestedAt, interviewPreps] = await Promise.all([
     getOwnedPrimaryProfiles(supabase, user.id),
     getOwnedTailoredProfiles(supabase, user.id),
     getOwnedTranslatedProfiles(supabase, user.id),
@@ -27,6 +28,7 @@ export default async function AccountPage() {
     getPaidDownloads(supabase, user.id),
     getGeneratedCoverLetters(supabase, user.id),
     getCreditsLastRequestedAt(supabase, user.id),
+    getOwnedInterviewPreps(supabase, user.id),
   ]);
 
   return (
@@ -46,6 +48,7 @@ export default async function AccountPage() {
           paidDownloads={paidDownloads}
           coverLetters={coverLetters}
           creditsLastRequestedAt={creditsLastRequestedAt}
+          interviewPreps={interviewPreps}
         />
       </div>
       <Footer />

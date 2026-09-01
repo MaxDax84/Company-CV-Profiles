@@ -23,6 +23,16 @@ export const improveProfileRatelimit = new Ratelimit({
   prefix: "ratelimit:improve-profile",
 });
 
+// Anonymous interview-prep generation (/api/interview-prep/anonymous): a
+// real Claude call with several web_search/web_fetch round trips, callable
+// with no login — same budget as parseResumeRatelimit, the other anonymous
+// Claude-calling entry point.
+export const interviewPrepAnonymousRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(5, "1 h"),
+  prefix: "ratelimit:interview-prep-anonymous",
+});
+
 // Contact form: no Claude call, but it does send a real email (with an
 // attachment) through our own Gmail account on every request — without a
 // cap, a script could spam/flood that inbox and risk the account getting

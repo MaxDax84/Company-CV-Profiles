@@ -76,7 +76,7 @@ export default function HeroSection() {
           <div className="relative inline-block">
             <div className="absolute inset-0 rounded-2xl bg-accent-cyan/60 blur-xl animate-glow-pulse pointer-events-none" />
             <button
-              onClick={() => router.push('/generate')}
+              onClick={() => router.push('/start')}
               className="relative px-14 py-6 rounded-2xl bg-accent-cyan text-accent-cyan-foreground font-bold text-lg sm:text-xl hover:bg-accent-cyan/90 transition-all duration-200 hover:shadow-xl hover:shadow-accent-cyan/40 hover:-translate-y-0.5"
             >
               {t.ctaPrimary}
