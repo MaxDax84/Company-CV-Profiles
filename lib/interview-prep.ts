@@ -75,7 +75,7 @@ const SUBMIT_TOOL = {
       culture_values: { type: "string", description: "2-4 sentences: the company's culture and values, from real sources." },
       recent_news: { type: "array", items: { type: "string" }, description: "2-5 concrete, dated recent news items — empty array if nothing genuinely recent was found." },
       role_focus_points: { type: "array", items: { type: "string" }, description: "Concrete points from the job posting itself worth remembering for the interview." },
-      likely_questions: { type: "array", items: { type: "string" }, description: "Plausible interview questions grounded in the posting and company profile." },
+      likely_questions: { type: "array", items: { type: "string" }, description: "At least 4-5 plausible interview questions grounded in the posting and company profile — questions the candidate should prepare an answer for, covering different angles (role requirements, culture/values, market position, named technologies/scope), not near-duplicates of each other." },
       // A flat array of strings, not objects — an array of {title, url}
       // objects made the model's tool call occasionally serialize this one
       // field as broken pseudo-XML instead of real JSON (a nested-object
@@ -102,7 +102,7 @@ WHAT TO PRODUCE (all from real sources you actually searched/fetched, never inve
 - Its culture and values, drawn from its own careers page, About page, or LinkedIn — not invented generic corporate language.
 - 2-5 concrete, recent, dated news items or public moves (funding, launches, expansions, leadership changes) — an empty list if you can't find anything genuinely recent and specific, rather than padding it with generic facts.
 - role_focus_points: concrete, specific things from the JOB POSTING TEXT itself worth keeping in mind for the interview — critical requirements, unusual aspects of the role, anything a candidate could easily overlook on a first read.
-- likely_questions: plausible interview questions this specific posting and company profile suggest, grounded in what the posting actually asks for (not generic "tell me about yourself" filler).
+- likely_questions: at least 4-5 plausible interview questions this specific posting and company profile suggest, grounded in what the posting actually asks for (not generic "tell me about yourself" filler). Draw on different angles — the role's core requirements, the company's culture/values, its market position, and any specific technology or scope named in the posting — rather than 4-5 variations on the same theme.
 - sources: every URL you actually fetched or that a cited fact came from, each formatted as one string "Title — https://full-url". Only include URLs you genuinely visited via the tools — never list a URL you didn't actually use.
 
 RULES:
@@ -224,6 +224,20 @@ function coerceStringArray(value: unknown): string[] {
     .filter(Boolean);
 }
 
+// A different malformation than coerceStringArray handles: the array
+// structure itself is fine, but the model sometimes runs several questions
+// together into a single array element with no separator at all (observed:
+// "...trade-offs?Come strutturerebbe un servizio..." — a "?" immediately
+// followed by more text, no space). Splits right after a "?" whenever it's
+// glued directly onto the next sentence; leaves ordinary single questions
+// (which don't match the "?" immediately followed by non-space) untouched.
+function splitConcatenatedQuestions(items: string[]): string[] {
+  return items.flatMap((item) => {
+    const parts = item.split(/(?<=\?)(?=\S)/).map((p) => p.trim()).filter(Boolean);
+    return parts.length > 1 ? parts : [item.trim()];
+  });
+}
+
 const MAX_CONTINUATIONS = 4;
 
 export async function generateInterviewPrep(
@@ -272,7 +286,7 @@ export async function generateInterviewPrep(
     ...submitted,
     recent_news: coerceStringArray(submitted.recent_news),
     role_focus_points: coerceStringArray(submitted.role_focus_points),
-    likely_questions: coerceStringArray(submitted.likely_questions),
+    likely_questions: splitConcatenatedQuestions(coerceStringArray(submitted.likely_questions)),
     sources: coerceStringArray(submitted.sources).map(parseSourceLine),
     // Set from the caller's explicit choice rather than trusted to the
     // model's own output.
