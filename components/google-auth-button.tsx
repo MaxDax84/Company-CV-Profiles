@@ -11,9 +11,13 @@ interface GoogleAuthButtonProps {
   // component state, then gets picked up server-side in
   // app/auth/callback/route.ts.
   claimToken?: string | null;
+  // Same "land on the feature that was clicked, not the generic dashboard"
+  // param as the password forms — already validated by the caller via
+  // lib/safe-redirect.ts, forwarded here as-is.
+  next?: string | null;
 }
 
-export default function GoogleAuthButton({ claimToken }: GoogleAuthButtonProps) {
+export default function GoogleAuthButton({ claimToken, next }: GoogleAuthButtonProps) {
   const [loading, setLoading] = useState(false);
   const { lang } = useLanguage();
 
@@ -22,6 +26,7 @@ export default function GoogleAuthButton({ claimToken }: GoogleAuthButtonProps) 
     const supabase = createBrowserSupabaseClient();
     const redirectTo = new URL("/auth/callback", window.location.origin);
     if (claimToken) redirectTo.searchParams.set("claim", claimToken);
+    if (next) redirectTo.searchParams.set("next", next);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import GoogleAuthButton from "@/components/google-auth-button";
 import { useLanguage } from "@/components/language-provider";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -13,7 +14,15 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
-  const signupHref = claimToken ? `/signup?claim=${claimToken}` : "/signup";
+  // Where to land after a plain login with no pending CV to claim — e.g.
+  // /interview-prep sends people here with next=/account?tab=interview so
+  // they land straight on the feature they clicked, not the generic
+  // dashboard. Validated against open-redirect (see lib/safe-redirect.ts).
+  const next = safeRedirectPath(searchParams.get("next"));
+  const signupParams = new URLSearchParams();
+  if (claimToken) signupParams.set("claim", claimToken);
+  if (next) signupParams.set("next", next);
+  const signupHref = signupParams.size > 0 ? `/signup?${signupParams.toString()}` : "/signup";
   const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
@@ -68,7 +77,7 @@ export default function LoginForm() {
         // Network hiccup, not a real rejection — don't strand them on it.
       }
     }
-    router.push("/account");
+    router.push(next ?? "/account");
   }
 
   if (claimFailed) {
@@ -140,7 +149,7 @@ export default function LoginForm() {
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
-      <GoogleAuthButton claimToken={claimToken} />
+      <GoogleAuthButton claimToken={claimToken} next={next} />
 
       <p className="text-xs text-muted-foreground text-center">
         {lang === "en" ? "Don't have an account?" : "Non hai un account?"}{" "}

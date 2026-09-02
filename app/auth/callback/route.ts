@@ -5,6 +5,7 @@ import { getAccountCode } from "@/lib/credits";
 import { claimWelcomeEmailSlot } from "@/lib/credits-server";
 import { sendWelcomeEmail } from "@/lib/email";
 import { isOptedOutOfLifecycleEmails } from "@/lib/account-settings";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
   const code = searchParams.get("code");
   const claimToken = searchParams.get("claim");
+  const next = safeRedirectPath(searchParams.get("next"));
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
@@ -62,5 +64,5 @@ export async function GET(req: NextRequest) {
     // login/signup forms use, land on the account rather than an error page.
   }
 
-  return NextResponse.redirect(`${origin}/account`);
+  return NextResponse.redirect(`${origin}${next ?? "/account"}`);
 }

@@ -27,14 +27,14 @@ export default async function InterviewPrepPage() {
           </p>
           <div className="flex flex-col gap-3">
             <a
-              href="/signup"
+              href="/signup?next=%2Faccount%3Ftab%3Dinterview"
               className="w-full py-3 rounded-xl font-semibold text-sm text-center transition-all"
               style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
               Crea account gratis
             </a>
             <a
-              href="/login"
+              href="/login?next=%2Faccount%3Ftab%3Dinterview"
               className="w-full py-3 rounded-xl font-semibold text-sm text-center border border-foreground/10 hover:bg-foreground/[0.06] transition-all"
             >
               Ho già un account — accedi

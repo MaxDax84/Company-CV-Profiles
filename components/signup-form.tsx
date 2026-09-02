@@ -6,6 +6,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 import GoogleAuthButton from "@/components/google-auth-button";
 import { useLanguage } from "@/components/language-provider";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -18,7 +19,13 @@ export default function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const claimToken = searchParams.get("claim");
-  const loginHref = claimToken ? `/login?claim=${claimToken}` : "/login";
+  // Same "land on the feature that was clicked, not the generic dashboard"
+  // mechanism as login-form.tsx — see lib/safe-redirect.ts.
+  const next = safeRedirectPath(searchParams.get("next"));
+  const loginParams = new URLSearchParams();
+  if (claimToken) loginParams.set("claim", claimToken);
+  if (next) loginParams.set("next", next);
+  const loginHref = loginParams.size > 0 ? `/login?${loginParams.toString()}` : "/login";
   const { lang } = useLanguage();
 
   const [email, setEmail] = useState("");
@@ -122,7 +129,7 @@ export default function SignupForm() {
     }
     setProgress(100);
     await delay(300);
-    router.push("/account");
+    router.push(next ?? "/account");
   }
 
   if (status === "needsEmailConfirm") {
@@ -260,7 +267,7 @@ export default function SignupForm() {
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
-      <GoogleAuthButton claimToken={claimToken} />
+      <GoogleAuthButton claimToken={claimToken} next={next} />
       <p className="text-[11px] text-muted-foreground/60 text-center -mt-2">
         {lang === "en"
           ? "By continuing with Google, you agree to our Terms of Service and Privacy Policy."
