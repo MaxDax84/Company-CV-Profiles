@@ -30,6 +30,15 @@ export interface InterviewPrepContent {
   language: string;
 }
 
+// Haiku 4.5 was tried here for cost (~$0.06-0.07/report vs ~$0.15-0.35 on
+// Sonnet) but proved meaningfully less reliable at this specific task: it
+// regularly lost or misfiled content across recent_news/role_focus_points/
+// likely_questions even with the coerceStringArray recovery below in place
+// (never crashes, but sections come back thinner or empty more often).
+// Kept on Sonnet 5 after comparing real output side by side — the user
+// chose consistency over the cost saving for this feature.
+const MODEL = "claude-sonnet-5";
+
 // Same 7 languages offered by components/translate-cv-button.tsx's
 // TRANSLATE_LANGUAGES — kept as a separate map here (English names, for the
 // prompt) rather than importing that client component into server code.
@@ -130,7 +139,7 @@ async function callClaude(messages: unknown[], systemPrompt: string): Promise<Cl
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-5",
+      model: MODEL,
       // Extra headroom over a plain report's needs — "sources" is both the
       // last field the model writes and structurally a list, and the two
       // production failures so far both involved a long, research-heavy
@@ -186,6 +195,25 @@ function parseSourceLine(line: string): InterviewPrepSource {
   return { title: title || url, url };
 }
 
+// Defends against a model occasionally returning an array field as a plain
+// string instead of a real array — observed on Haiku 4.5, which sometimes
+// wraps a bullet list in stray pseudo-XML (e.g. "<![CDATA[\n- item\n- item\n]]>")
+// instead of the schema's actual array type. Recovers what it can: strips
+// CDATA/tag wrapper artifacts, splits on newlines, and treats each non-empty
+// line as one item — good enough to salvage a bulleted list. Returns an
+// empty array (never throws) if the value is unusable in any other shape.
+function coerceStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) return value.filter((v): v is string => typeof v === "string");
+  if (typeof value !== "string") return [];
+  return value
+    .replace(/<!\[CDATA\[/gi, "")
+    .replace(/\]\]>/g, "")
+    .replace(/<\/?[a-z][^>]*>/gi, "")
+    .split("\n")
+    .map((line) => line.replace(/^[\s\-•*]+/, "").trim())
+    .filter(Boolean);
+}
+
 const MAX_CONTINUATIONS = 4;
 
 export async function generateInterviewPrep(
@@ -203,7 +231,7 @@ export async function generateInterviewPrep(
   ];
 
   let response = await callClaude(messages, systemPrompt);
-  logClaudeUsage("interview_prep", "claude-sonnet-5", response.usage, userId);
+  logClaudeUsage("interview_prep", MODEL, response.usage, userId);
 
   // Calling our own client tool ends the turn with stop_reason "tool_use" —
   // that's the success path, handled below. "pause_turn" is different: the
@@ -215,7 +243,7 @@ export async function generateInterviewPrep(
   while (response.stop_reason === "pause_turn" && continuations < MAX_CONTINUATIONS) {
     messages.push({ role: "assistant", content: response.content });
     response = await callClaude(messages, systemPrompt);
-    logClaudeUsage("interview_prep", "claude-sonnet-5", response.usage, userId);
+    logClaudeUsage("interview_prep", MODEL, response.usage, userId);
     continuations++;
   }
 
@@ -228,12 +256,14 @@ export async function generateInterviewPrep(
 
   const submitted = extractSubmittedReport(response.content);
   if (process.env.DEBUG_INTERVIEW_PREP) {
-    console.error("[interview-prep debug] raw sources:", JSON.stringify(submitted.sources));
+    console.error("[interview-prep debug] raw submitted:", JSON.stringify(submitted));
   }
-  const rawSources = Array.isArray(submitted.sources) ? submitted.sources : [];
   return {
     ...submitted,
-    sources: rawSources.map(parseSourceLine),
+    recent_news: coerceStringArray(submitted.recent_news),
+    role_focus_points: coerceStringArray(submitted.role_focus_points),
+    likely_questions: coerceStringArray(submitted.likely_questions),
+    sources: coerceStringArray(submitted.sources).map(parseSourceLine),
     // Set from the caller's explicit choice rather than trusted to the
     // model's own output.
     language,

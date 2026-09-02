@@ -17,6 +17,7 @@ const OPERATION_LABELS: Record<string, string> = {
   translate_cover_letter: "Traduzione lettera di presentazione",
   cv_chat_question: "Chat AI (domanda)",
   cv_chat_finish: "Chat AI (rifinitura CV)",
+  interview_prep: "Preparazione colloquio",
 };
 
 function operationLabel(operation: string): string {
@@ -39,6 +40,7 @@ const OPERATION_PROCESS_ORDER = [
   "cover_letter",
   "translate_resume",
   "translate_cover_letter",
+  "interview_prep",
 ];
 
 function byProcessOrder(a: { operation: string }, b: { operation: string }): number {
