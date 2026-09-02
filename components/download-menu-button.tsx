@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { PDF_TEMPLATES, PDF_TEMPLATES_EN, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import DownloadLoadingOverlay from "@/components/download-loading-overlay";
@@ -198,6 +199,9 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
               {lang === "en" ? "← Back" : "← Indietro"}
             </button>
           </div>
+          <Link href="/pdf-templates" className="inline-block text-[10px] font-semibold" style={{ color: "var(--primary)" }}>
+            {lang === "en" ? "See all 3 formats →" : "Vedi i 3 formati →"}
+          </Link>
           <div className="flex flex-col gap-1.5">
             {PDF_TEMPLATES.map(tpl => {
               const tplLabel = lang === "en" ? PDF_TEMPLATES_EN[tpl.id] : tpl;

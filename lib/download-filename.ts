@@ -36,21 +36,25 @@ export function cvLabel(profile: ProfileSchema, cvName: string): string {
   return cvName;
 }
 
-export function buildCvFilename(profile: ProfileSchema, templateName: string, cvName: string): string {
+// Reads as a name and a description, not a row of tags — one comma to
+// attach the role, one trailing dash before the date. The template name
+// (Alpha/Beta/...) used to appear here too; dropped as pure clutter for a
+// downloaded file's name, since it's already visible inside the PDF itself.
+export function buildCvFilename(profile: ProfileSchema, cvName: string): string {
   return sanitize(
-    `${profile.personal_info.full_name} - ${cvLabel(profile, cvName)} - ${templateName} - ${todayLabel()}.pdf`
+    `${profile.personal_info.full_name}, ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`
   );
 }
 
 export function buildCvWordFilename(profile: ProfileSchema, cvName: string): string {
   return sanitize(
-    `${profile.personal_info.full_name} - ${cvLabel(profile, cvName)} - ${todayLabel()}.docx`
+    `${profile.personal_info.full_name}, ${cvLabel(profile, cvName)} - ${todayLabel()}.docx`
   );
 }
 
 export function buildCoverLetterFilename(profile: ProfileSchema, cvName: string): string {
   return sanitize(
-    `${profile.personal_info.full_name} - Lettera - ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`
+    `${profile.personal_info.full_name}, Lettera ${cvLabel(profile, cvName)} - ${todayLabel()}.pdf`
   );
 }
 
@@ -69,5 +73,5 @@ const INTERVIEW_PREP_FILENAME_LABELS: Record<string, { title: string; fallback: 
 export function buildInterviewPrepFilename(companyName: string | null, language?: string): string {
   const l = INTERVIEW_PREP_FILENAME_LABELS[language ?? "it"] ?? INTERVIEW_PREP_FILENAME_LABELS.it;
   const dateLabel = new Date().toLocaleDateString(l.locale, { day: "numeric", month: "long", year: "numeric" });
-  return sanitize(`${l.title} - ${companyName ?? l.fallback} - ${dateLabel}.pdf`);
+  return sanitize(`${l.title}, ${companyName ?? l.fallback} - ${dateLabel}.pdf`);
 }

@@ -82,7 +82,7 @@ export async function GET(
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${buildCvFilename(row.data, templateLabel, row.slug)}"`,
+      "Content-Disposition": `attachment; filename="${buildCvFilename(row.data, row.slug)}"`,
     },
   });
 }
