@@ -62,7 +62,9 @@ export default function TermsPage() {
                   download del documento Word, la generazione di una lettera di presentazione e la
                   traduzione consumano un credito ciascuno. L&apos;adattamento del CV a un annuncio di
                   lavoro è invece sempre gratuito. L&apos;utente è responsabile della riservatezza
-                  delle proprie credenziali di accesso.
+                  delle proprie credenziali di accesso. Il credito di benvenuto viene assegnato una
+                  sola volta per indirizzo email, anche in caso di successiva eliminazione e
+                  ricreazione dell&apos;account con la stessa email.
                 </p>
                 <p className="mt-2">
                   Il servizio è riservato a chi ha compiuto almeno 14 anni, età minima per prestare
@@ -224,6 +226,8 @@ export default function TermsPage() {
                   3 free credits; downloading a PDF, downloading a Word document, generating a cover
                   letter, and translating each cost one credit. Tailoring your CV to a job posting is
                   always free. You are responsible for keeping your login credentials confidential.
+                  The welcome credit bonus is granted once per email address, even if the account is
+                  later deleted and re-created with the same email.
                 </p>
                 <p className="mt-2">
                   The service is restricted to people aged 14 or over, the minimum age to validly
