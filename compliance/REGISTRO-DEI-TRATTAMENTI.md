@@ -38,8 +38,10 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
 - **Categorie di dati**: email, password (hash, gestita da Supabase Auth), data creazione account, saldo crediti, storico transazioni.
 - **Destinatari**: Supabase Inc. (responsabile ex art. 28).
 - **Trasferimenti extra-UE**: sì, verso gli USA, tramite SCC. Regione dati Supabase da confermare: `[DA COMPLETARE]`.
-- **Termine di conservazione**: fino a cancellazione dell'account da parte dell'utente (self-service, immediata).
+- **Termine di conservazione**: fino a cancellazione dell'account da parte dell'utente (self-service, immediata), con un'unica eccezione riportata sotto.
 - **Misure di sicurezza**: HTTPS, cifratura a riposo, Row Level Security, credenziali privilegiate solo server-side.
+
+**Sotto-trattamento distinto — prevenzione abuso del credito di benvenuto** (tabella `welcome_credit_grants`, migrazione `0032_welcome_credit_email_hash.sql`, 2026-09-02): al momento della registrazione viene calcolato e conservato un hash SHA-256 dell'email (mai l'email in chiaro), usato solo per riconoscere se quell'email ha già ricevuto in passato il credito di benvenuto e impedire che venga assegnato una seconda volta cancellando e ricreando l'account. Base giuridica: legittimo interesse (art. 6(1)(f) GDPR), distinta dal contratto che copre il resto di questa sezione. Non è collegata alla cancellazione dell'account: è l'unica eccezione al "fino a cancellazione dell'account" di cui sopra, perché la sua funzione esiste proprio per sopravvivere a quella cancellazione. Non reversibile nell'email originale, nessun destinatario terzo (resta solo su Supabase).
 
 ## 2. Caricamento ed estrazione del CV
 
