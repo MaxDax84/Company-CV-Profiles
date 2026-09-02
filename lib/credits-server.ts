@@ -45,6 +45,27 @@ export async function spendCredits(
   return newBalance;
 }
 
+// Symmetric to spendCredits, for when a charge already went through but the
+// action it paid for then failed to deliver (e.g. interview-prep's Claude
+// call throwing after the credit charge succeeded) — without this, a
+// failed generation silently costs the user real credits for nothing.
+// Calls refund_credits (0031_refund_credits_function.sql), which is
+// deliberately NOT grantable to `authenticated` — only reachable through
+// the service-role client, so this can never be triggered by the client
+// directly. Logs and swallows its own failure rather than throwing: this
+// runs from an error-handling path, and a refund that fails shouldn't mask
+// or replace the original error already being returned to the caller.
+export async function refundCredits(userId: string, amount: number, reason: string, detail?: string): Promise<void> {
+  const service = createServiceSupabaseClient();
+  const { error } = await service.rpc("refund_credits", {
+    p_user_id: userId,
+    p_amount: amount,
+    p_reason: reason,
+    p_detail: detail ?? null,
+  });
+  if (error) console.error("[refundCredits]", error);
+}
+
 // Atomic "claim the right to send this account's welcome email" — the
 // update only succeeds (and returns a row) if welcome_email_sent_at is
 // still null, so two concurrent callers (or a retried request) can't both

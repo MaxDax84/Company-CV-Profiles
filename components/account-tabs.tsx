@@ -42,6 +42,7 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   translate_cover_letter: { it: "Traduzione lettera di presentazione", en: "Cover letter translation" },
   chat_refine: { it: "Rifinitura CV via chat AI", en: "CV refinement via AI chat" },
   interview_prep: { it: "Preparazione colloquio", en: "Interview prep" },
+  interview_prep_refund: { it: "Rimborso preparazione colloquio", en: "Interview prep refund" },
   manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 

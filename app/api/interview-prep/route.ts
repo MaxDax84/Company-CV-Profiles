@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
-import { spendCredits } from "@/lib/credits-server";
+import { spendCredits, refundCredits } from "@/lib/credits-server";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { generateInterviewPrep } from "@/lib/interview-prep";
 import { hashInterviewJobPosting, saveInterviewPrep, findDuplicateInterviewPrep } from "@/lib/interview-prep-store";
@@ -99,8 +99,25 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    const content = await generateInterviewPrep(jobPostingText, language, user.id);
-    const { slug } = await saveInterviewPrep(supabase, user.id, content, jobHash);
+    // From here on, the 2 credits are already spent — any failure below
+    // must refund them before returning an error, or the user pays for a
+    // report they never receive.
+    let content;
+    try {
+      content = await generateInterviewPrep(jobPostingText, language, user.id);
+    } catch (err) {
+      await refundCredits(user.id, CREDIT_COSTS.interviewPrep, "interview_prep_refund", "Generazione fallita");
+      throw err;
+    }
+
+    let slug: string;
+    try {
+      ({ slug } = await saveInterviewPrep(supabase, user.id, content, jobHash));
+    } catch (err) {
+      await refundCredits(user.id, CREDIT_COSTS.interviewPrep, "interview_prep_refund", "Salvataggio fallito");
+      throw err;
+    }
+
     const code = await getAccountCode(supabase, user.id);
 
     return NextResponse.json({ slug, code, content });
