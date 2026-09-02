@@ -56,7 +56,7 @@ export default function CreditConfirmModal({ actionLabel, cost, balance, warning
                   : `Non hai abbastanza crediti per questa azione — saldo attuale: ${balance}.`)
               : (lang === "en"
                   ? `Costs ${cost} credit${cost > 1 ? "s" : ""}. Current balance: ${balance} credit${balance === 1 ? "" : "s"}.`
-                  : `Costa ${cost} credito${cost > 1 ? "i" : ""}. Saldo attuale: ${balance} credit${balance === 1 ? "o" : "i"}.`)}
+                  : `Costa ${cost} credit${cost > 1 ? "i" : "o"}. Saldo attuale: ${balance} credit${balance === 1 ? "o" : "i"}.`)}
           </p>
         )}
         <div className="flex gap-2 justify-center pt-1">

@@ -105,17 +105,6 @@ const LABELS = {
     sources: "Fontes",
     unknownCompany: "Empresa não identificada na vaga",
   },
-  zh: {
-    eyebrow: "面试准备",
-    company: "公司简介",
-    market: "市场与定位",
-    culture: "文化与价值观",
-    news: "最新动态",
-    focus: "职位要点",
-    questions: "可能的面试问题",
-    sources: "参考来源",
-    unknownCompany: "无法从职位信息中识别公司",
-  },
 } as const;
 
 interface InterviewPrepDocumentProps {

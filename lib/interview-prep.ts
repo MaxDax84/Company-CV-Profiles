@@ -49,7 +49,6 @@ const LANGUAGE_NAMES: Record<string, string> = {
   fr: "French",
   de: "German",
   pt: "Portuguese",
-  zh: "Simplified Chinese",
 };
 
 // The report's own prose is quote-heavy by nature (quoting a company's

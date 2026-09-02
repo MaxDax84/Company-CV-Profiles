@@ -54,6 +54,20 @@ export function buildCoverLetterFilename(profile: ProfileSchema, cvName: string)
   );
 }
 
-export function buildInterviewPrepFilename(companyName: string | null): string {
-  return sanitize(`Colloquio - ${companyName ?? "Preparazione"} - ${todayLabel()}.pdf`);
+// Matches the report's own content language (see lib/interview-prep.ts's
+// LANGUAGE_NAMES) — a candidate who picked English for the report shouldn't
+// get an Italian filename back.
+const INTERVIEW_PREP_FILENAME_LABELS: Record<string, { title: string; fallback: string; locale: string }> = {
+  it: { title: "Colloquio", fallback: "Preparazione", locale: "it-IT" },
+  en: { title: "Interview", fallback: "Preparation", locale: "en-US" },
+  es: { title: "Entrevista", fallback: "Preparación", locale: "es-ES" },
+  fr: { title: "Entretien", fallback: "Préparation", locale: "fr-FR" },
+  de: { title: "Vorstellungsgespräch", fallback: "Vorbereitung", locale: "de-DE" },
+  pt: { title: "Entrevista", fallback: "Preparação", locale: "pt-PT" },
+};
+
+export function buildInterviewPrepFilename(companyName: string | null, language?: string): string {
+  const l = INTERVIEW_PREP_FILENAME_LABELS[language ?? "it"] ?? INTERVIEW_PREP_FILENAME_LABELS.it;
+  const dateLabel = new Date().toLocaleDateString(l.locale, { day: "numeric", month: "long", year: "numeric" });
+  return sanitize(`${l.title} - ${companyName ?? l.fallback} - ${dateLabel}.pdf`);
 }

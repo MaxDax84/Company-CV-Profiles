@@ -35,7 +35,7 @@ export async function GET(
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${buildInterviewPrepFilename(row.company_name)}"`,
+      "Content-Disposition": `attachment; filename="${buildInterviewPrepFilename(row.company_name, row.language)}"`,
     },
   });
 }
