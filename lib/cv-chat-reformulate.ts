@@ -76,9 +76,14 @@ export async function reformulateProfileFromChat(sourceProfile: ProfileSchema, t
   reformulated.skills.hard = keepAllowed(reformulated.skills.hard, allowed, corpus);
   reformulated.skills.soft = keepAllowed(reformulated.skills.soft, allowed, corpus);
   reformulated.skills.tools = keepAllowed(reformulated.skills.tools, allowed, corpus);
-  reformulated.experience = reformulated.experience.map((exp) => ({
+  reformulated.experience = reformulated.experience.map((exp, i) => ({
     ...exp,
     technologies: keepAllowed(exp.technologies, allowed, corpus),
+    // Deterministically carried over, not trusted from the model — no chat
+    // question ever targets this classification, and the conversation never
+    // adds/removes/reorders whole experience entries, so a positional match
+    // against the source is safe (same reasoning as tailor-resume.ts).
+    is_career_experience: sourceProfile.experience[i]?.is_career_experience,
   }));
 
   return reformulated;

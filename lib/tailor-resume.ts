@@ -28,7 +28,7 @@ WHAT YOU MAY REWRITE — more freely than a light copy-edit, as long as every fa
 - Rewrite "title" and "bio" using the job posting's terminology, but only where it accurately describes something already true in the source profile.
 - Reorder "projects" to put the most job-relevant ones first.
 
-FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, email_obfuscated, phone_obfuscated, email, phone, location, social_links; every experience's company/start_date/end_date/location; all of "education"; all of "certifications"; each project's "url" and "image_placeholder"; metadata.primary_color and metadata.template (copy them through unchanged from the source).
+FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, email_obfuscated, phone_obfuscated, email, phone, location, social_links; every experience's company/start_date/end_date/location/is_career_experience; all of "education"; all of "certifications"; each project's "url" and "image_placeholder"; metadata.primary_color and metadata.template (copy them through unchanged from the source).
 
 LANGUAGE: write every piece of text you author (title, bio, description bullets) in the SAME LANGUAGE as the SOURCE PROFILE — do not switch language just because the job posting happens to be written in a different one. The one exception: if the job posting explicitly states that applications/CVs must be submitted in a specific language (e.g. "please apply in English", "CV in inglese richiesto"), and that required language differs from the source profile's, write in that required language instead. Set metadata.language to whichever language you actually wrote in ("it" or "en").
 
@@ -98,9 +98,16 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
   tailored.skills.hard = keepAllowed(tailored.skills.hard, allowed, corpus);
   tailored.skills.soft = keepAllowed(tailored.skills.soft, allowed, corpus);
   tailored.skills.tools = keepAllowed(tailored.skills.tools, allowed, corpus);
-  tailored.experience = tailored.experience.map((exp) => ({
+  tailored.experience = tailored.experience.map((exp, i) => ({
     ...exp,
     technologies: keepAllowed(exp.technologies, allowed, corpus),
+    // Deterministically carried over rather than trusted from the model's
+    // own output, same reasoning as technologies above — this is a
+    // per-role classification that shouldn't drift between passes just
+    // because tailoring re-emits the whole schema. Tailoring rewrites
+    // bullets for the same roles in the same order, never adds/removes
+    // one, so a positional match against the source is safe.
+    is_career_experience: sourceProfile.experience[i]?.is_career_experience,
   }));
 
   return tailored;

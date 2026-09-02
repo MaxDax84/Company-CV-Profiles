@@ -27,7 +27,7 @@ ANTI-FABRICATION RULES — hard limits:
 - Never invent a new achievement, responsibility, or metric that isn't already stated somewhere in the source.
 - Never change dates, company names, institution names, degree titles, or any quantified figure.
 
-FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, title, email_obfuscated, phone_obfuscated, email, phone, location, social_links, bio_original; every experience's company/start_date/end_date/location/technologies; all of "education"; all of "certifications"; all of "skills"; all of "projects"; metadata (all fields — copy them through unchanged).
+FIELDS TO PRESERVE EXACTLY, NEVER CHANGE: personal_info.full_name, title, email_obfuscated, phone_obfuscated, email, phone, location, social_links, bio_original; every experience's company/start_date/end_date/location/technologies/is_career_experience; all of "education"; all of "certifications"; all of "skills"; all of "projects"; metadata (all fields — copy them through unchanged).
 
 OUTPUT FORMAT:
 - Return ONLY a valid JSON object matching the schema below, no markdown, no explanation, no code fences.

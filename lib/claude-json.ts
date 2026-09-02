@@ -116,7 +116,8 @@ export const PROFILE_JSON_SCHEMA_BLOCK = `{
     "end_date": string,
     "description": string[],
     "technologies": string[],
-    "location": string | undefined
+    "location": string | undefined,
+    "is_career_experience": boolean
   }],
   "education": [{
     "institution": string,

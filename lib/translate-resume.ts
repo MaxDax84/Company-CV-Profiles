@@ -101,6 +101,7 @@ export async function translateResume(sourceProfile: ProfileSchema, targetLangua
     // prompt above is allowed to translate a spelled-out month name or an
     // "ongoing" status word within them (e.g. "Luglio 2016" → "July 2016").
     location: sourceProfile.experience[i]?.location ?? exp.location,
+    is_career_experience: sourceProfile.experience[i]?.is_career_experience,
   }));
   translated.metadata.primary_color = sourceProfile.metadata.primary_color;
   translated.metadata.template = sourceProfile.metadata.template;

@@ -26,6 +26,14 @@ export interface ExperienceItem {
   description: string[];       // bullet points, uno per risultato/responsabilità reale nella fonte (fino a 6)
   technologies: string[];      // ["React", "Node.js"] — fino a 6
   location?: string;
+  // false for a seasonal/summer/short student job unrelated to an ongoing
+  // career (see the parse-resume system prompt for the exact criteria) —
+  // excluded from the "years of experience" stat in lib/experience-utils.ts
+  // so it can't inflate that number the way a real role would. Optional
+  // (not every writer of a ProfileSchema sets it) and missing/undefined
+  // counts the entry as real experience, so CVs parsed before this field
+  // existed don't lose their stat.
+  is_career_experience?: boolean;
 }
 
 export interface EducationItem {
