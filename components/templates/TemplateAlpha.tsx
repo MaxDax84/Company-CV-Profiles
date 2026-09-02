@@ -469,9 +469,6 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
             {isIT ? 'Aperto a nuove opportunità e collaborazioni.' : 'Open to new opportunities and collaborations.'}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 56 }}>
-            <span style={{ padding: '13px 26px', background: v, color: bg, fontWeight: 600, fontSize: 14, borderRadius: 8 }}>
-              ✉ {p.email_obfuscated}
-            </span>
             {p.social_links.linkedin && (
               <a href={p.social_links.linkedin} target="_blank" rel="noopener noreferrer" style={{ padding: '12px 26px', border: `1.5px solid ${bdr}`, color: mut, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
                 LinkedIn →
