@@ -17,6 +17,7 @@ const COST = 2;
 export interface InterviewPrepListItem {
   slug: string;
   company_name: string | null;
+  content: { role_title: string | null };
   created_at: string;
 }
 
@@ -236,7 +237,10 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Building2 className="w-4 h-4 shrink-0 text-muted-foreground/60" />
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold truncate">{r.company_name ?? (lang === "en" ? "Untitled report" : "Report senza nome")}</p>
+                    <p className="text-sm font-semibold truncate">
+                      {r.company_name ?? (lang === "en" ? "Untitled report" : "Report senza nome")}
+                      {r.content.role_title ? ` · ${r.content.role_title}` : ""}
+                    </p>
                     <p className="text-[11px] text-muted-foreground/60">
                       {new Date(r.created_at).toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { day: "numeric", month: "long", year: "numeric" })}
                     </p>
