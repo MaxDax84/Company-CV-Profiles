@@ -149,8 +149,18 @@ async function callClaude(messages: unknown[], systemPrompt: string): Promise<Cl
       system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       output_config: { effort: "high" },
       tools: [
+        // Cheap per call ($10/1000) and light on tokens (short result
+        // snippets, not full pages) — kept generous so Claude can find
+        // several distinct real sources without that being the cost driver.
         { type: "web_search_20250305", name: "web_search", max_uses: 4 },
-        { type: "web_fetch_20250910", name: "web_fetch", max_uses: 3 },
+        // max_content_tokens caps the single biggest cost driver: fetching
+        // a full page (a company's About page, a long LinkedIn posting) can
+        // dump tens of thousands of tokens into context otherwise — a real
+        // production run hit 54K input tokens on one call. The company's
+        // most relevant info (mission, culture, about) is almost always
+        // near the top of a page, so truncating past ~4K tokens rarely
+        // costs real content.
+        { type: "web_fetch_20250910", name: "web_fetch", max_uses: 2, max_content_tokens: 4000 },
         SUBMIT_TOOL,
       ],
       messages,
