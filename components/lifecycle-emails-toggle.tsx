@@ -42,8 +42,8 @@ export default function LifecycleEmailsToggle({ userId, initialOptedOut }: Lifec
     <div className="flex items-center justify-between gap-3">
       <p className="text-xs text-muted-foreground pr-2">
         {tr(
-          "Email di benvenuto, avviso crediti esauriti e promemoria di inattività.",
-          "Welcome, zero-credits, and inactivity reminder emails."
+          "Ti scriviamo solo per eventi importanti del tuo account: benvenuto, avviso quando i crediti sono esauriti, un promemoria se non hai ancora provato il servizio. Puoi disattivarle quando vuoi, senza alcun effetto sul funzionamento del tuo account.",
+          "We only write for important account events: a welcome message, a zero-credits alert, and a one-time reminder if you haven't tried the service yet. You can turn these off anytime, with no effect on your account."
         )}
       </p>
       <button
