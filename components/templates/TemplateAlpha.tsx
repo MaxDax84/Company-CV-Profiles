@@ -118,7 +118,6 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
     ...(p.location ? [['📍', p.location] as [string, string]] : []),
     ...(experience.length ? [['🏢', `${experience[0].role} · ${experience[0].company}`] as [string, string]] : []),
     ...(education.length ? [['🎓', `${education[0].degree} · ${education[0].institution}`] as [string, string]] : []),
-    ['✉', p.email_obfuscated],
     ...(p.social_links.linkedin ? [['🔗', p.social_links.linkedin.replace('https://', '')] as [string, string]] : []),
   ]
 
@@ -212,7 +211,6 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
               <a key={href} href={href} className="lr-nav-link">{label}</a>
             ))}
           </div>
-          <a href="#contact" className="lr-nav-cta">{isIT ? 'Scrivimi' : 'Get in touch'}</a>
         </div>
       </nav>
 
@@ -238,9 +236,6 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 80, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 26px', background: v, color: bg, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}
-            </a>
-            <a href="#contact" style={{ padding: '11px 26px', border: `1.5px solid ${bdr}`, color: mut, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
-              {isIT ? 'Contattami' : 'Contact me'}
             </a>
           </div>
 

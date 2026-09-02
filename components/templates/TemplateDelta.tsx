@@ -155,7 +155,6 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
               <a key={href} href={href} className="dl-nav-link">{label}</a>
             ))}
           </div>
-          <a href="#contact" className="dl-nav-cta">{isIT ? 'Scrivimi' : 'Get in touch'}</a>
         </div>
       </nav>
 
@@ -184,9 +183,6 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 72, justifyContent: 'center' }}>
             <a href="#experience" style={{ padding: '12px 28px', background: accent, color: navy, fontWeight: 600, fontSize: 13, borderRadius: 6, textDecoration: 'none', letterSpacing: '0.04em' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}
-            </a>
-            <a href="#contact" style={{ padding: '11px 28px', border: `1.5px solid ${border}`, color: muted, fontWeight: 600, fontSize: 13, borderRadius: 6, textDecoration: 'none', letterSpacing: '0.04em' }}>
-              {isIT ? 'Contattami' : 'Contact me'}
             </a>
           </div>
 
@@ -241,7 +237,6 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
                   ...(p.location        ? [['📍', p.location]]                                                              : []),
                   ...(experience.length ? [['🏢', `${experience[0].role} · ${experience[0].company}`]]                     : []),
                   ...(education.length  ? [['🎓', `${education[0].degree} · ${education[0].institution}`]]                 : []),
-                  ['✉', p.email_obfuscated],
                   ...(p.social_links.linkedin ? [['🔗', p.social_links.linkedin.replace('https://', '')]] : []),
                 ] as [string, string][]).map(([icon, val], i, arr) => (
                   icon === '🔗' ? (

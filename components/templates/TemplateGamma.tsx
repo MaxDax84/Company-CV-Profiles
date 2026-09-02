@@ -156,7 +156,6 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
               <a key={href} href={href} className="gm-nav-link">{label}</a>
             ))}
           </div>
-          <a href="#contact" className="gm-nav-cta">{isIT ? 'Scrivimi' : 'Get in touch'}</a>
         </div>
       </nav>
 
@@ -178,9 +177,6 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
           <div className="hero-ctas" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="#experience" style={{ padding: '12px 26px', background: accent, color: white, fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
               {isIT ? 'Vedi il percorso' : 'View career'}
-            </a>
-            <a href="#contact" style={{ padding: '11px 26px', border: '1.5px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontSize: 14, borderRadius: 8, textDecoration: 'none' }}>
-              {isIT ? 'Contattami' : 'Contact me'}
             </a>
           </div>
 
@@ -234,7 +230,6 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
                 ...(p.location        ? [['📍', p.location]]                                                                 : []),
                 ...(experience.length ? [['🏢', `${experience[0].role} · ${experience[0].company}`]]                        : []),
                 ...(education.length  ? [['🎓', `${education[0].degree} · ${education[0].institution}`]]                    : []),
-                ['✉', p.email_obfuscated],
                 ...(p.social_links.linkedin ? [['🔗', p.social_links.linkedin.replace('https://', '')]] : []),
               ] as [string, string][]).map(([icon, val], i) => (
                 icon === '🔗' ? (
