@@ -11,12 +11,9 @@ interface GoogleAuthButtonProps {
   // component state, then gets picked up server-side in
   // app/auth/callback/route.ts.
   claimToken?: string | null;
-  // "interview" for a pending "Prepara il colloquio" report — see
-  // app/api/claim/route.ts and app/auth/callback/route.ts.
-  claimKind?: string | null;
 }
 
-export default function GoogleAuthButton({ claimToken, claimKind }: GoogleAuthButtonProps) {
+export default function GoogleAuthButton({ claimToken }: GoogleAuthButtonProps) {
   const [loading, setLoading] = useState(false);
   const { lang } = useLanguage();
 
@@ -25,7 +22,6 @@ export default function GoogleAuthButton({ claimToken, claimKind }: GoogleAuthBu
     const supabase = createBrowserSupabaseClient();
     const redirectTo = new URL("/auth/callback", window.location.origin);
     if (claimToken) redirectTo.searchParams.set("claim", claimToken);
-    if (claimToken && claimKind) redirectTo.searchParams.set("kind", claimKind);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

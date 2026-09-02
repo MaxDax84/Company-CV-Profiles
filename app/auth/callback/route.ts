@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { claimPendingProfile } from "@/lib/profile-store";
-import { claimPendingInterviewPrep } from "@/lib/interview-prep-store";
 import { getAccountCode } from "@/lib/credits";
 import { claimWelcomeEmailSlot } from "@/lib/credits-server";
 import { sendWelcomeEmail } from "@/lib/email";
@@ -19,7 +18,6 @@ export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
   const code = searchParams.get("code");
   const claimToken = searchParams.get("claim");
-  const claimKind = searchParams.get("kind");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
@@ -53,15 +51,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  if (claimToken && user && claimKind === "interview") {
-    const result = await claimPendingInterviewPrep(supabase, user.id, claimToken);
-    if (!("error" in result)) {
-      return NextResponse.redirect(`${origin}/account?tab=interview`);
-    }
-    // Signed in fine even though claiming this report failed (e.g. expired
-    // preview, not enough credits) — same fallback as the CV path below,
-    // land on the account rather than an error page.
-  } else if (claimToken && user) {
+  if (claimToken && user) {
     const result = await claimPendingProfile(supabase, user.id, claimToken);
     if (!("error" in result)) {
       const accountCode = await getAccountCode(supabase, user.id);
