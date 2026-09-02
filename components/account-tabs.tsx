@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   UploadCloud, Target, Download, ExternalLink, X, Globe,
   LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight, MessageSquareText,
@@ -154,6 +154,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
   const dateLocale = lang === "en" ? "en-US" : "it-IT";
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const [chatOpenFor, setChatOpenFor] = useState<string | null>(null);
+  // Set right after CvChat's finish call succeeds — closes the inline chat
+  // panel and shows the confirmation toast below, pointing at the CV's
+  // (possibly renamed) slug.
+  const [aiUpdatedSlug, setAiUpdatedSlug] = useState<string | null>(null);
   const [creditsRequestedAt, setCreditsRequestedAt] = useState(creditsLastRequestedAt);
   const [requestingCredits, setRequestingCredits] = useState(false);
   const [requestCreditsError, setRequestCreditsError] = useState<string | null>(null);
@@ -449,7 +453,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     </div>
                     {chatOpenFor === row.id && (
                       <div className="pt-2 border-t border-foreground/10">
-                        <CvChat slug={row.slug} profile={row.data} credits={credits} />
+                        <CvChat
+                          slug={row.slug}
+                          credits={credits}
+                          onFinished={(newSlug) => { setChatOpenFor(null); setAiUpdatedSlug(newSlug); }}
+                        />
                       </div>
                     )}
                     <div className="pt-2 border-t border-foreground/10">
@@ -756,6 +764,59 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
           </div>
         </div>
       )}
+
+      {aiUpdatedSlug && (
+        <AiUpdatedToast
+          href={`/${accountCode}/${aiUpdatedSlug}`}
+          onClose={() => setAiUpdatedSlug(null)}
+          tr={tr}
+        />
+      )}
+    </div>
+  );
+}
+
+// Fire-and-forget confirmation after CvChat's finish call succeeds — same
+// bottom-right card treatment as ActionFeedbackPopup, but a plain
+// confirmation rather than a rating prompt, so it's its own small component
+// instead of overloading that one with a second, unrelated purpose.
+function AiUpdatedToast({ href, onClose, tr }: { href: string; onClose: () => void; tr: (it: string, en: string) => string }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 8000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div
+      className="fixed z-40 bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-80 rounded-2xl border p-4 space-y-3 animate-fade-in"
+      style={{ background: "var(--background)", borderColor: "var(--border)", boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={tr("Chiudi", "Close")}
+        className="absolute top-3 right-3 text-muted-foreground/50 hover:text-foreground transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      <div className="flex items-start gap-2.5 pr-4">
+        <Sparkles className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--primary)" }} />
+        <p className="text-sm font-medium">
+          {tr(
+            "Ottimo, abbiamo aggiornato il tuo CV — puoi controllare aprendo il tuo profilo.",
+            "Great — we've updated your CV. You can check it by opening your profile."
+          )}
+        </p>
+      </div>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full text-center py-2 rounded-lg text-xs font-semibold"
+        style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+      >
+        {tr("Apri profilo →", "Open profile →")}
+      </a>
     </div>
   );
 }

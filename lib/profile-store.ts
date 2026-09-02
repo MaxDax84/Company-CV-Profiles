@@ -176,7 +176,10 @@ export async function getOwnedPrimaryProfiles(
     .select("id, slug, data, created_at, is_public")
     .eq("user_id", userId)
     .eq("kind", "primary")
-    .order("created_at", { ascending: false });
+    // Most-recently-touched first (not just most-recently-created) — a CV
+    // just rewritten via the AI chat assistant, or otherwise edited, should
+    // float back to the top rather than staying wherever it first landed.
+    .order("updated_at", { ascending: false });
   return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string; is_public: boolean }[];
 }
 

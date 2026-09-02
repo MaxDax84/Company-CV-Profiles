@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Send, SkipForward } from "lucide-react";
-import type { ProfileSchema } from "@/lib/schema";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import { useLanguage } from "@/components/language-provider";
 
@@ -13,29 +12,19 @@ interface ChatTurn {
   answer: string;
 }
 
-type Phase = "intro" | "asking" | "loading" | "ready" | "finishing" | "done" | "error";
+type Phase = "intro" | "asking" | "loading" | "ready" | "finishing" | "error";
 
 interface CvChatProps {
   slug: string;
-  profile: ProfileSchema;
   credits: number;
+  // Called right after a successful rewrite, with the CV's possibly-renamed
+  // slug (see app/api/cv-chat/finish/route.ts's "-powered-by-ai" tag) — the
+  // parent closes this panel and shows its own confirmation toast, since
+  // the CV list it reorders lives one level up, not in this component.
+  onFinished?: (newSlug: string) => void;
 }
 
-// Resolves a target_field path like "experience[1].description[2]" or
-// "personal_info.bio" against a real profile object — used only to render
-// the before/after summary, never to decide what the AI is allowed to
-// change (that's enforced server-side).
-function getByPath(profile: ProfileSchema, path: string): unknown {
-  const parts = path.match(/[^.[\]]+/g) ?? [];
-  let cur: unknown = profile;
-  for (const part of parts) {
-    if (cur == null) return undefined;
-    cur = /^\d+$/.test(part) ? (cur as unknown[])[Number(part)] : (cur as Record<string, unknown>)[part];
-  }
-  return cur;
-}
-
-export default function CvChat({ slug, profile, credits }: CvChatProps) {
+export default function CvChat({ slug, credits, onFinished }: CvChatProps) {
   const router = useRouter();
   const { lang } = useLanguage();
   const tr = (it: string, en: string) => (lang === "en" ? en : it);
@@ -46,21 +35,12 @@ export default function CvChat({ slug, profile, credits }: CvChatProps) {
   const genericError = tr("Errore, riprova.", "Something went wrong, try again.");
   const networkError = tr("Errore di rete, riprova.", "Network error, try again.");
 
-  // Snapshotted once on mount, deliberately never updated from the `profile`
-  // prop again — the "done" screen's before/after diff compares against
-  // this. Without the snapshot, router.refresh() (called right after a
-  // successful finish, to update the rest of the account page) re-fetches
-  // the server data and hands this component the ALREADY-rewritten profile
-  // as its new `profile` prop, which made "before" and "after" the same
-  // value and silently emptied every diff card.
-  const [originalProfile] = useState(profile);
   const [phase, setPhase] = useState<Phase>("intro");
   const [transcript, setTranscript] = useState<ChatTurn[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<{ question: string; targetField: string } | null>(null);
   const [answerInput, setAnswerInput] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [confirming, setConfirming] = useState(false);
-  const [finalProfile, setFinalProfile] = useState<ProfileSchema | null>(null);
 
   async function requestNextQuestion(body: Record<string, string>) {
     setPhase("loading");
@@ -121,9 +101,9 @@ export default function CvChat({ slug, profile, credits }: CvChatProps) {
         setPhase("error");
         return;
       }
-      setFinalProfile(data.profile);
-      setPhase("done");
       router.refresh();
+      onFinished?.(data.slug ?? slug);
+      handleReset();
     } catch {
       setErrorMsg(networkError);
       setPhase("error");
@@ -135,7 +115,6 @@ export default function CvChat({ slug, profile, credits }: CvChatProps) {
     setTranscript([]);
     setCurrentQuestion(null);
     setAnswerInput("");
-    setFinalProfile(null);
     setErrorMsg("");
   }
 
@@ -314,37 +293,6 @@ export default function CvChat({ slug, profile, credits }: CvChatProps) {
         <div className="text-center py-8 space-y-3">
           <div className="w-8 h-8 rounded-full border-2 border-foreground/15 border-t-primary animate-spin mx-auto" />
           <p className="text-sm text-muted-foreground">{tr("Sto riscrivendo il tuo CV…", "Rewriting your CV…")}</p>
-        </div>
-      )}
-
-      {phase === "done" && finalProfile && (
-        <div className="space-y-5">
-          <p className="text-sm font-semibold text-center" style={{ color: "var(--primary)" }}>{tr("CV aggiornato ✓", "CV updated ✓")}</p>
-          <div className="space-y-3">
-            {transcript.map((turn, i) => {
-              const before = getByPath(originalProfile, turn.targetField);
-              const after = getByPath(finalProfile, turn.targetField);
-              const beforeText = Array.isArray(before) ? before.join(" · ") : String(before ?? "");
-              const afterText = Array.isArray(after) ? after.join(" · ") : String(after ?? "");
-              if (beforeText === afterText) return null;
-              return (
-                <div key={i} className="rounded-xl border border-foreground/10 p-3 space-y-1.5 text-xs">
-                  <p className="text-muted-foreground/60 line-through decoration-muted-foreground/30">{beforeText || tr("(vuoto)", "(empty)")}</p>
-                  <p className="font-medium">{afterText}</p>
-                </div>
-              );
-            })}
-          </div>
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="text-sm font-semibold"
-              style={{ color: "var(--primary)" }}
-            >
-              {tr("Fatto", "Done")}
-            </button>
-          </div>
         </div>
       )}
 

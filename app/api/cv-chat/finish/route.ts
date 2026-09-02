@@ -73,16 +73,30 @@ export async function POST(req: NextRequest) {
     reformulated.metadata.suggested_titles = row.data.metadata.suggested_titles;
     reformulated.metadata.generated_at = new Date().toISOString();
 
-    const { error } = await supabase
+    // Tags the CV's own name so it's visibly distinguishable in the list
+    // from one never touched by the assistant — English regardless of UI
+    // language, since toSlug() strips apostrophes/accents anyway (an
+    // Italian tag would mangle into something like "con-l-ai").
+    const AI_TAG = "-powered-by-ai";
+    const newSlug = row.slug.endsWith(AI_TAG) ? row.slug : `${row.slug}${AI_TAG}`;
+
+    let { error } = await supabase
       .from("profiles")
-      .update({ data: reformulated })
+      .update({ data: reformulated, slug: newSlug })
       .eq("id", row.id)
       .eq("user_id", user.id);
+    if (error?.code === "23505") {
+      // Vanishingly unlikely slug collision on this exact tagged name —
+      // the content rewrite matters far more than the cosmetic rename, so
+      // fall back to updating content only rather than failing the whole
+      // request over it.
+      ({ error } = await supabase.from("profiles").update({ data: reformulated }).eq("id", row.id).eq("user_id", user.id));
+    }
     if (error) throw error;
 
     await markChatSessionCompleted(supabase, row.id);
 
-    return NextResponse.json({ success: true, profile: reformulated });
+    return NextResponse.json({ success: true, profile: reformulated, slug: newSlug });
   } catch (err) {
     console.error("[cv-chat/finish]", err);
     return NextResponse.json(
