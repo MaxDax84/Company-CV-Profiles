@@ -131,6 +131,14 @@ export default function PrivacyPage() {
                   legittimo interesse alla sicurezza e all&apos;integrità del servizio (art. 6(1)(f)
                   GDPR).
                 </p>
+                <p className="mt-2">
+                  Se ti registri con un&apos;email che aveva già ricevuto in passato il credito di
+                  benvenuto (ad esempio perché l&apos;account collegato era stato eliminato e poi
+                  ricreato), non riceverai un secondo bonus: per riconoscere questo caso conserviamo
+                  un&apos;impronta crittografica (hash) della tua email, non l&apos;email in chiaro,
+                  sulla base del legittimo interesse a prevenire un uso fraudolento del programma di
+                  benvenuto (art. 6(1)(f) GDPR).
+                </p>
               </div>
 
               <div>
@@ -155,6 +163,14 @@ export default function PrivacyPage() {
                   in piena autonomia, dalla pagina del tuo account: l&apos;eliminazione è immediata e
                   irreversibile, e non richiede di contattarci o attendere alcun intervento da parte
                   nostra.
+                </p>
+                <p className="mt-2">
+                  Fa eccezione un&apos;impronta crittografica (hash) della tua email, generata solo per
+                  riconoscere se hai già ricevuto in passato il credito di benvenuto: non viene
+                  eliminata insieme all&apos;account, proprio perché la sua funzione è impedire che lo
+                  stesso bonus venga richiesto più volte cancellando e ricreando l&apos;account. Non
+                  consente di risalire alla tua email in chiaro, non è collegata a nessun altro dato
+                  personale, e non viene mai utilizzata per finalità diverse da questa.
                 </p>
                 <p className="mt-2">
                   Copie di backup dell&apos;infrastruttura (mantenute dai nostri fornitori di hosting e
@@ -208,7 +224,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Accedere ai propri dati personali (art. 15)</li>
                   <li>Rettificarli (art. 16), i dati anagrafici del tuo CV sono modificabili direttamente dalla pagina del tuo account</li>
-                  <li>Ottenerne la cancellazione (art. 17, &quot;diritto all&apos;oblio&quot;), puoi eliminare un singolo CV o l&apos;intero account autonomamente, senza bisogno di richiederlo a noi</li>
+                  <li>Ottenerne la cancellazione (art. 17, &quot;diritto all&apos;oblio&quot;), puoi eliminare un singolo CV o l&apos;intero account autonomamente, senza bisogno di richiederlo a noi (con la sola eccezione, per finalità di prevenzione frodi, dell&apos;impronta crittografica della tua email descritta al punto 4)</li>
                   <li>Limitarne il trattamento (art. 18)</li>
                   <li>Ricevere i propri dati in formato portabile (art. 20)</li>
                   <li>Opporsi al trattamento (art. 21)</li>
@@ -362,6 +378,13 @@ export default function PrivacyPage() {
                   signed in, is based on our legitimate interest in the security and integrity of the
                   service (Art. 6(1)(f) GDPR).
                 </p>
+                <p className="mt-2">
+                  If you sign up with an email that had already received the welcome credit bonus in
+                  the past (for example because the linked account had been deleted and re-created),
+                  you won&apos;t receive a second bonus: to recognize this case we keep a cryptographic
+                  hash of your email, never the plaintext email itself, based on our legitimate
+                  interest in preventing abuse of the welcome bonus program (Art. 6(1)(f) GDPR).
+                </p>
               </div>
 
               <div>
@@ -384,6 +407,14 @@ export default function PrivacyPage() {
                   time, entirely on your own, from your account page: deletion is immediate and
                   irreversible, and doesn&apos;t require contacting us or waiting on anything from our
                   side.
+                </p>
+                <p className="mt-2">
+                  One exception: a cryptographic hash of your email, generated solely to recognize
+                  whether you&apos;ve already received the welcome credit bonus in the past. This is
+                  not deleted along with your account, precisely because its purpose is to prevent the
+                  same bonus from being claimed repeatedly by deleting and re-creating an account. It
+                  cannot be reversed back into your plaintext email, is not linked to any other
+                  personal data, and is never used for any purpose other than this one.
                 </p>
                 <p className="mt-2">
                   Infrastructure backup copies (kept by our hosting and database providers for
@@ -435,7 +466,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Access your personal data (Art. 15)</li>
                   <li>Rectify inaccurate data (Art. 16), your CV&apos;s personal details can be edited directly from your account page</li>
-                  <li>Erasure / right to be forgotten (Art. 17), you can delete a single CV or your entire account yourself, without needing to request it from us</li>
+                  <li>Erasure / right to be forgotten (Art. 17), you can delete a single CV or your entire account yourself, without needing to request it from us (with the sole exception, for fraud-prevention purposes, of the email hash described in point 4)</li>
                   <li>Restriction of processing (Art. 18)</li>
                   <li>Data portability (Art. 20)</li>
                   <li>Object to processing (Art. 21)</li>
