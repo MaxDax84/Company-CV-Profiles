@@ -173,6 +173,16 @@ export default function PrivacyPage() {
                   personale, e non viene mai utilizzata per finalità diverse da questa.
                 </p>
                 <p className="mt-2">
+                  Ogni volta che accetti una casella &quot;ho letto e accetto&quot; prima di un&apos;azione
+                  che condivide tuoi dati con noi (creazione dell&apos;account, caricamento del CV,
+                  adattamento a un annuncio, moduli di contatto e supporto), conserviamo una prova
+                  tecnica di quella scelta sui nostri server (data e ora, versione della policy
+                  accettata, il contesto dell&apos;azione, e — quando disponibile — l&apos;account
+                  collegato), a fini di dimostrabilità del consenso (art. 5(2) e 7(1) GDPR,
+                  &quot;responsabilizzazione&quot;). Conserviamo questo registro per 5 anni dalla data
+                  della scelta, in linea con gli ordinari termini di prescrizione.
+                </p>
+                <p className="mt-2">
                   Copie di backup dell&apos;infrastruttura (mantenute dai nostri fornitori di hosting e
                   database per finalità di disaster recovery) e i log tecnici applicativi vengono
                   conservati secondo i cicli di rotazione standard dei rispettivi fornitori e non sono
@@ -415,6 +425,15 @@ export default function PrivacyPage() {
                   same bonus from being claimed repeatedly by deleting and re-creating an account. It
                   cannot be reversed back into your plaintext email, is not linked to any other
                   personal data, and is never used for any purpose other than this one.
+                </p>
+                <p className="mt-2">
+                  Whenever you tick an &quot;I have read and agree&quot; box before an action that
+                  shares your data with us (account signup, CV upload, job-posting tailoring, contact
+                  and support forms), we keep a technical record of that choice on our servers (date
+                  and time, the policy version accepted, the action&apos;s context, and — where
+                  available — the linked account), for consent accountability purposes (Art. 5(2) and
+                  7(1) GDPR). We keep this record for 5 years from the date of the choice, in line
+                  with ordinary statute-of-limitations periods.
                 </p>
                 <p className="mt-2">
                   Infrastructure backup copies (kept by our hosting and database providers for

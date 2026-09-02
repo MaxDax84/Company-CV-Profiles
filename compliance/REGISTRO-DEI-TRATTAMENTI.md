@@ -154,6 +154,29 @@ monitoraggio sistematico su larga scala o includere trattamenti massivi di categ
   email è conservata finché l'account esiste, per garantire che ogni email sia inviata al massimo
   una volta.
 
+## 10. Prova tecnica di accettazione delle policy
+
+- **Finalità**: dimostrare che l'interessato ha effettivamente accettato la Privacy Policy e/o i
+  Termini di Servizio prima di un'azione che condivide propri dati con il Titolare (creazione
+  dell'account, caricamento del CV, adattamento a un annuncio, moduli di contatto e supporto).
+  Aggiunta il 2026-09-02: prima di questa data le caselle "ho letto e accetto" erano solo un blocco
+  lato interfaccia (disabilitano il pulsante di invio) senza alcuna registrazione persistente di chi
+  avesse accettato, cosa, e quando — stesso gap poi colmato per il consenso cookie con
+  `cookie_consent_log` (punto 7), qui esteso alle altre caselle dell'app. La casella era assente del
+  tutto nel flusso di creazione account via email/password: aggiunta contestualmente.
+- **Base giuridica**: legittimo interesse del Titolare alla responsabilizzazione (accountability) ex
+  artt. 5(2) e 7(1) GDPR — provare che un dato consenso/accettazione è realmente avvenuto.
+- **Categorie di interessati**: chiunque acceda a un modulo che raccoglie dati personali sul sito,
+  autenticato o meno.
+- **Categorie di dati**: identificativo account (se disponibile), contesto dell'azione, versione
+  della policy accettata, indirizzo IP (troncato), user agent, data e ora.
+- **Tabella**: `policy_acceptance_log` (`supabase/migrations/0033_policy_acceptance_log.sql`), RLS
+  attiva senza alcuna policy per `authenticated` — scritta solo dal client service-role
+  dell'endpoint `app/api/policy-acceptance-log`, mai raggiungibile direttamente dal browser.
+- **Destinatari**: Supabase Inc. (responsabile ex art. 28).
+- **Termine di conservazione**: 5 anni dalla data della scelta, in linea con gli ordinari termini di
+  prescrizione.
+
 ---
 
 ## Elenco sintetico sub-processor (fornitori terzi)

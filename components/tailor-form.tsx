@@ -126,6 +126,16 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   // findDuplicateTailoredProfile) — otherwise it goes straight through.
   async function handleGenerateClick() {
     if (!canGenerate) return;
+
+    // Fire-and-forget proof that the privacy checkbox above was actually
+    // ticked before this job posting got sent off for processing — see
+    // supabase/migrations/0033_policy_acceptance_log.sql.
+    fetch("/api/policy-acceptance-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ context: "tailor_resume", policies: ["privacy"] }),
+    }).catch(() => {});
+
     setCheckingRelevance(true);
     let result: Relevance | null = null;
     try {

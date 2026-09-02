@@ -82,6 +82,17 @@ export const unsubscribeRatelimit = new Ratelimit({
   prefix: "ratelimit:unsubscribe",
 });
 
+// Policy-acceptance proof log (app/api/policy-acceptance-log): also a fully
+// anonymous DB-insert endpoint (signup/CV-upload/tailor/contact/support can
+// all happen signed out), same reasoning as consentLogRatelimit above —
+// stops a runaway script from bloating the table, not meant to affect any
+// real visitor's normal use of these forms.
+export const policyAcceptanceLogRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(30, "10 m"),
+  prefix: "ratelimit:policy-acceptance-log",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

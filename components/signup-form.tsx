@@ -23,9 +23,23 @@ export default function SignupForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm" | "alreadyRegistered" | "claimFailed">("idle");
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+
+  // Fire-and-forget proof that the terms/privacy checkbox below was
+  // actually ticked before this account was created — see
+  // supabase/migrations/0033_policy_acceptance_log.sql. userId is passed
+  // through (rather than relying on the session cookie) because a
+  // "confirm your email" signup has no server session yet at this point.
+  function logSignupPolicyAcceptance(userId: string) {
+    fetch("/api/policy-acceptance-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ context: "signup", policies: ["privacy", "terms"], userId }),
+    }).catch(() => {});
+  }
 
   // Eases toward ~90% while the real work (signup + claim) is in flight —
   // we don't have granular progress from either step, so this just gives
@@ -42,7 +56,7 @@ export default function SignupForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isPasswordValid(password)) return;
+    if (!isPasswordValid(password) || !privacyAccepted) return;
     setStatus("loading");
     setError(null);
 
@@ -74,9 +88,11 @@ export default function SignupForm() {
         setStatus("alreadyRegistered");
         return;
       }
+      if (data.user) logSignupPolicyAcceptance(data.user.id);
       setStatus("needsEmailConfirm");
       return;
     }
+    if (data.user) logSignupPolicyAcceptance(data.user.id);
 
     if (claimToken) {
       try {
@@ -195,13 +211,33 @@ export default function SignupForm() {
         <PasswordRequirements password={password} />
       </div>
 
+      <label className="flex items-start gap-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={privacyAccepted}
+          onChange={(e) => setPrivacyAccepted(e.target.checked)}
+          className="mt-0.5 w-4 h-4 rounded border-foreground/20 accent-[var(--primary)]"
+        />
+        <span className="text-xs text-muted-foreground leading-relaxed">
+          {lang === "en" ? "I have read and agree to the" : "Ho letto e accetto i"}{" "}
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            {lang === "en" ? "Terms of Service" : "Termini di Servizio"}
+          </a>{" "}
+          {lang === "en" ? "and the" : "e la"}{" "}
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            Privacy Policy
+          </a>
+          .
+        </span>
+      </label>
+
       {error && (
         <p className="text-sm text-destructive text-center">{error}</p>
       )}
 
       <button
         type="submit"
-        disabled={status === "loading" || !isPasswordValid(password)}
+        disabled={status === "loading" || !isPasswordValid(password) || !privacyAccepted}
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 relative overflow-hidden"
         style={{ background: "var(--primary)", color: "var(--primary-foreground)", boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)" }}
       >
@@ -225,6 +261,11 @@ export default function SignupForm() {
       </div>
 
       <GoogleAuthButton claimToken={claimToken} />
+      <p className="text-[11px] text-muted-foreground/60 text-center -mt-2">
+        {lang === "en"
+          ? "By continuing with Google, you agree to our Terms of Service and Privacy Policy."
+          : "Continuando con Google, accetti i nostri Termini di Servizio e la Privacy Policy."}
+      </p>
 
       <p className="text-xs text-muted-foreground text-center">
         {lang === "en" ? "Already have an account?" : "Hai già un account?"}{" "}

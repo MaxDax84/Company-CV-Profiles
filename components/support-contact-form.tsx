@@ -65,6 +65,15 @@ export default function SupportContactForm() {
     if (!privacyAccepted || !turnstileToken) return
     setStatus('sending')
 
+    // Fire-and-forget proof that the privacy checkbox above was actually
+    // ticked before this message was sent — see
+    // supabase/migrations/0033_policy_acceptance_log.sql.
+    fetch('/api/policy-acceptance-log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ context: 'support_form', policies: ['privacy'] }),
+    }).catch(() => {})
+
     const formData = new FormData()
     formData.append('name', name)
     formData.append('email', email)

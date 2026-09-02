@@ -69,6 +69,15 @@ export default function ContactSection() {
     if (!privacyAccepted || !turnstileToken) return
     setStatus('sending')
 
+    // Fire-and-forget proof that the privacy checkbox above was actually
+    // ticked before this message (name, email, optional CV attachment) got
+    // sent — see supabase/migrations/0033_policy_acceptance_log.sql.
+    fetch('/api/policy-acceptance-log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ context: 'contact_form', policies: ['privacy'] }),
+    }).catch(() => {})
+
     const formData = new FormData()
     formData.append('name', `${firstName} ${lastName}`.trim())
     formData.append('email', email)

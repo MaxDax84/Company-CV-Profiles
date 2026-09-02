@@ -124,6 +124,15 @@ export default function GeneratePage() {
     setState("analyzing");
     setError(null);
 
+    // Fire-and-forget proof that the privacy checkbox above was actually
+    // ticked before this CV (with real name/email/phone) got sent off for
+    // processing — see supabase/migrations/0033_policy_acceptance_log.sql.
+    fetch("/api/policy-acceptance-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ context: "cv_upload", policies: ["privacy"] }),
+    }).catch(() => {});
+
     const formData = new FormData();
     formData.append("pdf", file);
     formData.append("turnstileToken", turnstileToken);
