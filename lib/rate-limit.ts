@@ -93,6 +93,17 @@ export const policyAcceptanceLogRatelimit = new Ratelimit({
   prefix: "ratelimit:policy-acceptance-log",
 });
 
+// Signup's email-domain MX check (app/api/account/check-email-domain): no
+// Claude call, no email sent, just a DNS lookup — but it's reachable
+// pre-signup with no auth, so still worth a cap against someone using it to
+// spam DNS queries through our server rather than any real abuse of Jobli
+// itself.
+export const checkEmailDomainRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(20, "10 m"),
+  prefix: "ratelimit:check-email-domain",
+});
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();

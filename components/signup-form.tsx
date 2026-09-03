@@ -68,6 +68,28 @@ export default function SignupForm() {
     setStatus("loading");
     setError(null);
 
+    // Catches a mistyped/made-up domain ("bmail.com") here instead of a
+    // silent dead end when the confirmation email never arrives — see
+    // app/api/account/check-email-domain/route.ts for why this checks for a
+    // mail exchanger rather than matching against a fixed provider list.
+    try {
+      const domainCheck = await fetch("/api/account/check-email-domain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const domainResult = await domainCheck.json().catch(() => ({ valid: true }));
+      if (domainCheck.ok && domainResult.valid === false) {
+        setError(lang === "en" ? "This email domain doesn't look like it can receive mail — check for a typo." : "Il dominio di questa email non sembra in grado di ricevere posta — controlla che non ci sia un errore di battitura.");
+        setStatus("error");
+        setProgress(0);
+        return;
+      }
+    } catch {
+      // Network hiccup reaching our own check — don't block a real signup
+      // over it, same fail-open reasoning as the route itself.
+    }
+
     const supabase = createBrowserSupabaseClient();
     const emailRedirectTo = `${window.location.origin}/auth/callback${claimToken ? `?claim=${encodeURIComponent(claimToken)}` : ""}`;
     const { data, error: signUpError } = await supabase.auth.signUp({
