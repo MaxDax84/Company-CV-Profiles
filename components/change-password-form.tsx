@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 import { useLanguage } from "@/components/language-provider";
+import PasswordInput from "@/components/password-input";
 
 export default function ChangePasswordForm() {
   const [password, setPassword] = useState("");
@@ -42,8 +43,7 @@ export default function ChangePasswordForm() {
     <form onSubmit={handleSubmit} className="space-y-3">
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <input
-            type="password"
+          <PasswordInput
             placeholder={lang === "en" ? "New password" : "Nuova password"}
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -51,8 +51,7 @@ export default function ChangePasswordForm() {
           />
           <PasswordRequirements password={password} />
         </div>
-        <input
-          type="password"
+        <PasswordInput
           placeholder={lang === "en" ? "Confirm password" : "Conferma password"}
           value={confirm}
           onChange={e => setConfirm(e.target.value)}

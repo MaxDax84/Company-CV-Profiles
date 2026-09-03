@@ -28,7 +28,6 @@ export const translations = {
       page: 'Digital profile',
     },
     hero: {
-      badge: 'AI Career Profiler & ATS Optimizer',
       titleGradient: 'More interviews,',
       titleNormal: 'not a prettier CV.',
       subtitle:
@@ -413,12 +412,11 @@ export const translations = {
       page: 'Profilo digitale',
     },
     hero: {
-      badge: 'AI Career Profiler & ATS Optimizer',
-      titleGradient: 'Più colloqui,',
-      titleNormal: 'non un CV più bello.',
+      titleGradient: 'Mandi CV e non ti richiama nessuno.',
+      titleNormal: 'Quasi sempre non è colpa tua: è come è scritto.',
       subtitle:
-        'La nostra AI riorganizza la struttura del tuo CV e lo modula su misura per ogni offerta di lavoro. Supera i filtri ATS valorizzando la tua vera esperienza e trasforma la tua storia professionale in una pagina web personale pronta da condividere con un semplice link.',
-      ctaPrimary: 'Scoprilo Gratis Ora →',
+        'Carica il tuo CV: in 30 secondi ti diciamo cosa lo blocca, con un punteggio su 4 criteri. Poi lo riscriviamo — valorizzando quello che hai fatto davvero, senza inventare niente.',
+      ctaPrimary: 'Analizza il tuo CV gratis',
     },
     services: {
       sectionLabel: 'Come funziona',
@@ -525,7 +523,7 @@ export const translations = {
             'PDF ottimizzato per i sistemi ATS',
             'Pagina web personale condivisibile',
           ],
-          cta: 'Inizia ora',
+          cta: 'Analizza il tuo CV gratis',
           highlighted: true,
         },
       ],
@@ -751,7 +749,7 @@ export const translations = {
     finalCta: {
       title: 'Pronto a ottenere più colloqui?',
       subtitle: 'Carica il tuo CV e scoprilo trasformato in pochi minuti — gratis, in fase beta.',
-      ctaPrimary: 'Inizia Ora →',
+      ctaPrimary: 'Analizza il tuo CV gratis',
     },
     footer: {
       tagline: 'Più colloqui, con il CV che hai già.',

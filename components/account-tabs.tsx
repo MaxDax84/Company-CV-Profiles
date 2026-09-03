@@ -212,9 +212,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
       {tab === "dashboard" && (
         <div className="space-y-8">
           <div className="glass-card rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6">
-            <div>
+            <div className="min-w-0">
               <p className="text-sm text-muted-foreground/70 mb-1">{tr("Bentornato,", "Welcome back,")}</p>
-              <h2 className="font-heading text-2xl font-bold tracking-tight">
+              <h2 className="font-heading text-2xl font-bold tracking-tight break-words">
                 {profileRow?.data.personal_info.full_name ?? userEmail}
               </h2>
               <p className="text-sm mt-2">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import PasswordRequirements, { isPasswordValid } from "@/components/password-requirements";
 import { useLanguage } from "@/components/language-provider";
+import PasswordInput from "@/components/password-input";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -84,8 +85,7 @@ export default function ResetPasswordForm() {
         <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           {lang === "en" ? "New password" : "Nuova password"}
         </label>
-        <input
-          type="password"
+        <PasswordInput
           required
           minLength={8}
           value={password}
@@ -99,8 +99,7 @@ export default function ResetPasswordForm() {
         <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           {lang === "en" ? "Confirm password" : "Conferma password"}
         </label>
-        <input
-          type="password"
+        <PasswordInput
           required
           minLength={8}
           value={confirm}

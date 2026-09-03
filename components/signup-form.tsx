@@ -7,6 +7,7 @@ import PasswordRequirements, { isPasswordValid } from "@/components/password-req
 import GoogleAuthButton from "@/components/google-auth-button";
 import { useLanguage } from "@/components/language-provider";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import PasswordInput from "@/components/password-input";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -205,9 +206,8 @@ export default function SignupForm() {
         <label htmlFor="signup-password" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Password
         </label>
-        <input
+        <PasswordInput
           id="signup-password"
-          type="password"
           required
           minLength={8}
           value={password}
