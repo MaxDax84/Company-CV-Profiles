@@ -34,6 +34,7 @@ const MAX_CVS = 4;
 const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   welcome: { it: "Credito di benvenuto", en: "Welcome credit" },
   welcome_promo_first10: { it: "Credito di benvenuto (promo primi 10)", en: "Welcome credit (first-10 promo)" },
+  welcome_promo_next10: { it: "Credito di benvenuto (promo)", en: "Welcome credit (promo)" },
   pdf_download: { it: "Download PDF", en: "PDF download" },
   word_download: { it: "Download Word", en: "Word download" },
   tailor: { it: "Adattamento a un annuncio", en: "Job-posting tailoring" },
