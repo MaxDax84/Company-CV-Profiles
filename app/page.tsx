@@ -5,7 +5,6 @@ import ServicesSection from '@/components/services-section'
 import PricingSection from '@/components/pricing-section'
 import TailorExampleSection from '@/components/tailor-example-section'
 import AboutSection from '@/components/about-section'
-import TestimonialsSection from '@/components/testimonials-section'
 import FaqSection from '@/components/faq-section'
 import FinalCtaSection from '@/components/final-cta-section'
 import Footer from '@/components/footer'
@@ -20,7 +19,8 @@ export default function Home() {
       <PricingSection />
       <TailorExampleSection />
       <AboutSection />
-      <TestimonialsSection />
+      {/* TestimonialsSection intentionally not rendered — kept in
+          components/testimonials-section.tsx, unpublished for now. */}
       <FaqSection />
       <FinalCtaSection />
       <Footer />
