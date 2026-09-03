@@ -429,6 +429,12 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
             {isIT ? 'Offerto da' : 'Powered by'}{' '}
             <Link href="/" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Jobli</Link>
           </p>
+          <Link
+            href="/generate"
+            style={{ display: 'inline-flex', marginTop: 14, padding: '10px 22px', borderRadius: 8, background: accent, color: white, fontWeight: 600, fontSize: 12, textDecoration: 'none' }}
+          >
+            {isIT ? 'Creato con Jobli - Fai il tuo' : 'Made with Jobli - Create yours'}
+          </Link>
         </div>
       </section>
     </div>
