@@ -44,6 +44,11 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   chat_refine: { it: "Rifinitura CV via chat AI", en: "CV refinement via AI chat" },
   interview_prep: { it: "Preparazione colloquio", en: "Interview prep" },
   interview_prep_refund: { it: "Rimborso preparazione colloquio", en: "Interview prep refund" },
+  cover_letter_refund: { it: "Rimborso lettera di presentazione", en: "Cover letter refund" },
+  translate_refund: { it: "Rimborso traduzione", en: "Translation refund" },
+  chat_refine_refund: { it: "Rimborso rifinitura CV", en: "CV refinement refund" },
+  pdf_download_refund: { it: "Rimborso download PDF", en: "PDF download refund" },
+  word_download_refund: { it: "Rimborso download Word", en: "Word download refund" },
   manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 

@@ -3,7 +3,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
-import { spendCredits } from "@/lib/credits-server";
+import { spendCredits, refundCredits } from "@/lib/credits-server";
 import { generateCoverLetter } from "@/lib/cover-letter";
 import { translateCoverLetter } from "@/lib/translate-cover-letter";
 import { getRememberedCoverLetter, rememberCoverLetter } from "@/lib/cover-letters";
@@ -83,7 +83,15 @@ export async function GET(
         }
         throw err;
       }
-      letterText = await translateCoverLetter(originalText, targetLanguage);
+      // The credit is already spent from here — a failed translation must
+      // refund it, or the user pays for a letter they never receive (same
+      // gap found and fixed for interview-prep).
+      try {
+        letterText = await translateCoverLetter(originalText, targetLanguage);
+      } catch (err) {
+        await refundCredits(user.id, CREDIT_COSTS.translate, "cover_letter_refund", "Traduzione fallita");
+        throw err;
+      }
     } else {
       try {
         await spendCredits(supabase, CREDIT_COSTS.coverLetter, "cover_letter", detail);
@@ -96,7 +104,12 @@ export async function GET(
         }
         throw err;
       }
-      letterText = await generateCoverLetter(row.data);
+      try {
+        letterText = await generateCoverLetter(row.data);
+      } catch (err) {
+        await refundCredits(user.id, CREDIT_COSTS.coverLetter, "cover_letter_refund", "Generazione fallita");
+        throw err;
+      }
     }
     await rememberCoverLetter(user.id, row.id, targetLanguage, letterText);
   }

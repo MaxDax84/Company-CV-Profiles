@@ -3,7 +3,7 @@ import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
-import { spendCredits } from "@/lib/credits-server";
+import { spendCredits, refundCredits } from "@/lib/credits-server";
 import { getActiveChatSession, markChatSessionCompleted } from "@/lib/cv-chat-store";
 import { reformulateProfileFromChat } from "@/lib/cv-chat-reformulate";
 
@@ -61,38 +61,48 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    const reformulated = await reformulateProfileFromChat(row.data, session.transcript);
+    // The credit is already spent from here — any failure below must
+    // refund it, or the user pays for a rewrite they never receive (same
+    // gap found and fixed for interview-prep).
+    let newSlug: string;
+    let reformulated;
+    try {
+      reformulated = await reformulateProfileFromChat(row.data, session.transcript);
 
-    // Not part of what the model is asked to touch (score_before isn't even
-    // in the schema it's given) — copied through explicitly rather than
-    // trusted to survive the round-trip, same defensive posture as
-    // bio_original in app/api/tailor-resume/route.ts.
-    reformulated.metadata.template = row.data.metadata.template;
-    reformulated.metadata.primary_color = row.data.metadata.primary_color;
-    reformulated.metadata.score_before = row.data.metadata.score_before;
-    reformulated.metadata.suggested_titles = row.data.metadata.suggested_titles;
-    reformulated.metadata.generated_at = new Date().toISOString();
+      // Not part of what the model is asked to touch (score_before isn't
+      // even in the schema it's given) — copied through explicitly rather
+      // than trusted to survive the round-trip, same defensive posture as
+      // bio_original in app/api/tailor-resume/route.ts.
+      reformulated.metadata.template = row.data.metadata.template;
+      reformulated.metadata.primary_color = row.data.metadata.primary_color;
+      reformulated.metadata.score_before = row.data.metadata.score_before;
+      reformulated.metadata.suggested_titles = row.data.metadata.suggested_titles;
+      reformulated.metadata.generated_at = new Date().toISOString();
 
-    // Tags the CV's own name so it's visibly distinguishable in the list
-    // from one never touched by the assistant — English regardless of UI
-    // language, since toSlug() strips apostrophes/accents anyway (an
-    // Italian tag would mangle into something like "con-l-ai").
-    const AI_TAG = "-powered-by-ai";
-    const newSlug = row.slug.endsWith(AI_TAG) ? row.slug : `${row.slug}${AI_TAG}`;
+      // Tags the CV's own name so it's visibly distinguishable in the list
+      // from one never touched by the assistant — English regardless of UI
+      // language, since toSlug() strips apostrophes/accents anyway (an
+      // Italian tag would mangle into something like "con-l-ai").
+      const AI_TAG = "-powered-by-ai";
+      newSlug = row.slug.endsWith(AI_TAG) ? row.slug : `${row.slug}${AI_TAG}`;
 
-    let { error } = await supabase
-      .from("profiles")
-      .update({ data: reformulated, slug: newSlug })
-      .eq("id", row.id)
-      .eq("user_id", user.id);
-    if (error?.code === "23505") {
-      // Vanishingly unlikely slug collision on this exact tagged name —
-      // the content rewrite matters far more than the cosmetic rename, so
-      // fall back to updating content only rather than failing the whole
-      // request over it.
-      ({ error } = await supabase.from("profiles").update({ data: reformulated }).eq("id", row.id).eq("user_id", user.id));
+      let { error } = await supabase
+        .from("profiles")
+        .update({ data: reformulated, slug: newSlug })
+        .eq("id", row.id)
+        .eq("user_id", user.id);
+      if (error?.code === "23505") {
+        // Vanishingly unlikely slug collision on this exact tagged name —
+        // the content rewrite matters far more than the cosmetic rename, so
+        // fall back to updating content only rather than failing the whole
+        // request over it.
+        ({ error } = await supabase.from("profiles").update({ data: reformulated }).eq("id", row.id).eq("user_id", user.id));
+      }
+      if (error) throw error;
+    } catch (err) {
+      await refundCredits(user.id, CREDIT_COSTS.chat, "chat_refine_refund", "Rifinitura fallita");
+      throw err;
     }
-    if (error) throw error;
 
     await markChatSessionCompleted(supabase, row.id);
 

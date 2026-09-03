@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug, saveTranslatedProfile } from "@/lib/profile-store";
 import { CREDIT_COSTS, InsufficientCreditsError, getAccountCode } from "@/lib/credits";
-import { spendCredits } from "@/lib/credits-server";
+import { spendCredits, refundCredits } from "@/lib/credits-server";
 import { translateResume } from "@/lib/translate-resume";
 import { recordPaidDownload } from "@/lib/paid-downloads";
 import { PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
@@ -60,10 +60,19 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    const translated = await translateResume(sourceRow.data, targetLanguage);
-    translated.metadata.generated_at = new Date().toISOString();
-
-    const { slug: newSlug, id: newProfileId } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated);
+    // The credit is already spent from here — any failure below must
+    // refund it, or the user pays for a translation they never receive
+    // (same gap found and fixed for interview-prep).
+    let newSlug: string;
+    let newProfileId: string;
+    try {
+      const translated = await translateResume(sourceRow.data, targetLanguage);
+      translated.metadata.generated_at = new Date().toISOString();
+      ({ slug: newSlug, id: newProfileId } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated));
+    } catch (err) {
+      await refundCredits(user.id, CREDIT_COSTS.translate, "translate_refund", "Traduzione fallita");
+      throw err;
+    }
 
     // The 1 credit above already paid for this exact file — pre-mark it as
     // paid so the client's immediate GET to /api/pdf/[newSlug] or
