@@ -103,9 +103,9 @@ const TABS = [
   { id: "dashboard", labelIt: "Riepilogo", labelEn: "Overview", titleIt: "Dashboard", titleEn: "Dashboard", icon: LayoutDashboard },
   { id: "cv", labelIt: "I miei CV", labelEn: "My CVs", titleIt: "I miei CV", titleEn: "My CVs", icon: FileText },
   { id: "adapted", labelIt: "CV Adattati", labelEn: "Tailored CVs", titleIt: "CV adattati alle offerte", titleEn: "CVs tailored to job postings", icon: Target },
+  { id: "interview", labelIt: "Prepara il colloquio", labelEn: "Prepare interview", titleIt: "Prepara il colloquio", titleEn: "Prepare for the interview", icon: MessageSquareText },
   { id: "downloads", labelIt: "Download", labelEn: "Downloads", titleIt: "Download", titleEn: "Downloads", icon: Download },
   { id: "credits", labelIt: "Crediti", labelEn: "Credits", titleIt: "Crediti", titleEn: "Credits", icon: Wallet },
-  { id: "interview", labelIt: "Prepara il colloquio", labelEn: "Prepare interview", titleIt: "Prepara il colloquio", titleEn: "Prepare for the interview", icon: MessageSquareText },
 ] as const;
 
 export type TabId = (typeof TABS)[number]["id"];
