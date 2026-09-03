@@ -438,14 +438,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       </a>
                       <DownloadMenuButton
                         slug={row.slug}
-                        label={tr("Download", "Download")}
+                        label={tr("Download CV/LP", "Download CV/CL")}
                         icon={<Download className="w-4 h-4" />}
                         credits={credits}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
                       />
                       <TranslateMenuButton
                         slug={row.slug}
-                        label={tr("Traduzione", "Translate")}
+                        label={tr("Traduzione CV/LP", "Translate CV/CL")}
                         icon={<Globe className="w-4 h-4" />}
                         credits={credits}
                         onGoToDownloads={() => setTab("downloads")}
