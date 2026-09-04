@@ -203,6 +203,7 @@ export default function PrivacyPage() {
                   <li>Anthropic PBC, elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
                   <li>Cloudflare Inc., verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
                   <li>Google Ireland Limited, statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Statistiche nel banner cookie</li>
+                  <li>PostHog Inc., analisi di prodotto ed eventuale registrazione di sessione (session replay, con mascheramento del contenuto del CV e di tutti i campi di digitazione) — dati trattati ed ospitati nella regione UE, solo se hai dato il consenso alla categoria Statistiche nel banner cookie</li>
                   <li>Usercentrics A/S (Cookiebot), gestore della piattaforma di raccolta e registrazione del consenso cookie attualmente in uso sul sito, con sede a Copenaghen, Danimarca</li>
                 </ul>
               </div>
@@ -212,8 +213,9 @@ export default function PrivacyPage() {
                 <p>
                   La maggior parte dei fornitori sopra indicati ha sede negli Stati Uniti
                   (l&apos;infrastruttura dati di Supabase può essere configurata in diverse regioni,
-                  incluse quelle europee; Usercentrics A/S ha sede in Danimarca e Aruba S.p.A. ha sede
-                  in Italia, quindi non comportano un trasferimento extra-UE). Per i fornitori extra-UE, i trasferimenti sono
+                  incluse quelle europee; Usercentrics A/S ha sede in Danimarca, PostHog Inc. tratta e
+                  ospita questi dati specifici nella regione UE, e Aruba S.p.A. ha sede
+                  in Italia, quindi nessuno di questi comporta un trasferimento extra-UE). Per i fornitori extra-UE, i trasferimenti sono
                   effettuati nel rispetto delle garanzie previste dagli artt. 44–49 GDPR, tramite le
                   Standard Contractual Clauses (SCC) adottate dalla Commissione Europea.
                 </p>
@@ -267,7 +269,8 @@ export default function PrivacyPage() {
                 <p>
                   Questo sito utilizza cookie strettamente necessari al funzionamento del servizio
                   (es. mantenimento della sessione di accesso, verifica anti-bot), sempre attivi, e
-                  (solo previo tuo consenso esplicito) cookie di Statistiche (Google Analytics 4) per
+                  (solo previo tuo consenso esplicito) cookie di Statistiche (Google Analytics 4 e
+                  PostHog, quest&apos;ultimo con eventuale registrazione di sessione) per
                   capire come viene usato il sito. Puoi dare, rifiutare o revocare il consenso in
                   qualsiasi momento dal banner cookie o dal link &quot;Preferenze Cookie&quot; in fondo
                   al sito. Per maggiori informazioni consulta la nostra{' '}
@@ -455,6 +458,7 @@ export default function PrivacyPage() {
                   <li>Anthropic PBC, processing of CV text for profile extraction, improvement, and job tailoring</li>
                   <li>Cloudflare Inc., bot verification (Turnstile) on the CV upload and job-tailoring forms</li>
                   <li>Google Ireland Limited, aggregated, anonymised browsing statistics (Google Analytics 4), only if you've consented to the Statistics category in the cookie banner</li>
+                  <li>PostHog Inc., product analytics and optional session replay (with CV content and every input field masked) — data processed and hosted in the EU region, only if you've consented to the Statistics category in the cookie banner</li>
                   <li>Usercentrics A/S (Cookiebot), operator of the cookie consent collection and recording platform currently in use on the site, based in Copenhagen, Denmark</li>
                 </ul>
               </div>
@@ -464,8 +468,9 @@ export default function PrivacyPage() {
                 <p>
                   Most of the processors listed above are based in the United States (Supabase&apos;s
                   data infrastructure can be configured in various regions, including within the EU;
-                  Usercentrics A/S is based in Denmark and Aruba S.p.A. is based in Italy, so neither
-                  involves a non-EU transfer). For non-EU processors, transfers are carried out under the safeguards of
+                  Usercentrics A/S is based in Denmark, PostHog Inc. processes and hosts this specific
+                  data in the EU region, and Aruba S.p.A. is based in Italy, so none of these
+                  involve a non-EU transfer). For non-EU processors, transfers are carried out under the safeguards of
                   Arts. 44–49 GDPR via Standard Contractual Clauses (SCC) adopted by the European
                   Commission.
                 </p>
@@ -517,7 +522,8 @@ export default function PrivacyPage() {
                 <p>
                   This website uses cookies strictly necessary for the service to function (e.g.
                   keeping you signed in, bot verification), always active, and (only with your
-                  explicit consent) Statistics cookies (Google Analytics 4) to understand how the
+                  explicit consent) Statistics cookies (Google Analytics 4 and PostHog, the latter
+                  with optional session replay) to understand how the
                   site is used. You can give, decline, or withdraw consent at any time from the
                   cookie banner or the &quot;Cookie preferences&quot; link at the bottom of the site.
                   For full details see our{' '}

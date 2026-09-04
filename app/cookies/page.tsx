@@ -187,6 +187,18 @@ export default function CookiePage() {
                   L&apos;indirizzo IP viene troncato prima della memorizzazione (IP anonymization) e
                   non viene usato per la personalizzazione di annunci pubblicitari.
                 </p>
+                <p className="mt-3">
+                  Sempre previo consenso a questa categoria, attiviamo anche{' '}
+                  <strong className="text-foreground">PostHog</strong> (PostHog Inc., dati trattati ed
+                  ospitati nella regione UE), per capire come le persone usano le funzionalità del
+                  prodotto (caricamento CV, punteggio, adattamento a un annuncio, download) e dove
+                  incontrano problemi. Include la registrazione di sessione (session replay): ogni
+                  campo di digitazione viene mascherato per intero, e mascheriamo il testo nelle aree
+                  del prodotto che mostrano contenuto del tuo CV (ad es. la pagina profilo pubblica),
+                  non solo i campi email/telefono — stiamo estendendo questa protezione a ogni area
+                  del prodotto che mostra dati del CV. Se sei registrato, colleghiamo gli eventi al
+                  tuo account solo con il tuo ID interno, mai con nome o email.
+                </p>
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-xs border-collapse">
                     <thead>
@@ -206,21 +218,32 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">~2 anni</td>
                         <td className="py-2 align-top">Terza</td>
                       </tr>
-                      <tr>
+                      <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">_ga_&lt;container-id&gt;</td>
                         <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
                         <td className="py-2 pr-3 align-top">Mantiene lo stato della sessione di navigazione.</td>
                         <td className="py-2 pr-3 align-top">~2 anni</td>
                         <td className="py-2 align-top">Terza</td>
                       </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">ph_&lt;project-key&gt;_posthog</td>
+                        <td className="py-2 pr-3 align-top">PostHog Inc. (UE)</td>
+                        <td className="py-2 pr-3 align-top">Identificativo anonimo che collega i tuoi eventi tra una visita e l&apos;altra.</td>
+                        <td className="py-2 pr-3 align-top">1 anno</td>
+                        <td className="py-2 align-top">Terza</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
                 <p className="mt-3">
-                  Se rifiuti questa categoria (o non rispondi), Google Analytics non viene caricato e
-                  nessuno di questi cookie viene impostato. Maggiori informazioni nella{' '}
+                  Se rifiuti questa categoria (o non rispondi), né Google Analytics né PostHog vengono
+                  caricati e nessuno di questi cookie viene impostato — nessuna registrazione di
+                  sessione avviene in quel caso. Maggiori informazioni nella{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Privacy Policy di Google
+                  </a>{' '}e nella{' '}
+                  <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Privacy Policy di PostHog
                   </a>.
                 </p>
               </div>
@@ -439,6 +462,17 @@ export default function CookiePage() {
                   (pages visited, traffic source, session duration). Your IP address is truncated
                   before storage (IP anonymization) and is not used for ad personalization.
                 </p>
+                <p className="mt-3">
+                  Also gated by this category, we activate{' '}
+                  <strong className="text-foreground">PostHog</strong> (PostHog Inc., data processed
+                  and hosted in the EU region) to understand how people actually use the product
+                  (CV upload, score, tailoring to a job posting, downloads) and where they run into
+                  trouble. This includes session replay: every input field is fully masked, and we
+                  mask text in the areas of the product that show your CV&apos;s content (e.g. the
+                  public profile page) beyond just the email/phone fields — we&apos;re extending this
+                  to every area of the product that shows CV data. If you&apos;re signed in, events
+                  are linked to your account only via your internal id, never your name or email.
+                </p>
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-xs border-collapse">
                     <thead>
@@ -458,21 +492,32 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">~2 years</td>
                         <td className="py-2 align-top">Third</td>
                       </tr>
-                      <tr>
+                      <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">_ga_&lt;container-id&gt;</td>
                         <td className="py-2 pr-3 align-top">Google Ireland Limited</td>
                         <td className="py-2 pr-3 align-top">Persists browsing session state.</td>
                         <td className="py-2 pr-3 align-top">~2 years</td>
                         <td className="py-2 align-top">Third</td>
                       </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">ph_&lt;project-key&gt;_posthog</td>
+                        <td className="py-2 pr-3 align-top">PostHog Inc. (EU)</td>
+                        <td className="py-2 pr-3 align-top">Anonymous identifier linking your events across visits.</td>
+                        <td className="py-2 pr-3 align-top">1 year</td>
+                        <td className="py-2 align-top">Third</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
                 <p className="mt-3">
-                  If you decline this category (or don&apos;t respond), Google Analytics is never
-                  loaded and none of these cookies are set. See{' '}
+                  If you decline this category (or don&apos;t respond), neither Google Analytics nor
+                  PostHog are ever loaded and none of these cookies are set — no session recording
+                  happens in that case either. See{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Google&apos;s Privacy Policy
+                  </a>{' '}and{' '}
+                  <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    PostHog&apos;s Privacy Policy
                   </a>{' '}
                   for details.
                 </p>
