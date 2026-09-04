@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   UploadCloud, Target, Download, ExternalLink, X, Globe,
-  LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight, MessageSquareText,
+  LayoutDashboard, FileText, Wallet, Sparkles, Lightbulb, ArrowRight, MessageSquareText, Pencil,
 } from "lucide-react";
 import type { ProfileSchema } from "@/lib/schema";
 import { CREDITS_REQUEST_COOLDOWN_HOURS, type CreditLedgerEntry } from "@/lib/credits";
@@ -19,6 +19,7 @@ import EditableName from "@/components/editable-name";
 import ProfileVisibilityToggle from "@/components/profile-visibility-toggle";
 import { DeleteProfileButton } from "@/components/account-actions";
 import CvChat from "@/components/cv-chat";
+import EditCvText from "@/components/edit-cv-text";
 import InterviewPrepPanel, { type InterviewPrepListItem } from "@/components/interview-prep-panel";
 import { SUPPORT_EMAIL } from "@/lib/contact";
 import { useLanguage } from "@/components/language-provider";
@@ -159,6 +160,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
   const dateLocale = lang === "en" ? "en-US" : "it-IT";
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const [chatOpenFor, setChatOpenFor] = useState<string | null>(null);
+  const [textEditOpenFor, setTextEditOpenFor] = useState<string | null>(null);
   // Set right after CvChat's finish call succeeds — closes the inline chat
   // panel and shows the confirmation toast below, pointing at the CV's
   // (possibly renamed) slug.
@@ -433,6 +435,14 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         <Sparkles className="w-4 h-4" />
                         <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Migliora CV con l'AI", "Improve CV with AI")}</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => setTextEditOpenFor(textEditOpenFor === row.id ? null : row.id)}
+                        className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        <span className="text-[10px] leading-tight text-center line-clamp-2">{tr("Modifica testi", "Edit text")}</span>
+                      </button>
                       <a
                         href={`/tailor?profile=${row.slug}`}
                         className="flex flex-col items-center justify-center gap-1 w-20 h-16 px-2 rounded-xl border border-foreground/10 font-semibold hover:bg-foreground/[0.06] transition-all duration-200"
@@ -463,6 +473,11 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                           credits={credits}
                           onFinished={(newSlug) => { setChatOpenFor(null); setAiUpdatedSlug(newSlug); }}
                         />
+                      </div>
+                    )}
+                    {textEditOpenFor === row.id && (
+                      <div className="pt-2 border-t border-foreground/10">
+                        <EditCvText profileId={row.id} profile={row.data} />
                       </div>
                     )}
                     <div className="pt-2 border-t border-foreground/10">
