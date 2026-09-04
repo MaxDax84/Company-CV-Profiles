@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { toSlug } from "@/lib/profile-store";
 
 export const runtime = "nodejs";
 
-// Owner renames one of their own profile rows' address (slug) — the
-// editable counterpart to the auto-generated one (see savePendingProfile).
-// Rejects, rather than silently suffixing, on a collision — the user chose
-// this text on purpose, so surface the conflict instead of quietly giving
-// them something else.
+const MAX_LENGTH = 80;
+
+// Owner renames one of their own profile rows' display name — free text,
+// deliberately NOT slugified or checked for uniqueness (display_name isn't
+// part of any URL, unlike the technical slug it used to double as — see
+// supabase/migrations/0035_profile_display_name.sql).
 export async function PATCH(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -19,30 +19,24 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json().catch(() => null);
     const id = body?.id;
-    const rawSlug = body?.slug;
-    if (typeof id !== "string" || typeof rawSlug !== "string") {
-      return NextResponse.json({ error: "Missing id or slug." }, { status: 400 });
+    const rawName = body?.displayName;
+    if (typeof id !== "string" || typeof rawName !== "string") {
+      return NextResponse.json({ error: "Missing id or displayName." }, { status: 400 });
     }
 
-    const slug = toSlug(rawSlug);
-    if (!slug) {
-      return NextResponse.json({ error: "Indirizzo non valido." }, { status: 400 });
+    const displayName = rawName.trim().replace(/\s+/g, " ").slice(0, MAX_LENGTH);
+    if (!displayName) {
+      return NextResponse.json({ error: "Il nome non può essere vuoto." }, { status: 400 });
     }
 
     const { error } = await supabase
       .from("profiles")
-      .update({ slug })
+      .update({ display_name: displayName })
       .eq("id", id)
       .eq("user_id", user.id);
+    if (error) throw error;
 
-    if (error) {
-      if (error.code === "23505") {
-        return NextResponse.json({ error: "Questo indirizzo è già in uso. Scegline un altro." }, { status: 409 });
-      }
-      throw error;
-    }
-
-    return NextResponse.json({ success: true, slug });
+    return NextResponse.json({ success: true, displayName });
   } catch (err) {
     console.error("[account/rename-profile]", err);
     return NextResponse.json(

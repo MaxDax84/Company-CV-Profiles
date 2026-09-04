@@ -8,6 +8,7 @@ import type { CvScoreBreakdown } from "./cv-score";
 import { reconstructScoreBefore } from "./cv-score";
 import { hashPdf, getRememberedProfile, rememberProfile } from "./cv-score-memory";
 import { createServiceSupabaseClient, isSupabaseConfigured } from "./supabase/service";
+import { positionLabel } from "./download-filename";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Shared slug/KV/Postgres plumbing used by /api/parse-resume, /api/claim,
@@ -153,16 +154,16 @@ export async function getOwnedProfileRow(
   supabase: SupabaseClient,
   userId: string,
   kind: "primary" | "tailored" | "translated" = "primary"
-): Promise<{ id: string; slug: string; data: ProfileSchema } | null> {
+): Promise<{ id: string; slug: string; display_name: string; data: ProfileSchema } | null> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data")
+    .select("id, slug, display_name, data")
     .eq("user_id", userId)
     .eq("kind", kind)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  return data as { id: string; slug: string; data: ProfileSchema } | null;
+  return data as { id: string; slug: string; display_name: string; data: ProfileSchema } | null;
 }
 
 // Every CV a user has uploaded and claimed, newest first — shown as a list
@@ -170,17 +171,17 @@ export async function getOwnedProfileRow(
 export async function getOwnedPrimaryProfiles(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string; is_public: boolean }[]> {
+): Promise<{ id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string; is_public: boolean }[]> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data, created_at, is_public")
+    .select("id, slug, display_name, data, created_at, is_public")
     .eq("user_id", userId)
     .eq("kind", "primary")
     // Most-recently-touched first (not just most-recently-created) — a CV
     // just rewritten via the AI chat assistant, or otherwise edited, should
     // float back to the top rather than staying wherever it first landed.
     .order("updated_at", { ascending: false });
-  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string; is_public: boolean }[];
+  return (data ?? []) as { id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string; is_public: boolean }[];
 }
 
 // Same as above, looked up by slug instead of kind — used by the PDF route,
@@ -191,14 +192,14 @@ export async function getOwnedProfileBySlug(
   supabase: SupabaseClient,
   userId: string,
   slug: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null> {
+): Promise<{ id: string; slug: string; display_name: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data, kind")
+    .select("id, slug, display_name, data, kind")
     .eq("user_id", userId)
     .eq("slug", slug)
     .maybeSingle();
-  return data as { id: string; slug: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null;
+  return data as { id: string; slug: string; display_name: string; data: ProfileSchema; kind: "primary" | "tailored" | "translated" } | null;
 }
 
 // All of a user's tailored (job-specific) profiles, newest first — shown as
@@ -207,14 +208,14 @@ export async function getOwnedProfileBySlug(
 export async function getOwnedTailoredProfiles(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+): Promise<{ id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string }[]> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data, created_at")
+    .select("id, slug, display_name, data, created_at")
     .eq("user_id", userId)
     .eq("kind", "tailored")
     .order("created_at", { ascending: false });
-  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
+  return (data ?? []) as { id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string }[];
 }
 
 // All of a user's translated CVs, newest first — not shown as their own
@@ -225,14 +226,14 @@ export async function getOwnedTailoredProfiles(
 export async function getOwnedTranslatedProfiles(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ id: string; slug: string; data: ProfileSchema; created_at: string }[]> {
+): Promise<{ id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string }[]> {
   const { data } = await supabase
     .from("profiles")
-    .select("id, slug, data, created_at")
+    .select("id, slug, display_name, data, created_at")
     .eq("user_id", userId)
     .eq("kind", "translated")
     .order("created_at", { ascending: false });
-  return (data ?? []) as { id: string; slug: string; data: ProfileSchema; created_at: string }[];
+  return (data ?? []) as { id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string }[];
 }
 
 // Saves a tailored (paid) output as a new, independent row owned by the
@@ -260,6 +261,7 @@ export async function saveTailoredProfile(
       user_id: userId,
       kind: "tailored",
       slug,
+      display_name: positionLabel(profile),
       data: profile,
       source_profile_id: sourceProfileId,
       job_hash: jobHash ?? null,
@@ -336,6 +338,7 @@ export async function saveTranslatedProfile(
       user_id: userId,
       kind: "translated",
       slug,
+      display_name: positionLabel(profile),
       data: profile,
       source_profile_id: sourceProfileId,
     }).select("id").single();
@@ -471,7 +474,7 @@ export async function claimPendingProfile(
     const slug = attempt === 0 ? pendingSlug : `${pendingSlug}-${attempt}`;
     const { error: insertError } = await supabase
       .from("profiles")
-      .insert({ user_id: userId, kind: "primary", slug, data: profile, pdf_hash: pdfHash ?? null });
+      .insert({ user_id: userId, kind: "primary", slug, display_name: positionLabel(profile), data: profile, pdf_hash: pdfHash ?? null });
     if (!insertError) {
       await kv.del(`profile:${pendingSlug}`);
       await kv.del(`claim:${claimToken}`);

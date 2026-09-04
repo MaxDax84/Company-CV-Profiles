@@ -64,7 +64,7 @@ export async function GET(
     return new NextResponse(buffer as unknown as BodyInit, {
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "Content-Disposition": `attachment; filename="${buildCvWordFilename(row.data, row.slug)}"`,
+        "Content-Disposition": `attachment; filename="${buildCvWordFilename(row.data, row.display_name)}"`,
       },
     });
   } catch (err) {

@@ -10,7 +10,7 @@ import type { InterviewPrepListItem } from "@/components/interview-prep-panel";
 import AccountTabs, { isTabId, getTabTitle, type TabId } from "@/components/account-tabs";
 import { useLanguage } from "@/components/language-provider";
 
-type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string };
+type ProfileRow = { id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string };
 
 interface AccountShellProps {
   userEmail: string;

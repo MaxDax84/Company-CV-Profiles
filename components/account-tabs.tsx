@@ -15,13 +15,12 @@ import CoverLetterButton from "@/components/cover-letter-button";
 import { TRANSLATE_LANGUAGES } from "@/components/translate-cv-button";
 import DownloadMenuButton from "@/components/download-menu-button";
 import TranslateMenuButton from "@/components/translate-menu-button";
-import EditableSlug from "@/components/editable-slug";
+import EditableName from "@/components/editable-name";
 import ProfileVisibilityToggle from "@/components/profile-visibility-toggle";
 import { DeleteProfileButton } from "@/components/account-actions";
 import CvChat from "@/components/cv-chat";
 import InterviewPrepPanel, { type InterviewPrepListItem } from "@/components/interview-prep-panel";
 import { SUPPORT_EMAIL } from "@/lib/contact";
-import { cvLabel } from "@/lib/download-filename";
 import { useLanguage } from "@/components/language-provider";
 import type { Language } from "@/lib/i18n";
 
@@ -96,7 +95,7 @@ function getNextBestAction(
   return null;
 }
 
-type ProfileRow = { id: string; slug: string; data: ProfileSchema; created_at: string; is_public?: boolean };
+type ProfileRow = { id: string; slug: string; display_name: string; data: ProfileSchema; created_at: string; is_public?: boolean };
 
 // Commercial sections — the ones used often — stay as visible tabs. Account
 // settings (rarely touched) moved into a separate drawer, see SETTINGS_ICON
@@ -313,7 +312,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                       <div className="min-w-0">
                         <p className="text-sm font-semibold break-words">{row.slug}</p>
                         <p className="text-xs text-muted-foreground/60">
-                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -383,9 +382,9 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                   <div key={row.id} className="glass-card rounded-2xl p-6 space-y-4">
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div className="min-w-0">
-                        <EditableSlug profileId={row.id} slug={row.slug} variant="heading" />
+                        <EditableName profileId={row.id} displayName={row.display_name} variant="heading" />
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                          {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                         </p>
                         <div className="mt-1.5">
                           <ProfileVisibilityToggle profileId={row.id} initialIsPublic={row.is_public ?? true} />
@@ -524,12 +523,12 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         </p>
                         <p className="text-sm font-semibold">{row.data.personal_info.title || row.data.personal_info.full_name}</p>
                         <p className="text-xs text-muted-foreground/60 mt-0.5">
-                          {tr("Creato il", "Created on")} {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Creato il", "Created on")} {new Date(row.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                         </p>
                       </div>
                     </div>
                   </div>
-                  <EditableSlug profileId={row.id} slug={row.slug} />
+                  <EditableName profileId={row.id} displayName={row.display_name} />
                   <div className="flex flex-wrap items-center gap-2">
                     <DownloadMenuButton
                       slug={row.slug}
@@ -587,10 +586,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={dl.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium break-words">
-                          {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotto in", "Translated to")} ${languageLabel}` : ""} · {templateName}
+                          {row.display_name}{languageLabel ? ` · ${tr("Tradotto in", "Translated to")} ${languageLabel}` : ""} · {templateName}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
-                          {tr("Generato il", "Generated on")} {new Date(dl.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Generato il", "Generated on")} {new Date(dl.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                         </p>
                       </div>
                       <a
@@ -631,10 +630,10 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                     <div key={letter.id} className="glass-card rounded-xl flex items-center justify-between gap-3 px-4 py-3 flex-col sm:flex-row items-stretch sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium break-words">
-                          {tr("Lettera per", "Letter for")} {cvLabel(row.data, row.slug)}{languageLabel ? ` · ${tr("Tradotta in", "Translated to")} ${languageLabel}` : ""}
+                          {tr("Lettera per", "Letter for")} {row.display_name}{languageLabel ? ` · ${tr("Tradotta in", "Translated to")} ${languageLabel}` : ""}
                         </p>
                         <p className="text-xs text-muted-foreground/50">
-                          {tr("Generata il", "Generated on")} {new Date(letter.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                          {tr("Generata il", "Generated on")} {new Date(letter.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                         </p>
                       </div>
                       <a
@@ -731,7 +730,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
                         <p className="text-xs text-muted-foreground/70">{entry.detail}</p>
                       )}
                       <p className="text-xs text-muted-foreground/50">
-                        {new Date(entry.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(entry.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                       </p>
                     </div>
                     <p className="text-sm font-semibold" style={{ color: entry.amount > 0 ? "#16a34a" : "#dc2626" }}>

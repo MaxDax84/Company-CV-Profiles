@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/components/language-provider";
 
-interface EditableSlugProps {
+interface EditableNameProps {
   profileId: string;
-  slug: string;
+  displayName: string;
   // "compact" (default) is the small labeled row used alongside an already-
   // meaningful heading (e.g. the tailored-CV's job title). "heading" is for
   // when the CV's own name IS the primary identifier of the card — the
@@ -15,16 +15,29 @@ interface EditableSlugProps {
   variant?: "compact" | "heading";
 }
 
-export default function EditableSlug({ profileId, slug, variant = "compact" }: EditableSlugProps) {
+const MAX_LENGTH = 80;
+
+// Free-text name the owner chooses for a CV — deliberately NOT the URL
+// slug (see supabase/migrations/0035_profile_display_name.sql for why that
+// used to be the same field, and why a technical-looking name was the
+// result). No slugification here: whitespace is collapsed and the length
+// is capped, but casing/punctuation/accents are the owner's own choice.
+export default function EditableName({ profileId, displayName, variant = "compact" }: EditableNameProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(slug);
+  const [value, setValue] = useState(displayName);
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const { lang } = useLanguage();
 
   async function handleSave() {
-    if (value.trim() === slug) {
+    const trimmed = value.trim().replace(/\s+/g, " ");
+    if (!trimmed) {
+      setStatus("error");
+      setErrorMsg(lang === "en" ? "Name can't be empty." : "Il nome non può essere vuoto.");
+      return;
+    }
+    if (trimmed === displayName) {
       setEditing(false);
       return;
     }
@@ -33,7 +46,7 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
       const res = await fetch("/api/account/rename-profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: profileId, slug: value }),
+        body: JSON.stringify({ id: profileId, displayName: trimmed }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -57,13 +70,13 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
       <div className="space-y-0.5">
         {!isHeading && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-            {lang === "en" ? "CV name uploaded as PDF:" : "Nome del CV caricato come PDF:"}
+            {lang === "en" ? "CV name:" : "Nome del CV:"}
           </p>
         )}
         <div className={isHeading ? "flex items-center gap-2" : "flex items-center gap-2 text-xs text-muted-foreground/60"}>
-          <span className={isHeading ? "text-sm font-semibold break-words min-w-0" : "break-words min-w-0"}>{slug}</span>
+          <span className={isHeading ? "text-sm font-semibold break-words min-w-0" : "break-words min-w-0"}>{displayName}</span>
           <button
-            onClick={() => { setValue(slug); setEditing(true); setStatus("idle"); }}
+            onClick={() => { setValue(displayName); setEditing(true); setStatus("idle"); }}
             className="font-semibold text-primary hover:opacity-80 transition-opacity shrink-0 text-xs"
           >
             {isHeading ? (lang === "en" ? "Edit" : "Modifica") : (lang === "en" ? "Edit name" : "Modifica nome")}
@@ -77,13 +90,15 @@ export default function EditableSlug({ profileId, slug, variant = "compact" }: E
     <div className="space-y-1.5">
       {!isHeading && (
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-          {lang === "en" ? "CV name uploaded as PDF:" : "Nome del CV caricato come PDF:"}
+          {lang === "en" ? "CV name:" : "Nome del CV:"}
         </p>
       )}
       <div className="flex items-center gap-2">
         <input
           value={value}
           onChange={e => setValue(e.target.value)}
+          maxLength={MAX_LENGTH}
+          autoFocus
           className="flex-1 min-w-0 bg-foreground/[0.03] border border-foreground/10 rounded-lg px-2.5 py-1 text-xs outline-none focus:border-primary/50"
         />
         <button
