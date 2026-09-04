@@ -63,6 +63,7 @@ export default function GeneratePage() {
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [creatingStepIndex, setCreatingStepIndex] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [claiming, setClaiming] = useState(false);
@@ -108,6 +109,15 @@ export default function GeneratePage() {
     const id = setInterval(() => setStepIndex(i => i + 1), STEP_INTERVAL_MS);
     return () => clearInterval(id);
   }, [state]);
+
+  useEffect(() => {
+    if (!isCreating) {
+      setCreatingStepIndex(0);
+      return;
+    }
+    const id = setInterval(() => setCreatingStepIndex(i => i + 1), STEP_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [isCreating]);
 
   // The URL never changes across idle → analyzing → scored → customizing →
   // done, but the content underneath does completely — without this, the
@@ -633,28 +643,61 @@ export default function GeneratePage() {
               <p className="text-xs text-center text-muted-foreground/70">{t.selectTemplateHint}</p>
             )}
 
-            <button
-              onClick={handleCreate}
-              disabled={isCreating || !template}
-              className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
-            >
-              {isCreating ? (
-                <span className="inline-flex items-center justify-center gap-2">
-                  <span className="w-3.5 h-3.5 rounded-full border-2 border-foreground/25 border-t-black animate-spin" />
-                  {t.creatingNote}
-                </span>
-              ) : t.ctaReady}
-            </button>
-            {isCreating && (
-              <p className="text-xs text-muted-foreground/50 text-center -mt-3">{t.generatingNote}</p>
+            {isCreating ? (
+              /* ── Creating: same step-list treatment as the analyzing
+                  state, so the finalize call doesn't read as a stalled
+                  spinner on its own 5-15s AI round trip. ── */
+              <div
+                className="rounded-3xl border border-primary/20 bg-primary/5 p-8 space-y-4"
+                style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}
+              >
+                <div className="w-8 h-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
+                <div className="space-y-2 max-w-xs mx-auto">
+                  {t.creatingSteps.map((step, i) => {
+                    const done = i < creatingStepIndex;
+                    const active = i === Math.min(creatingStepIndex, t.creatingSteps.length - 1);
+                    return (
+                      <div key={step} className="flex items-center gap-2.5 text-sm">
+                        <span
+                          className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[10px] border transition-colors duration-300"
+                          style={{
+                            borderColor: done || active ? "var(--primary)" : "var(--border)",
+                            background: done ? "var(--primary)" : "transparent",
+                            color: done ? "#000" : "transparent",
+                          }}
+                        >
+                          ✓
+                        </span>
+                        <span
+                          className="transition-colors duration-300"
+                          style={{ color: done ? "var(--primary)" : active ? "var(--foreground)" : "var(--muted-foreground)" }}
+                        >
+                          {step}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground/50 text-center">{t.generatingNote}</p>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={handleCreate}
+                  disabled={!template}
+                  className="w-full py-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: selected.accent, color: "#000", boxShadow: `0 4px 24px ${selected.accent}50` }}
+                >
+                  {t.ctaReady}
+                </button>
+                <button
+                  onClick={() => setState("scored")}
+                  className="block mx-auto text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                >
+                  {t.backToScore}
+                </button>
+              </>
             )}
-            <button
-              onClick={() => setState("scored")}
-              className="block mx-auto text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-            >
-              {t.backToScore}
-            </button>
           </>
         ) : (
           /* ── Idle state ── */

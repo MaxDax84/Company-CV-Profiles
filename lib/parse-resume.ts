@@ -50,7 +50,7 @@ Rules:
 - For bio: this is a FAITHFUL extraction pass, not an optimization pass — a later step handles improving it. Just lightly clean up (grammar/typos only) the CV's own summary or positioning statement into one sentence, max 140 characters, same substance as bio_original. Do not add new phrasing, do not select or prioritize which skills to foreground, do not optimize for length or impact. If the CV has no self-description at all, write one plain, factual sentence stating only the person's role/seniority (e.g. "Marketing Manager with experience in digital campaigns") — still without any embellishment.
 - For bio_original: a short, literal, unpolished restatement of how the CV itself describes the person's role (e.g. lifted near-verbatim from the CV's own summary or job title line) — this shows the "before" state, so do NOT apply any of the improvements you apply to "bio". Same language as the CV. If the CV has no self-description to draw from, omit this field.
 - For education "degree": if the source clearly states a formal qualification type (e.g. "Laurea Magistrale", "Bachelor's", "Diploma"), use that, and put the subject/major in "field". If it does NOT — e.g. a short course, certificate program, or training whose title doesn't map to a formal degree category — put the course/program title exactly as written into "degree" itself and omit "field" entirely. Never leave "degree" blank and never invent a category label just to have something to put there.
-- For experience: include at most 5 most recent entries. For each entry, also set "is_career_experience": a real, continuative professional role that belongs on someone's career timeline gets true; a summer job, a short (a few months) temporary/seasonal gig, or student/part-time work unrelated to the person's professional field gets false. A genuine internship or apprenticeship that IS in the person's professional field still counts as true — this is about excluding youth/seasonal/unrelated work from someone's "years of experience", not internships in general. When in doubt (a role's nature is ambiguous), default to true rather than guessing it away.
+- For experience: include at most 6 entries. If the CV genuinely has more distinct roles than that, do NOT simply drop the oldest ones — first merge consecutive roles at the SAME company (internal promotions, or a relocation to a different office of the same employer) into a single entry (one role/title string joining both, e.g. "Senior X / Y", description bullets combined, start_date from the earliest merged role and end_date from the latest) to make room, so that every distinct EMPLOYER the person has worked for is still represented by at least one entry; only if merging every same-company role still leaves more than 6 employers should you drop entries, oldest first. Never assign a merged or kept entry a date range that doesn't span its own bullets — double-check each entry's start_date/end_date actually matches what that entry describes, especially when the source CV's layout places a role's date badge next to a different line than its title. For each entry, also set "is_career_experience": a real, continuative professional role that belongs on someone's career timeline gets true; a summer job, a short (a few months) temporary/seasonal gig, or student/part-time work unrelated to the person's professional field gets false. A genuine internship or apprenticeship that IS in the person's professional field still counts as true — this is about excluding youth/seasonal/unrelated work from someone's "years of experience", not internships in general. When in doubt (a role's nature is ambiguous), default to true rather than guessing it away.
 - For technologies per experience: up to 6 items — include every named tool/technology/platform the source mentions for that role, do not truncate to fewer just to shorten the list.
 - For skills (hard/soft/tools): max 6 items each.
 - For projects: max 2 entries.
@@ -95,8 +95,55 @@ export interface ParseResumeResult {
   suggestedTitles: string[];
 }
 
+type SocialPlatform = "linkedin" | "github" | "twitter";
+
+function classifySocialUrl(url: string): SocialPlatform | null {
+  let host: string;
+  try {
+    host = new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+  if (host === "linkedin.com") return "linkedin";
+  if (host === "github.com") return "github";
+  if (host === "twitter.com" || host === "x.com") return "twitter";
+  return null;
+}
+
+// A CV's "LinkedIn"/"GitHub" contact-icon row is almost always a clickable
+// hyperlink annotation with no visible URL text next to it — the model can
+// only see rendered page content, never where a link actually points (see
+// the social_links rule in SYSTEM_PROMPT), so it has no way to fill these in
+// from text alone. Reading the PDF's own link annotations gets the real
+// target directly and deterministically, no guessing involved. Best-effort:
+// this must never fail the whole extraction over a link-reading hiccup, so
+// any error here just yields no extra links, same as before this existed.
+async function extractSocialLinksFromPdf(pdfBuffer: ArrayBuffer): Promise<Partial<Record<SocialPlatform, string>>> {
+  const found: Partial<Record<SocialPlatform, string>> = {};
+  try {
+    const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    const doc = await getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const annotations = await page.getAnnotations();
+      for (const a of annotations) {
+        if (a.subtype !== "Link" || typeof a.url !== "string") continue;
+        const platform = classifySocialUrl(a.url);
+        if (platform && !found[platform]) found[platform] = a.url;
+      }
+    }
+  } catch {
+    // Edge runtime, a malformed PDF, whatever — fall back to whatever the
+    // model itself extracted from visible text.
+  }
+  return found;
+}
+
 export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeResult> {
   const base64Pdf = arrayBufferToBase64(pdfBuffer);
+  // Kicked off alongside the Claude call (not after it) so this adds no
+  // extra latency to the overall extraction.
+  const pdfLinksPromise = extractSocialLinksFromPdf(pdfBuffer);
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -172,6 +219,25 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
   // missing one of these sections. Normalize here, once, at the source.
   profile.projects ??= [];
   profile.certifications ??= [];
+
+  // The prompt tells the model to omit a social link it only sees as a bare
+  // label (a "LinkedIn" hyperlink with no visible URL text) rather than
+  // guess the platform's homepage — but it doesn't always comply, and a
+  // bare label used as an href renders as a broken relative link on every
+  // template (see components/templates/*). Belt-and-suspenders: drop
+  // anything that isn't actually a URL or @handle.
+  if (profile.personal_info?.social_links) {
+    const links = profile.personal_info.social_links;
+    for (const key of Object.keys(links) as (keyof typeof links)[]) {
+      if (!/[./@]/.test(links[key] ?? "")) delete links[key];
+    }
+  }
+
+  // Fill in (or correct) linkedin/github/twitter from the PDF's own
+  // hyperlink annotations — a real link read straight from the document
+  // beats anything the model inferred from visible text alone.
+  const pdfLinks = await pdfLinksPromise;
+  Object.assign(profile.personal_info.social_links, pdfLinks);
 
   // Sum ourselves rather than trusting the model to also report a correct
   // total — it's only ever asked for the 4 individual criteria.

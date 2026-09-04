@@ -212,6 +212,11 @@ export const translations = {
       ctaProceed: 'Yes, create my web page →',
       customizeTitle: 'Customize your web page',
       creatingNote: 'Creating…',
+      creatingSteps: [
+        'Applying your template…',
+        'Polishing your content…',
+        'Finalizing your page…',
+      ],
       backToScore: '← Back to score',
       back: '← Back to site',
       copyLink: 'Copy link',
@@ -583,6 +588,11 @@ export const translations = {
       ctaProceed: 'Procedi →',
       customizeTitle: 'Personalizza la tua pagina web',
       creatingNote: 'Creazione in corso…',
+      creatingSteps: [
+        'Applicazione del template…',
+        'Rifinitura dei contenuti…',
+        'Finalizzazione della pagina…',
+      ],
       backToScore: '← Torna al punteggio',
       back: '← Torna al sito',
       copyLink: 'Copia link',
