@@ -449,7 +449,7 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
             href="/generate"
             style={{ display: 'inline-flex', marginTop: 14, padding: '10px 22px', borderRadius: 6, background: accent, color: navy, fontWeight: 600, fontSize: 12, textDecoration: 'none' }}
           >
-            {isIT ? 'Creato con Jobli - Fai il tuo' : 'Made with Jobli - Create yours'}
+            {isIT ? 'Clicca e crea anche tu la tua pagina' : 'Click and create your own page too'}
           </Link>
         </div>
       </section>
