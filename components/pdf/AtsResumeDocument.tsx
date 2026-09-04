@@ -101,24 +101,28 @@ function resolveAccent(profile: ProfileSchema, cfg: VariantConfig): string {
   return cfg.fixedAccent ?? profile.metadata.primary_color ?? FALLBACK_ACCENT;
 }
 
-// Applied only to whitespace (margins/padding/line-height), never to
-// fontSize — a "compact" PDF should read at the exact same type size as the
-// normal one, just with less air between lines/sections. Shrinking font
-// size would fight the product's own ATS-readability promise; this doesn't.
-const COMPACT_DENSITY = 0.8;
+// Whitespace (margins/padding/line-height) shrinks more aggressively than
+// type size — a CV that's genuinely a page-and-a-bit over rarely fits from
+// tighter spacing alone. Tuned against a real 6-role, 2-page CV: at these
+// values it lands on exactly one page and stays comfortably legible (body
+// text only goes from 9.5pt to ~8pt); a milder reduction left it on 2 pages
+// far too often to be worth the credit.
+const COMPACT_DENSITY = 0.65;
+const COMPACT_FONT_DENSITY = 0.85;
 
 function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, compact = false) {
   const generous = cfg.spacing === "generous";
   const PAGE_PADDING_H = generous ? 54 : 42;
   const RULE_GRAY = "#a3a3a3";
   const d = compact ? COMPACT_DENSITY : 1;
+  const fd = compact ? COMPACT_FONT_DENSITY : 1;
   return StyleSheet.create({
     // Margins live on the Page itself (not a wrapping View) — react-pdf only
     // reapplies a View's own padding at the very start/end of its content, so
     // a wrapping <View> loses its top/bottom inset on every page after the
     // first once a section overflows. Page-level padding, by contrast, is
     // correctly reapplied on every auto-generated page.
-    page: { fontFamily: cfg.fontFamily, fontSize: 10, color: "#232323", paddingTop: (generous ? 40 : 34) * d, paddingBottom: (generous ? 44 : 36) * d, paddingHorizontal: PAGE_PADDING_H },
+    page: { fontFamily: cfg.fontFamily, fontSize: 10 * fd, color: "#232323", paddingTop: (generous ? 40 : 34) * d, paddingBottom: (generous ? 44 : 36) * d, paddingHorizontal: PAGE_PADDING_H },
     // "executive" only — a thin full-bleed gold rule above the header, purely
     // decorative (a colored bar, no text), so it adds a touch of richness
     // without introducing a second column or changing reading order.
@@ -139,15 +143,15 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, com
       marginBottom: (cfg.headerBand ? 6 : 14) * d,
       ...(!cfg.headerBand && { borderBottomWidth: 1, borderBottomColor: RULE_GRAY }),
     },
-    name: { fontSize: generous ? 25 : 23, fontFamily: cfg.headerFontFamilyBold, letterSpacing: 0.3, marginBottom: 3 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    title: { fontSize: 12, fontFamily: cfg.headerFontFamily, color: "#4a4a4a", marginBottom: 9 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    contactLine: { fontSize: 9, color: "#5a5a5a", marginBottom: 2 * d, lineHeight: 1.5, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    name: { fontSize: (generous ? 25 : 23) * fd, fontFamily: cfg.headerFontFamilyBold, letterSpacing: 0.3, marginBottom: 3 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    title: { fontSize: 12 * fd, fontFamily: cfg.headerFontFamily, color: "#4a4a4a", marginBottom: 9 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    contactLine: { fontSize: 9 * fd, color: "#5a5a5a", marginBottom: 2 * d, lineHeight: 1.5 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     section: { marginTop: (generous ? 22 : 17) * d },
     // Each variant carries a distinct treatment — a plain thin rule
     // (ats-core), a soft double rule (executive), or a filled tag-like
     // band (creative-tech) — rather than one shared look.
     sectionTitle: {
-      fontSize: cfg.sectionTitleStyle === "tag" ? 10 : 10.5,
+      fontSize: (cfg.sectionTitleStyle === "tag" ? 10 : 10.5) * fd,
       fontFamily: cfg.headerFontFamilyBold,
       textTransform: "uppercase",
       letterSpacing: cfg.sectionTitleStyle === "tag" ? 1.6 : 1.3,
@@ -173,7 +177,7 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, com
         borderBottomColor: cfg.accentSecondary ?? accentSoft,
       }),
     },
-    bio: { fontSize: 10, lineHeight: 1.55 * d, color: "#333333" },
+    bio: { fontSize: 10 * fd, lineHeight: 1.55 * d, color: "#333333" },
     entry: {
       marginBottom: (generous ? 13 : 11) * d,
       paddingLeft: cfg.entryMarker === "dot" ? 12 : cfg.entryMarker === "bar" ? 10 : 0,
@@ -184,26 +188,26 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, com
     // column of text, nothing sits beside it.
     entryBar: { position: "absolute", left: 0, top: 1, bottom: 1, width: 2, borderRadius: 1 },
     entryHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-    entryTitle: { fontSize: 10.5, fontFamily: cfg.fontFamilyBold, color: "#232323" },
-    entryDates: { fontSize: 8.5, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3 },
-    entryDatesChip: { fontSize: 8, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
-    entrySubtitle: { fontSize: 9.5, color: "#555555", marginTop: 1 * d, marginBottom: 5 * d },
-    bullet: { fontSize: 9.5, lineHeight: 1.45 * d, marginBottom: 2.5 * d, color: "#333333" },
+    entryTitle: { fontSize: 10.5 * fd, fontFamily: cfg.fontFamilyBold, color: "#232323" },
+    entryDates: { fontSize: 8.5 * fd, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3 },
+    entryDatesChip: { fontSize: 8 * fd, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
+    entrySubtitle: { fontSize: 9.5 * fd, color: "#555555", marginTop: 1 * d, marginBottom: 5 * d },
+    bullet: { fontSize: 9.5 * fd, lineHeight: 1.45 * d, marginBottom: 2.5 * d, color: "#333333" },
     // Marker and text as separate fixed-width/flex columns (not one inline
     // string) so a wrapped second line indents under the text, not back
     // under the bullet. Still plain sequential text in the content stream,
     // so ATS extraction order is unaffected.
     bulletRow: { flexDirection: "row", marginBottom: 3.5 * d },
-    bulletMarker: { width: 13, fontSize: 9.5, lineHeight: 1.45 * d, color: cfg.accentSecondary ?? accentSoft },
-    bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.45 * d, color: "#333333" },
-    skillLine: { fontSize: 9.5, lineHeight: 1.65 * d, color: "#333333" },
+    bulletMarker: { width: 13, fontSize: 9.5 * fd, lineHeight: 1.45 * d, color: cfg.accentSecondary ?? accentSoft },
+    bulletText: { flex: 1, fontSize: 9.5 * fd, lineHeight: 1.45 * d, color: "#333333" },
+    skillLine: { fontSize: 9.5 * fd, lineHeight: 1.65 * d, color: "#333333" },
     skillLabel: { fontFamily: cfg.fontFamilyBold, color: "#232323" },
     // "creative-tech" only — small pill chips for skills/tools instead of a
     // comma-joined line. Each chip is still its own plain <Text> node in
     // normal document order, so ATS extraction reads the same words in the
     // same order it would from a plain line — only the visual wrapper differs.
     tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 2 * d, marginBottom: 4 * d },
-    tag: { fontSize: 8.5, fontFamily: cfg.fontFamilyBold, color: accent, backgroundColor: hexToRgba(accent, 0.1), borderRadius: 8, paddingHorizontal: 7, paddingVertical: 3 },
+    tag: { fontSize: 8.5 * fd, fontFamily: cfg.fontFamilyBold, color: accent, backgroundColor: hexToRgba(accent, 0.1), borderRadius: 8, paddingHorizontal: 7, paddingVertical: 3 },
     link: { textDecoration: "none", fontFamily: cfg.fontFamilyBold },
   });
 }

@@ -91,11 +91,11 @@ export async function GET(
       throw err;
     }
 
-    // Compaction only ever touches whitespace (never font size — see
-    // AtsResumeDocument's buildStyles), so a genuinely content-heavy CV can
-    // still land on 2+ pages even compacted. In that case, refund the
-    // add-on and fall back to the normal-density file rather than charging
-    // for a compaction that didn't actually happen.
+    // Compaction tightens spacing and shrinks type size modestly (see
+    // AtsResumeDocument's buildStyles) but never removes content, so a
+    // genuinely content-heavy CV can still land on 2+ pages even compacted.
+    // In that case, refund the add-on and fall back to the normal-density
+    // file rather than charging for a compaction that didn't actually happen.
     if (compactApplied) {
       const compactDoc = await PDFDocument.load(buffer);
       if (compactDoc.getPageCount() > 1) {

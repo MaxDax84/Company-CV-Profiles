@@ -69,7 +69,7 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
         const headers = await triggerDownload(`/api/pdf/${slug}?template=${template}${compact ? "&compact=1" : ""}`);
         setPaidTemplates((prev) => (prev && !prev.includes(template) ? [...prev, template] : prev));
         onDownloaded?.();
-        // Compaction only touches whitespace, never font size, so a
+        // Compaction tightens spacing and shrinks type size modestly, but a
         // genuinely content-heavy CV can still land on 2+ pages — the
         // server refunds the add-on itself in that case and delivers the
         // normal file instead; this just surfaces that outcome.
@@ -349,8 +349,8 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
           </p>
           <p className="text-[11px] text-muted-foreground">
             {lang === "en"
-              ? "Want it compacted onto a single page? Only the spacing changes — no content is removed."
-              : "Vuoi comprimerlo in una pagina sola? Cambia solo la spaziatura, nessun contenuto viene rimosso."}
+              ? "Want it compacted onto a single page? Spacing and type size shrink slightly — no content is removed."
+              : "Vuoi comprimerlo in una pagina sola? Spaziatura e carattere si riducono leggermente, nessun contenuto viene rimosso."}
           </p>
           <div className="flex gap-2 pt-1">
             <button
@@ -359,7 +359,7 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
               className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
               style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
-              {lang === "en" ? "Yes, compact it" : "Sì, comprimi"}
+              {lang === "en" ? "Yes, compact it (0.5 credits)" : "Sì, comprimi (0,5 crediti)"}
             </button>
             <button
               type="button"
