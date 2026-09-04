@@ -242,7 +242,7 @@ export default function InterviewPrepPanel({ credits, reports }: InterviewPrepPa
                       {r.content.role_title ? ` · ${r.content.role_title}` : ""}
                     </p>
                     <p className="text-[11px] text-muted-foreground/60">
-                      {new Date(r.created_at).toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                      {new Date(r.created_at).toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
                     </p>
                   </div>
                 </div>

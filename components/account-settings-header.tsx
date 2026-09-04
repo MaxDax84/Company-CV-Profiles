@@ -14,7 +14,7 @@ export default function AccountSettingsHeader({ createdAt }: { createdAt: string
         {lang === "en" ? "Account settings" : "Impostazioni account"}
       </h1>
       <p className="text-sm text-muted-foreground mt-1">
-        {lang === "en" ? "Member since" : "Membro da"} {new Date(createdAt).toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { year: "numeric", month: "long" })}
+        {lang === "en" ? "Member since" : "Membro da"} {new Date(createdAt).toLocaleDateString(lang === "en" ? "en-US" : "it-IT", { year: "numeric", month: "long", timeZone: "UTC" })}
       </p>
     </div>
   );
