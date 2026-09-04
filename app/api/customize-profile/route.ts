@@ -3,6 +3,8 @@ import { getClientIp, improveProfileRatelimit } from "@/lib/rate-limit";
 import { improveAndFinalizePendingProfile } from "@/lib/profile-store";
 import { isTemplateStyle } from "@/lib/templates";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
+import { trackServer } from "@/lib/analytics-server";
+import { readPosthogDistinctId } from "@/lib/analytics-types";
 
 // Node runtime (not edge): this route now makes a Claude call (the phase-2
 // "improve" pass) — maxDuration only takes effect on Node functions.
@@ -34,6 +36,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid template" }, { status: 400 });
     }
 
+    const startedAt = Date.now();
     const result = await improveAndFinalizePendingProfile(claimToken, template);
     if (!result) {
       return NextResponse.json(
@@ -41,6 +44,13 @@ export async function POST(req: NextRequest) {
         { status: 410 }
       );
     }
+
+    // Fired here, once the AI-improved page is actually ready to return —
+    // not on the client's button click — per the spec's own rule: hooking
+    // this to the click would inflate activation numbers with people who
+    // clicked but never got (or waited for) a finished page.
+    const distinctId = readPosthogDistinctId(req.cookies, process.env.NEXT_PUBLIC_POSTHOG_KEY);
+    await trackServer(distinctId, "profile_page_generated", { ms_elapsed: Date.now() - startedAt });
 
     return NextResponse.json({
       slug: result.slug,

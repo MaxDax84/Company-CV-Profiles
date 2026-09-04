@@ -67,7 +67,7 @@ export default function EditableName({ profileId, displayName, variant = "compac
 
   if (!editing) {
     return (
-      <div className="space-y-0.5">
+      <div className="ph-mask space-y-0.5">
         {!isHeading && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
             {lang === "en" ? "CV name:" : "Nome del CV:"}
@@ -87,7 +87,7 @@ export default function EditableName({ profileId, displayName, variant = "compac
   }
 
   return (
-    <div className="space-y-1.5">
+    <div className="ph-mask space-y-1.5">
       {!isHeading && (
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
           {lang === "en" ? "CV name:" : "Nome del CV:"}

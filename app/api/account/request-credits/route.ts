@@ -4,6 +4,7 @@ import { createServiceSupabaseClient } from "@/lib/supabase/service";
 import { getAccountCode, getCreditBalance, getCreditsLastRequestedAt, CREDITS_REQUEST_COOLDOWN_HOURS } from "@/lib/credits";
 import { requestCreditsRatelimit } from "@/lib/rate-limit";
 import { sendMail, emailShell, escapeHtml } from "@/lib/email";
+import { trackServer } from "@/lib/analytics-server";
 
 export const runtime = "nodejs";
 
@@ -76,6 +77,12 @@ export async function POST(req: NextRequest) {
         `,
       }),
     });
+
+    // The spec called for `reason_text`/`price_willing` properties, but this
+    // flow has no such input — it's a one-click "+10 credits" request, no
+    // form (see the comment above). Tracking what actually exists instead
+    // of inventing UI to match the spec.
+    await trackServer(user.id, "credits_requested", { extra_credits: EXTRA_CREDITS });
 
     return NextResponse.json({ success: true, requestedAt: now });
   } catch (err) {

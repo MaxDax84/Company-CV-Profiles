@@ -90,7 +90,7 @@ export default function TemplateBeta({ profile, forceVisible }: Props) {
   const contactIn = useInView(forceVisible)
 
   return (
-    <div style={{ fontFamily: SANS_FONT, background: white, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className="ph-mask" style={{ fontFamily: SANS_FONT, background: white, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

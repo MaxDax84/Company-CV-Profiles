@@ -129,7 +129,7 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
   const contactIn = useInView(forceVisible)
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className="ph-mask" style={{ fontFamily: "'Inter', sans-serif", background: bg, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

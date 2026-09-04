@@ -197,7 +197,7 @@ export default function AccountTabs({ userEmail, accountCode, primaryProfiles, t
   ].map(row => [row.id, row]));
 
   return (
-    <div className="space-y-8">
+    <div className="ph-mask space-y-8">
       {/* Tab switcher — the settings-drawer trigger that used to live here
           (a gear icon) moved to the avatar dropdown in the global nav (see
           components/account-avatar-menu.tsx), reachable from every page. */}

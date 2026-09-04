@@ -80,7 +80,7 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
   const contactIn = useInView(forceVisible)
 
   return (
-    <div style={{ fontFamily: INTER_FONT, background: navy, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className="ph-mask" style={{ fontFamily: INTER_FONT, background: navy, color: fg, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }

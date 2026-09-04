@@ -19,6 +19,7 @@ import { ConsentProvider } from '@/components/consent-provider'
 import CookieConsentBanner from '@/components/cookie-consent-banner'
 import CookiebotScript from '@/components/cookiebot-script'
 import GoogleAnalytics from '@/components/google-analytics'
+import PostHogProvider from '@/components/posthog-provider'
 import ScrollToTop from '@/components/scroll-to-top'
 import './globals.css'
 
@@ -58,12 +59,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <>
               {children}
               <GoogleAnalytics />
+              <PostHogProvider />
             </>
           ) : (
             <ConsentProvider>
               {children}
               <CookieConsentBanner />
               <GoogleAnalytics />
+              <PostHogProvider />
             </ConsentProvider>
           )}
         </LanguageProvider>

@@ -10,6 +10,8 @@ import { hashPdf, rememberProfile } from "@/lib/cv-score-memory";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import { AtsResumeDocument, PDF_TEMPLATES, type PdfTemplate } from "@/components/pdf/AtsResumeDocument";
 import { buildCvFilename } from "@/lib/download-filename";
+import { getCreditBalance } from "@/lib/credits";
+import { trackServer } from "@/lib/analytics-server";
 
 // react-pdf needs Node APIs (fontkit etc.), so this stays off the edge runtime.
 export const maxDuration = 15;
@@ -121,6 +123,15 @@ export async function GET(
     const exportedProfile = { ...row.data, metadata: { ...row.data.metadata, score_before: currentScore } };
     const pdfHash = await hashPdf(buffer);
     await rememberProfile(pdfHash, exportedProfile);
+
+    // Balance re-read fresh (rather than threading spendCredits' own return
+    // value through the alreadyPaid/compact-refund branches above) so this
+    // always reflects the true final state no matter which path was taken.
+    await trackServer(user.id, "download_completed", {
+      format: "pdf",
+      template,
+      credits_left: await getCreditBalance(supabase, user.id),
+    });
 
     return new NextResponse(buffer as unknown as BodyInit, {
       headers: {

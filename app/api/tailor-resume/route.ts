@@ -6,6 +6,7 @@ import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile, hashJob
 import { getAccountCode } from "@/lib/credits";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
 import { tailorResume } from "@/lib/tailor-resume";
+import { trackServer } from "@/lib/analytics-server";
 
 // Node runtime (not edge): this route makes a Claude call and can exceed the
 // edge runtime's fixed 25s execution ceiling — maxDuration only takes effect
@@ -93,6 +94,15 @@ export async function POST(req: NextRequest) {
       jobPostingText = fetched.text;
     }
 
+    // Counted before this run's save below, so a count of 0 here means this
+    // IS the first one — cheap existence check, same pattern as the
+    // MAX_PRIMARY_PROFILES_PER_USER check in claimPendingProfile.
+    const { count: priorTailoredCount } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("kind", "tailored");
+
     // --- Tailor — free. Only the resulting file (PDF/Word) costs a credit,
     // spent at download time in /api/pdf/[slug] and /api/cv-word/[slug].
     const sourceProfile = sourceRow.data;
@@ -106,6 +116,13 @@ export async function POST(req: NextRequest) {
     const jobHash = await hashJobPosting(sourceRow.id, jobPostingText);
     const { slug } = await saveTailoredProfile(supabase, user.id, sourceRow.id, tailored, jobHash);
     const code = await getAccountCode(supabase, user.id);
+
+    // Fired here, once the tailored result actually exists — not on the
+    // form's submit click — matching the spec's activation-metric rule.
+    await trackServer(user.id, "adaptation_completed", {
+      ms_since_signup: Date.now() - new Date(user.created_at).getTime(),
+      is_first_adaptation: (priorTailoredCount ?? 0) === 0,
+    });
 
     return NextResponse.json({ slug, code, profile: tailored });
   } catch (err) {

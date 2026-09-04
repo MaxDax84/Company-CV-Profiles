@@ -14,6 +14,7 @@ import ProfileResultPanel from "@/components/profile-result-panel";
 import CvScoreCard from "@/components/cv-score-card";
 import TrustBadges from "@/components/trust-badges";
 import StepProgress from "@/components/step-progress";
+import { trackClient } from "@/lib/analytics-client";
 
 type State = "idle" | "analyzing" | "scored" | "customizing" | "done";
 
@@ -168,6 +169,16 @@ export default function GeneratePage() {
       setSuggestedTitles(data.suggestedTitles ?? []);
       setDuplicateOf(data.duplicateOf ?? null);
       setState("scored");
+      if (data.cvScore?.after) {
+        const s = data.cvScore.after as CvScoreBreakdown;
+        trackClient.scoreViewed({
+          score_total: s.total,
+          quantified_results: s.quantifiedResults,
+          clarity: s.clarity,
+          ats_structure: s.atsStructure,
+          specific_skills: s.specificSkills,
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : genericError);
       setState("idle");
@@ -213,6 +224,7 @@ export default function GeneratePage() {
     setFile(f);
     setPdfThumbnail(null);
     setPdfThumbnailError(null);
+    trackClient.cvUploadStarted({ file_size_kb: Math.round(f.size / 1024), file_type: f.type });
     // Best-effort — the upload flow doesn't depend on this succeeding.
     // The error is surfaced in the fallback box (not just console.error)
     // because on mobile there's no devtools to read the console from —

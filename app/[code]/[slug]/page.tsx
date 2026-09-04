@@ -5,6 +5,7 @@ import { getProfileByAccountCode, getOwnedProfileBySlug } from "@/lib/profile-st
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/service";
 import OwnerToolbar from "@/components/owner-toolbar";
+import PublicPageViewTracker from "@/components/public-page-view-tracker";
 
 const TEMPLATE_MAP: Record<TemplateStyle, React.ComponentType<{ profile: ProfileSchema }>> = {
   alpha: TemplateAlpha,  // Inter · dark · timeline
@@ -51,7 +52,7 @@ export default async function AccountProfilePage({ params }: Props) {
 
   return (
     <>
-      {ownerInfo && <OwnerToolbar kind={ownerInfo.kind} />}
+      {ownerInfo ? <OwnerToolbar kind={ownerInfo.kind} /> : <PublicPageViewTracker ownerId={code} />}
       <Template profile={profile} />
     </>
   );

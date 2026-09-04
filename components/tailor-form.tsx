@@ -13,6 +13,7 @@ import CoverLetterButton from "@/components/cover-letter-button";
 import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import ActionFeedbackPopup from "@/components/action-feedback-popup";
+import { trackClient } from "@/lib/analytics-client";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
@@ -126,6 +127,11 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   // findDuplicateTailoredProfile) — otherwise it goes straight through.
   async function handleGenerateClick() {
     if (!canGenerate) return;
+
+    // "Pasted" is a proxy here for either job-posting input mode this form
+    // supports (pasted text or a URL) — there's no separate event for the
+    // URL case in the spec, and length-of-URL is still a meaningful signal.
+    trackClient.jobAdPasted({ ad_length_chars: jobSource === "text" ? jobText.trim().length : jobUrl.trim().length });
 
     // Fire-and-forget proof that the privacy checkbox above was actually
     // ticked before this job posting got sent off for processing — see

@@ -9,6 +9,8 @@ import { translateCoverLetter } from "@/lib/translate-cover-letter";
 import { getRememberedCoverLetter, rememberCoverLetter } from "@/lib/cover-letters";
 import { CoverLetterDocument } from "@/components/pdf/CoverLetterDocument";
 import { buildCoverLetterFilename } from "@/lib/download-filename";
+import { getCreditBalance } from "@/lib/credits";
+import { trackServer } from "@/lib/analytics-server";
 
 // Calls Claude to write (or translate) the letter, then renders the PDF —
 // same headroom as the tailor-resume route for the model call.
@@ -117,6 +119,12 @@ export async function GET(
   const buffer = await renderToBuffer(
     <CoverLetterDocument profile={row.data} letterText={letterText} language={targetLanguage} />
   );
+
+  await trackServer(user.id, "download_completed", {
+    format: "pdf",
+    template: isTranslation ? "cover-letter-translated" : "cover-letter",
+    credits_left: await getCreditBalance(supabase, user.id),
+  });
 
   return new NextResponse(buffer as unknown as BodyInit, {
     headers: {

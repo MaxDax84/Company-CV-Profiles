@@ -6,6 +6,8 @@ import { spendCredits, refundCredits } from "@/lib/credits-server";
 import { hasPaidDownload, recordPaidDownload } from "@/lib/paid-downloads";
 import { buildCvDocxBuffer } from "@/lib/word-cv-document";
 import { buildCvWordFilename } from "@/lib/download-filename";
+import { getCreditBalance } from "@/lib/credits";
+import { trackServer } from "@/lib/analytics-server";
 
 // docx generation is pure Node (no Claude call, no react-pdf), so this stays
 // well under the default duration limit — no maxDuration override needed.
@@ -60,6 +62,12 @@ export async function GET(
       if (!alreadyPaid) await refundCredits(user.id, CREDIT_COSTS.wordDownload, "word_download_refund", "Generazione fallita");
       throw err;
     }
+
+    await trackServer(user.id, "download_completed", {
+      format: "docx",
+      template: WORD_TEMPLATE_KEY,
+      credits_left: await getCreditBalance(supabase, user.id),
+    });
 
     return new NextResponse(buffer as unknown as BodyInit, {
       headers: {

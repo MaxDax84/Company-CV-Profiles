@@ -6,6 +6,7 @@ import { claimWelcomeEmailSlot } from "@/lib/credits-server";
 import { sendWelcomeEmail } from "@/lib/email";
 import { isOptedOutOfLifecycleEmails } from "@/lib/account-settings";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import { trackServer } from "@/lib/analytics-server";
 
 export const runtime = "nodejs";
 
@@ -45,6 +46,17 @@ export async function GET(req: NextRequest) {
   if (user?.email) {
     try {
       const won = await claimWelcomeEmailSlot(user.id);
+      // Reuses this exact "first time ever" signal (it only ever returns
+      // true once per account) rather than a separate check — covers both
+      // Google OAuth and a confirmed-email password signup, the two flows
+      // that land here; the immediate-session (no email confirm) password
+      // path is tracked client-side in signup-form.tsx instead, since it
+      // never reaches this route at all.
+      if (won) {
+        await trackServer(user.id, "signup_completed", {
+          method: user.app_metadata?.provider === "google" ? "google" : "password",
+        });
+      }
       if (won && !(await isOptedOutOfLifecycleEmails(supabase, user.id))) {
         await sendWelcomeEmail(user.email, origin, user.id);
       }

@@ -8,6 +8,7 @@ import GoogleAuthButton from "@/components/google-auth-button";
 import { useLanguage } from "@/components/language-provider";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import PasswordInput from "@/components/password-input";
+import { trackClient } from "@/lib/analytics-client";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -123,6 +124,7 @@ export default function SignupForm() {
       return;
     }
     if (data.user) logSignupPolicyAcceptance(data.user.id);
+    trackClient.signupCompleted({ method: "password" });
 
     if (claimToken) {
       try {

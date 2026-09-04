@@ -6,6 +6,16 @@ import { resolveProfileFromPdf, savePendingProfile, findDuplicatePrimaryProfile,
 import { computeCvScore } from "@/lib/cv-score";
 import { NotAResumeError } from "@/lib/parse-resume";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { trackEdge } from "@/lib/analytics-edge";
+import { readPosthogDistinctId, type CvParseErrorReason } from "@/lib/analytics-types";
+
+function classifyParseError(err: unknown): CvParseErrorReason {
+  if (err instanceof NotAResumeError) return "not_a_resume";
+  const message = err instanceof Error ? err.message.toLowerCase() : "";
+  if (message.includes("timed out") || message.includes("timeout")) return "parse_timeout";
+  if (message.includes("too long")) return "parse_timeout";
+  return "llm_error";
+}
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -57,7 +67,29 @@ export async function POST(req: NextRequest) {
       : undefined;
     const arrayBuffer = await file.arrayBuffer();
 
-    const resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
+    const distinctId = readPosthogDistinctId(req.cookies, process.env.NEXT_PUBLIC_POSTHOG_KEY);
+    const parseStartedAt = Date.now();
+    let resolved: Awaited<ReturnType<typeof resolveProfileFromPdf>>;
+    try {
+      resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
+    } catch (err) {
+      trackEdge(distinctId, "cv_parse_failed", {
+        error_reason: classifyParseError(err),
+        file_size_kb: Math.round(file.size / 1024),
+        file_type: file.type,
+      });
+      throw err;
+    }
+    // atsStructure scores a narrow sidebar/photo "multi-column" layout low
+    // (see the ats_structure rule in lib/parse-resume.ts's SYSTEM_PROMPT) —
+    // there's no separate boolean field for this today, so this is a proxy
+    // read off that score rather than a literal structural flag.
+    trackEdge(distinctId, "cv_parse_succeeded", {
+      ms_elapsed: Date.now() - parseStartedAt,
+      n_experiences: resolved.profile.experience.length,
+      n_skills: resolved.profile.skills.hard.length + resolved.profile.skills.soft.length + resolved.profile.skills.tools.length,
+      has_multi_column: (resolved.scoreBefore?.atsStructure ?? 25) <= 10,
+    });
 
     // Only meaningful for someone already signed in (e.g. via "+ Carica un
     // nuovo CV" from their account) — an anonymous /generate visitor has no

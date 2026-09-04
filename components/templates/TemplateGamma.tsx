@@ -76,7 +76,7 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
   const contactIn = useInView(forceVisible)
 
   return (
-    <div style={{ fontFamily: JAKARTA_FONT, background: lightBg, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className="ph-mask" style={{ fontFamily: JAKARTA_FONT, background: lightBg, color: ink, minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         html { scroll-behavior: smooth; }
         *, *::before, *::after { box-sizing: border-box; }
