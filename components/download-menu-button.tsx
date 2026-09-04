@@ -17,7 +17,7 @@ interface DownloadMenuButtonProps {
   onDownloaded?: () => void;
 }
 
-type Step = "closed" | "kind" | "format" | "template";
+type Step = "closed" | "kind" | "format" | "template" | "compact" | "compact-result";
 type Kind = "cv" | "letter";
 type Format = "pdf" | "word";
 
@@ -35,6 +35,8 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
   const [format, setFormat] = useState<Format>("pdf");
   const [template, setTemplate] = useState<PdfTemplate>(PDF_TEMPLATES[0].id);
   const [confirming, setConfirming] = useState(false);
+  const [confirmingCompact, setConfirmingCompact] = useState(false);
+  const [checkingPages, setCheckingPages] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [paidTemplates, setPaidTemplates] = useState<string[] | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -59,18 +61,28 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
     setErrorMsg(null);
   }
 
-  async function startDownload() {
+  async function startDownload(compact: boolean = false) {
     setDownloading(true);
     setErrorMsg(null);
     try {
       if (format === "pdf") {
-        await triggerDownload(`/api/pdf/${slug}?template=${template}`);
+        const headers = await triggerDownload(`/api/pdf/${slug}?template=${template}${compact ? "&compact=1" : ""}`);
         setPaidTemplates((prev) => (prev && !prev.includes(template) ? [...prev, template] : prev));
+        onDownloaded?.();
+        // Compaction only touches whitespace, never font size, so a
+        // genuinely content-heavy CV can still land on 2+ pages — the
+        // server refunds the add-on itself in that case and delivers the
+        // normal file instead; this just surfaces that outcome.
+        if (compact && headers.get("x-compact-applied") === "false") {
+          setDownloading(false);
+          setStep("compact-result");
+          return;
+        }
       } else {
         await triggerDownload(`/api/cv-word/${slug}`);
         setPaidTemplates((prev) => (prev && !prev.includes("docx") ? [...prev, "docx"] : prev));
+        onDownloaded?.();
       }
-      onDownloaded?.();
       close();
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : (lang === "en" ? "Download failed, try again." : "Download fallito, riprova."));
@@ -94,10 +106,36 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
     setDownloading(false);
   }
 
+  // Asked fresh on every single PDF download, even repeat downloads of the
+  // exact same file — never cached from a prior answer. Word/cover-letter
+  // downloads skip this entirely (the compact add-on only applies to the
+  // PDF layout).
+  async function proceedToCompactCheck() {
+    if (format !== "pdf") {
+      await startDownload(false);
+      return;
+    }
+    setCheckingPages(true);
+    try {
+      const res = await fetch(`/api/pdf/${slug}/pages?template=${template}`);
+      const data = await res.json().catch(() => null);
+      const pages = typeof data?.pages === "number" ? data.pages : 1;
+      setCheckingPages(false);
+      if (pages > 1) {
+        setStep("compact");
+      } else {
+        await startDownload(false);
+      }
+    } catch {
+      setCheckingPages(false);
+      await startDownload(false);
+    }
+  }
+
   const paidKey = format === "pdf" ? template : "docx";
   function handleDownloadClick() {
     if (paidTemplates?.includes(paidKey)) {
-      startDownload();
+      proceedToCompactCheck();
     } else {
       setConfirming(true);
     }
@@ -298,15 +336,81 @@ export default function DownloadMenuButton({ slug, label, icon, className, credi
             if (kind === "letter") {
               await startLetterDownload();
             } else {
-              await startDownload();
+              await proceedToCompactCheck();
             }
           }}
         />
       )}
-      {downloading && (
+
+      {step === "compact" && (
+        <>
+          <p className="text-sm font-semibold">
+            {lang === "en" ? "Your CV is longer than one page." : "Il tuo CV occupa più di una pagina."}
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            {lang === "en"
+              ? "Want it compacted onto a single page? Only the spacing changes — no content is removed."
+              : "Vuoi comprimerlo in una pagina sola? Cambia solo la spaziatura, nessun contenuto viene rimosso."}
+          </p>
+          <div className="flex gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => setConfirmingCompact(true)}
+              className="flex-1 text-center py-2 rounded-lg text-xs font-semibold"
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+            >
+              {lang === "en" ? "Yes, compact it" : "Sì, comprimi"}
+            </button>
+            <button
+              type="button"
+              onClick={() => startDownload(false)}
+              className="flex-1 text-center py-2 rounded-lg text-xs font-semibold border border-foreground/10 hover:bg-foreground/[0.06] transition-all duration-200"
+            >
+              {lang === "en" ? "No, keep as-is" : "No, lascia così"}
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === "compact-result" && (
+        <>
+          <p className="text-sm font-semibold">
+            {lang === "en" ? "Couldn't fit it on one page" : "Non è stato possibile comprimerlo in una pagina"}
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            {lang === "en"
+              ? "Your CV has too much content to fit on a single page even compacted — you got the normal file instead, and the 0.5 credit was refunded."
+              : "Il tuo CV ha troppi contenuti per stare in una pagina anche compattato: hai ricevuto il file normale e il credito di 0,5 ti è stato rimborsato."}
+          </p>
+          <button
+            type="button"
+            onClick={close}
+            className="w-full text-center py-2 rounded-lg text-xs font-semibold"
+            style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+          >
+            {lang === "en" ? "Got it" : "Ho capito"}
+          </button>
+        </>
+      )}
+
+      {confirmingCompact && (
+        <CreditConfirmModal
+          actionLabel={lang === "en" ? "Compact the CV to one page?" : "Comprimere il CV in una pagina?"}
+          cost={0.5}
+          balance={credits}
+          onCancel={() => setConfirmingCompact(false)}
+          onConfirm={async () => {
+            setConfirmingCompact(false);
+            await startDownload(true);
+          }}
+        />
+      )}
+      {(downloading || checkingPages) && (
         <DownloadLoadingOverlay
           label={
-            kind === "letter"
+            checkingPages
+              ? (lang === "en" ? "Checking your CV…" : "Sto controllando il tuo CV…")
+              : kind === "letter"
               ? (lang === "en" ? "Writing your letter…" : "Sto scrivendo la tua lettera…")
               : format === "pdf"
               ? (lang === "en" ? "Preparing your PDF…" : "Sto preparando il tuo PDF…")

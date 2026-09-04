@@ -24,6 +24,13 @@ interface CreditConfirmModalProps {
 // spend_credits regardless of what this shows, so a `balance` that's a
 // render-cycle stale (same caveat the existing "Crediti esauriti" banners
 // already accept) is fine; this is a heads-up, not the source of truth.
+// 0.5-credit actions (e.g. the compact-PDF add-on) need both the
+// pluralization and the decimal separator handled correctly — "0.5 credit"
+// (not "credits") in English was the old bug, and Italian needs a comma.
+function formatCredits(n: number, lang: string): string {
+  return lang === "en" ? String(n) : String(n).replace(".", ",");
+}
+
 export default function CreditConfirmModal({ actionLabel, cost, balance, warning, warningLink, hideCost, onConfirm, onCancel }: CreditConfirmModalProps) {
   const { lang } = useLanguage();
   const insufficient = !hideCost && balance < cost;
@@ -52,11 +59,11 @@ export default function CreditConfirmModal({ actionLabel, cost, balance, warning
           <p className="text-sm text-muted-foreground">
             {insufficient
               ? (lang === "en"
-                  ? `You don't have enough credits for this — current balance: ${balance}.`
-                  : `Non hai abbastanza crediti per questa azione — saldo attuale: ${balance}.`)
+                  ? `You don't have enough credits for this — current balance: ${formatCredits(balance, lang)}.`
+                  : `Non hai abbastanza crediti per questa azione — saldo attuale: ${formatCredits(balance, lang)}.`)
               : (lang === "en"
-                  ? `Costs ${cost} credit${cost > 1 ? "s" : ""}. Current balance: ${balance} credit${balance === 1 ? "" : "s"}.`
-                  : `Costa ${cost} credit${cost > 1 ? "i" : "o"}. Saldo attuale: ${balance} credit${balance === 1 ? "o" : "i"}.`)}
+                  ? `Costs ${formatCredits(cost, lang)} credit${cost !== 1 ? "s" : ""}. Current balance: ${formatCredits(balance, lang)} credit${balance === 1 ? "" : "s"}.`
+                  : `Costa ${formatCredits(cost, lang)} credit${cost !== 1 ? "i" : "o"}. Saldo attuale: ${formatCredits(balance, lang)} credit${balance === 1 ? "o" : "i"}.`)}
           </p>
         )}
         <div className="flex gap-2 justify-center pt-1">

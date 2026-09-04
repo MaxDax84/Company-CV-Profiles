@@ -5,8 +5,10 @@
 // difference that matters here: this is awaitable — the caller knows
 // exactly when the file has actually finished downloading (to dismiss a
 // loading state), which a bare href navigation never signals at all.
-// Preserves the server's own Content-Disposition filename.
-export async function triggerDownload(url: string): Promise<void> {
+// Preserves the server's own Content-Disposition filename. Returns the
+// response headers so callers can read a signal like the PDF route's
+// X-Compact-Applied without a second request.
+export async function triggerDownload(url: string): Promise<Headers> {
   const res = await fetch(url);
   if (!res.ok) {
     const body = await res.json().catch(() => null);
@@ -26,4 +28,6 @@ export async function triggerDownload(url: string): Promise<void> {
   a.click();
   a.remove();
   URL.revokeObjectURL(blobUrl);
+
+  return res.headers;
 }

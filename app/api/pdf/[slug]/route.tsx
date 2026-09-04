@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
+import { PDFDocument } from "pdf-lib";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileBySlug } from "@/lib/profile-store";
 import { CREDIT_COSTS, InsufficientCreditsError } from "@/lib/credits";
@@ -24,6 +25,7 @@ export async function GET(
   try {
     const { slug } = await params;
     const template = parseTemplate(req.nextUrl.searchParams.get("template"));
+    const compactRequested = req.nextUrl.searchParams.get("compact") === "1";
 
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -61,16 +63,46 @@ export async function GET(
       await recordPaidDownload(user.id, row.id, template);
     }
 
+    // The compact add-on is billed every single time it's requested — unlike
+    // the base download above, it's never cached against a prior download of
+    // the same (profile, template). Best-effort: if the user can't afford it,
+    // just deliver the normal file instead of failing a download they can
+    // already pay for.
+    let compactApplied = false;
+    if (compactRequested) {
+      try {
+        await spendCredits(supabase, CREDIT_COSTS.pdfCompact, "pdf_compact", detail);
+        compactApplied = true;
+      } catch (err) {
+        if (!(err instanceof InsufficientCreditsError)) throw err;
+      }
+    }
+
     // The credit (if any was spent above) must be refunded if rendering
     // itself fails — vanishingly rare (no external API, just react-pdf),
     // but the same principle as every other credit-spending route: never
     // let a failure downstream of the charge go unrefunded.
     let buffer: Buffer;
     try {
-      buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} />);
+      buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} compact={compactApplied} />);
     } catch (err) {
       if (!alreadyPaid) await refundCredits(user.id, CREDIT_COSTS.pdfDownload, "pdf_download_refund", "Rendering fallito");
+      if (compactApplied) await refundCredits(user.id, CREDIT_COSTS.pdfCompact, "pdf_compact_refund", "Rendering fallito");
       throw err;
+    }
+
+    // Compaction only ever touches whitespace (never font size — see
+    // AtsResumeDocument's buildStyles), so a genuinely content-heavy CV can
+    // still land on 2+ pages even compacted. In that case, refund the
+    // add-on and fall back to the normal-density file rather than charging
+    // for a compaction that didn't actually happen.
+    if (compactApplied) {
+      const compactDoc = await PDFDocument.load(buffer);
+      if (compactDoc.getPageCount() > 1) {
+        await refundCredits(user.id, CREDIT_COSTS.pdfCompact, "pdf_compact_refund", "Non è stato possibile comprimere in una pagina");
+        compactApplied = false;
+        buffer = await renderToBuffer(<AtsResumeDocument profile={row.data} template={template} compact={false} />);
+      }
     }
 
     // Remember this exact exported file's profile by its content hash — if
@@ -94,6 +126,9 @@ export async function GET(
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${buildCvFilename(row.data, row.display_name)}"`,
+        // Read by the client only when it itself requested compact=1, to
+        // tell "compacted as asked" apart from "couldn't fit, refunded".
+        "X-Compact-Applied": String(compactApplied),
       },
     });
   } catch (err) {

@@ -49,6 +49,8 @@ const LEDGER_REASON_LABELS: Record<string, { it: string; en: string }> = {
   chat_refine_refund: { it: "Rimborso rifinitura CV", en: "CV refinement refund" },
   pdf_download_refund: { it: "Rimborso download PDF", en: "PDF download refund" },
   word_download_refund: { it: "Rimborso download Word", en: "Word download refund" },
+  pdf_compact: { it: "CV compattato in una pagina", en: "CV compacted to one page" },
+  pdf_compact_refund: { it: "Rimborso compattazione CV", en: "CV compaction refund" },
   manual_grant: { it: "Credito aggiunto manualmente", en: "Manually added credit" },
 };
 
