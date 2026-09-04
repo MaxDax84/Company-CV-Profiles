@@ -1,38 +1,20 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { safeRedirectPath } from "@/lib/safe-redirect";
+import SignupPageBody from "@/components/signup-page-body";
 
-import { Suspense } from "react";
-import Navigation from "@/components/navigation";
-import SignupForm from "@/components/signup-form";
-import { useLanguage } from "@/components/language-provider";
+interface Props {
+  searchParams: Promise<{ next?: string; claim?: string }>;
+}
 
-export default function SignupPage() {
-  const { lang } = useLanguage();
-
-  return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
-      <Navigation />
-      <div className="absolute inset-0 grid-overlay" />
-      <div className="hidden md:block absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
-
-      <div className="relative z-10 flex items-center justify-center px-6 py-32">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="font-heading text-2xl font-bold tracking-tight">
-              {lang === "en" ? "Create your account" : "Crea il tuo account"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {lang === "en"
-                ? "Free: save your profile page and get 3 welcome credits."
-                : "Gratis: salva la tua pagina profilo e ricevi 3 crediti di benvenuto."}
-            </p>
-          </div>
-          <div className="glass-card rounded-2xl p-8">
-            <Suspense fallback={null}>
-              <SignupForm />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+// Same "already-authenticated visitors skip the form" guard as /login —
+// see there for why, including the claim-token exception.
+export default async function SignupPage({ searchParams }: Props) {
+  const { next, claim } = await searchParams;
+  if (!claim) {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) redirect(safeRedirectPath(next) ?? "/account");
+  }
+  return <SignupPageBody />;
 }

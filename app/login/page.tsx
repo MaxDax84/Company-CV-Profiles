@@ -1,36 +1,25 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { safeRedirectPath } from "@/lib/safe-redirect";
+import LoginPageBody from "@/components/login-page-body";
 
-import { Suspense } from "react";
-import Navigation from "@/components/navigation";
-import LoginForm from "@/components/login-form";
-import { useLanguage } from "@/components/language-provider";
+interface Props {
+  searchParams: Promise<{ next?: string; claim?: string }>;
+}
 
-export default function LoginPage() {
-  const { lang } = useLanguage();
-
-  return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
-      <Navigation />
-      <div className="absolute inset-0 grid-overlay" />
-      <div className="hidden md:block absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
-
-      <div className="relative z-10 flex items-center justify-center px-6 py-32">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="font-heading text-2xl font-bold tracking-tight">
-              {lang === "en" ? "Welcome back" : "Bentornato"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {lang === "en" ? "Log in to your Jobli profile." : "Accedi al tuo profilo Jobli."}
-            </p>
-          </div>
-          <div className="glass-card rounded-2xl p-8">
-            <Suspense fallback={null}>
-              <LoginForm />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+// A visitor who's already signed in never needs the login form itself —
+// land them straight where they were headed (see lib/safe-redirect.ts)
+// or the dashboard, same "already-authenticated" guard /interview-prep
+// already had. Skipped when a claim token is present: that means an
+// anonymous preview is waiting to be attached to an account, and
+// LoginPageBody's own submit handler is what actually calls /api/claim —
+// redirecting away here would silently drop that pending CV.
+export default async function LoginPage({ searchParams }: Props) {
+  const { next, claim } = await searchParams;
+  if (!claim) {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) redirect(safeRedirectPath(next) ?? "/account");
+  }
+  return <LoginPageBody />;
 }
