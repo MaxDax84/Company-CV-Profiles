@@ -127,7 +127,13 @@ export default function HeroSection() {
             className="w-full max-w-sm mx-auto lg:mx-0 lg:max-w-none animate-fade-in"
             style={{ animationDelay: '0.6s' }}
           >
-            <div className="rounded-2xl shadow-2xl shadow-black/10">
+            <div className="relative rounded-2xl shadow-2xl shadow-black/10">
+              <span
+                className="absolute -top-2.5 -right-2.5 z-10 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide shadow-md"
+                style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
+              >
+                {lang === 'en' ? 'Example' : 'Esempio'}
+              </span>
               <CvScoreCard
                 before={null}
                 after={EXAMPLE_SCORE}
