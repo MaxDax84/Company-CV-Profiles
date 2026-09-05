@@ -6,6 +6,7 @@ import { createServiceSupabaseClient, isSupabaseConfigured } from "@/lib/supabas
 // /api/admin/costs — bounded fetches instead of a dedicated SQL
 // aggregation RPC, generous enough for this app's actual scale.
 const MAX_LEDGER_ROWS = 20000;
+const MAX_USAGE_ROWS = 20000;
 const MAX_USER_PAGES = 20; // 20 * 1000 = 20k accounts, well above current scale
 
 interface LedgerRow {
@@ -13,6 +14,11 @@ interface LedgerRow {
   amount: number;
   reason: string;
   created_at: string;
+}
+
+interface UsageRow {
+  user_id: string | null;
+  cost_usd: number;
 }
 
 interface AccountCreditsRow {
@@ -32,19 +38,38 @@ export async function GET(req: NextRequest) {
 
   const service = createServiceSupabaseClient();
 
-  const [{ data: ledgerData, error: ledgerError }, { data: creditsData, error: creditsError }] = await Promise.all([
+  const [{ data: ledgerData, error: ledgerError }, { data: creditsData, error: creditsError }, { data: usageData, error: usageError }] = await Promise.all([
     service
       .from("credit_ledger")
       .select("user_id, amount, reason, created_at")
       .order("created_at", { ascending: false })
       .limit(MAX_LEDGER_ROWS),
     service.from("account_credits").select("user_id, credits, code, updated_at"),
+    service
+      .from("claude_usage_log")
+      .select("user_id, cost_usd")
+      .not("user_id", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(MAX_USAGE_ROWS),
   ]);
   if (ledgerError) return NextResponse.json({ error: ledgerError.message }, { status: 500 });
   if (creditsError) return NextResponse.json({ error: creditsError.message }, { status: 500 });
+  if (usageError) return NextResponse.json({ error: usageError.message }, { status: 500 });
 
   const ledgerRows = (ledgerData ?? []) as LedgerRow[];
   const creditsRows = (creditsData ?? []) as AccountCreditsRow[];
+  const usageRows = (usageData ?? []) as UsageRow[];
+
+  // Real Claude API $ cost per user — only ever populated for calls that
+  // actually recorded a user_id. cv-generation calls made before a user
+  // signs up (the /generate flow's phase-1/phase-2 for an anonymous
+  // visitor) have no user yet at call time and can never be attributed
+  // here, even going forward — an inherent gap, not a bug.
+  const costByUser = new Map<string, number>();
+  for (const row of usageRows) {
+    if (!row.user_id) continue;
+    costByUser.set(row.user_id, (costByUser.get(row.user_id) ?? 0) + (Number(row.cost_usd) || 0));
+  }
 
   // auth.users (email, signup date) is only reachable via the Admin API,
   // same as the inactivity-reminder cron — paginate rather than assume a
@@ -95,6 +120,7 @@ export async function GET(req: NextRequest) {
       spendCount: agg.spendCount,
       lastActivityAt: agg.lastActivityAt,
       spentByReason: agg.byReason,
+      totalCostUsd: costByUser.get(c.user_id) ?? 0,
     };
   });
 
@@ -102,6 +128,6 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     users,
-    truncated: ledgerRows.length === MAX_LEDGER_ROWS,
+    truncated: ledgerRows.length === MAX_LEDGER_ROWS || usageRows.length === MAX_USAGE_ROWS,
   });
 }

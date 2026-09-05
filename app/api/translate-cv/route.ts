@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     let newSlug: string;
     let newProfileId: string;
     try {
-      const translated = await translateResume(sourceRow.data, targetLanguage);
+      const translated = await translateResume(sourceRow.data, targetLanguage, user.id);
       translated.metadata.generated_at = new Date().toISOString();
       ({ slug: newSlug, id: newProfileId } = await saveTranslatedProfile(supabase, user.id, sourceRow.id, translated));
     } catch (err) {

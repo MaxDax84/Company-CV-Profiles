@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ done: true, questionCount: transcript.length });
     }
 
-    const result = await getNextQuestion(row.data, transcript);
+    const result = await getNextQuestion(row.data, transcript, user.id);
 
     // Persisted only now, after the Claude call has actually succeeded — an
     // error above leaves the DB untouched, so the client can just retry the

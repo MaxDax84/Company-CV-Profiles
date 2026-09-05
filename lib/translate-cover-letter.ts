@@ -14,7 +14,7 @@ RULES:
 - A person's name in the sign-off stays exactly as written, never translated or altered.
 - Return ONLY the translated letter's plain text — no markdown, no explanation, no code fences, no notes.`;
 
-export async function translateCoverLetter(letterText: string, targetLanguageCode: string): Promise<string> {
+export async function translateCoverLetter(letterText: string, targetLanguageCode: string, userId?: string | null): Promise<string> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -51,7 +51,7 @@ export async function translateCoverLetter(letterText: string, targetLanguageCod
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("translate_cover_letter", "claude-sonnet-5", json.usage);
+  logClaudeUsage("translate_cover_letter", "claude-sonnet-5", json.usage, userId);
 
   if (json.stop_reason === "max_tokens") {
     throw new Error("Cover letter translation was cut off.");

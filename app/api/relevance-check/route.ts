@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     const jobHash = await hashJobPosting(sourceRow.id, jobPostingText);
     const duplicateOf = await findDuplicateTailoredProfile(supabase, user.id, sourceRow.id, jobHash);
 
-    const result = await checkRelevance(sourceRow.data, jobPostingText);
+    const result = await checkRelevance(sourceRow.data, jobPostingText, user.id);
     return NextResponse.json({ ...result, duplicateOf });
   } catch (err) {
     console.error("[relevance-check]", err);

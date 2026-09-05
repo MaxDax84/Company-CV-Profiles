@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
     // --- Tailor — free. Only the resulting file (PDF/Word) costs a credit,
     // spent at download time in /api/pdf/[slug] and /api/cv-word/[slug].
     const sourceProfile = sourceRow.data;
-    const tailored = await tailorResume(sourceProfile, jobPostingText);
+    const tailored = await tailorResume(sourceProfile, jobPostingText, user.id);
 
     // Set by route code, not trusted to the model, so the before/after panel
     // always has something to compare against.

@@ -36,7 +36,7 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
-export async function improveResume(sourceProfile: ProfileSchema): Promise<ProfileSchema> {
+export async function improveResume(sourceProfile: ProfileSchema, userId?: string | null): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -77,7 +77,7 @@ export async function improveResume(sourceProfile: ProfileSchema): Promise<Profi
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("improve_resume", "claude-sonnet-5", json.usage);
+  logClaudeUsage("improve_resume", "claude-sonnet-5", json.usage, userId);
 
   const improved = extractProfileJson(json, "CV too long to process.");
 

@@ -14,6 +14,7 @@ interface UserRow {
   spendCount: number;
   lastActivityAt: string | null;
   spentByReason: Record<string, number>;
+  totalCostUsd: number;
 }
 
 interface UsersResponse {
@@ -24,6 +25,13 @@ interface UsersResponse {
 function fmtDate(iso: string | null): string {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" });
+}
+
+// Real Claude API cost, shown in $ (the underlying pricing table in
+// lib/log-claude-usage.ts is USD list pricing) — never converted to € to
+// avoid implying a precision/exchange rate this number doesn't have.
+function fmtUsd(n: number): string {
+  return `$${n.toFixed(n < 1 ? 3 : 2)}`;
 }
 
 export default function AdminUsersPage() {
@@ -119,6 +127,7 @@ export default function AdminUsersPage() {
   const totalUsers = users.length;
   const totalSpentAll = users.reduce((sum, u) => sum + u.totalSpent, 0);
   const avgSpentActive = activeUsers.length > 0 ? totalSpentAll / activeUsers.length : 0;
+  const totalCostAll = users.reduce((sum, u) => sum + u.totalCostUsd, 0);
 
   return (
     <main className="min-h-screen bg-background text-foreground px-6 py-12">
@@ -136,12 +145,13 @@ export default function AdminUsersPage() {
 
         {data && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {[
                 { label: "Account totali", value: totalUsers.toLocaleString("it-IT") },
                 { label: "Account attivi (≥1 spesa)", value: activeUsers.length.toLocaleString("it-IT") },
                 { label: "Crediti spesi (totale)", value: totalSpentAll.toLocaleString("it-IT") },
                 { label: "Media per attivo", value: avgSpentActive.toFixed(1) },
+                { label: "Costo Claude reale (totale)", value: fmtUsd(totalCostAll) },
               ].map((card) => (
                 <div key={card.label} className="rounded-xl border border-foreground/10 p-4 space-y-1">
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60">{card.label}</p>
@@ -154,6 +164,11 @@ export default function AdminUsersPage() {
                 Nota: il ledger crediti ha più righe del limite considerato — la classifica potrebbe non coprire lo storico più vecchio.
               </p>
             )}
+            <p className="text-xs text-muted-foreground/60">
+              "Costo Claude reale" copre solo le chiamate fatte da un utente già loggato — le generazioni
+              anonime (fase iniziale di /generate, prima della registrazione) non sono attribuibili a
+              nessun account e non rientrano in questo numero, anche se hanno un costo reale.
+            </p>
 
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
@@ -166,6 +181,7 @@ export default function AdminUsersPage() {
                       <th className="px-3 py-2 font-medium">#</th>
                       <th className="px-3 py-2 font-medium">Account</th>
                       <th className="px-3 py-2 font-medium text-right">Crediti spesi</th>
+                      <th className="px-3 py-2 font-medium text-right">Costo Claude reale</th>
                       <th className="px-3 py-2 font-medium text-right">Saldo attuale</th>
                       <th className="px-3 py-2 font-medium text-right">N. transazioni</th>
                       <th className="px-3 py-2 font-medium text-right">Registrato il</th>
@@ -181,6 +197,7 @@ export default function AdminUsersPage() {
                           <span className="block font-mono text-[10px] text-muted-foreground/50">{u.code ?? u.userId.slice(0, 8)}</span>
                         </td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold">{u.totalSpent}</td>
+                        <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">{u.totalCostUsd > 0 ? fmtUsd(u.totalCostUsd) : "—"}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{u.currentBalance}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{u.spendCount}</td>
                         <td className="px-3 py-2 text-right tabular-nums text-xs text-muted-foreground">{fmtDate(u.signupAt)}</td>

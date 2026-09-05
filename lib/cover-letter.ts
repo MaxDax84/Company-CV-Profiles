@@ -13,7 +13,7 @@ ADDRESSING:
 
 STRUCTURE: a real business letter, not a bulleted list — salutation, then 2-3 short body paragraphs (opening hook tied to the role or the candidate's core strength, one paragraph grounding it in 1-2 concrete pieces of experience from the profile, a closing paragraph expressing interest and inviting next steps), then a sign-off with the candidate's full name. Roughly 250-400 words total, single page. Separate paragraphs with a blank line.`;
 
-export async function generateCoverLetter(profile: ProfileSchema): Promise<string> {
+export async function generateCoverLetter(profile: ProfileSchema, userId?: string | null): Promise<string> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -54,7 +54,7 @@ export async function generateCoverLetter(profile: ProfileSchema): Promise<strin
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("cover_letter", "claude-sonnet-5", json.usage);
+  logClaudeUsage("cover_letter", "claude-sonnet-5", json.usage, userId);
 
   if (json.stop_reason === "max_tokens") {
     throw new Error("Cover letter generation was cut off.");

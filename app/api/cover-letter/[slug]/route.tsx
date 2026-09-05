@@ -72,7 +72,7 @@ export async function GET(
       // "generic" letter next to the translation in the Downloads list.
       let originalText = await getRememberedCoverLetter(supabase, row.id, originalLanguage);
       if (!originalText) {
-        originalText = await generateCoverLetter(row.data);
+        originalText = await generateCoverLetter(row.data, user.id);
       }
       try {
         await spendCredits(supabase, CREDIT_COSTS.translate, "translate_cover_letter", `${detail} → ${targetLanguage}`);
@@ -89,7 +89,7 @@ export async function GET(
       // refund it, or the user pays for a letter they never receive (same
       // gap found and fixed for interview-prep).
       try {
-        letterText = await translateCoverLetter(originalText, targetLanguage);
+        letterText = await translateCoverLetter(originalText, targetLanguage, user.id);
       } catch (err) {
         await refundCredits(user.id, CREDIT_COSTS.translate, "cover_letter_refund", "Traduzione fallita");
         throw err;
@@ -107,7 +107,7 @@ export async function GET(
         throw err;
       }
       try {
-        letterText = await generateCoverLetter(row.data);
+        letterText = await generateCoverLetter(row.data, user.id);
       } catch (err) {
         await refundCredits(user.id, CREDIT_COSTS.coverLetter, "cover_letter_refund", "Generazione fallita");
         throw err;

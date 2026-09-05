@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     let newSlug: string;
     let reformulated;
     try {
-      reformulated = await reformulateProfileFromChat(row.data, session.transcript);
+      reformulated = await reformulateProfileFromChat(row.data, session.transcript, user.id);
 
       // Not part of what the model is asked to touch (score_before isn't
       // even in the schema it's given) — copied through explicitly rather

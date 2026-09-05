@@ -68,10 +68,23 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
 
     const distinctId = readPosthogDistinctId(req.cookies, process.env.NEXT_PUBLIC_POSTHOG_KEY);
+
+    // Read early (before the parse call, not just for the duplicate check
+    // below) so a signed-in re-upload's Claude cost is attributable to them
+    // in claude_usage_log — best-effort, same as the duplicate check: an
+    // anonymous /generate visitor simply has no user here yet.
+    let user: { id: string } | null = null;
+    try {
+      const supabase = await createServerSupabaseClient();
+      user = (await supabase.auth.getUser()).data.user;
+    } catch (err) {
+      console.error("[parse-resume] getUser failed", err);
+    }
+
     const parseStartedAt = Date.now();
     let resolved: Awaited<ReturnType<typeof resolveProfileFromPdf>>;
     try {
-      resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice);
+      resolved = await resolveProfileFromPdf(arrayBuffer, templateChoice, user?.id);
     } catch (err) {
       trackEdge(distinctId, "cv_parse_failed", {
         error_reason: classifyParseError(err),
@@ -93,15 +106,13 @@ export async function POST(req: NextRequest) {
 
     // Only meaningful for someone already signed in (e.g. via "+ Carica un
     // nuovo CV" from their account) — an anonymous /generate visitor has no
-    // saved CVs to match against yet. Best-effort: getUser() failing or
-    // returning nobody just means "skip the check", never a hard error —
-    // this warning is a courtesy, not something worth blocking an upload
-    // over.
+    // saved CVs to match against yet (user is already resolved above,
+    // best-effort). This check itself is a courtesy, not worth blocking an
+    // upload over.
     let duplicateOf = null;
     try {
-      const supabase = await createServerSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        const supabase = await createServerSupabaseClient();
         duplicateOf = await findDuplicatePrimaryProfile(supabase, user.id, resolved.pdfHash);
       }
     } catch (err) {

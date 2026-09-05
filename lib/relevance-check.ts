@@ -12,7 +12,7 @@ export interface RelevanceResult {
   reason: string;
 }
 
-export async function checkRelevance(profile: ProfileSchema, jobPostingText: string): Promise<RelevanceResult> {
+export async function checkRelevance(profile: ProfileSchema, jobPostingText: string, userId?: string | null): Promise<RelevanceResult> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -48,7 +48,7 @@ export async function checkRelevance(profile: ProfileSchema, jobPostingText: str
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("relevance_check", "claude-haiku-4-5-20251001", json.usage);
+  logClaudeUsage("relevance_check", "claude-haiku-4-5-20251001", json.usage, userId);
 
   const textBlock = json.content.find((b) => b.type === "text");
   if (!textBlock) {

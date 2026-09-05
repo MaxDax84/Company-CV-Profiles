@@ -41,7 +41,7 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
-export async function translateResume(sourceProfile: ProfileSchema, targetLanguageCode: string): Promise<ProfileSchema> {
+export async function translateResume(sourceProfile: ProfileSchema, targetLanguageCode: string, userId?: string | null): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -81,7 +81,7 @@ export async function translateResume(sourceProfile: ProfileSchema, targetLangua
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("translate_resume", "claude-sonnet-5", json.usage);
+  logClaudeUsage("translate_resume", "claude-sonnet-5", json.usage, userId);
 
   const translated = extractProfileJson(json, "CV too long to process.");
 

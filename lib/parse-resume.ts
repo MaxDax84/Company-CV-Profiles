@@ -139,7 +139,7 @@ async function extractSocialLinksFromPdf(pdfBuffer: ArrayBuffer): Promise<Partia
   return found;
 }
 
-export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeResult> {
+export async function parseResume(pdfBuffer: ArrayBuffer, userId?: string | null): Promise<ParseResumeResult> {
   const base64Pdf = arrayBufferToBase64(pdfBuffer);
   // Kicked off alongside the Claude call (not after it) so this adds no
   // extra latency to the overall extraction.
@@ -192,7 +192,7 @@ export async function parseResume(pdfBuffer: ArrayBuffer): Promise<ParseResumeRe
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("parse_resume", "claude-haiku-4-5-20251001", json.usage);
+  logClaudeUsage("parse_resume", "claude-haiku-4-5-20251001", json.usage, userId);
 
   const parsed = extractProfileJson<Partial<ProfileSchema> & { is_resume?: boolean; suggested_titles?: string[]; cv_score_before?: CvScoreBeforeRaw }>(
     json,

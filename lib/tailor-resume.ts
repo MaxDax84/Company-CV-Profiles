@@ -42,7 +42,7 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
-export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText: string): Promise<ProfileSchema> {
+export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText: string, userId?: string | null): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -86,7 +86,7 @@ export async function tailorResume(sourceProfile: ProfileSchema, jobPostingText:
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("tailor_resume", "claude-sonnet-5", json.usage);
+  logClaudeUsage("tailor_resume", "claude-sonnet-5", json.usage, userId);
 
   const tailored = extractProfileJson(
     json,

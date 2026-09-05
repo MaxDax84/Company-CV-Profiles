@@ -26,7 +26,7 @@ OUTPUT FORMAT:
 Schema:
 ${PROFILE_JSON_SCHEMA_BLOCK}`;
 
-export async function reformulateProfileFromChat(sourceProfile: ProfileSchema, transcript: ChatTurn[]): Promise<ProfileSchema> {
+export async function reformulateProfileFromChat(sourceProfile: ProfileSchema, transcript: ChatTurn[], userId?: string | null): Promise<ProfileSchema> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -63,7 +63,7 @@ export async function reformulateProfileFromChat(sourceProfile: ProfileSchema, t
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("cv_chat_finish", "claude-sonnet-5", json.usage);
+  logClaudeUsage("cv_chat_finish", "claude-sonnet-5", json.usage, userId);
 
   const reformulated = extractProfileJson(json, "Conversation too long to process.");
 

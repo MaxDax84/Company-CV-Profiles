@@ -558,7 +558,8 @@ export interface ResolveFromPdfResult {
 // only kicks in as a one-time repair for entries that predate that field.
 export async function resolveProfileFromPdf(
   buf: ArrayBuffer,
-  templateChoice: unknown
+  templateChoice: unknown,
+  userId?: string | null
 ): Promise<ResolveFromPdfResult> {
   const pdfHash = await hashPdf(buf);
 
@@ -606,7 +607,7 @@ export async function resolveProfileFromPdf(
       await rememberProfile(pdfHash, profile);
     }
   } else {
-    const parsed = await parseResume(buf);
+    const parsed = await parseResume(buf, userId);
     profile = parsed.profile;
     suggestedTitles = parsed.suggestedTitles;
     profile.metadata.suggested_titles = suggestedTitles;

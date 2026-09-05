@@ -40,7 +40,7 @@ RULES:
 
 OUTPUT FORMAT: return ONLY a valid JSON object, no markdown, no explanation, no code fences: {"done": boolean, "question": string | undefined, "target_field": string | undefined}. Never write the literal word "undefined" — omit the field instead when not applicable.`;
 
-export async function getNextQuestion(profile: ProfileSchema, transcript: ChatTurn[]): Promise<QuestionResult> {
+export async function getNextQuestion(profile: ProfileSchema, transcript: ChatTurn[], userId?: string | null): Promise<QuestionResult> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -76,7 +76,7 @@ export async function getNextQuestion(profile: ProfileSchema, transcript: ChatTu
     content: { type: string; text: string }[];
     usage?: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
   };
-  logClaudeUsage("cv_chat_question", "claude-haiku-4-5-20251001", json.usage);
+  logClaudeUsage("cv_chat_question", "claude-haiku-4-5-20251001", json.usage, userId);
 
   return extractProfileJson<QuestionResult>(json, "Conversation too long to process.");
 }
