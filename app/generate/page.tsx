@@ -15,6 +15,7 @@ import CvScoreCard from "@/components/cv-score-card";
 import TrustBadges from "@/components/trust-badges";
 import StepProgress from "@/components/step-progress";
 import { trackClient } from "@/lib/analytics-client";
+import { useRetryCountdown, readRetryAfterSeconds } from "@/lib/use-retry-countdown";
 
 type State = "idle" | "analyzing" | "scored" | "customizing" | "done";
 
@@ -62,9 +63,11 @@ export default function GeneratePage() {
   const [cvScore, setCvScore] = useState<{ before: CvScoreBreakdown | null; after: CvScoreBreakdown } | null>(null);
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [retrySeconds, setRetrySeconds] = useRetryCountdown();
   const [isCreating, setIsCreating] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [creatingStepIndex, setCreatingStepIndex] = useState(0);
+  const [creatingProgress, setCreatingProgress] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [claiming, setClaiming] = useState(false);
@@ -120,6 +123,21 @@ export default function GeneratePage() {
     return () => clearInterval(id);
   }, [isCreating]);
 
+  // Same easing curve as signup-form.tsx's own progress bar: no granular
+  // progress from the server, so this just gives continuous visual feedback
+  // instead of a static spinner for the ~10-20s this call actually takes.
+  useEffect(() => {
+    if (!isCreating) {
+      setCreatingProgress(0);
+      return;
+    }
+    setCreatingProgress(10);
+    const id = setInterval(() => {
+      setCreatingProgress(p => (p < 88 ? p + (88 - p) * 0.15 : p));
+    }, 200);
+    return () => clearInterval(id);
+  }, [isCreating]);
+
   // The URL never changes across idle → analyzing → scored → customizing →
   // done, but the content underneath does completely — without this, the
   // user stays scrolled wherever they were when they clicked a step-advance
@@ -153,6 +171,8 @@ export default function GeneratePage() {
         fetch("/api/parse-resume", { method: "POST", body: formData }),
         delay(MIN_ANALYZE_MS),
       ]);
+      const retryAfter = readRetryAfterSeconds(res);
+      if (retryAfter) setRetrySeconds(retryAfter);
       let data;
       try {
         data = await res.json();
@@ -161,7 +181,12 @@ export default function GeneratePage() {
         // not our own route's error response.
         throw new Error(t.timeoutErrorNote);
       }
-      if (!res.ok) throw new Error(data.error ?? genericError);
+      if (!res.ok) {
+        // The server's own message is a fixed English string regardless of
+        // site language — shown instead by the live countdown in the error
+        // box below (see retrySeconds) when this is a 429.
+        throw new Error(retryAfter ? (lang === "en" ? "Too many requests." : "Troppe richieste.") : (data.error ?? genericError));
+      }
       setSlug(data.slug);
       setProfile(data.profile);
       setClaimToken(data.claimToken ?? null);
@@ -203,15 +228,21 @@ export default function GeneratePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ claimToken, template }),
       });
+      const retryAfter = readRetryAfterSeconds(res);
+      if (retryAfter) setRetrySeconds(retryAfter);
       let data;
       try {
         data = await res.json();
       } catch {
         throw new Error(t.timeoutErrorNote);
       }
-      if (!res.ok) throw new Error(data.error ?? genericError);
+      if (!res.ok) {
+        throw new Error(retryAfter ? (lang === "en" ? "Too many requests." : "Troppe richieste.") : (data.error ?? genericError));
+      }
       setProfile(data.profile);
       setCvScore(prev => prev ? { ...prev, after: data.cvScoreAfter ?? prev.after } : prev);
+      setCreatingProgress(100);
+      await delay(300);
       setState("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : genericError);
@@ -648,6 +679,9 @@ export default function GeneratePage() {
             {error && (
               <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
                 {error}
+                {retrySeconds !== null && (
+                  <> {lang === "en" ? `Try again in ${retrySeconds}s.` : `Riprova tra ${retrySeconds}s.`}</>
+                )}
               </div>
             )}
 
@@ -663,7 +697,12 @@ export default function GeneratePage() {
                 className="rounded-3xl border border-primary/20 bg-primary/5 p-8 space-y-4"
                 style={{ boxShadow: "0 0 40px color-mix(in srgb, var(--primary) 12%, transparent)" }}
               >
-                <div className="w-8 h-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin mx-auto" />
+                <div className="max-w-xs mx-auto h-1.5 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+                  <div
+                    className="h-full rounded-full transition-[width] duration-200 ease-out"
+                    style={{ width: `${creatingProgress}%`, background: "var(--primary)" }}
+                  />
+                </div>
                 <div className="space-y-2 max-w-xs mx-auto">
                   {t.creatingSteps.map((step, i) => {
                     const done = i < creatingStepIndex;
@@ -865,7 +904,12 @@ export default function GeneratePage() {
             className="glass-card rounded-2xl p-6 max-w-sm w-full space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-sm font-semibold text-destructive">{error}</p>
+            <p className="text-sm font-semibold text-destructive">
+              {error}
+              {retrySeconds !== null && (
+                <> {lang === "en" ? `Try again in ${retrySeconds}s.` : `Riprova tra ${retrySeconds}s.`}</>
+              )}
+            </p>
             <button
               type="button"
               onClick={() => setError(null)}

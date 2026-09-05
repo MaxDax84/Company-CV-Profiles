@@ -14,6 +14,7 @@ import StepProgress from "@/components/step-progress";
 import CreditConfirmModal from "@/components/credit-confirm-modal";
 import ActionFeedbackPopup from "@/components/action-feedback-popup";
 import { trackClient } from "@/lib/analytics-client";
+import { useRetryCountdown, readRetryAfterSeconds } from "@/lib/use-retry-countdown";
 
 type State = "idle" | "uploading" | "done" | "error";
 type JobSource = "text" | "url";
@@ -62,6 +63,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
   const [code, setCode] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [retrySeconds, setRetrySeconds] = useRetryCountdown();
   const [stepIndex, setStepIndex] = useState(0);
   const [pdfDownloaded, setPdfDownloaded] = useState(false);
   // A dedicated popup instead of the generic bottom-of-form error text —
@@ -179,6 +181,8 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
 
     try {
       const res = await fetch("/api/tailor-resume", { method: "POST", body: formData });
+      const retryAfter = readRetryAfterSeconds(res);
+      if (retryAfter) setRetrySeconds(retryAfter);
       let data;
       try {
         data = await res.json();
@@ -192,7 +196,7 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           setState("idle");
           return;
         }
-        throw new Error(data.error ?? (lang === "en" ? "Unknown error" : "Errore sconosciuto"));
+        throw new Error(retryAfter ? (lang === "en" ? "Too many requests." : "Troppe richieste.") : (data.error ?? (lang === "en" ? "Unknown error" : "Errore sconosciuto")));
       }
       setSlug(data.slug);
       setCode(data.code);
@@ -460,6 +464,9 @@ export default function TailorForm({ credits, hasProfile, sourceSlug, availableP
           {state === "error" && error && (
             <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-center">
               {error}
+              {retrySeconds !== null && (
+                <> {lang === "en" ? `Try again in ${retrySeconds}s.` : `Riprova tra ${retrySeconds}s.`}</>
+              )}
             </div>
           )}
 

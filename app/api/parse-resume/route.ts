@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
-import { parseResumeRatelimit, getClientIp } from "@/lib/rate-limit";
+import { parseResumeRatelimit, parseResumeAuthedRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { resolveProfileFromPdf, savePendingProfile, findDuplicatePrimaryProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
 import { computeCvScore } from "@/lib/cv-score";
@@ -23,7 +23,23 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   try {
     const clientIp = getClientIp(req);
-    const { success, reset } = await parseResumeRatelimit.limit(clientIp);
+
+    // Checked before rate-limiting (not just for the duplicate check and
+    // cost attribution further down) so a signed-in caller gets the higher,
+    // per-account budget instead of sharing the anonymous per-IP one —
+    // best-effort: getUser() failing just means "treat as anonymous", never
+    // a hard error over a rate-limit lookup.
+    let user: { id: string } | null = null;
+    try {
+      const supabase = await createServerSupabaseClient();
+      user = (await supabase.auth.getUser()).data.user;
+    } catch (err) {
+      console.error("[parse-resume] getUser failed", err);
+    }
+
+    const { success, reset } = user
+      ? await parseResumeAuthedRatelimit.limit(user.id)
+      : await parseResumeRatelimit.limit(clientIp);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },
@@ -68,18 +84,6 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
 
     const distinctId = readPosthogDistinctId(req.cookies, process.env.NEXT_PUBLIC_POSTHOG_KEY);
-
-    // Read early (before the parse call, not just for the duplicate check
-    // below) so a signed-in re-upload's Claude cost is attributable to them
-    // in claude_usage_log — best-effort, same as the duplicate check: an
-    // anonymous /generate visitor simply has no user here yet.
-    let user: { id: string } | null = null;
-    try {
-      const supabase = await createServerSupabaseClient();
-      user = (await supabase.auth.getUser()).data.user;
-    } catch (err) {
-      console.error("[parse-resume] getUser failed", err);
-    }
 
     const parseStartedAt = Date.now();
     let resolved: Awaited<ReturnType<typeof resolveProfileFromPdf>>;

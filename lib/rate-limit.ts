@@ -23,6 +23,33 @@ export const improveProfileRatelimit = new Ratelimit({
   prefix: "ratelimit:improve-profile",
 });
 
+// Doubled budget, keyed by user id instead of IP, for a signed-in caller on
+// each of the three limiters above — a real account is a meaningfully
+// higher bar than "anyone with a browser" even though (per
+// .env.local.example) this app currently runs with Supabase's "Confirm
+// email" off, so this is a moderate anti-abuse signal, not a strong one
+// (an attacker can still script fresh signups). Good enough to let a real
+// person who's actually building out their account (several CVs, several
+// tailored versions) move faster than the anonymous/no-login cap, without
+// removing that cap's protection for the truly unauthenticated surface.
+export const parseResumeAuthedRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:parse-resume-authed",
+});
+
+export const tailorResumeAuthedRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:tailor-resume-authed",
+});
+
+export const improveProfileAuthedRatelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:improve-profile-authed",
+});
+
 // Contact form: no Claude call, but it does send a real email (with an
 // attachment) through our own Gmail account on every request — without a
 // cap, a script could spam/flood that inbox and risk the account getting

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getClientIp, improveProfileRatelimit } from "@/lib/rate-limit";
+import { getClientIp, improveProfileRatelimit, improveProfileAuthedRatelimit } from "@/lib/rate-limit";
 import { improveAndFinalizePendingProfile } from "@/lib/profile-store";
 import { isTemplateStyle } from "@/lib/templates";
 import { computeCvScore, floorScoreAgainst } from "@/lib/cv-score";
 import { trackServer } from "@/lib/analytics-server";
 import { readPosthogDistinctId } from "@/lib/analytics-types";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 // Node runtime (not edge): this route now makes a Claude call (the phase-2
 // "improve" pass) — maxDuration only takes effect on Node functions.
@@ -17,7 +18,22 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   try {
     const clientIp = getClientIp(req);
-    const { success, reset } = await improveProfileRatelimit.limit(clientIp);
+
+    // This route works for both an anonymous /generate visitor and a
+    // signed-in one (e.g. re-generating from their account) — best-effort,
+    // same reasoning as /api/parse-resume: getUser() failing just means
+    // "treat as anonymous" for rate-limiting purposes, never a hard error.
+    let user: { id: string } | null = null;
+    try {
+      const supabase = await createServerSupabaseClient();
+      user = (await supabase.auth.getUser()).data.user;
+    } catch (err) {
+      console.error("[customize-profile] getUser failed", err);
+    }
+
+    const { success, reset } = user
+      ? await improveProfileAuthedRatelimit.limit(user.id)
+      : await improveProfileRatelimit.limit(clientIp);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
+import { tailorResumeAuthedRatelimit } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileRow, getOwnedProfileBySlug, hashJobPosting, findDuplicateTailoredProfile } from "@/lib/profile-store";
 import { fetchJobPostingText } from "@/lib/job-posting-fetch";
@@ -16,19 +16,22 @@ const JOB_TEXT_MAX = 20_000;
 
 export async function POST(req: NextRequest) {
   try {
-    const clientIp = getClientIp(req);
-    const { success, reset } = await tailorResumeRatelimit.limit(clientIp);
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    }
+
+    // Shares tailorResumeAuthedRatelimit's bucket with /api/tailor-resume
+    // (by design — see the comment above): this check plus the real
+    // submission right after it draw from the same budget, so a user can't
+    // get extra free Claude calls just by triggering this preview repeatedly.
+    const { success, reset } = await tailorResumeAuthedRatelimit.limit(user.id);
     if (!success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a bit." },
         { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
       );
-    }
-
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
     }
 
     const formData = await req.formData();

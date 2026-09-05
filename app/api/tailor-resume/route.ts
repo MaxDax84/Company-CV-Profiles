@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { tailorResumeRatelimit, getClientIp } from "@/lib/rate-limit";
+import { tailorResumeAuthedRatelimit, getClientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOwnedProfileRow, getOwnedProfileBySlug, saveTailoredProfile, hashJobPosting } from "@/lib/profile-store";
@@ -20,18 +20,21 @@ const JOB_TEXT_MAX = 20_000;
 export async function POST(req: NextRequest) {
   try {
     const clientIp = getClientIp(req);
-    const { success, reset } = await tailorResumeRatelimit.limit(clientIp);
-    if (!success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again in a bit." },
-        { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
-      );
-    }
 
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    }
+
+    // Every caller here is already authenticated (checked above) — always
+    // the higher, per-account budget, keyed by user id rather than IP.
+    const { success, reset } = await tailorResumeAuthedRatelimit.limit(user.id);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a bit." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)) } }
+      );
     }
 
     const formData = await req.formData();
