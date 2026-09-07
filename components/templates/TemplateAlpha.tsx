@@ -189,16 +189,11 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
         }
         .lr-back-mobile { display: none; font-size: 13px; color: ${mut}; text-decoration: none; font-weight: 500; }
         .lr-back-mobile:hover { color: ${fg}; }
-        .lr-hero-h1 { white-space: nowrap; }
-
         @media (max-width: 600px) {
           .lr-nav-links { display: none; }
           .lr-back-mobile { display: block; }
           .stats-row { grid-template-columns: 1fr 1fr !important; }
           .hero-ctas { flex-direction: column !important; }
-        }
-        @media (max-width: 480px) {
-          .lr-hero-h1 { white-space: normal !important; }
         }
       `}</style>
 
@@ -228,7 +223,7 @@ export default function TemplateAlpha({ profile, forceVisible }: Props) {
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
 
-          <h1 className="lr-hero-h1" style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em' }}>
+          <h1 style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', fontWeight: 700, color: fg, lineHeight: 0.92, margin: '0 0 36px', letterSpacing: '-0.03em', overflowWrap: 'break-word' }}>
             {firstName} <span style={{ color: v }}>{lastName}</span>
           </h1>
 

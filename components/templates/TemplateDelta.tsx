@@ -136,9 +136,6 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
           .dl-nav-links { display: none; }
           .hero-ctas { flex-direction: column !important; }
         }
-        .dl-hero-h1 { white-space: nowrap; }
-        @media (max-width: 480px) { .dl-hero-h1 { white-space: normal !important; }
-        }
       `}</style>
 
       {/* ── NAVBAR ── */}
@@ -175,7 +172,7 @@ export default function TemplateDelta({ profile, forceVisible }: Props) {
           <p style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.3em', textTransform: 'uppercase', margin: '0 0 24px' }}>
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
-          <h1 className="dl-hero-h1" style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, color: fg, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.01em' }}>
+          <h1 style={{ fontFamily: PLAYFAIR_FONT, fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, color: fg, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.01em', overflowWrap: 'break-word' }}>
             {p.full_name.split(' ')[0]}{' '}
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>

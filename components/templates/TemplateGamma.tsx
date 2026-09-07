@@ -138,8 +138,6 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
           .gm-skills-grid { grid-template-columns: 1fr !important; }
           .hero-ctas { flex-direction: column !important; align-items: center !important; }
         }
-        .gm-hero-h1 { white-space: nowrap; }
-        @media (max-width: 480px) { .gm-hero-h1 { white-space: normal !important; } }
       `}</style>
 
       {/* ── NAVBAR ── */}
@@ -169,7 +167,7 @@ export default function TemplateGamma({ profile, forceVisible }: Props) {
           <p style={{ fontSize: 12, fontWeight: 600, color: accent, letterSpacing: '0.25em', textTransform: 'uppercase', margin: '0 0 20px' }}>
             {p.title}{p.location ? ` · ${p.location}` : ''}
           </p>
-          <h1 className="gm-hero-h1" style={{ fontSize: 'clamp(3rem, 8vw, 5.5rem)', fontWeight: 700, color: white, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(3rem, 8vw, 5.5rem)', fontWeight: 700, color: white, lineHeight: 0.95, margin: '0 0 32px', letterSpacing: '-0.02em', overflowWrap: 'break-word' }}>
             {p.full_name.split(' ')[0]}{' '}
             <span style={{ color: accent }}>{p.full_name.split(' ').slice(1).join(' ')}</span>
           </h1>
