@@ -14,6 +14,19 @@ export class NotAResumeError extends Error {
   }
 }
 
+// Server-side safety net for the same case app/generate/page.tsx already
+// catches client-side (pdfjs's PasswordException, at file-select time,
+// before any Claude call happens) — in case that detection ever misses a
+// file pdfjs tolerates but the API still can't open. Anthropic doesn't
+// expose a stable machine-readable code for this, so this is a best-effort
+// keyword match on its error text rather than a hard contract.
+export class PasswordProtectedPdfError extends Error {
+  constructor() {
+    super("The uploaded PDF is password-protected.");
+    this.name = "PasswordProtectedPdfError";
+  }
+}
+
 // Raw 0-25-per-criterion score Claude assigns to the SOURCE CV, before any
 // of the extraction/clarity improvements are applied — only the model can
 // judge this honestly and severely, since a deterministic formula over the
@@ -184,6 +197,9 @@ export async function parseResume(pdfBuffer: ArrayBuffer, userId?: string | null
 
   if (!res.ok) {
     const body = await res.text();
+    if (/password|encrypt/i.test(body)) {
+      throw new PasswordProtectedPdfError();
+    }
     throw new Error(`Anthropic API error ${res.status}: ${body}`);
   }
 
@@ -219,6 +235,12 @@ export async function parseResume(pdfBuffer: ArrayBuffer, userId?: string | null
   // missing one of these sections. Normalize here, once, at the source.
   profile.projects ??= [];
   profile.certifications ??= [];
+  // Same model behavior as above (a CV with no LinkedIn/GitHub/portfolio/
+  // Twitter at all sometimes drops the whole social_links object, not just
+  // its individual fields, even though the schema declares it required) —
+  // caused a hard crash ("Cannot convert undefined or null to object") in
+  // the Object.assign below for exactly that case.
+  profile.personal_info.social_links ??= {};
 
   // The prompt tells the model to omit a social link it only sees as a bare
   // label (a "LinkedIn" hyperlink with no visible URL text) rather than
@@ -226,11 +248,9 @@ export async function parseResume(pdfBuffer: ArrayBuffer, userId?: string | null
   // bare label used as an href renders as a broken relative link on every
   // template (see components/templates/*). Belt-and-suspenders: drop
   // anything that isn't actually a URL or @handle.
-  if (profile.personal_info?.social_links) {
-    const links = profile.personal_info.social_links;
-    for (const key of Object.keys(links) as (keyof typeof links)[]) {
-      if (!/[./@]/.test(links[key] ?? "")) delete links[key];
-    }
+  const links = profile.personal_info.social_links;
+  for (const key of Object.keys(links) as (keyof typeof links)[]) {
+    if (!/[./@]/.test(links[key] ?? "")) delete links[key];
   }
 
   // Fill in (or correct) linkedin/github/twitter from the PDF's own

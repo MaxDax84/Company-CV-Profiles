@@ -4,13 +4,14 @@ import { parseResumeRatelimit, parseResumeAuthedRatelimit, getClientIp } from "@
 import { verifyTurnstile } from "@/lib/turnstile";
 import { resolveProfileFromPdf, savePendingProfile, findDuplicatePrimaryProfile, PENDING_TTL_SECONDS } from "@/lib/profile-store";
 import { computeCvScore } from "@/lib/cv-score";
-import { NotAResumeError } from "@/lib/parse-resume";
+import { NotAResumeError, PasswordProtectedPdfError } from "@/lib/parse-resume";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { trackEdge } from "@/lib/analytics-edge";
 import { readPosthogDistinctId, type CvParseErrorReason } from "@/lib/analytics-types";
 
 function classifyParseError(err: unknown): CvParseErrorReason {
   if (err instanceof NotAResumeError) return "not_a_resume";
+  if (err instanceof PasswordProtectedPdfError) return "encrypted_pdf";
   const message = err instanceof Error ? err.message.toLowerCase() : "";
   if (message.includes("timed out") || message.includes("timeout")) return "parse_timeout";
   if (message.includes("too long")) return "parse_timeout";
@@ -171,9 +172,18 @@ export async function POST(req: NextRequest) {
         { status: 422 }
       );
     }
+    if (err instanceof PasswordProtectedPdfError) {
+      return NextResponse.json(
+        { error: "Questo PDF è protetto da password e non può essere letto.", code: "PDF_PASSWORD_PROTECTED" },
+        { status: 422 }
+      );
+    }
     console.error("[parse-resume]", err);
+    // Never surface a raw exception message here (a JS TypeError, an
+    // Anthropic API error body, etc.) — the real detail is already logged
+    // above for debugging; the user only ever needs a plain "try again".
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: "Non è stato possibile analizzare il CV. Riprova tra qualche istante; se il problema persiste, ricarica il file o riprova più tardi." },
       { status: 500 }
     );
   }

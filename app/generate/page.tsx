@@ -55,6 +55,7 @@ export default function GeneratePage() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfThumbnail, setPdfThumbnail] = useState<string | null>(null);
   const [pdfThumbnailError, setPdfThumbnailError] = useState<string | null>(null);
+  const [passwordProtected, setPasswordProtected] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [state, setState] = useState<State>("idle");
   const [slug, setSlug] = useState<string | null>(null);
@@ -182,6 +183,14 @@ export default function GeneratePage() {
         throw new Error(t.timeoutErrorNote);
       }
       if (!res.ok) {
+        // Same case app/generate/page.tsx's loadFile already catches
+        // client-side before any upload happens — this is the fallback for
+        // a file pdfjs tolerated but Claude's API still couldn't open.
+        if (data.code === "PDF_PASSWORD_PROTECTED") {
+          setPasswordProtected(true);
+          setState("idle");
+          return;
+        }
         // The server's own message is a fixed English string regardless of
         // site language — shown instead by the live countdown in the error
         // box below (see retrySeconds) when this is a 429.
@@ -255,13 +264,22 @@ export default function GeneratePage() {
     setFile(f);
     setPdfThumbnail(null);
     setPdfThumbnailError(null);
+    setPasswordProtected(false);
     trackClient.cvUploadStarted({ file_size_kb: Math.round(f.size / 1024), file_type: f.type });
     // Best-effort — the upload flow doesn't depend on this succeeding.
     // The error is surfaced in the fallback box (not just console.error)
     // because on mobile there's no devtools to read the console from —
     // this is the only way to find out what actually failed there.
+    // A password-protected PDF is the one failure worth calling out by name
+    // and blocking on: Claude's own API can't open it either, and without
+    // this the only feedback would be a raw "Anthropic API error 400: ..."
+    // dumped into the error box after a wasted upload attempt.
     renderPdfThumbnail(f).then(setPdfThumbnail).catch((err) => {
       console.error("[renderPdfThumbnail] failed", err);
+      if (err?.name === "PasswordException") {
+        setPasswordProtected(true);
+        return;
+      }
       setPdfThumbnailError(err instanceof Error ? err.message : String(err));
     });
   }
@@ -300,7 +318,7 @@ export default function GeneratePage() {
   // states before the picker is even shown (idle/analyzing/scored) — it is
   // never treated as an actual selection.
   const selected = TEMPLATES.find(t => t.id === template) ?? TEMPLATES[0];
-  const canAnalyze = !!file && privacy && !!turnstileToken && state === "idle";
+  const canAnalyze = !!file && !passwordProtected && privacy && !!turnstileToken && state === "idle";
   const needsPrivacy = !!file && !privacy;
 
   // The H1/subtitle follow the story as the user moves through the flow,
@@ -780,7 +798,7 @@ export default function GeneratePage() {
               >
                 {file ? (
                   <>
-                    <p className="text-3xl mb-3">✅</p>
+                    <p className="text-3xl mb-3">{passwordProtected ? "🔒" : "✅"}</p>
                     <p className="font-medium text-foreground/80">{file.name}</p>
                     <p className="text-xs text-muted-foreground/50 mt-1">{t.clickToChange}</p>
                   </>
@@ -794,6 +812,18 @@ export default function GeneratePage() {
                 )}
                 <input ref={inputRef} type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
               </div>
+              {passwordProtected && (
+                <div className="rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive text-left space-y-1.5">
+                  <p className="font-semibold">
+                    {lang === "en" ? "This PDF is password-protected" : "Questo PDF è protetto da password"}
+                  </p>
+                  <p className="text-xs leading-relaxed">
+                    {lang === "en"
+                      ? "We can't open a locked file, so it can't be analyzed. To fix it: open the PDF, enter its password to unlock it, then use \"Print\" → \"Save as PDF\" (built into Windows/Mac, no extra software needed) to create a new, unprotected copy — then upload that one instead."
+                      : "Non possiamo aprire un file bloccato, quindi non può essere analizzato. Per risolvere: apri il PDF, inserisci la password per sbloccarlo, poi usa \"Stampa\" → \"Salva come PDF\" (già integrato in Windows/Mac, nessun programma aggiuntivo necessario) per creare una nuova copia senza protezione — poi carica quella."}
+                  </p>
+                </div>
+              )}
               <TrustBadges />
               <p className="text-xs text-muted-foreground/70 text-center leading-relaxed max-w-md mx-auto">
                 {lang === "en"
