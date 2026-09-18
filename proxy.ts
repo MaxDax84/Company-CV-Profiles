@@ -37,10 +37,9 @@ function isFrameablePath(pathname: string): boolean {
 // Every external origin below was found by auditing what the site actually
 // loads (see project memory) rather than guessed:
 //  - Cloudflare Turnstile (anti-bot widget on the CV upload/tailor forms)
-//  - Cookiebot (consent banner, while NEXT_PUBLIC_COOKIE_CMP=cookiebot)
-//  - Google Analytics (gated behind consent/Cookiebot; inactive today since
-//    NEXT_PUBLIC_GA_MEASUREMENT_ID isn't set, kept here so it doesn't break
-//    silently the day it is)
+//  - Google Analytics (gated behind our own consent banner; inactive today
+//    since NEXT_PUBLIC_GA_MEASUREMENT_ID isn't set, kept here so it doesn't
+//    break silently the day it is)
 //  - our own Supabase project (auth, REST, Storage — avatars)
 //
 // No 'nonce'/'unsafe-inline' needed in script-src: the only previously
@@ -75,8 +74,6 @@ function buildCsp(pathname: string): string {
     "default-src": ["'self'"],
     "script-src": [
       "'self'",
-      "https://consent.cookiebot.com",
-      "https://consentcdn.cookiebot.com",
       "https://www.googletagmanager.com",
       "https://challenges.cloudflare.com",
     ],
@@ -87,12 +84,10 @@ function buildCsp(pathname: string): string {
       "'self'",
       ...(supabaseOrigin ? [supabaseOrigin] : []),
       "https://challenges.cloudflare.com",
-      "https://consent.cookiebot.com",
-      "https://consentcdn.cookiebot.com",
       "https://www.google-analytics.com",
       "https://analytics.google.com",
     ],
-    "frame-src": ["'self'", "https://consentcdn.cookiebot.com", "https://challenges.cloudflare.com"],
+    "frame-src": ["'self'", "https://challenges.cloudflare.com"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

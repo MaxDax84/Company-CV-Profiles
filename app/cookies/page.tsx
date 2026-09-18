@@ -5,23 +5,9 @@ import { useLanguage } from '@/components/language-provider'
 import { useConsent } from '@/components/consent-provider'
 import { SUPPORT_EMAIL } from '@/lib/contact'
 
-const USING_COOKIEBOT = process.env.NEXT_PUBLIC_COOKIE_CMP === 'cookiebot'
-
 export default function CookiePage() {
   const { lang } = useLanguage()
   const { openBanner } = useConsent()
-
-  // Mirrors components/footer.tsx: while Cookiebot is active our own
-  // ConsentProvider isn't mounted (see app/layout.tsx), so openBanner()
-  // would be a dead no-op — Cookiebot's own renew() reopens its banner
-  // instead.
-  function openCookiePreferences() {
-    if (USING_COOKIEBOT) {
-      (window as unknown as { Cookiebot?: { renew?: () => void } }).Cookiebot?.renew?.();
-    } else {
-      openBanner();
-    }
-  }
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -53,14 +39,10 @@ export default function CookiePage() {
                 <p className="text-foreground font-medium mb-2">Gestisci le tue preferenze</p>
                 <p className="mb-3">
                   Puoi scegliere in qualsiasi momento quali categorie di cookie autorizzare, oltre a
-                  quelli strettamente necessari.{' '}
-                  {USING_COOKIEBOT && (
-                    <>Il banner di consenso è oggi gestito da Cookiebot (Usercentrics A/S), non
-                    direttamente da noi.</>
-                  )}
+                  quelli strettamente necessari.
                 </p>
                 <button
-                  onClick={openCookiePreferences}
+                  onClick={openBanner}
                   className="inline-flex px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
                 >
@@ -122,42 +104,24 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">Logout o inattività prolungata</td>
                         <td className="py-2 align-top">Prima</td>
                       </tr>
-                      {USING_COOKIEBOT ? (
-                        <tr>
-                          <td className="py-2 pr-3 align-top">CookieConsent</td>
-                          <td className="py-2 pr-3 align-top">Usercentrics A/S (Cookiebot)</td>
-                          <td className="py-2 pr-3 align-top">Memorizza le tue scelte sul banner cookie attualmente in uso, così non te lo richiediamo a ogni visita.</td>
-                          <td className="py-2 pr-3 align-top">1 anno</td>
-                          <td className="py-2 align-top">Terza</td>
-                        </tr>
-                      ) : (
-                        <tr>
-                          <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
-                          <td className="py-2 pr-3 align-top">Jobli</td>
-                          <td className="py-2 pr-3 align-top">Memorizza le tue scelte su questo banner, così non te lo richiediamo a ogni visita.</td>
-                          <td className="py-2 pr-3 align-top">6 mesi</td>
-                          <td className="py-2 align-top">Prima</td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                        <td className="py-2 pr-3 align-top">Jobli</td>
+                        <td className="py-2 pr-3 align-top">Memorizza le tue scelte su questo banner, così non te lo richiediamo a ogni visita.</td>
+                        <td className="py-2 pr-3 align-top">6 mesi</td>
+                        <td className="py-2 align-top">Prima</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-                {USING_COOKIEBOT ? (
-                  <p className="mt-3">
-                    Il nostro sistema interno di gestione del consenso (incluso il registro di prova
-                    tecnica del consenso) è temporaneamente in stand-by mentre usiamo Cookiebot: non
-                    riceve nuove scelte finché questa configurazione resta attiva.
-                  </p>
-                ) : (
-                  <p className="mt-3">
-                    Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
-                    (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
-                    verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
-                    hai effettuato l&apos;accesso nel momento in cui scegli. Conserviamo questo registro per
-                    5 anni dalla data della scelta, in linea con gli ordinari termini di prescrizione, decorsi
-                    i quali viene eliminato automaticamente.
-                  </p>
-                )}
+                <p className="mt-3">
+                  Oltre al cookie, conserviamo sui nostri server una prova tecnica di ogni scelta di consenso
+                  (un identificativo anonimo, data e ora, le categorie scelte), per poterla esibire in caso di
+                  verifica. Questo registro non ti identifica come persona: è collegato al tuo account solo se
+                  hai effettuato l&apos;accesso nel momento in cui scegli. Conserviamo questo registro per
+                  5 anni dalla data della scelta, in linea con gli ordinari termini di prescrizione, decorsi
+                  i quali viene eliminato automaticamente.
+                </p>
                 <p className="mt-3">
                   I moduli di caricamento CV e adattamento a un annuncio usano inoltre Cloudflare
                   Turnstile per la verifica anti-bot: per come è progettato da Cloudflare, Turnstile
@@ -330,14 +294,10 @@ export default function CookiePage() {
                 <p className="text-foreground font-medium mb-2">Manage your preferences</p>
                 <p className="mb-3">
                   You can choose at any time which cookie categories to allow, beyond the strictly
-                  necessary ones.{' '}
-                  {USING_COOKIEBOT && (
-                    <>The consent banner is currently managed by Cookiebot (Usercentrics A/S), not
-                    directly by us.</>
-                  )}
+                  necessary ones.
                 </p>
                 <button
-                  onClick={openCookiePreferences}
+                  onClick={openBanner}
                   className="inline-flex px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
                 >
@@ -398,42 +358,24 @@ export default function CookiePage() {
                         <td className="py-2 pr-3 align-top">Logout or prolonged inactivity</td>
                         <td className="py-2 align-top">First</td>
                       </tr>
-                      {USING_COOKIEBOT ? (
-                        <tr>
-                          <td className="py-2 pr-3 align-top">CookieConsent</td>
-                          <td className="py-2 pr-3 align-top">Usercentrics A/S (Cookiebot)</td>
-                          <td className="py-2 pr-3 align-top">Stores your choices on the cookie banner currently in use, so it doesn&apos;t ask again on every visit.</td>
-                          <td className="py-2 pr-3 align-top">1 year</td>
-                          <td className="py-2 align-top">Third</td>
-                        </tr>
-                      ) : (
-                        <tr>
-                          <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
-                          <td className="py-2 pr-3 align-top">Jobli</td>
-                          <td className="py-2 pr-3 align-top">Stores your choices on this banner, so we don&apos;t ask again on every visit.</td>
-                          <td className="py-2 pr-3 align-top">6 months</td>
-                          <td className="py-2 align-top">First</td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_cookie_consent</td>
+                        <td className="py-2 pr-3 align-top">Jobli</td>
+                        <td className="py-2 pr-3 align-top">Stores your choices on this banner, so we don&apos;t ask again on every visit.</td>
+                        <td className="py-2 pr-3 align-top">6 months</td>
+                        <td className="py-2 align-top">First</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-                {USING_COOKIEBOT ? (
-                  <p className="mt-3">
-                    Our own in-house consent-management system (including the technical proof-of-consent
-                    record) is temporarily in standby while we use Cookiebot — it doesn&apos;t receive new
-                    choices while this configuration is active.
-                  </p>
-                ) : (
-                  <p className="mt-3">
-                    Besides the cookie, we keep a technical record of every consent choice on our servers (an
-                    anonymous identifier, date and time, the categories chosen), so we can produce it if ever
-                    needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
-                    account if you happened to be signed in at the moment you chose. We keep this record for
-                    5 years from the date of the choice, in line with ordinary statute-of-limitations periods,
-                    after which it is automatically deleted.
-                  </p>
-                )}
+                <p className="mt-3">
+                  Besides the cookie, we keep a technical record of every consent choice on our servers (an
+                  anonymous identifier, date and time, the categories chosen), so we can produce it if ever
+                  needed. This record doesn&apos;t identify you as a person — it&apos;s only linked to your
+                  account if you happened to be signed in at the moment you chose. We keep this record for
+                  5 years from the date of the choice, in line with ordinary statute-of-limitations periods,
+                  after which it is automatically deleted.
+                </p>
                 <p className="mt-3">
                   The CV upload and job-tailoring forms also use Cloudflare Turnstile for bot
                   verification: by Cloudflare&apos;s own design, Turnstile does not set a cookie in
