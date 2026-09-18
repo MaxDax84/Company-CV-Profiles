@@ -79,7 +79,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Cookie necessari (sempre attivi)</h3>
+                <h3 className="font-semibold text-foreground mb-2">2. Cookie necessari e tecnologie equivalenti (sempre attivi)</h3>
                 <p>
                   Questi cookie sono esentati dall&apos;obbligo di consenso preventivo ai sensi delle
                   Linee Guida del Garante del 2021, in quanto strettamente necessari al servizio
@@ -127,17 +127,48 @@ export default function CookiePage() {
                   Turnstile per la verifica anti-bot: per come è progettato da Cloudflare, Turnstile
                   non imposta un cookie sul tuo browser, quindi non compare in questa tabella.
                 </p>
+                <p className="mt-3">
+                  Oltre ai cookie, usiamo anche il <strong className="text-foreground">local
+                  storage</strong> del browser (una memoria simile ai cookie ma che non viene mai
+                  inviata ai nostri server) per due funzioni puramente tecniche, esentate dal
+                  consenso per lo stesso motivo dei cookie necessari sopra:
+                </p>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Nome chiave</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Finalità</th>
+                        <th className="py-2 font-semibold text-foreground">Durata</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">theme</td>
+                        <td className="py-2 pr-3 align-top">Ricorda se hai scelto il tema chiaro o scuro, così non dobbiamo richiedertelo a ogni visita.</td>
+                        <td className="py-2 align-top">Finché non la cancelli tu (nessuna scadenza automatica)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_feedback_last_shown_*</td>
+                        <td className="py-2 pr-3 align-top">Se hai un account, evita di mostrarti più di una volta ogni 21 giorni il popup di valutazione dopo un&apos;azione (generazione profilo, adattamento annuncio).</td>
+                        <td className="py-2 align-top">Finché non la cancelli tu (nessuna scadenza automatica)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">3. Cookie di Preferenze (previo consenso)</h3>
                 <p>
-                  Questa categoria è riservata a eventuali cookie funzionali futuri (es. ricordare la
-                  lingua o il tema scelti tra una visita e l&apos;altra, oggi già gestiti senza cookie).{' '}
+                  Questa categoria è riservata a eventuali cookie funzionali futuri che richiederanno
+                  il tuo consenso preventivo.{' '}
                   <strong className="text-foreground">Al momento nessun cookie di questa categoria è
                   attivo</strong> sul sito, anche se hai concesso il consenso a questa categoria (la
                   sezione verrà aggiornata con l&apos;elenco specifico non appena un cookie verrà
-                  effettivamente introdotto).
+                  effettivamente introdotto). La scelta del tema chiaro/scuro, pur essendo una
+                  preferenza di visualizzazione, non richiede consenso perché non usa un cookie ma il
+                  local storage tecnico descritto al punto 2.
                 </p>
               </div>
 
@@ -192,7 +223,7 @@ export default function CookiePage() {
                       <tr>
                         <td className="py-2 pr-3 align-top">ph_&lt;project-key&gt;_posthog</td>
                         <td className="py-2 pr-3 align-top">PostHog Inc. (UE)</td>
-                        <td className="py-2 pr-3 align-top">Identificativo anonimo che collega i tuoi eventi tra una visita e l&apos;altra.</td>
+                        <td className="py-2 pr-3 align-top">Identificativo anonimo che collega i tuoi eventi tra una visita e l&apos;altra. Salvato sia come cookie sia nel local storage del browser.</td>
                         <td className="py-2 pr-3 align-top">1 anno</td>
                         <td className="py-2 align-top">Terza</td>
                       </tr>
@@ -201,8 +232,9 @@ export default function CookiePage() {
                 </div>
                 <p className="mt-3">
                   Se rifiuti questa categoria (o non rispondi), né Google Analytics né PostHog vengono
-                  caricati e nessuno di questi cookie viene impostato — nessuna registrazione di
-                  sessione avviene in quel caso. Maggiori informazioni nella{' '}
+                  caricati e nessuno di questi cookie (né le voci corrispondenti nel local storage)
+                  viene impostato — nessuna registrazione di sessione avviene in quel caso. Maggiori
+                  informazioni nella{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Privacy Policy di Google
                   </a>{' '}e nella{' '}
@@ -333,7 +365,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Necessary cookies (always active)</h3>
+                <h3 className="font-semibold text-foreground mb-2">2. Necessary cookies and equivalent technologies (always active)</h3>
                 <p>
                   These cookies are exempt from the prior-consent requirement under the Italian Data
                   Protection Authority&apos;s 2021 Guidelines, as they are strictly necessary for the
@@ -381,17 +413,47 @@ export default function CookiePage() {
                   verification: by Cloudflare&apos;s own design, Turnstile does not set a cookie in
                   your browser, so it doesn&apos;t appear in this table.
                 </p>
+                <p className="mt-3">
+                  Besides cookies, we also use the browser&apos;s <strong className="text-foreground">local
+                  storage</strong> (a similar mechanism to cookies, but one that is never sent to our
+                  servers) for two purely technical purposes, exempt from consent for the same reason
+                  as the necessary cookies above:
+                </p>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-foreground/15 text-left">
+                        <th className="py-2 pr-3 font-semibold text-foreground">Key name</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Purpose</th>
+                        <th className="py-2 font-semibold text-foreground">Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-foreground/5">
+                        <td className="py-2 pr-3 align-top">theme</td>
+                        <td className="py-2 pr-3 align-top">Remembers whether you chose light or dark mode, so we don&apos;t ask again on every visit.</td>
+                        <td className="py-2 align-top">Until you clear it (no automatic expiry)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_feedback_last_shown_*</td>
+                        <td className="py-2 pr-3 align-top">If you have an account, prevents the rating popup from showing more than once every 21 days per action (profile generation, job tailoring).</td>
+                        <td className="py-2 align-top">Until you clear it (no automatic expiry)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               <div>
                 <h3 className="font-semibold text-foreground mb-2">3. Preferences cookies (opt-in)</h3>
                 <p>
-                  This category is reserved for any future functional cookies (e.g. remembering the
-                  language or theme you chose between visits, both currently handled without a
-                  cookie). <strong className="text-foreground">No cookie in this category is active</strong>{' '}
-                  on the site at this time, even if you&apos;ve consented to this category (this
-                  section will be updated with the specific list as soon as a cookie is actually
-                  introduced).
+                  This category is reserved for any future functional cookies that will require your
+                  prior consent. <strong className="text-foreground">No cookie in this category is
+                  active</strong> on the site at this time, even if you&apos;ve consented to this
+                  category (this section will be updated with the specific list as soon as a cookie is
+                  actually introduced). Your light/dark theme choice, while a display preference,
+                  doesn&apos;t require consent because it uses local storage rather than a cookie, as
+                  described in section 2.
                 </p>
               </div>
 
@@ -444,7 +506,7 @@ export default function CookiePage() {
                       <tr>
                         <td className="py-2 pr-3 align-top">ph_&lt;project-key&gt;_posthog</td>
                         <td className="py-2 pr-3 align-top">PostHog Inc. (EU)</td>
-                        <td className="py-2 pr-3 align-top">Anonymous identifier linking your events across visits.</td>
+                        <td className="py-2 pr-3 align-top">Anonymous identifier linking your events across visits. Stored both as a cookie and in browser local storage.</td>
                         <td className="py-2 pr-3 align-top">1 year</td>
                         <td className="py-2 align-top">Third</td>
                       </tr>
@@ -453,8 +515,8 @@ export default function CookiePage() {
                 </div>
                 <p className="mt-3">
                   If you decline this category (or don&apos;t respond), neither Google Analytics nor
-                  PostHog are ever loaded and none of these cookies are set — no session recording
-                  happens in that case either. See{' '}
+                  PostHog are ever loaded and none of these cookies (nor the matching local storage
+                  entries) are set — no session recording happens in that case either. See{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Google&apos;s Privacy Policy
                   </a>{' '}and{' '}

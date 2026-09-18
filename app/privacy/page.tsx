@@ -100,6 +100,13 @@ export default function PrivacyPage() {
                   decisione presa nei tuoi confronti da terzi (es. un datore di lavoro) sulla base di
                   un processo automatizzato.
                 </p>
+                <p className="mt-3">
+                  Se hai un account, ogni tanto (al massimo una volta ogni 21 giorni per la
+                  generazione del profilo e per l&apos;adattamento a un annuncio, e mai se non hai
+                  effettuato l&apos;accesso) ti mostriamo un breve popup facoltativo per valutare la
+                  funzione appena usata: se lo compili, raccogliamo un voto da 1 a 5 e un eventuale
+                  commento testuale, collegati al tuo account.
+                </p>
               </div>
 
               <div>
@@ -139,6 +146,12 @@ export default function PrivacyPage() {
                   sulla base del legittimo interesse a prevenire un uso fraudolento del programma di
                   benvenuto (art. 6(1)(f) GDPR).
                 </p>
+                <p className="mt-2">
+                  Il voto e l&apos;eventuale commento che lasci nel popup di valutazione facoltativo
+                  sono trattati sulla base del legittimo interesse a migliorare il servizio (art.
+                  6(1)(f) GDPR): è una richiesta di opinione che scegli tu se compilare o ignorare, non
+                  necessaria per l&apos;esecuzione del servizio.
+                </p>
               </div>
 
               <div>
@@ -159,7 +172,8 @@ export default function PrivacyPage() {
                   la persistenza dell&apos;account stesso, poiché il servizio è pensato per restare
                   utilizzabile (riscaricare un PDF, ri-adattare un CV) in qualsiasi momento futuro,
                   anche a distanza di mesi o anni. Puoi eliminare un singolo CV, o l&apos;intero
-                  account (con tutti i CV, gli adattamenti e i crediti collegati) in qualsiasi momento,
+                  account (con tutti i CV, gli adattamenti, i crediti e le eventuali valutazioni
+                  lasciate nel popup di feedback) in qualsiasi momento,
                   in piena autonomia, dalla pagina del tuo account: l&apos;eliminazione è immediata e
                   irreversibile, e non richiede di contattarci o attendere alcun intervento da parte
                   nostra.
@@ -363,6 +377,12 @@ export default function PrivacyPage() {
                   information for you to read and use, not a decision made about you by a third party
                   (e.g. an employer) based on an automated process.
                 </p>
+                <p className="mt-3">
+                  If you have an account, every so often (at most once every 21 days for profile
+                  generation and for job tailoring, and never if you&apos;re not signed in) we show a
+                  brief, optional popup asking you to rate the feature you just used: if you fill it
+                  in, we collect a 1-5 rating and an optional text comment, linked to your account.
+                </p>
               </div>
 
               <div>
@@ -397,6 +417,12 @@ export default function PrivacyPage() {
                   hash of your email, never the plaintext email itself, based on our legitimate
                   interest in preventing abuse of the welcome bonus program (Art. 6(1)(f) GDPR).
                 </p>
+                <p className="mt-2">
+                  The rating and optional comment you leave in the feedback popup are processed on
+                  the basis of our legitimate interest in improving the service (Art. 6(1)(f) GDPR):
+                  it&apos;s an optional request for your opinion, not something needed to perform the
+                  service itself.
+                </p>
               </div>
 
               <div>
@@ -415,8 +441,8 @@ export default function PrivacyPage() {
                   account exists: the retention criterion is the account&apos;s own persistence, since
                   the service is meant to stay usable (re-downloading a PDF, re-tailoring a CV) at any
                   point in the future, even months or years later. You can delete a single CV, or your
-                  entire account (with every CV, every tailored version, and your credits) at any
-                  time, entirely on your own, from your account page: deletion is immediate and
+                  entire account (with every CV, every tailored version, your credits, and any ratings
+                  left in the feedback popup) at any time, entirely on your own, from your account page: deletion is immediate and
                   irreversible, and doesn&apos;t require contacting us or waiting on anything from our
                   side.
                 </p>

@@ -29,7 +29,7 @@ export const DEFAULT_CONSENT: ConsentState = {
 // alongside every consent-log entry (see lib/log-consent.ts) so we can
 // always answer "which version of the policy did this person actually see
 // when they agreed?", not just what analytics/marketing they chose.
-export const COOKIE_POLICY_VERSION = "2026-08-23";
+export const COOKIE_POLICY_VERSION = "2026-09-18";
 
 // The consent record itself is a strictly-necessary cookie (recording a
 // choice about cookies doesn't require consent to set) — not the same
