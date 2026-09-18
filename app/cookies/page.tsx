@@ -258,11 +258,13 @@ export default function CookiePage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">6. Cookie tecnici dell&apos;infrastruttura di hosting</h3>
                 <p>
-                  Il sito è ospitato su infrastruttura cloud (Vercel Inc., San Francisco, USA). La
-                  piattaforma di hosting potrebbe impostare cookie tecnici di sessione necessari al
-                  corretto funzionamento dell&apos;applicazione web (es. bilanciamento del carico).
-                  Tali cookie non identificano l&apos;utente e non vengono trasmessi a terzi per
-                  finalità di marketing.
+                  Il sito è ospitato su infrastruttura cloud (Vercel Inc., San Francisco, USA).
+                  Verificato che, nella configurazione attuale, la piattaforma di hosting
+                  <strong className="text-foreground"> non imposta alcun cookie proprio</strong>: gli
+                  unici cookie presenti sono quelli elencati in questa pagina, impostati dalla nostra
+                  applicazione. Se in futuro un cambiamento infrastrutturale introducesse un cookie
+                  tecnico lato hosting (es. per bilanciamento del carico), questa sezione verrà
+                  aggiornata di conseguenza.
                 </p>
               </div>
 
@@ -541,10 +543,12 @@ export default function CookiePage() {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">6. Hosting infrastructure cookies</h3>
                 <p>
-                  This site is hosted on Vercel Inc. (San Francisco, USA). The hosting platform may
-                  set technical session cookies required for the correct operation of the web
-                  application (e.g. load balancing). These cookies do not identify the user and are
-                  not shared with third parties for marketing purposes.
+                  This site is hosted on Vercel Inc. (San Francisco, USA). We&apos;ve verified that,
+                  in the current setup, the hosting platform <strong className="text-foreground">does
+                  not set any cookie of its own</strong>: the only cookies present are the ones listed
+                  on this page, set by our own application. If a future infrastructure change ever
+                  introduces a technical hosting-side cookie (e.g. for load balancing), this section
+                  will be updated accordingly.
                 </p>
               </div>
 

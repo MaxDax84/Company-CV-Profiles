@@ -173,6 +173,16 @@ export default function TermsPage() {
                   è competente in via esclusiva il Tribunale di Milano, salvo diversa disposizione
                   inderogabile a tutela dei consumatori.
                 </p>
+                <p className="mt-2">
+                  Ai sensi del Regolamento UE n. 524/2013, se sei un consumatore residente
+                  nell&apos;Unione Europea puoi inoltre accedere alla piattaforma europea di
+                  risoluzione delle controversie online (ODR), disponibile all&apos;indirizzo{' '}
+                  <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    ec.europa.eu/consumers/odr
+                  </a>
+                  , per tentare di risolvere in via extragiudiziale una controversia relativa a un
+                  contratto concluso online, prima di rivolgerti al Tribunale competente.
+                </p>
               </div>
 
               <div>
@@ -328,6 +338,16 @@ export default function TermsPage() {
                   These Terms are governed by Italian law. Any dispute shall be subject to the
                   exclusive jurisdiction of the Court of Milan, without prejudice to any mandatory
                   consumer protection provisions.
+                </p>
+                <p className="mt-2">
+                  Under EU Regulation No. 524/2013, if you are a consumer resident in the European
+                  Union you can also access the EU&apos;s online dispute resolution (ODR) platform,
+                  available at{' '}
+                  <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    ec.europa.eu/consumers/odr
+                  </a>
+                  , to attempt an out-of-court resolution of a dispute arising from a contract
+                  concluded online, before turning to the competent Court.
                 </p>
               </div>
 
