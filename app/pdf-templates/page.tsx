@@ -10,7 +10,7 @@ import PdfTemplatesBody from "./PdfTemplatesBody";
 // PdfTemplateCard) so the page always fits the screen width exactly, phone
 // or desktop — vertical scroll only, never horizontal.
 
-export const metadata = { title: "I 3 template PDF — Jobli" };
+export const metadata = { title: "I 3 template PDF" };
 
 export default function PdfTemplatesPage() {
   return <PdfTemplatesBody />;

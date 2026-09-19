@@ -3,8 +3,9 @@ import { Suspense } from "react";
 import BlogIndexBody from "./BlogIndexBody";
 
 export const metadata: Metadata = {
-  title: "Blog — Jobli",
+  title: "Blog",
   description: "Consigli pratici su colloqui, CV, ATS e carriera, scritti per chi sta cercando lavoro adesso, non per fare numero.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogIndexPage() {

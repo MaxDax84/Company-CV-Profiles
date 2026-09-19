@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import TailorForm from "@/components/tailor-form";
@@ -10,6 +11,13 @@ import { getCreditBalance } from "@/lib/credits";
 interface Props {
   searchParams: Promise<{ profile?: string }>;
 }
+
+export const metadata: Metadata = {
+  title: "Adatta il CV a un annuncio",
+  description:
+    "Incolla il testo di un annuncio di lavoro e l'AI riscrive il tuo CV per allinearlo a quella posizione, usando solo competenze ed esperienze che hai davvero dichiarato. Adattare è sempre gratis.",
+  alternates: { canonical: "/tailor" },
+};
 
 export default async function TailorPage({ searchParams }: Props) {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;

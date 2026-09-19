@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { useLanguage } from './language-provider'
+import JsonLd from './json-ld'
+import { SUPPORT_EMAIL } from '@/lib/contact'
 
 // Shared between the homepage section and the standalone /faq page linked
 // from the account menu. Kept as a plain lang-keyed lookup (not folded into
@@ -24,7 +26,7 @@ const FAQ_ITEMS_IT: { q: string; a: string }[] = [
   },
   {
     q: 'Cosa sono i crediti e quanto costano?',
-    a: 'Ogni account riceve 3 crediti di benvenuto gratuiti. Un credito si usa per scaricare un PDF o un documento Word, generare una lettera di presentazione o tradurre il CV o la lettera in un\'altra lingua. Adattare il CV a un annuncio è sempre gratuito, paghi solo quando scarichi il risultato. Siamo in fase beta: il servizio è gratuito, non è ancora possibile acquistare crediti. Se ti servono altri crediti, dalla sezione Crediti del tuo account puoi richiederne altri 10 con un click: verifichiamo la richiesta a mano e te li accreditiamo.',
+    a: 'Ogni account riceve 3 crediti di benvenuto gratuiti. Costano 1 credito ciascuno: il download del PDF, il download del documento Word, la generazione di una lettera di presentazione, la traduzione del CV o della lettera, e la rifinitura del CV tramite la chat con l\'AI. La preparazione al colloquio costa 2 crediti (comprende la ricerca sull\'azienda sul web). La compattazione del PDF in una sola pagina è un extra da 0,5 crediti che si aggiunge al download. Caricare il CV, ottenere il punteggio, generare la pagina profilo e adattare il CV a un annuncio sono sempre gratuiti: paghi solo quando scarichi il risultato. Siamo in fase beta: il servizio è gratuito, non è ancora possibile acquistare crediti. Se ti servono altri crediti, dalla sezione Crediti del tuo account puoi richiederne altri 10 con un click: verifichiamo la richiesta a mano e te li accreditiamo.',
   },
   {
     q: 'Cosa sono i filtri ATS e perché ottimizzare il CV per loro?',
@@ -52,7 +54,7 @@ const FAQ_ITEMS_IT: { q: string; a: string }[] = [
   },
   {
     q: 'Come posso contattarvi?',
-    a: 'Registrati così nell\'account trovi l\'email di contatto.',
+    a: `Scrivici a ${SUPPORT_EMAIL}: rispondiamo a qualsiasi domanda su account, crediti, privacy o cancellazione dei dati. Non serve avere un account. Se ne hai uno, dalla sezione Supporto trovi anche un modulo di contatto già compilato con la tua email.`,
   },
 ]
 
@@ -71,7 +73,7 @@ const FAQ_ITEMS_EN: { q: string; a: string }[] = [
   },
   {
     q: 'What are credits and how much do they cost?',
-    a: 'Every account gets 3 free welcome credits. A credit is used to download a PDF or Word document, generate a cover letter, or translate your CV or cover letter into another language. Tailoring your CV to a job posting is always free — you only pay when you download the result. We\'re in beta, so the service is free, but buying credits directly isn\'t possible yet. If you need more, you can request 10 more with one click from your account\'s Credits section — we review the request by hand and add them to your balance.',
+    a: 'Every account gets 3 free welcome credits. These cost 1 credit each: downloading a PDF, downloading a Word document, generating a cover letter, translating your CV or cover letter, and refining your CV through the AI chat. Interview preparation costs 2 credits (it includes researching the company on the web). Compacting the PDF onto a single page is a 0.5-credit add-on charged on top of the download. Uploading your CV, getting the score, generating the profile page, and tailoring your CV to a job posting are always free: you only pay when you download the result. We\'re in beta, so the service is free, but buying credits directly isn\'t possible yet. If you need more, you can request 10 more with one click from your account\'s Credits section: we review the request by hand and add them to your balance.',
   },
   {
     q: 'What are ATS filters and why optimize your CV for them?',
@@ -99,7 +101,7 @@ const FAQ_ITEMS_EN: { q: string; a: string }[] = [
   },
   {
     q: 'How can I contact you?',
-    a: 'Sign up — you\'ll find our contact email in your account.',
+    a: `Write to us at ${SUPPORT_EMAIL}: we answer any question about accounts, credits, privacy, or deleting your data. You don't need an account to write to us. If you do have one, the Support section also has a contact form pre-filled with your email.`,
   },
 ]
 
@@ -152,8 +154,27 @@ export default function FaqSection({ compact = false }: { compact?: boolean }) {
     return () => clearTimeout(id)
   }, [])
 
+  // FAQPage structured data, built from the exact same `items` the
+  // accordion renders — so it can never describe an answer the page doesn't
+  // actually show, which is the one thing Google's FAQ guidelines are
+  // strict about. The answers are already in the server-rendered HTML (the
+  // accordion collapses them with CSS, it doesn't unmount them), so this is
+  // a machine-readable restatement of visible content, not hidden content.
+  // Rendered in the default language of the server pass (Italian) since the
+  // language toggle is client state.
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  }
+
   return (
     <section id="faq" className={compact ? '' : 'relative py-16 md:py-20 overflow-hidden'}>
+      <JsonLd data={faqSchema} />
       {!compact && <div className="absolute inset-0 grid-overlay" />}
       <div className="relative z-10 max-w-3xl mx-auto px-6">
         {!compact && (

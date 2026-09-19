@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BlogCta from "@/components/blog-cta";
+import JsonLd from "@/components/json-ld";
 import { BLOG_POSTS, getBlogPost, type ContentBlock } from "@/lib/blog-posts";
+import { SITE_URL } from "@/lib/site";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -19,8 +21,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getBlogPost(slug);
   if (!post) return {};
   return {
-    title: `${post.title} — Jobli Blog`,
+    title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: `/blog/${post.slug}`,
+      publishedTime: post.publishedAt,
+    },
   };
 }
 
@@ -60,8 +70,31 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getBlogPost(slug);
   if (!post) notFound();
 
+  // BlogPosting structured data, built from the post's own fields so it
+  // can't drift from what the page renders. `wordCount` and `timeRequired`
+  // come from readingMinutes; there's no per-post author, so the
+  // Organization from the homepage graph is credited instead (same @id, so
+  // a consumer resolves it to one entity across the site).
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    articleSection: post.category,
+    inLanguage: "it",
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    // ISO 8601 duration, the format schema.org expects for timeRequired.
+    timeRequired: `PT${post.readingMinutes}M`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
+    url: `${SITE_URL}/blog/${post.slug}`,
+    author: { "@id": `${SITE_URL}/#organization` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
+      <JsonLd data={articleSchema} />
       <Navigation />
       <div className="absolute inset-0 grid-overlay" />
       <div className="relative z-10 pt-32 pb-20">

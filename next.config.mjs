@@ -1,5 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        // jobli.it and www.jobli.it both served a 200 with byte-identical
+        // content — a duplicate-host split that makes search engines pick a
+        // canonical for us and divides any link equity between the two.
+        // www is the canonical host (it's what metadataBase, the sitemap and
+        // robots.txt all emit, see lib/site.ts), so the apex permanently
+        // redirects to it.
+        //
+        // `:path*` on the source plus the same on the destination preserves
+        // the full path; query strings are carried over by Next.js
+        // automatically. 308 (permanent: true) rather than 301 so the method
+        // and body of a non-GET request survive the hop.
+        source: '/:path*',
+        has: [{ type: 'host', value: 'jobli.it' }],
+        destination: 'https://www.jobli.it/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {

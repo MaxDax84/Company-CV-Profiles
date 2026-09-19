@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Style Showcase | Jobli',
+  title: 'Style Showcase',
   description: 'A showcase of web CV styles — futuristic, vintage, kawaii, dark, clinical and more.',
 }
 

@@ -35,14 +35,26 @@ export default function PricingSection() {
       body: tr('Nessuna carta richiesta. Bastano per provare più di una funzionalità.', 'No card required — enough to try more than one feature.'),
     },
     {
+      // Every credit-consuming action, with its real cost. This card used
+      // to list only PDF/Word/cover letter/translation at "1 credit each",
+      // silently omitting chat refinement (1), interview prep (2) and the
+      // one-page PDF compaction (0.5) — so it read as a complete price list
+      // while being an incomplete one. Costs are CREDIT_COSTS in
+      // lib/credits.ts, the single source of truth.
       icon: Unlock,
-      title: tr('1 credito = 1 sblocco', '1 credit = 1 unlock'),
-      body: tr('Scaricare un PDF o Word, generare una lettera, tradurre: ogni cosa costa 1 credito la prima volta, poi è gratis per sempre.', 'Downloading a PDF or Word file, generating a cover letter, or translating — each one costs 1 credit the first time, then it\'s free forever.'),
+      title: tr('Quasi tutto costa 1 credito', 'Almost everything costs 1 credit'),
+      body: tr(
+        'PDF, Word, lettera di presentazione, traduzione e rifinitura via chat: 1 credito ciascuno la prima volta, poi gratis per sempre. Fanno eccezione la preparazione al colloquio (2 crediti, include la ricerca sull\'azienda) e la compattazione del PDF in una pagina (0,5).',
+        'PDF, Word, cover letter, translation, and chat refinement: 1 credit each the first time, then free forever. The exceptions are interview preparation (2 credits, it researches the company for you) and compacting the PDF onto one page (0.5).',
+      ),
     },
     {
       icon: Target,
-      title: tr('Adattare a un annuncio è sempre gratis', 'Tailoring to a job posting is always free'),
-      body: tr('Paghi solo quando scarichi davvero il risultato, non per il tentativo.', 'You only pay when you actually download the result — never just for trying it.'),
+      title: tr('Analisi e adattamento sempre gratis', 'Analysis and tailoring always free'),
+      body: tr(
+        'Caricare il CV, ottenere il punteggio, generare la pagina profilo e adattarla a un annuncio non costano nulla: paghi solo quando scarichi il risultato.',
+        'Uploading your CV, getting the score, generating the profile page, and tailoring it to a job posting cost nothing: you only pay when you download the result.',
+      ),
     },
     {
       icon: MessageCircleQuestion,

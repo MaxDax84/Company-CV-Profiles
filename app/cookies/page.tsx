@@ -51,7 +51,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Cosa sono i cookie</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. Cosa sono i cookie</h2>
                 <p>
                   I cookie sono piccoli file di testo che i siti web salvano sul dispositivo
                   dell&apos;utente durante la navigazione. Questo sito li raggruppa in quattro categorie:
@@ -79,7 +79,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Cookie necessari e tecnologie equivalenti (sempre attivi)</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Cookie necessari e tecnologie equivalenti (sempre attivi)</h2>
                 <p>
                   Questi cookie sono esentati dall&apos;obbligo di consenso preventivo ai sensi delle
                   Linee Guida del Garante del 2021, in quanto strettamente necessari al servizio
@@ -129,15 +129,19 @@ export default function CookiePage() {
                 </p>
                 <p className="mt-3">
                   Oltre ai cookie, usiamo anche il <strong className="text-foreground">local
-                  storage</strong> del browser (una memoria simile ai cookie ma che non viene mai
-                  inviata ai nostri server) per due funzioni puramente tecniche, esentate dal
-                  consenso per lo stesso motivo dei cookie necessari sopra:
+                  storage</strong> e il <strong className="text-foreground">session storage</strong>{' '}
+                  del browser (memorie simili ai cookie, ma che non vengono mai inviate ai nostri
+                  server) per tre funzioni puramente tecniche, esentate dal consenso per lo stesso
+                  motivo dei cookie necessari sopra. La differenza fra le due: il local storage resta
+                  finché non lo cancelli tu, il session storage viene svuotato dal browser alla
+                  chiusura della scheda.
                 </p>
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-foreground/15 text-left">
                         <th className="py-2 pr-3 font-semibold text-foreground">Nome chiave</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Tipo</th>
                         <th className="py-2 pr-3 font-semibold text-foreground">Finalità</th>
                         <th className="py-2 font-semibold text-foreground">Durata</th>
                       </tr>
@@ -145,13 +149,21 @@ export default function CookiePage() {
                     <tbody>
                       <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">theme</td>
+                        <td className="py-2 pr-3 align-top">Local storage</td>
                         <td className="py-2 pr-3 align-top">Ricorda se hai scelto il tema chiaro o scuro, così non dobbiamo richiedertelo a ogni visita.</td>
                         <td className="py-2 align-top">Finché non la cancelli tu (nessuna scadenza automatica)</td>
                       </tr>
-                      <tr>
+                      <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">jobli_feedback_last_shown_*</td>
+                        <td className="py-2 pr-3 align-top">Local storage</td>
                         <td className="py-2 pr-3 align-top">Se hai un account, evita di mostrarti più di una volta ogni 21 giorni il popup di valutazione dopo un&apos;azione (generazione profilo, adattamento annuncio).</td>
                         <td className="py-2 align-top">Finché non la cancelli tu (nessuna scadenza automatica)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_tailor_result_*</td>
+                        <td className="py-2 pr-3 align-top">Session storage</td>
+                        <td className="py-2 pr-3 align-top">Conserva il CV adattato a un annuncio appena generato, per poterlo rimostrare se il browser ti porta via dalla pagina. Succede in particolare su iPhone, dove scaricando il PDF Safari apre il proprio visualizzatore e, tornando indietro, la pagina viene ricaricata da zero: senza questa copia il risultato andrebbe perso. Resta sul tuo dispositivo e non viene mai inviata ai nostri server.</td>
+                        <td className="py-2 align-top">Fino alla chiusura della scheda del browser</td>
                       </tr>
                     </tbody>
                   </table>
@@ -159,7 +171,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Cookie di Preferenze (previo consenso)</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Cookie di Preferenze (previo consenso)</h2>
                 <p>
                   Questa categoria è riservata a eventuali cookie funzionali futuri che richiederanno
                   il tuo consenso preventivo.{' '}
@@ -173,17 +185,22 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Cookie di Statistiche (previo consenso)</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. Cookie di Statistiche (previo consenso)</h2>
                 <p>
-                  Se acconsenti alla categoria Statistiche, attiviamo{' '}
                   <strong className="text-foreground">Google Analytics 4</strong>, fornito da Google
-                  Ireland Limited, per raccogliere statistiche aggregate e anonimizzate sulla
-                  navigazione (pagine visitate, provenienza del traffico, durata della sessione).
-                  L&apos;indirizzo IP viene troncato prima della memorizzazione (IP anonymization) e
-                  non viene usato per la personalizzazione di annunci pubblicitari.
+                  Ireland Limited, è predisposto per raccogliere statistiche aggregate e anonimizzate
+                  sulla navigazione (pagine visitate, provenienza del traffico, durata della sessione),
+                  con troncamento dell&apos;indirizzo IP prima della memorizzazione (IP anonymization)
+                  e senza personalizzazione di annunci pubblicitari.{' '}
+                  <strong className="text-foreground">Al momento non è attivo</strong>: non è
+                  configurato alcun identificativo di misurazione, quindi lo script di Google non
+                  viene caricato e i cookie _ga e _ga_&lt;container-id&gt; descritti nella tabella
+                  qui sotto non vengono impostati, nemmeno se hai acconsentito a questa categoria.
+                  Restano elencati perché l&apos;integrazione esiste già nel sito: questa sezione
+                  verrà aggiornata nel momento in cui verrà effettivamente attivata.
                 </p>
                 <p className="mt-3">
-                  Sempre previo consenso a questa categoria, attiviamo anche{' '}
+                  Se acconsenti a questa categoria, attiviamo invece{' '}
                   <strong className="text-foreground">PostHog</strong> (PostHog Inc., dati trattati ed
                   ospitati nella regione UE), per capire come le persone usano le funzionalità del
                   prodotto (caricamento CV, punteggio, adattamento a un annuncio, download) e dove
@@ -233,7 +250,10 @@ export default function CookiePage() {
                 <p className="mt-3">
                   Se rifiuti questa categoria (o non rispondi), né Google Analytics né PostHog vengono
                   caricati e nessuno di questi cookie (né le voci corrispondenti nel local storage)
-                  viene impostato — nessuna registrazione di sessione avviene in quel caso. Maggiori
+                  viene impostato, e nessuna registrazione di sessione avviene. Nel caso di PostHog
+                  questo significa, in concreto, che il suo codice non viene nemmeno inizializzato:
+                  fino a quando non acconsenti, il tuo browser non invia alcuna richiesta ai server di
+                  PostHog, nemmeno per scaricare la configurazione dello strumento. Maggiori
                   informazioni nella{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Privacy Policy di Google
@@ -245,7 +265,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Cookie di Marketing (previo consenso)</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Cookie di Marketing (previo consenso)</h2>
                 <p>
                   Questa categoria è riservata per eventuali strumenti pubblicitari futuri (es. pixel
                   di remarketing). <strong className="text-foreground">Al momento nessuno strumento di
@@ -256,7 +276,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Cookie tecnici dell&apos;infrastruttura di hosting</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. Cookie tecnici dell&apos;infrastruttura di hosting</h2>
                 <p>
                   Il sito è ospitato su infrastruttura cloud (Vercel Inc., San Francisco, USA).
                   Verificato che, nella configurazione attuale, la piattaforma di hosting
@@ -269,7 +289,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Come gestire i cookie dal browser</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Come gestire i cookie dal browser</h2>
                 <p>
                   Oltre al pannello preferenze di questo sito, puoi disabilitare o eliminare i cookie
                   in qualsiasi momento tramite le impostazioni del tuo browser. Nota: disabilitare i
@@ -292,7 +312,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Modifiche alla Cookie Policy</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Modifiche alla Cookie Policy</h2>
                 <p>
                   Il Titolare si riserva il diritto di aggiornare la presente Cookie Policy in
                   qualsiasi momento, in particolare in caso di modifiche normative, tecnologiche o
@@ -302,7 +322,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Contatti</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Contatti</h2>
                 <p>
                   Per qualsiasi domanda relativa alla presente Cookie Policy, scrivere a{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
@@ -340,7 +360,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. What are cookies?</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. What are cookies?</h2>
                 <p>
                   Cookies are small text files stored on your device when you visit a website. This
                   site groups them into four categories:
@@ -367,7 +387,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Necessary cookies and equivalent technologies (always active)</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Necessary cookies and equivalent technologies (always active)</h2>
                 <p>
                   These cookies are exempt from the prior-consent requirement under the Italian Data
                   Protection Authority&apos;s 2021 Guidelines, as they are strictly necessary for the
@@ -417,15 +437,18 @@ export default function CookiePage() {
                 </p>
                 <p className="mt-3">
                   Besides cookies, we also use the browser&apos;s <strong className="text-foreground">local
-                  storage</strong> (a similar mechanism to cookies, but one that is never sent to our
-                  servers) for two purely technical purposes, exempt from consent for the same reason
-                  as the necessary cookies above:
+                  storage</strong> and <strong className="text-foreground">session storage</strong>{' '}
+                  (mechanisms similar to cookies, but ones that are never sent to our servers) for
+                  three purely technical purposes, exempt from consent for the same reason as the
+                  necessary cookies above. The difference between the two: local storage stays until
+                  you clear it, session storage is emptied by the browser when the tab is closed.
                 </p>
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-foreground/15 text-left">
                         <th className="py-2 pr-3 font-semibold text-foreground">Key name</th>
+                        <th className="py-2 pr-3 font-semibold text-foreground">Type</th>
                         <th className="py-2 pr-3 font-semibold text-foreground">Purpose</th>
                         <th className="py-2 font-semibold text-foreground">Duration</th>
                       </tr>
@@ -433,13 +456,21 @@ export default function CookiePage() {
                     <tbody>
                       <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">theme</td>
+                        <td className="py-2 pr-3 align-top">Local storage</td>
                         <td className="py-2 pr-3 align-top">Remembers whether you chose light or dark mode, so we don&apos;t ask again on every visit.</td>
                         <td className="py-2 align-top">Until you clear it (no automatic expiry)</td>
                       </tr>
-                      <tr>
+                      <tr className="border-b border-foreground/5">
                         <td className="py-2 pr-3 align-top">jobli_feedback_last_shown_*</td>
+                        <td className="py-2 pr-3 align-top">Local storage</td>
                         <td className="py-2 pr-3 align-top">If you have an account, prevents the rating popup from showing more than once every 21 days per action (profile generation, job tailoring).</td>
                         <td className="py-2 align-top">Until you clear it (no automatic expiry)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 pr-3 align-top">jobli_tailor_result_*</td>
+                        <td className="py-2 pr-3 align-top">Session storage</td>
+                        <td className="py-2 pr-3 align-top">Keeps the CV you just tailored to a job posting, so it can be shown again if the browser navigates you away from the page. This happens in particular on iPhone, where downloading the PDF makes Safari open its own viewer and going back reloads the page from scratch: without this copy the result would be lost. It stays on your device and is never sent to our servers.</td>
+                        <td className="py-2 align-top">Until you close the browser tab</td>
                       </tr>
                     </tbody>
                   </table>
@@ -447,7 +478,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Preferences cookies (opt-in)</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Preferences cookies (opt-in)</h2>
                 <p>
                   This category is reserved for any future functional cookies that will require your
                   prior consent. <strong className="text-foreground">No cookie in this category is
@@ -460,16 +491,21 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Statistics cookies (opt-in)</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. Statistics cookies (opt-in)</h2>
                 <p>
-                  If you consent to the Statistics category, we activate{' '}
                   <strong className="text-foreground">Google Analytics 4</strong>, provided by Google
-                  Ireland Limited, to collect aggregated, anonymised statistics about site usage
-                  (pages visited, traffic source, session duration). Your IP address is truncated
-                  before storage (IP anonymization) and is not used for ad personalization.
+                  Ireland Limited, is integrated to collect aggregated, anonymised statistics about
+                  site usage (pages visited, traffic source, session duration), with your IP address
+                  truncated before storage (IP anonymization) and never used for ad personalization.{' '}
+                  <strong className="text-foreground">It is not currently active</strong>: no
+                  measurement ID is configured, so Google&apos;s script is never loaded and the _ga
+                  and _ga_&lt;container-id&gt; cookies described in the table below are not set, even
+                  if you have consented to this category. They stay listed because the integration
+                  already exists in the site: this section will be updated the moment it is actually
+                  switched on.
                 </p>
                 <p className="mt-3">
-                  Also gated by this category, we activate{' '}
+                  If you consent to this category, what we do activate is{' '}
                   <strong className="text-foreground">PostHog</strong> (PostHog Inc., data processed
                   and hosted in the EU region) to understand how people actually use the product
                   (CV upload, score, tailoring to a job posting, downloads) and where they run into
@@ -517,8 +553,11 @@ export default function CookiePage() {
                 </div>
                 <p className="mt-3">
                   If you decline this category (or don&apos;t respond), neither Google Analytics nor
-                  PostHog are ever loaded and none of these cookies (nor the matching local storage
-                  entries) are set — no session recording happens in that case either. See{' '}
+                  PostHog are ever loaded, none of these cookies (nor the matching local storage
+                  entries) are set, and no session recording happens. For PostHog specifically this
+                  means its code is not even initialised: until you consent, your browser sends no
+                  request at all to PostHog&apos;s servers, not even to fetch the tool&apos;s own
+                  configuration. See{' '}
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     Google&apos;s Privacy Policy
                   </a>{' '}and{' '}
@@ -530,7 +569,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Marketing cookies (opt-in)</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Marketing cookies (opt-in)</h2>
                 <p>
                   This category is reserved for any future advertising tools (e.g. remarketing
                   pixels). <strong className="text-foreground">No marketing tool is active</strong> on
@@ -541,7 +580,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Hosting infrastructure cookies</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. Hosting infrastructure cookies</h2>
                 <p>
                   This site is hosted on Vercel Inc. (San Francisco, USA). We&apos;ve verified that,
                   in the current setup, the hosting platform <strong className="text-foreground">does
@@ -553,7 +592,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Managing cookies in your browser</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Managing cookies in your browser</h2>
                 <p>
                   Besides this site&apos;s preferences panel, you can disable or delete cookies at any
                   time through your browser settings. Note: disabling necessary cookies will prevent
@@ -576,7 +615,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Changes to this policy</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Changes to this policy</h2>
                 <p>
                   We reserve the right to update this Cookie Policy at any time, particularly in
                   response to regulatory, technological, or infrastructure changes. The updated
@@ -585,7 +624,7 @@ export default function CookiePage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Contact</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Contact</h2>
                 <p>
                   For any questions about this Cookie Policy, write to{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">

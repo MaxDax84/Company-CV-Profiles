@@ -16,6 +16,15 @@ type SectionKey = 'menu' | 'blog' | 'settings'
 // Top-level row that reveals its own items as a second level — hovering
 // opens it (mouse users), and it also toggles on click so it works on
 // touch, where hover never fires. Only one section stays open at a time.
+//
+// The children stay MOUNTED whether or not the section is open (they used
+// to be `{active && children}`). Same reason as the dropdown itself, see
+// the long note in Navigation below: a link that only enters the DOM after
+// a click doesn't exist for a crawler. Collapsed state is the
+// grid-template-rows 0fr→1fr trick already used by the FAQ accordion
+// (components/faq-section.tsx) — it animates to "auto" height cleanly and,
+// unlike `display: none`, keeps the links in the rendered HTML. `inert`
+// keeps them out of the tab order and the accessibility tree while closed.
 function SectionRow({
   label,
   active,
@@ -34,12 +43,21 @@ function SectionRow({
       <button
         type="button"
         onClick={onToggle}
+        aria-expanded={active}
         className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-foreground/[0.05] transition-colors"
       >
         {label}
         <ChevronDown className={cn('w-3.5 h-3.5 text-muted-foreground transition-transform duration-200', active && 'rotate-180')} />
       </button>
-      {active && <div className="pb-1">{children}</div>}
+      <div
+        className="grid transition-[grid-template-rows] duration-200 ease-out"
+        style={{ gridTemplateRows: active ? '1fr' : '0fr' }}
+        inert={!active}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-1">{children}</div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -222,14 +240,37 @@ export default function Navigation() {
                 setOpenSection(null)
               }}
               aria-label={lang === 'en' ? 'Toggle menu' : 'Apri il menu'}
+              aria-expanded={menuOpen}
               className="p-1.5 rounded-md text-muted-foreground hover:text-foreground transition-colors"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            {menuOpen && (
+            {/* The dropdown stays mounted at all times (it used to be
+                `{menuOpen && (...)}`). This menu is the ONLY place the site
+                links to /blog, the blog categories and the homepage section
+                anchors from — so while it was conditionally rendered, none
+                of those URLs existed in the server-rendered HTML of any
+                page, and a crawler had no path to the blog at all. That's a
+                real, measurable cost: the blog had zero inbound links
+                anywhere on the site.
+
+                Same fix as components/cookie-consent-banner.tsx uses for
+                its sheet: never unmount, drive visibility purely with
+                translate/opacity/pointer-events, and keep it out of the
+                tab order and the accessibility tree with `inert` +
+                `aria-hidden` while closed. The panel is absolutely
+                positioned, so an invisible one costs no layout. */}
             <div
-              className="absolute top-full right-0 mt-2 w-64 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden"
+              aria-hidden={!menuOpen}
+              inert={!menuOpen}
+              className={cn(
+                'absolute top-full right-0 mt-2 w-64 max-w-[85vw] rounded-2xl border border-border bg-background shadow-2xl z-50 overflow-hidden',
+                'transition-[opacity,transform] duration-200 ease-out origin-top-right',
+                menuOpen
+                  ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+                  : 'opacity-0 scale-95 -translate-y-1 pointer-events-none',
+              )}
               onMouseLeave={() => setOpenSection(null)}
             >
               <div className="max-h-[75vh] overflow-y-auto py-1.5">
@@ -316,7 +357,6 @@ export default function Navigation() {
                 )}
               </div>
             </div>
-          )}
           </div>
         </div>
       </div>

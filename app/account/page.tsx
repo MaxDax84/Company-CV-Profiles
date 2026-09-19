@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -10,6 +11,14 @@ import { getCreditBalance, getCreditLedger, getAccountCode, getCreditsLastReques
 import { getPaidDownloads } from "@/lib/paid-downloads";
 import { getGeneratedCoverLetters } from "@/lib/cover-letters";
 import { getOwnedInterviewPreps } from "@/lib/interview-prep-store";
+
+// The dashboard is per-user and login-gated; it had no metadata at all, so
+// it inherited the homepage's title AND was indexable in principle. Both
+// fixed here (app/robots.ts also disallows /account).
+export const metadata: Metadata = {
+  title: "Il tuo account",
+  robots: { index: false, follow: false },
+};
 
 export default async function AccountPage() {
   if (!isSupabaseConfigured()) return <SupabaseNotConfigured />;

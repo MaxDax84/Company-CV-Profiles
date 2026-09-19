@@ -42,8 +42,19 @@ export default function Footer() {
             </span>
           </div>
 
-          {/* Nav links */}
+          {/* Nav links. Blog and FAQ are here, unconditionally, on every
+              page that renders the footer: the hamburger menu is the only
+              other place linking to them, and even now that it stays
+              mounted (see components/navigation.tsx), a link inside a
+              collapsed dropdown is a weaker signal than one in a plain
+              always-visible footer row. */}
           <div className="flex items-center gap-6 flex-wrap justify-center">
+            <a href="/blog" className="text-xs text-white/60 hover:text-white transition-colors">
+              Blog
+            </a>
+            <a href="/faq" className="text-xs text-white/60 hover:text-white transition-colors">
+              {lang === 'en' ? 'FAQ' : 'Domande frequenti'}
+            </a>
             {isLoggedIn && (
               <a href="/support" className="text-xs text-white/60 hover:text-white transition-colors">
                 {lang === 'en' ? 'Support' : 'Supporto'}

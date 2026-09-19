@@ -18,7 +18,21 @@ export default function FaqPage() {
             {lang === 'en' ? '← Back to dashboard' : '← Torna alla dashboard'}
           </a>
         </div>
-        <FaqSection />
+        {/* This page's only heading used to be the <h2> inside FaqSection —
+            a page with no <h1> at all. The heading block moves here as a
+            real <h1> and FaqSection renders in `compact` mode so the title
+            isn't printed twice. */}
+        <div className="max-w-3xl mx-auto px-6 text-center mb-10">
+          <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight mb-2">
+            {lang === 'en' ? 'Frequently Asked Questions' : 'Domande frequenti'}
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            {lang === 'en'
+              ? 'Everything you need to know before you start.'
+              : 'Tutto quello che c\'è da sapere prima di iniziare.'}
+          </p>
+        </div>
+        <FaqSection compact />
       </div>
       <Footer />
     </div>

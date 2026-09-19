@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -8,6 +9,13 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 // feature (the "Prepara il colloquio" tab in /account); an anonymous one
 // gets a plain prompt to sign up or log in instead of a form that would
 // otherwise let them spend a real Claude research call for free.
+export const metadata: Metadata = {
+  title: "Prepara il colloquio",
+  description:
+    "Incolla l'annuncio e ottieni un report sull'azienda che assume: cosa fa, il suo mercato, la cultura, le notizie recenti e le domande più probabili al colloquio, con le fonti consultate.",
+  alternates: { canonical: "/interview-prep" },
+};
+
 export default async function InterviewPrepPage() {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();

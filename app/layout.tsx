@@ -20,12 +20,47 @@ import CookieConsentBanner from '@/components/cookie-consent-banner'
 import GoogleAnalytics from '@/components/google-analytics'
 import PostHogProvider from '@/components/posthog-provider'
 import ScrollToTop from '@/components/scroll-to-top'
+import { SITE_NAME, SITE_URL } from '@/lib/site'
 import './globals.css'
 
+const SITE_DESCRIPTION =
+  'Jobli usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.'
+
 export const metadata: Metadata = {
-  title: 'Jobli | Più colloqui, con il CV che hai già',
-  description:
-    'Jobli usa l\'AI per trasformare il tuo CV in un profilo pronto per candidarti: lo ottimizza per gli ATS, lo adatta a ogni annuncio e non inventa mai nulla che non hai fatto.',
+  // Required for every relative URL below (and in per-page metadata) to
+  // resolve to an absolute one — without it Next.js errors on a relative
+  // openGraph/alternates value. www, matching next.config.mjs's apex→www
+  // redirect, so a canonical never points at a URL that 308s.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    // Applies to CHILD segments only: a page exporting `title: 'FAQ'` gets
+    // "FAQ | Jobli", while this segment itself uses `default`. A page that
+    // needs to opt out entirely can use `title.absolute`.
+    template: '%s | Jobli',
+    default: 'Jobli | Più colloqui, con il CV che hai già',
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  // Root canonical. Every page below can override it with its own
+  // `alternates: { canonical: '/its-path' }`, resolved against metadataBase.
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'it_IT',
+    url: '/',
+    title: 'Jobli | Più colloqui, con il CV che hai già',
+    description: SITE_DESCRIPTION,
+    // The image itself comes from app/opengraph-image.tsx (Next.js file
+    // convention) — declaring it here too would override that, not add to it.
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Jobli | Più colloqui, con il CV che hai già',
+    description: SITE_DESCRIPTION,
+  },
   // No explicit `icons` field — app/icon.png (Next.js file convention) is
   // picked up and served automatically. An explicit icons entry here would
   // override that convention instead of complementing it.

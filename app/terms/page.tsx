@@ -36,14 +36,19 @@ export default function TermsPage() {
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Descrizione del Servizio</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. Descrizione del Servizio</h2>
                 <p>Jobli è una piattaforma che utilizza l&apos;intelligenza artificiale per:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Analizzare un CV caricato in formato PDF e assegnargli un punteggio su criteri oggettivi (risultati misurabili, chiarezza, struttura ATS, competenze specifiche);</li>
                   <li>Migliorarne i contenuti senza inventare informazioni non presenti nel documento originale;</li>
                   <li>Generare una pagina web personale, pubblica e condivisibile, a partire dal CV;</li>
-                  <li>Generare un PDF ottimizzato per i sistemi di selezione automatica (ATS);</li>
-                  <li>Adattare il CV a uno specifico annuncio di lavoro fornito dall&apos;utente.</li>
+                  <li>Generare un PDF ottimizzato per i sistemi di selezione automatica (ATS), con l&apos;opzione di compattarlo su una sola pagina;</li>
+                  <li>Generare un documento Word (.docx) modificabile a partire dallo stesso CV;</li>
+                  <li>Adattare il CV a uno specifico annuncio di lavoro fornito dall&apos;utente;</li>
+                  <li>Generare una lettera di presentazione a partire dal CV e dall&apos;annuncio di lavoro;</li>
+                  <li>Tradurre il CV o la lettera di presentazione in un&apos;altra lingua (inglese, spagnolo, francese, tedesco, portoghese, italiano);</li>
+                  <li>Preparare il colloquio a partire da un annuncio: una scheda sull&apos;azienda che assume (attività, mercato, cultura, notizie recenti, punti critici dell&apos;annuncio e domande probabili). Per costruirla, il fornitore di intelligenza artificiale consulta fonti pubbliche sul web in tempo reale tramite i propri strumenti di ricerca e lettura di pagine web, e ogni affermazione è accompagnata dall&apos;indirizzo della fonte effettivamente consultata;</li>
+                  <li>Completare, tramite una breve chat con l&apos;intelligenza artificiale, le informazioni mancanti nel CV: il sistema pone domande mirate e integra nel profilo solo le risposte fornite dall&apos;utente.</li>
                 </ul>
                 <p className="mt-2">
                   Il servizio è attualmente in fase beta ed è gratuito. Il Fornitore si riserva il
@@ -54,23 +59,33 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Account e Crediti</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Account e Crediti</h2>
                 <p>
                   L&apos;utilizzo di alcune funzionalità (salvataggio permanente del CV, download del
-                  PDF o di un documento Word) richiede la creazione di un account con email e
-                  password. Ogni nuovo account riceve 3 crediti gratuiti; il download del PDF, il
-                  download del documento Word, la generazione di una lettera di presentazione e la
-                  traduzione consumano un credito ciascuno. L&apos;adattamento del CV a un annuncio di
-                  lavoro è invece sempre gratuito. L&apos;utente è responsabile della riservatezza
-                  delle proprie credenziali di accesso. Il credito di benvenuto viene assegnato una
-                  sola volta per indirizzo email, anche in caso di successiva eliminazione e
-                  ricreazione dell&apos;account con la stessa email.
+                  PDF o di un documento Word) richiede la creazione di un account, con email e
+                  password oppure tramite l&apos;accesso con Google. Ogni nuovo account riceve 3
+                  crediti gratuiti. Consumano 1 credito ciascuno: il download del PDF, il download del
+                  documento Word, la generazione di una lettera di presentazione, la traduzione del CV
+                  o della lettera, e la rifinitura del CV tramite la chat con l&apos;intelligenza
+                  artificiale. La preparazione al colloquio consuma 2 crediti, in ragione della
+                  ricerca sul web che comporta. La compattazione del PDF su una sola pagina è
+                  un&apos;opzione aggiuntiva che consuma 0,5 crediti e si somma al costo del download.
+                  Il caricamento del CV, l&apos;assegnazione del punteggio, la generazione della pagina
+                  profilo e l&apos;adattamento del CV a un annuncio di lavoro sono invece sempre
+                  gratuiti. L&apos;utente è responsabile della riservatezza delle proprie credenziali
+                  di accesso. Il credito di benvenuto viene assegnato una sola volta per indirizzo
+                  email, anche in caso di successiva eliminazione e ricreazione dell&apos;account con
+                  la stessa email.
                 </p>
                 <p className="mt-2">
                   Il servizio è riservato a chi ha compiuto almeno 14 anni, età minima per prestare
                   validamente da soli il consenso al trattamento dei propri dati personali online ai
-                  sensi dell&apos;art. 2-quinquies del D.Lgs. 196/2003. Chi ha tra i 14 e i 17 anni
-                  dichiara, creando un account, di avere la capacità di agire necessaria per i
+                  sensi dell&apos;art. 2-quinquies del D.Lgs. 196/2003. La dichiarazione non è
+                  implicita: per creare un account occorre spuntare una casella dedicata con cui si
+                  dichiara di avere almeno 14 anni, sia compilando il modulo di registrazione sia
+                  accedendo con Google (in quest&apos;ultimo caso la dichiarazione viene richiesta in
+                  una schermata di conferma al primo accesso). Chi ha tra i 14 e i 17 anni dichiara
+                  inoltre, creando un account, di avere la capacità di agire necessaria per i
                   contratti relativi a un servizio digitale gratuito come questo.
                 </p>
                 <p className="mt-2">
@@ -88,7 +103,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Natura dei Contenuti Generati dall&apos;AI</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Natura dei Contenuti Generati dall&apos;AI</h2>
                 <p>
                   I contenuti generati o migliorati dall&apos;intelligenza artificiale (bio, pagina
                   profilo, PDF, versioni adattate del CV) sono elaborati a partire esclusivamente dal
@@ -112,7 +127,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Obblighi dell&apos;Utente</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. Obblighi dell&apos;Utente</h2>
                 <p>L&apos;utente si impegna a:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Caricare esclusivamente il proprio CV, o un CV di terzi per il quale disponga del consenso esplicito degli stessi.</li>
@@ -123,7 +138,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Proprietà Intellettuale</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Proprietà Intellettuale</h2>
                 <p>
                   Il codice sorgente, il design, i template e il marchio Jobli rimangono di proprietà
                   del Fornitore. I contenuti del CV forniti dall&apos;utente, e la pagina profilo
@@ -134,7 +149,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Limitazione di Responsabilità</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. Limitazione di Responsabilità</h2>
                 <p>
                   Il servizio è fornito &quot;così com&apos;è&quot;. Il Fornitore non è responsabile
                   per interruzioni causate da fornitori terzi (hosting, autenticazione, intelligenza
@@ -147,7 +162,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Sospensione e Cessazione</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Sospensione e Cessazione</h2>
                 <p>
                   Il Fornitore può sospendere o eliminare un account in caso di violazione dei
                   presenti Termini, utilizzo illecito o abusivo del servizio. L&apos;utente può
@@ -157,7 +172,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Modifiche al Servizio e ai Termini</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Modifiche al Servizio e ai Termini</h2>
                 <p>
                   Il Fornitore si riserva il diritto di modificare, sospendere o interrompere
                   funzionalità del servizio, e di aggiornare i presenti Termini, in qualsiasi momento.
@@ -167,7 +182,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Legge Applicabile e Foro Competente</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Legge Applicabile e Foro Competente</h2>
                 <p>
                   I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia
                   è competente in via esclusiva il Tribunale di Milano, salvo diversa disposizione
@@ -186,7 +201,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">10. Contatti</h3>
+                <h2 className="font-semibold text-foreground mb-2">10. Contatti</h2>
                 <p>
                   Per qualsiasi richiesta relativa ai presenti Termini, scrivere a{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">
@@ -211,14 +226,19 @@ export default function TermsPage() {
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Service Description</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. Service Description</h2>
                 <p>Jobli is a platform that uses artificial intelligence to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Analyze a PDF CV upload and score it against objective criteria (quantified results, clarity, ATS structure, specific skills);</li>
                   <li>Improve its content without inventing information not present in the original document;</li>
                   <li>Generate a personal, public, shareable web page from the CV;</li>
-                  <li>Generate a PDF optimized for Applicant Tracking Systems (ATS);</li>
-                  <li>Tailor the CV to a specific job posting provided by the user.</li>
+                  <li>Generate a PDF optimized for Applicant Tracking Systems (ATS), with the option to compact it onto a single page;</li>
+                  <li>Generate an editable Word (.docx) document from the same CV;</li>
+                  <li>Tailor the CV to a specific job posting provided by the user;</li>
+                  <li>Generate a cover letter from the CV and the job posting;</li>
+                  <li>Translate the CV or the cover letter into another language (English, Spanish, French, German, Portuguese, Italian);</li>
+                  <li>Prepare for an interview from a job posting: a briefing on the hiring company (what it does, its market, its culture, recent news, the posting&apos;s own critical points, and likely questions). To build it, the AI provider consults public sources on the live web through its own web-search and web-page-reading tools, and every statement is accompanied by the address of the source actually consulted;</li>
+                  <li>Fill in information missing from the CV through a short chat with the AI: the system asks targeted questions and folds only the user&apos;s own answers back into the profile.</li>
                 </ul>
                 <p className="mt-2">
                   The service is currently in beta and free of charge. The Provider reserves the
@@ -229,22 +249,31 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Accounts and Credits</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Accounts and Credits</h2>
                 <p>
                   Some features (permanently saving your CV, downloading the PDF or a Word document)
-                  require creating an account with an email and password. Each new account receives
-                  3 free credits; downloading a PDF, downloading a Word document, generating a cover
-                  letter, and translating each cost one credit. Tailoring your CV to a job posting is
-                  always free. You are responsible for keeping your login credentials confidential.
-                  The welcome credit bonus is granted once per email address, even if the account is
-                  later deleted and re-created with the same email.
+                  require creating an account, either with an email and password or by signing in
+                  with Google. Each new account receives 3 free credits. These cost 1 credit each:
+                  downloading a PDF, downloading a Word document, generating a cover letter,
+                  translating the CV or the cover letter, and refining the CV through the AI chat.
+                  Interview preparation costs 2 credits, because of the web research it involves.
+                  Compacting the PDF onto a single page is an optional add-on costing 0.5 credits,
+                  charged on top of the download. Uploading your CV, scoring it, generating the
+                  profile page, and tailoring your CV to a job posting are always free. You are
+                  responsible for keeping your login credentials confidential. The welcome credit
+                  bonus is granted once per email address, even if the account is later deleted and
+                  re-created with the same email.
                 </p>
                 <p className="mt-2">
                   The service is restricted to people aged 14 or over, the minimum age to validly
                   consent on your own to the processing of your personal data online under Italian law
-                  (Art. 2-quinquies, Legislative Decree 196/2003). By creating an account, users aged
-                  14 to 17 represent that they have the legal capacity required to enter into an
-                  agreement for a free digital service of this kind.
+                  (Art. 2-quinquies, Legislative Decree 196/2003). This is not an implicit
+                  declaration: creating an account requires ticking a dedicated box confirming you are
+                  at least 14, both when filling in the signup form and when signing in with Google
+                  (in the latter case the declaration is requested on a confirmation screen at first
+                  sign-in). Users aged 14 to 17 additionally represent, by creating an account, that
+                  they have the legal capacity required to enter into an agreement for a free digital
+                  service of this kind.
                 </p>
                 <p className="mt-2">
                   You can delete a single CV or your entire account yourself, with immediate and
@@ -260,7 +289,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Nature of AI-Generated Content</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Nature of AI-Generated Content</h2>
                 <p>
                   Content generated or improved by AI (bio, profile page, PDF, tailored CV versions)
                   is produced solely from material you provide: the system is designed not to invent
@@ -281,7 +310,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. User Obligations</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. User Obligations</h2>
                 <p>You agree to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Only upload your own CV, or a third party&apos;s CV for which you have their explicit consent.</li>
@@ -292,7 +321,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Intellectual Property</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Intellectual Property</h2>
                 <p>
                   The website&apos;s source code, design, templates, and the Jobli brand remain the
                   property of the Provider. CV content you supply, and the profile page generated
@@ -302,7 +331,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Limitation of Liability</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. Limitation of Liability</h2>
                 <p>
                   The service is provided &quot;as is&quot;. The Provider is not liable for
                   interruptions caused by third-party providers (hosting, authentication, AI), nor
@@ -315,7 +344,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Suspension and Termination</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Suspension and Termination</h2>
                 <p>
                   The Provider may suspend or delete an account in the event of a breach of these
                   Terms, or unlawful or abusive use of the service. You may stop using the service
@@ -324,7 +353,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Changes to the Service and Terms</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Changes to the Service and Terms</h2>
                 <p>
                   The Provider reserves the right to modify, suspend, or discontinue features of the
                   service, and to update these Terms, at any time. Material changes will be
@@ -333,7 +362,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Governing Law and Jurisdiction</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Governing Law and Jurisdiction</h2>
                 <p>
                   These Terms are governed by Italian law. Any dispute shall be subject to the
                   exclusive jurisdiction of the Court of Milan, without prejudice to any mandatory
@@ -352,7 +381,7 @@ export default function TermsPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">10. Contact</h3>
+                <h2 className="font-semibold text-foreground mb-2">10. Contact</h2>
                 <p>
                   For any enquiries regarding these Terms, write to{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">

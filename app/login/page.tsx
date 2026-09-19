@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { safeRedirectPath } from "@/lib/safe-redirect";
@@ -14,6 +15,15 @@ interface Props {
 // anonymous preview is waiting to be attached to an account, and
 // LoginPageBody's own submit handler is what actually calls /api/claim —
 // redirecting away here would silently drop that pending CV.
+// noindex: an auth form is pure noise in a results page, and it's also
+// disallowed in app/robots.ts. Both are kept: robots.txt stops the crawl,
+// the meta tag stops an already-known URL from staying indexed.
+export const metadata: Metadata = {
+  title: "Accedi",
+  description: "Accedi al tuo account Jobli per ritrovare i tuoi CV, i crediti e i download.",
+  robots: { index: false, follow: false },
+};
+
 export default async function LoginPage({ searchParams }: Props) {
   const { next, claim } = await searchParams;
   if (!claim) {

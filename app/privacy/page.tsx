@@ -32,7 +32,7 @@ export default function PrivacyPage() {
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. Titolare del Trattamento</h2>
                 <p>
                   Il titolare del trattamento è{' '}
                   <strong className="text-foreground">Jobli Srls (in costituzione)</strong>, con sede
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Dati Raccolti</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Dati Raccolti</h2>
                 <p>Tramite il modulo di contatto raccogliamo:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Nome e cognome</li>
@@ -62,8 +62,10 @@ export default function PrivacyPage() {
                 <p className="mt-3">Se crei un account raccogliamo inoltre:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Indirizzo email e password (la password è gestita dal nostro fornitore di autenticazione, Supabase, e non è mai visibile a noi in chiaro)</li>
+                  <li>In alternativa alla password, se scegli di accedere con Google: il tuo indirizzo email e il tuo nome, comunicati a noi da Google al termine dell&apos;autenticazione. Non riceviamo né la tua password Google né altri dati del tuo account Google, e non abbiamo accesso a nulla che vi sia contenuto</li>
                   <li>Data di creazione dell&apos;account</li>
                   <li>Saldo crediti e storico delle transazioni (es. &quot;download PDF&quot;, &quot;adattamento annuncio&quot;, con data)</li>
+                  <li>La foto del profilo, se scegli di caricarne una dalle impostazioni dell&apos;account. Il file viene salvato sullo spazio di archiviazione di Supabase in una cartella intestata al tuo account. Va sottolineato che questo spazio è configurato come pubblico: chi conosce (o indovina) l&apos;indirizzo del file può aprirlo senza effettuare l&apos;accesso, esattamente come accade per la foto del profilo di gran parte dei servizi online. Puoi sostituirla o rimuoverla in qualsiasi momento dalle impostazioni</li>
                 </ul>
                 <p className="mt-3">Quando carichi un CV tramite il generatore di profili raccogliamo:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -78,6 +80,25 @@ export default function PrivacyPage() {
                   nostro fornitore di intelligenza artificiale per generare la versione adattata del
                   CV, ma non viene conservato da noi oltre il tempo necessario a completare
                   l&apos;elaborazione.
+                </p>
+                <p className="mt-3">
+                  Le altre funzioni che elaborano i tuoi dati, e cosa comportano:
+                </p>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  <li>Lettera di presentazione: il tuo CV e il testo dell&apos;annuncio vengono inviati al fornitore di intelligenza artificiale; la lettera generata viene salvata nel tuo account, così da non doverla rigenerare (e ripagare) per lo stesso annuncio</li>
+                  <li>Traduzione: il CV (o la lettera) viene inviato al fornitore di intelligenza artificiale e la versione tradotta viene salvata nel tuo account come un CV aggiuntivo</li>
+                  <li>Documento Word (.docx): generato sul momento dai dati del CV già presenti nel tuo account, senza inviare nulla a fornitori ulteriori rispetto a quelli elencati al punto 5</li>
+                  <li>Preparazione al colloquio: il testo dell&apos;annuncio viene inviato al fornitore di intelligenza artificiale, che per rispondere consulta fonti pubbliche sul web in tempo reale tramite i propri strumenti di ricerca e di lettura delle pagine. Le ricerche riguardano l&apos;azienda che assume, non te: questa funzione, per scelta progettuale, non accede al tuo CV. La scheda risultante viene salvata nel tuo account</li>
+                  <li>Chat per completare il CV: le domande dell&apos;AI e le tue risposte vengono conservate nel tuo account per la durata della conversazione e per poterla riprendere; al termine, le informazioni che hai fornito vengono integrate nel tuo CV</li>
+                </ul>
+                <p className="mt-3">
+                  Per ogni elaborazione svolta tramite intelligenza artificiale registriamo inoltre, su
+                  un nostro registro tecnico interno, il tipo di operazione (es. &quot;analisi CV&quot;,
+                  &quot;adattamento annuncio&quot;), il modello utilizzato, il numero di token
+                  consumati, il costo corrispondente, la data e l&apos;identificativo interno del tuo
+                  account. Questo registro non contiene il contenuto del tuo CV né il testo scambiato
+                  con l&apos;intelligenza artificiale: serve unicamente a sapere quanto costa erogare
+                  il servizio e a dimensionare il modello a crediti.
                 </p>
                 <p className="mt-3">
                   Il servizio non richiede né sollecita dati appartenenti a categorie particolari
@@ -110,7 +131,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Finalità e Base Giuridica</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Finalità e Base Giuridica</h2>
                 <p>
                   I dati del modulo di contatto sono trattati sulla base dell&apos;art. 6(1)(b) GDPR
                   (misure precontrattuali adottate su richiesta dell&apos;interessato) oppure, quando
@@ -152,10 +173,19 @@ export default function PrivacyPage() {
                   6(1)(f) GDPR): è una richiesta di opinione che scegli tu se compilare o ignorare, non
                   necessaria per l&apos;esecuzione del servizio.
                 </p>
+                <p className="mt-2">
+                  Il registro tecnico dei consumi di intelligenza artificiale descritto al punto 2
+                  (tipo di operazione, modello, token, costo, identificativo interno dell&apos;account)
+                  è trattato sulla base del legittimo interesse alla sostenibilità economica e alla
+                  corretta contabilizzazione dei costi del servizio (art. 6(1)(f) GDPR). Il
+                  collegamento all&apos;account è necessario per attribuire il costo a chi lo ha
+                  generato, condizione indispensabile per calibrare il modello a crediti ed
+                  individuare eventuali usi anomali.
+                </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Conservazione dei Dati</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. Conservazione dei Dati</h2>
                 <p>
                   I dati del modulo di contatto vengono ricevuti via email e non sono archiviati in
                   alcun database.
@@ -179,6 +209,18 @@ export default function PrivacyPage() {
                   nostra.
                 </p>
                 <p className="mt-2">
+                  Per evitare di rielaborare (e farti ripagare) lo stesso identico file, conserviamo
+                  separatamente una copia dei dati estratti da un CV, indicizzata con
+                  un&apos;impronta crittografica del PDF caricato. Questa copia{' '}
+                  <strong className="text-foreground">scade 30 giorni dopo l&apos;ultimo
+                  utilizzo</strong> (ogni nuovo caricamento dello stesso file fa ripartire il
+                  conteggio) e viene inoltre cancellata quando elimini il tuo account, per tutte le
+                  impronte collegate ai CV salvati nel tuo account. Va detto con precisione: le
+                  impronte non collegate ad alcun CV salvato (tipicamente quelle di un caricamento
+                  anonimo mai registrato) non possono essere ricondotte a un account in fase di
+                  eliminazione, e per queste vale soltanto la scadenza automatica a 30 giorni.
+                </p>
+                <p className="mt-2">
                   Fa eccezione un&apos;impronta crittografica (hash) della tua email, generata solo per
                   riconoscere se hai già ricevuto in passato il credito di benvenuto: non viene
                   eliminata insieme all&apos;account, proprio perché la sua funzione è impedire che lo
@@ -194,7 +236,10 @@ export default function PrivacyPage() {
                   accettata, il contesto dell&apos;azione, e — quando disponibile — l&apos;account
                   collegato), a fini di dimostrabilità del consenso (art. 5(2) e 7(1) GDPR,
                   &quot;responsabilizzazione&quot;). Conserviamo questo registro per 5 anni dalla data
-                  della scelta, in linea con gli ordinari termini di prescrizione.
+                  della scelta, in linea con gli ordinari termini di prescrizione. Non si tratta di
+                  un impegno generico: una procedura automatica in esecuzione ogni giorno cancella
+                  le registrazioni che hanno superato i 5 anni, sia per le scelte sui cookie sia per
+                  le accettazioni delle policy.
                 </p>
                 <p className="mt-2">
                   Copie di backup dell&apos;infrastruttura (mantenute dai nostri fornitori di hosting e
@@ -205,7 +250,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Destinatari dei Dati</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Destinatari dei Dati</h2>
                 <p>
                   I dati non vengono ceduti né venduti a terzi. I soggetti che trattano i dati in
                   qualità di responsabili del trattamento ai sensi dell&apos;art. 28 GDPR sono:
@@ -216,13 +261,14 @@ export default function PrivacyPage() {
                   <li>Supabase Inc., gestione degli account, autenticazione e conservazione permanente dei profili e dei dati dei CV collegati a un account</li>
                   <li>Anthropic PBC, elaborazione del testo del CV per l&apos;estrazione, il miglioramento e l&apos;adattamento del profilo</li>
                   <li>Cloudflare Inc., verifica anti-bot (Turnstile) sui moduli di caricamento CV e adattamento annuncio</li>
-                  <li>Google Ireland Limited, statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Statistiche nel banner cookie</li>
+                  <li>Google Ireland Limited, autenticazione tramite &quot;Accedi con Google&quot;, se scegli questo metodo di accesso: Google verifica la tua identità e ci comunica email e nome. Questo trattamento è indipendente dal punto successivo e non dipende dal banner cookie, perché è parte del servizio che hai richiesto</li>
+                  <li>Google Ireland Limited, statistiche di navigazione aggregate e anonimizzate (Google Analytics 4), solo se hai dato il consenso alla categoria Statistiche nel banner cookie. Questa integrazione è predisposta ma <strong className="text-foreground">non è attiva al momento</strong>: nessun identificativo di misurazione è configurato, quindi Google Analytics non viene caricato e nessun dato gli viene trasmesso, nemmeno se hai acconsentito alla categoria Statistiche. Questa voce verrà aggiornata se e quando lo attiveremo</li>
                   <li>PostHog Inc., analisi di prodotto ed eventuale registrazione di sessione (session replay, con mascheramento del contenuto del CV e di tutti i campi di digitazione) — dati trattati ed ospitati nella regione UE, solo se hai dato il consenso alla categoria Statistiche nel banner cookie</li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. Trasferimento Dati Extra-UE</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. Trasferimento Dati Extra-UE</h2>
                 <p>
                   La maggior parte dei fornitori sopra indicati ha sede negli Stati Uniti
                   (l&apos;infrastruttura dati di Supabase può essere configurata in diverse regioni,
@@ -244,7 +290,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Diritti dell&apos;Interessato</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Diritti dell&apos;Interessato</h2>
                 <p>Ai sensi degli artt. 15–22 GDPR, l&apos;interessato ha il diritto di:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Accedere ai propri dati personali (art. 15)</li>
@@ -266,7 +312,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Reclamo all&apos;Autorità di Controllo</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Reclamo all&apos;Autorità di Controllo</h2>
                 <p>
                   L&apos;interessato ha il diritto di proporre reclamo al Garante per la Protezione
                   dei Dati Personali (
@@ -278,13 +324,14 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Cookie</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Cookie</h2>
                 <p>
                   Questo sito utilizza cookie strettamente necessari al funzionamento del servizio
                   (es. mantenimento della sessione di accesso, verifica anti-bot), sempre attivi, e
-                  (solo previo tuo consenso esplicito) cookie di Statistiche (Google Analytics 4 e
-                  PostHog, quest&apos;ultimo con eventuale registrazione di sessione) per
-                  capire come viene usato il sito. Puoi dare, rifiutare o revocare il consenso in
+                  (solo previo tuo consenso esplicito) cookie di Statistiche per capire come viene
+                  usato il sito. L&apos;unico strumento di statistica effettivamente attivo è
+                  PostHog, con eventuale registrazione di sessione; Google Analytics 4 è predisposto
+                  ma non è attivo al momento (vedi il punto 5). Puoi dare, rifiutare o revocare il consenso in
                   qualsiasi momento dal banner cookie o dal link &quot;Preferenze Cookie&quot; in fondo
                   al sito. Per maggiori informazioni consulta la nostra{' '}
                   <Link href="/cookies" className="text-primary hover:underline">Cookie Policy</Link>.
@@ -292,17 +339,28 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">10. Sicurezza</h3>
+                <h2 className="font-semibold text-foreground mb-2">10. Sicurezza</h2>
                 <p>
                   I dati sono cifrati sia a riposo (a livello di infrastruttura del database) sia in
-                  transito (connessioni HTTPS su tutto il sito). L&apos;accesso ai tuoi dati richiede
-                  sempre l&apos;autenticazione al tuo account, ed è tecnicamente limitato ai soli dati
-                  di tua proprietà tramite regole di accesso a livello di database (Row Level
-                  Security), non solo lato applicazione. Le credenziali con accesso privilegiato ai
-                  dati sono usate esclusivamente lato server e non sono mai esposte al browser. I tuoi
-                  dati di contatto reali (email e telefono) non vengono mai pubblicati sulla pagina web
-                  pubblica generata dal servizio, e restano visibili solo a te, all&apos;interno del
-                  tuo account protetto.
+                  transito (connessioni HTTPS su tutto il sito). L&apos;accesso ai tuoi dati da parte
+                  di altri utenti del servizio richiede sempre l&apos;autenticazione ed è tecnicamente
+                  limitato ai soli dati di loro proprietà tramite regole di accesso a livello di
+                  database (Row Level Security), non solo lato applicazione. Le credenziali con
+                  accesso privilegiato ai dati sono usate esclusivamente lato server e non sono mai
+                  esposte al browser. I tuoi dati di contatto reali (email e telefono) non vengono mai
+                  pubblicati sulla pagina web pubblica generata dal servizio, e restano visibili solo a
+                  te, all&apos;interno del tuo account protetto.
+                </p>
+                <p className="mt-2">
+                  Per completezza: il personale autorizzato del Titolare può accedere ai dati degli
+                  account tramite strumenti amministrativi interni (protetti da credenziali dedicate e
+                  utilizzati esclusivamente lato server), per finalità di assistenza agli utenti,
+                  prevenzione degli abusi e gestione operativa del servizio, ad esempio per verificare
+                  il saldo crediti di chi scrive al supporto o per leggere le valutazioni lasciate nel
+                  popup di feedback. Queste operazioni non passano dalle regole di accesso a livello di
+                  database descritte sopra, che limitano gli utenti fra loro e non il Titolare: un
+                  servizio non potrebbe essere gestito altrimenti, e preferiamo dirlo esplicitamente
+                  piuttosto che lasciar intendere il contrario.
                 </p>
               </div>
             </>
@@ -313,7 +371,7 @@ export default function PrivacyPage() {
               </p>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">1. Data Controller</h3>
+                <h2 className="font-semibold text-foreground mb-2">1. Data Controller</h2>
                 <p>
                   The data controller is{' '}
                   <strong className="text-foreground">Jobli Srls (in costituzione)</strong>, based in
@@ -332,7 +390,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">2. Data Collected</h3>
+                <h2 className="font-semibold text-foreground mb-2">2. Data Collected</h2>
                 <p>When you submit the contact form, we collect:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>First and last name</li>
@@ -343,8 +401,10 @@ export default function PrivacyPage() {
                 <p className="mt-3">If you create an account, we also collect:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Email address and password (your password is handled by our authentication provider, Supabase, and is never visible to us in plain text)</li>
+                  <li>Instead of a password, if you choose to sign in with Google: your email address and your name, passed to us by Google once authentication completes. We never receive your Google password or any other data from your Google account, and we have no access to anything held in it</li>
                   <li>Account creation date</li>
                   <li>Credit balance and transaction history (e.g. &quot;PDF download&quot;, &quot;job tailoring&quot;, with date)</li>
+                  <li>Your profile photo, if you choose to upload one from your account settings. The file is stored in Supabase Storage, in a folder belonging to your account. Worth stating plainly: that storage area is configured as public, so anyone who knows (or guesses) the file&apos;s address can open it without signing in, exactly as happens with the profile photo on most online services. You can replace or remove it at any time from your settings</li>
                 </ul>
                 <p className="mt-3">When you upload a CV via the profile generator, we collect:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -357,6 +417,24 @@ export default function PrivacyPage() {
                   If you use the job-tailoring feature, the job posting text (pasted or fetched from
                   a link you provide) is sent to our AI provider to generate the tailored version of
                   your CV, but is not retained by us beyond the time needed to complete that processing.
+                </p>
+                <p className="mt-3">
+                  The other features that process your data, and what each involves:
+                </p>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  <li>Cover letter: your CV and the job posting text are sent to our AI provider; the generated letter is saved to your account, so you don&apos;t have to regenerate (and pay for) it again for the same posting</li>
+                  <li>Translation: the CV (or the letter) is sent to our AI provider and the translated version is saved to your account as an additional CV</li>
+                  <li>Word (.docx) document: generated on the spot from the CV data already in your account, without sending anything to providers beyond those listed in point 5</li>
+                  <li>Interview preparation: the job posting text is sent to our AI provider, which, in order to answer, consults public sources on the live web through its own web-search and page-reading tools. Those searches are about the hiring company, not about you: by design, this feature does not access your CV at all. The resulting briefing is saved to your account</li>
+                  <li>CV completion chat: the AI&apos;s questions and your answers are kept in your account for the duration of the conversation and so you can resume it; when you finish, the information you supplied is folded into your CV</li>
+                </ul>
+                <p className="mt-3">
+                  For every AI-processed operation we also record, in an internal technical log, the
+                  type of operation (e.g. &quot;CV analysis&quot;, &quot;job tailoring&quot;), the
+                  model used, the number of tokens consumed, the corresponding cost, the date, and
+                  your account&apos;s internal identifier. This log contains neither your CV&apos;s
+                  content nor the text exchanged with the AI: it exists solely so we know what the
+                  service costs to run and can size the credit model accordingly.
                 </p>
                 <p className="mt-3">
                   The service does not request or solicit special category data (Art. 9 GDPR: racial
@@ -386,7 +464,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">3. Purpose and Legal Basis</h3>
+                <h2 className="font-semibold text-foreground mb-2">3. Purpose and Legal Basis</h2>
                 <p>
                   Contact form data is processed on the basis of Art. 6(1)(b) GDPR (steps taken at
                   your request prior to entering into a relationship with us) or, where no contractual
@@ -423,10 +501,18 @@ export default function PrivacyPage() {
                   it&apos;s an optional request for your opinion, not something needed to perform the
                   service itself.
                 </p>
+                <p className="mt-2">
+                  The technical AI-usage log described in point 2 (operation type, model, tokens,
+                  cost, internal account identifier) is processed on the basis of our legitimate
+                  interest in the service&apos;s economic sustainability and in accounting for its
+                  costs correctly (Art. 6(1)(f) GDPR). The link to your account is what makes it
+                  possible to attribute a cost to whoever generated it, which is in turn what lets us
+                  calibrate the credit model and spot abnormal usage.
+                </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">4. Data Retention</h3>
+                <h2 className="font-semibold text-foreground mb-2">4. Data Retention</h2>
                 <p>
                   Contact form data is received by email and is not stored in any database.
                 </p>
@@ -447,6 +533,18 @@ export default function PrivacyPage() {
                   side.
                 </p>
                 <p className="mt-2">
+                  To avoid re-processing (and re-charging you for) the exact same file, we separately
+                  keep a copy of the data extracted from a CV, indexed by a cryptographic fingerprint
+                  of the uploaded PDF. That copy{' '}
+                  <strong className="text-foreground">expires 30 days after it was last used</strong>{' '}
+                  (each fresh upload of the same file restarts the clock), and is additionally
+                  deleted when you delete your account, for every fingerprint linked to the CVs saved
+                  in it. To be precise about the limit: fingerprints not linked to any saved CV
+                  (typically those from an anonymous upload that was never registered) cannot be
+                  traced back to an account being deleted, so for those only the automatic 30-day
+                  expiry applies.
+                </p>
+                <p className="mt-2">
                   One exception: a cryptographic hash of your email, generated solely to recognize
                   whether you&apos;ve already received the welcome credit bonus in the past. This is
                   not deleted along with your account, precisely because its purpose is to prevent the
@@ -461,7 +559,9 @@ export default function PrivacyPage() {
                   and time, the policy version accepted, the action&apos;s context, and — where
                   available — the linked account), for consent accountability purposes (Art. 5(2) and
                   7(1) GDPR). We keep this record for 5 years from the date of the choice, in line
-                  with ordinary statute-of-limitations periods.
+                  with ordinary statute-of-limitations periods. This is not a general promise: an
+                  automated job running every day deletes records older than 5 years, for both cookie
+                  choices and policy acceptances.
                 </p>
                 <p className="mt-2">
                   Infrastructure backup copies (kept by our hosting and database providers for
@@ -472,7 +572,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">5. Data Recipients</h3>
+                <h2 className="font-semibold text-foreground mb-2">5. Data Recipients</h2>
                 <p>
                   Your data is not sold or shared with third parties. The processors (Art. 28 GDPR) are:
                 </p>
@@ -482,13 +582,14 @@ export default function PrivacyPage() {
                   <li>Supabase Inc., account management, authentication, and permanent storage of profiles and CV data linked to an account</li>
                   <li>Anthropic PBC, processing of CV text for profile extraction, improvement, and job tailoring</li>
                   <li>Cloudflare Inc., bot verification (Turnstile) on the CV upload and job-tailoring forms</li>
-                  <li>Google Ireland Limited, aggregated, anonymised browsing statistics (Google Analytics 4), only if you've consented to the Statistics category in the cookie banner</li>
+                  <li>Google Ireland Limited, authentication via &quot;Sign in with Google&quot;, if you choose that login method: Google verifies your identity and passes us your email and name. This processing is separate from the next entry and does not depend on the cookie banner, because it is part of the service you asked for</li>
+                  <li>Google Ireland Limited, aggregated, anonymised browsing statistics (Google Analytics 4), only if you&apos;ve consented to the Statistics category in the cookie banner. This integration is in place but <strong className="text-foreground">is not currently active</strong>: no measurement ID is configured, so Google Analytics is never loaded and no data reaches it, even if you have consented to the Statistics category. This entry will be updated if and when we turn it on</li>
                   <li>PostHog Inc., product analytics and optional session replay (with CV content and every input field masked) — data processed and hosted in the EU region, only if you've consented to the Statistics category in the cookie banner</li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">6. International Transfers</h3>
+                <h2 className="font-semibold text-foreground mb-2">6. International Transfers</h2>
                 <p>
                   Most of the processors listed above are based in the United States (Supabase&apos;s
                   data infrastructure can be configured in various regions, including within the EU;
@@ -509,7 +610,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">7. Your Rights</h3>
+                <h2 className="font-semibold text-foreground mb-2">7. Your Rights</h2>
                 <p>Under Arts. 15–22 GDPR, you have the right to:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Access your personal data (Art. 15)</li>
@@ -530,7 +631,7 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">8. Supervisory Authority</h3>
+                <h2 className="font-semibold text-foreground mb-2">8. Supervisory Authority</h2>
                 <p>
                   You have the right to lodge a complaint with the Italian Data Protection Authority
                   (Garante per la Protezione dei Dati Personali,{' '}
@@ -542,13 +643,14 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">9. Cookies</h3>
+                <h2 className="font-semibold text-foreground mb-2">9. Cookies</h2>
                 <p>
                   This website uses cookies strictly necessary for the service to function (e.g.
                   keeping you signed in, bot verification), always active, and (only with your
-                  explicit consent) Statistics cookies (Google Analytics 4 and PostHog, the latter
-                  with optional session replay) to understand how the
-                  site is used. You can give, decline, or withdraw consent at any time from the
+                  explicit consent) Statistics cookies to understand how the site is used. The only
+                  statistics tool actually active is PostHog, with optional session replay; Google
+                  Analytics 4 is integrated but not currently active (see point 5).
+                  You can give, decline, or withdraw consent at any time from the
                   cookie banner or the &quot;Cookie preferences&quot; link at the bottom of the site.
                   For full details see our{' '}
                   <Link href="/cookies" className="text-primary hover:underline">Cookie Policy</Link>.
@@ -556,16 +658,26 @@ export default function PrivacyPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-foreground mb-2">10. Security</h3>
+                <h2 className="font-semibold text-foreground mb-2">10. Security</h2>
                 <p>
                   Data is encrypted both at rest (at the database infrastructure level) and in
-                  transit (HTTPS across the whole site). Accessing your data always requires
-                  authentication to your account, and is technically restricted to only the data you
-                  own via database-level access rules (Row Level Security), not just application-level
-                  checks. Credentials with privileged data access are used exclusively server-side and
-                  are never exposed to the browser. Your real contact details (email and phone) are
-                  never published on the public web page generated by the service, and stay visible
-                  only to you, inside your protected account.
+                  transit (HTTPS across the whole site). Access to your data by other users of the
+                  service always requires authentication, and is technically restricted to only the
+                  data they own via database-level access rules (Row Level Security), not just
+                  application-level checks. Credentials with privileged data access are used
+                  exclusively server-side and are never exposed to the browser. Your real contact
+                  details (email and phone) are never published on the public web page generated by
+                  the service, and stay visible only to you, inside your protected account.
+                </p>
+                <p className="mt-2">
+                  For completeness: the Controller&apos;s authorised personnel can access account data
+                  through internal administrative tooling (protected by dedicated credentials and used
+                  exclusively server-side), for user support, abuse prevention, and running the
+                  service, for example to check the credit balance of someone who wrote to support or
+                  to read the ratings left in the feedback popup. These operations do not go through
+                  the database-level access rules described above, which separate users from each
+                  other rather than limiting the Controller: no service could be operated otherwise,
+                  and we would rather say so explicitly than imply the opposite.
                 </p>
               </div>
             </>

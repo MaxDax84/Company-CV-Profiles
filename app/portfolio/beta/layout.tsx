@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Sofia Conti — Strategy Advisor | Jobli Portfolio Demo',
+  title: 'Sofia Conti, Strategy Advisor (demo)',
   description: 'Project Beta: a Jobli demo showcasing an editorial web CV for a Strategy & Management Consulting professional. Sofia Conti is a fictional character.',
 }
 

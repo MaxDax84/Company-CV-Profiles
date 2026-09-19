@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Marco Bianchi — CFO | Jobli Portfolio Demo',
+  title: 'Marco Bianchi, CFO (demo)',
   description: 'Project Alpha: a Jobli demo showcasing a dark, sophisticated web CV for a Finance & Management professional. Marco Bianchi is a fictional character.',
 }
 

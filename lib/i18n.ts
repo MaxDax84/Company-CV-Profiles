@@ -34,26 +34,35 @@ export const translations = {
         'Our AI restructures your CV and tailors it to every job posting. Beat ATS filters by showcasing your real experience, and turn your profile into a personal web page ready to share with one link.',
       ctaPrimary: 'Get Started →',
     },
+    // Kept a 1:1 translation of the `it.services` block below — this used to
+    // describe a bespoke web-design agency selling "Domain Setup" and
+    // "Monthly Maintenance", left over from the pivot to the CV product, so
+    // an English visitor was reading about a service that no longer exists.
     services: {
-      sectionLabel: 'What We Offer',
-      title: 'Everything You Need to Stand Out',
+      sectionLabel: 'How it works',
+      title: 'From CV to interview, in 4 steps',
       subtitle:
-        'From first design to going live, Jobli handles every detail of your professional online presence.',
+        'Nothing to write from scratch. Our AI starts from what you have already written and makes it land better, without ever inventing something you did not do.',
       cards: [
         {
-          title: 'Custom Design',
+          title: 'Upload your CV',
           description:
-            'Choose your colors, typography, and layout. We build a web CV that reflects who you are — not a template, a statement.',
+            'Upload your CV as a PDF. In seconds our AI reads it, scores it on 4 criteria (quantified results, clarity, ATS structure, specific skills) and suggests roles that fit your experience.',
         },
         {
-          title: 'Domain Setup',
+          title: 'Your page, optimized',
           description:
-            'Get your own professional domain (yourname.com). We handle DNS configuration and deployment so you go live without any hassle.',
+            'We generate your profile page straight away and improve it automatically: rewritten bio, sharper content. You get a new score showing the improvement, without ever inventing anything you did not write.',
         },
         {
-          title: 'Monthly Maintenance',
+          title: 'Tailor your CV to a job posting',
           description:
-            'Career evolving? We keep your profile up to date. Up to 3 content updates per month, so your page is always accurate.',
+            'Paste in a job posting: the AI rewrites your profile to align it as closely as possible with that role, using only the skills and experience you actually declared, never invented ones.',
+        },
+        {
+          title: 'Download and apply',
+          description:
+            'Download the ATS-optimized PDF choosing between 3 templates, or share your web page directly in every application.',
         },
       ],
     },
@@ -74,88 +83,13 @@ export const translations = {
       pdfTitle: 'Your CV, as a PDF',
       pdfSubtitle: '3 ATS-safe layouts, ready to attach to any application.',
     },
-    portfolio: {
-      sectionLabel: 'Our Work',
-      title: 'Real Profiles, Real Impact',
-      subtitle:
-        'Every project is handcrafted for the individual. Here are some examples of what we have delivered.',
-      projects: [
-        {
-          label: 'Project Alpha',
-          role: 'Product & Growth Leader',
-          description:
-            'A dark, minimal web CV inspired by modern SaaS design — violet accent on near-black background, transparent navbar, timeline experience layout, and clean section headers with gradient dividers.',
-          tags: ['Product', 'Growth', 'Dark Theme', 'SaaS'],
-          href: '/portfolio/delta',
-        },
-        {
-          label: 'Project Beta',
-          role: 'Finance & Management Professional',
-          description:
-            'A dark, sophisticated web CV with a gold accent palette — featuring a full career timeline, competency grid, and professional statistics dashboard.',
-          tags: ['Finance', 'Management', 'Dark Theme', 'Timeline'],
-          href: '/portfolio/alpha',
-        },
-        {
-          label: 'Project Gamma',
-          role: 'Business Consulting Executive',
-          description:
-            'An editorial executive profile with multilingual skills section, philosophy approach cards, and a results-driven narrative structure.',
-          tags: ['Consulting', 'Strategy', 'Executive', 'Multilingual'],
-          href: '/portfolio/beta',
-        },
-        {
-          label: 'Project Delta',
-          role: 'HR & People Operations Leader',
-          description:
-            'A warm, minimal web CV for an HR professional who grew from Coordinator to Head of People across three companies — featuring a career timeline, soft-skills grid, and a values-led narrative.',
-          tags: ['HR', 'People Ops', 'Career Growth', 'Warm Palette'],
-          href: '/portfolio/gamma',
-        },
-      ],
-    },
-    pricing: {
-      sectionLabel: 'Pricing',
-      title: 'Simple, Transparent Pricing',
-      subtitle: 'No surprises. Pick the plan that fits your needs and get online.',
-      mostPopular: 'Most Popular',
-      oneTime: 'one-time',
-      launchBadge: 'Launch offer',
-      launchNote: 'Limited spots — introductory pricing for early clients',
-      plans: [
-        {
-          name: 'Starter',
-          price: '15',
-          originalPrice: '30',
-          description: 'Your web CV built on a standard template and delivered on a public shareable link — no personal domain.',
-          features: [
-            'Standard design (fixed template)',
-            'All your content included',
-            'PC & mobile responsive',
-            'Delivered on a shared link (no personal domain)',
-            'Delivered in 1 business day',
-          ],
-          cta: 'Get Started',
-          highlighted: false,
-        },
-        {
-          name: 'Professional',
-          price: '35',
-          originalPrice: '70',
-          description: 'Your site built and hosted on your own custom domain. Fully customizable on written request.',
-          features: [
-            'Built on your personal custom domain',
-            'All your content included',
-            'PC & mobile responsive',
-            'Customizable on written request (colors, structure, animations)',
-            'Delivered in 2 business days',
-            'Source code not included',
-          ],
-          cta: 'Get Started',
-          highlighted: true,
-        },
-      ],
-    },
+    // `portfolio` and `pricing` used to sit here: an "Our Work" agency
+    // showcase and a 15 EUR / 35 EUR web-design price list, both left over
+    // from the pre-pivot site. Nothing has read translations[lang].portfolio
+    // or translations[lang].pricing since — the homepage pricing section
+    // (components/pricing-section.tsx) carries its own inline copy, and the
+    // nav's "Pricing"/"Portfolio" labels come from nav.* — so they were
+    // deleted rather than left behind as a second, wrong source of truth.
     generate: {
       badge: 'Profile Generator',
       title: 'Your CV already tells your story.\nWe turn it into a website.',

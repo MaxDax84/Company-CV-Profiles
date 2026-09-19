@@ -1,0 +1,102 @@
+# Jobli
+
+> Jobli (https://www.jobli.it) is an AI-powered CV/resume tool for job
+> seekers. You upload your CV as a PDF; Jobli scores it, rewrites it to be
+> clearer and ATS-readable, turns it into a shareable profile page, tailors
+> it to a specific job posting, and exports it as an ATS-safe PDF or Word
+> file. It is operated from Milan, Italy, primarily in Italian, with a full
+> English interface. It is currently in beta and free to use.
+
+The core guarantee: **Jobli never invents information that is not in your
+CV.** No skill, employer, date, qualification or number is ever added. Every
+AI stage (extraction, improvement, job tailoring, translation, chat
+refinement) is constrained to rephrasing and reorganising what the user
+actually wrote. Output is AI-generated, not human-reviewed, and users are
+told to check it before sending it anywhere.
+
+## The CV score
+
+A CV is scored 0-100 as the sum of exactly four criteria, each worth up to
+25 points:
+
+1. **Quantified results** (risultati misurabili): how many achievements
+   carry concrete numbers or percentages, and how many bullets open with a
+   strong action verb.
+2. **Clarity** (chiarezza): how clear the professional summary is, and how
+   readable the experience section is.
+3. **ATS structure** (struttura ATS): how well the original document's
+   layout can be parsed by automated screening systems, penalising tables,
+   multiple columns and text boxes.
+4. **Specific skills** (competenze specifiche): how many concrete technical
+   skills are named explicitly, and how many are also demonstrated inside
+   the experience entries rather than merely listed.
+
+## Features
+
+- **CV scoring**: a 0-100 score on the four criteria above, plus suggested
+  roles that match the experience already in the CV.
+- **AI improvement**: the bio and experience bullets are rewritten to be
+  clearer and more concrete, then re-scored so the before/after difference
+  is visible.
+- **Public profile page**: a shareable web page generated from the CV, in
+  one of 4 visual styles. Real email and phone are always shown redacted on
+  the public page. The page is not search-indexed.
+- **ATS-optimised PDF export**: 3 deliberately plain single-column
+  templates (Pragmatico, Executive, Creative Tech). An optional paid add-on
+  compacts the result onto a single page.
+- **Word (.docx) export**: the same CV as an editable document.
+- **Job tailoring**: paste a job posting (or a link to one) and the CV is
+  rewritten to align with that role, using only what the user declared. A
+  relevance check warns first when the CV does not fit the posting.
+- **Cover letter generation**: a cover letter written from the CV and the
+  job posting.
+- **Translation**: the CV or the cover letter translated into English,
+  Spanish, French, German, Portuguese or Italian.
+- **Interview preparation**: from a job posting, a research report on the
+  hiring company (what it does, its market, its culture, recent news, the
+  posting's own critical points, and likely interview questions). This one
+  feature does browse the live web, via Anthropic's web-search and web-fetch
+  tools, and every claim is returned with the source URL that was actually
+  visited. It deliberately does not read the user's CV.
+- **CV chat**: a short question-and-answer chat that fills gaps in a CV by
+  asking the user about missing details, then folds the answers back in.
+
+## Credits
+
+Each new account gets 3 free credits (one welcome bonus per email address).
+There is currently no way to buy credits; users can request 10 more for free
+from their account, reviewed by hand. Current costs:
+
+| Action | Credits |
+| --- | --- |
+| PDF download | 1 |
+| Word (.docx) download | 1 |
+| Cover letter generation | 1 |
+| Translation (CV or cover letter) | 1 |
+| CV chat refinement | 1 |
+| Interview preparation report | 2 |
+| One-page PDF compaction (add-on) | 0.5 |
+
+Uploading a CV, scoring it, improving it, generating the profile page and
+tailoring it to a job posting are all free. A credit is charged the first
+time a given result is produced; re-downloading the same file afterwards is
+free.
+
+## Privacy
+
+The uploaded PDF itself is not kept; only the structured text extracted from
+it is, linked to the account. An upload that is never linked to an account
+is deleted after 1 hour. Users can delete a single CV or their whole account
+themselves, immediately and irreversibly. The service is for people aged 14
+and over.
+
+## Links
+
+- Homepage: https://www.jobli.it/
+- Get started: https://www.jobli.it/start
+- FAQ: https://www.jobli.it/faq
+- Blog (interviews, CVs, ATS, careers): https://www.jobli.it/blog
+- Terms of Service: https://www.jobli.it/terms
+- Privacy Policy: https://www.jobli.it/privacy
+- Cookie Policy: https://www.jobli.it/cookies
+- Contact: info@jobli.it
