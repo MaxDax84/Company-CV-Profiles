@@ -547,11 +547,12 @@ export interface ResolveFromPdfResult {
 // rather than trying to reuse someone's now-owned account data.
 //
 // The EXTRACTED PROFILE, unlike the short-lived pending cache above, is
-// remembered permanently by PDF hash (see lib/cv-score-memory.ts) —
-// re-uploading the exact same file must always resolve to the exact same
-// extracted data, whether that's minutes or months later, and whether it's
-// an original CV or one of our own already-optimized exports (which get
-// remembered at export time, in /api/pdf/[slug]). The AI-judged "before"
+// remembered by PDF hash for 30 days after its last use (see
+// lib/cv-score-memory.ts for the retention reasoning) — re-uploading the
+// exact same file inside that window resolves to the exact same extracted
+// data, whether it's an original CV or one of our own already-optimized
+// exports (which get remembered at export time, in /api/pdf/[slug]); after
+// it, the file is simply extracted afresh. The AI-judged "before"
 // score (metadata.score_before, set in lib/parse-resume.ts) travels with
 // the remembered profile so re-uploads keep comparing against the real
 // original judgment, not a re-derived one — reconstructScoreBefore() below
@@ -586,9 +587,9 @@ export async function resolveProfileFromPdf(
     }
   }
 
-  // Permanent memory, independent of the pending cache above: if this exact
-  // file was ever read before, reuse that extraction verbatim instead of
-  // asking Claude to re-read it. Extraction isn't perfectly deterministic
+  // Longer-lived memory (30 days since last use), independent of the pending
+  // cache above: if this exact file was read recently, reuse that extraction
+  // verbatim instead of asking Claude to re-read it. Extraction isn't perfectly deterministic
   // run-to-run, so without this, a "before" score computed from an older
   // reading of this same file could genuinely differ from an "after" score
   // computed post-improvement on a brand new reading — a real mismatch,

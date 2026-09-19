@@ -7,6 +7,8 @@ import { sendWelcomeEmail } from "@/lib/email";
 import { isOptedOutOfLifecycleEmails } from "@/lib/account-settings";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import { trackServer } from "@/lib/analytics-server";
+import { logPolicyAcceptance, POLICY_VERSION, SIGNUP_POLICIES } from "@/lib/log-policy-acceptance";
+import { getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -21,6 +23,9 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get("code");
   const claimToken = searchParams.get("claim");
   const next = safeRedirectPath(searchParams.get("next"));
+  // "1" only when the signup form's terms/privacy and 14+ checkboxes were
+  // ticked before the Google button was clicked (google-auth-button.tsx).
+  const policiesAccepted = searchParams.get("accepted") === "1";
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
@@ -34,6 +39,12 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: { user } } = await supabase.auth.getUser();
+  const isGoogle = user?.app_metadata?.provider === "google";
+
+  // Set below when this turns out to be a brand-new Google account whose
+  // signup declarations haven't been recorded yet — decides between landing
+  // on the destination directly or via the /auth/confirm-policies stop.
+  let needsPolicyConfirmation = false;
 
   // Hit on every Google login, not just the first — claimWelcomeEmailSlot
   // only returns true once per account (see lib/credits.ts), so this is
@@ -54,8 +65,32 @@ export async function GET(req: NextRequest) {
       // never reaches this route at all.
       if (won) {
         await trackServer(user.id, "signup_completed", {
-          method: user.app_metadata?.provider === "google" ? "google" : "password",
+          method: isGoogle ? "google" : "password",
         });
+      }
+      // Signup declarations for a NEW Google account. A password signup
+      // already logged its own acceptance from signup-form.tsx before ever
+      // reaching here, so this is Google-only. The "accepted" flag is
+      // trusted exactly as much as the client-side fetch the password form
+      // makes (same trust level, same record) — the user id, IP and
+      // user-agent all come from this authenticated request, never from
+      // the URL. Without the flag (a first Google login started from the
+      // /login page, where there are no checkboxes) the account exists
+      // already, so the declarations are collected right after instead —
+      // see app/auth/confirm-policies/page.tsx.
+      if (won && isGoogle) {
+        if (policiesAccepted) {
+          logPolicyAcceptance({
+            context: "signup",
+            policies: [...SIGNUP_POLICIES],
+            policyVersion: POLICY_VERSION,
+            userId: user.id,
+            ipAddress: getClientIp(req),
+            userAgent: req.headers.get("user-agent"),
+          });
+        } else {
+          needsPolicyConfirmation = true;
+        }
       }
       if (won && !(await isOptedOutOfLifecycleEmails(supabase, user.id))) {
         await sendWelcomeEmail(user.email, origin, user.id);
@@ -65,16 +100,20 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  let destination = next ?? "/account";
   if (claimToken && user) {
     const result = await claimPendingProfile(supabase, user.id, claimToken);
     if (!("error" in result)) {
       const accountCode = await getAccountCode(supabase, user.id);
-      return NextResponse.redirect(`${origin}/${accountCode}/${result.slug}`);
+      destination = `/${accountCode}/${result.slug}`;
     }
     // Signed in fine even though claiming this specific CV failed (e.g.
     // expired preview, 4-CV limit) — same fallback the password-based
     // login/signup forms use, land on the account rather than an error page.
   }
 
-  return NextResponse.redirect(`${origin}${next ?? "/account"}`);
+  if (needsPolicyConfirmation) {
+    return NextResponse.redirect(`${origin}/auth/confirm-policies?next=${encodeURIComponent(destination)}`);
+  }
+  return NextResponse.redirect(`${origin}${destination}`);
 }

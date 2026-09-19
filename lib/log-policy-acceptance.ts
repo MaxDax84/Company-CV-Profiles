@@ -9,6 +9,19 @@ import { anonymizeIp } from "./log-consent";
 
 export type PolicyAcceptanceContext = "signup" | "cv_upload" | "tailor_resume" | "contact_form" | "support_form";
 
+// Bumped alongside the September 2026 GDPR audit pass on /privacy and
+// /terms — update this whenever either page's substance changes, same
+// idea as lib/consent.ts's COOKIE_POLICY_VERSION.
+export const POLICY_VERSION = "2026-09";
+
+// What every account-creation path declares, whichever way the account is
+// created (password form, Google from the signup page, Google from the
+// login page via the /auth/confirm-policies interstitial): the two policy
+// documents plus the explicit "I am at least 14" declaration Terms §2
+// requires (Art. 2-quinquies, D.Lgs. 196/2003 — the minimum age for a minor
+// to consent to online data processing alone in Italy).
+export const SIGNUP_POLICIES = ["privacy", "terms", "age_14_plus"] as const;
+
 export interface PolicyAcceptanceEntry {
   context: PolicyAcceptanceContext;
   policies: string[];

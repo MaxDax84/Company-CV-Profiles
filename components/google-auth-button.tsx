@@ -15,9 +15,17 @@ interface GoogleAuthButtonProps {
   // param as the password forms — already validated by the caller via
   // lib/safe-redirect.ts, forwarded here as-is.
   next?: string | null;
+  // Set by the signup form once its terms/privacy and 14+ checkboxes are
+  // both ticked. Rides along on the callback URL the same way claimToken
+  // does, so app/auth/callback/route.ts can write the signup acceptance
+  // record for a brand-new Google account (or, when absent — e.g. a first
+  // Google login from the /login page — send the new user through the
+  // /auth/confirm-policies interstitial instead).
+  policiesAccepted?: boolean;
+  disabled?: boolean;
 }
 
-export default function GoogleAuthButton({ claimToken, next }: GoogleAuthButtonProps) {
+export default function GoogleAuthButton({ claimToken, next, policiesAccepted, disabled }: GoogleAuthButtonProps) {
   const [loading, setLoading] = useState(false);
   const { lang } = useLanguage();
 
@@ -27,6 +35,7 @@ export default function GoogleAuthButton({ claimToken, next }: GoogleAuthButtonP
     const redirectTo = new URL("/auth/callback", window.location.origin);
     if (claimToken) redirectTo.searchParams.set("claim", claimToken);
     if (next) redirectTo.searchParams.set("next", next);
+    if (policiesAccepted) redirectTo.searchParams.set("accepted", "1");
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -42,7 +51,7 @@ export default function GoogleAuthButton({ claimToken, next }: GoogleAuthButtonP
     <button
       type="button"
       onClick={handleClick}
-      disabled={loading}
+      disabled={loading || disabled}
       className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl border border-foreground/10 bg-background text-sm font-semibold text-foreground/80 transition-all duration-200 hover:bg-foreground/[0.03] hover:border-foreground/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
     >
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">

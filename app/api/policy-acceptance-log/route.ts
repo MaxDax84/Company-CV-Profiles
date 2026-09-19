@@ -2,15 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createServiceSupabaseClient } from "@/lib/supabase/service";
 import { getClientIp, policyAcceptanceLogRatelimit } from "@/lib/rate-limit";
-import { logPolicyAcceptance, type PolicyAcceptanceContext } from "@/lib/log-policy-acceptance";
+import { logPolicyAcceptance, POLICY_VERSION, type PolicyAcceptanceContext } from "@/lib/log-policy-acceptance";
 
 export const runtime = "nodejs";
 
 const VALID_CONTEXTS: PolicyAcceptanceContext[] = ["signup", "cv_upload", "tailor_resume", "contact_form", "support_form"];
-// Bumped alongside the September 2026 GDPR audit pass on /privacy and
-// /terms — update this whenever either page's substance changes, same
-// idea as lib/consent.ts's COOKIE_POLICY_VERSION.
-const POLICY_VERSION = "2026-09";
 
 // Called from every "ho letto e accetto" checkbox in the app right as the
 // user proceeds (signup, CV upload, job tailoring, contact/support forms)

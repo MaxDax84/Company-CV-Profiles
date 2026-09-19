@@ -89,5 +89,10 @@ export function writeConsentCookie(consent: ConsentState, consentId: string): vo
     consentId,
   }));
   const maxAge = CONSENT_COOKIE_MAX_AGE_DAYS * 24 * 60 * 60;
-  document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
+  // Secure whenever the page itself is served over HTTPS — always true in
+  // production (HSTS-preloaded), so the flag costs nothing there; only
+  // omitted on plain-http localhost dev, where Safari would otherwise
+  // silently refuse to store the cookie at all.
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=${maxAge}; SameSite=Lax${secure}`;
 }

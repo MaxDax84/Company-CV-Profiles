@@ -9,6 +9,7 @@ import { useLanguage } from "@/components/language-provider";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import PasswordInput from "@/components/password-input";
 import { trackClient } from "@/lib/analytics-client";
+import { SIGNUP_POLICIES } from "@/lib/log-policy-acceptance";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl bg-background border border-foreground/10 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-200";
@@ -33,12 +34,17 @@ export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  // Terms §2: the service is for people aged 14+ (the Italian minimum age
+  // to consent to online data processing alone). Until this box is ticked
+  // too, neither the password submit nor the Google button is enabled.
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const declarationsAccepted = privacyAccepted && ageConfirmed;
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "needsEmailConfirm" | "alreadyRegistered" | "claimFailed">("idle");
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
-  // Fire-and-forget proof that the terms/privacy checkbox below was
-  // actually ticked before this account was created — see
+  // Fire-and-forget proof that the terms/privacy and 14+ checkboxes below
+  // were actually ticked before this account was created — see
   // supabase/migrations/0033_policy_acceptance_log.sql. userId is passed
   // through (rather than relying on the session cookie) because a
   // "confirm your email" signup has no server session yet at this point.
@@ -46,7 +52,7 @@ export default function SignupForm() {
     fetch("/api/policy-acceptance-log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ context: "signup", policies: ["privacy", "terms"], userId }),
+      body: JSON.stringify({ context: "signup", policies: SIGNUP_POLICIES, userId }),
     }).catch(() => {});
   }
 
@@ -65,7 +71,7 @@ export default function SignupForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isPasswordValid(password) || !privacyAccepted) return;
+    if (!isPasswordValid(password) || !declarationsAccepted) return;
     setStatus("loading");
     setError(null);
 
@@ -262,13 +268,27 @@ export default function SignupForm() {
         </span>
       </label>
 
+      <label className="flex items-start gap-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={ageConfirmed}
+          onChange={(e) => setAgeConfirmed(e.target.checked)}
+          className="mt-0.5 w-4 h-4 rounded border-foreground/20 accent-[var(--primary)]"
+        />
+        <span className="text-xs text-muted-foreground leading-relaxed">
+          {lang === "en"
+            ? "I confirm that I am at least 14 years old."
+            : "Confermo di avere almeno 14 anni."}
+        </span>
+      </label>
+
       {error && (
         <p className="text-sm text-destructive text-center">{error}</p>
       )}
 
       <button
         type="submit"
-        disabled={status === "loading" || !isPasswordValid(password) || !privacyAccepted}
+        disabled={status === "loading" || !isPasswordValid(password) || !declarationsAccepted}
         className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 relative overflow-hidden"
         style={{ background: "var(--primary)", color: "var(--primary-foreground)", boxShadow: "0 4px 24px color-mix(in srgb, var(--primary) 31%, transparent)" }}
       >
@@ -291,11 +311,25 @@ export default function SignupForm() {
         <div className="flex-1 h-px bg-foreground/10" />
       </div>
 
-      <GoogleAuthButton claimToken={claimToken} next={next} />
+      {/* Same two declarations gate the Google path: the button stays
+          disabled until both boxes above are ticked, and the fact that they
+          were is forwarded to /auth/callback (see google-auth-button.tsx)
+          so the acceptance record gets written server-side for a new
+          Google account too. */}
+      <GoogleAuthButton
+        claimToken={claimToken}
+        next={next}
+        policiesAccepted={declarationsAccepted}
+        disabled={!declarationsAccepted}
+      />
       <p className="text-[11px] text-muted-foreground/60 text-center -mt-2">
-        {lang === "en"
-          ? "By continuing with Google, you agree to our Terms of Service and Privacy Policy."
-          : "Continuando con Google, accetti i nostri Termini di Servizio e la Privacy Policy."}
+        {declarationsAccepted
+          ? (lang === "en"
+            ? "The declarations above also apply when you continue with Google."
+            : "Le dichiarazioni qui sopra valgono anche se continui con Google.")
+          : (lang === "en"
+            ? "Tick both boxes above to continue with Google."
+            : "Spunta entrambe le caselle qui sopra per continuare con Google.")}
       </p>
 
       <p className="text-xs text-muted-foreground text-center">

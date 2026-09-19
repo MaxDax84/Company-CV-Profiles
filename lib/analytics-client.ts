@@ -17,11 +17,25 @@ const HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
 
 let initialized = false;
 
-// Called once by <PostHogProvider> on mount. Starts with in-memory-only
-// persistence — no cookie/localStorage write happens until
-// setAnalyticsConsent(true) is called after the visitor actually accepts the
-// "statistics" cookie category. person_profiles: 'identified_only' means an
-// anonymous visitor's pageviews never create a full Person profile — only
+// Called by <PostHogProvider> only once the visitor has actually accepted
+// the "statistics" cookie category — never on plain mount. That timing is
+// what the Cookie Policy promises ("if you decline, PostHog is never loaded
+// and no event is recorded"), and it has to be the init() call itself that
+// waits, not just capture(): posthog-js's init() unconditionally fetches
+// its remote config (/array/<token>/config.js from the PostHog assets host)
+// and feature flags (/flags) regardless of the consent state — those
+// requests go through _send_request(), which has no consent check at all
+// (verified against posthog-js 1.427.x). Only capture() is gated by
+// consent. So a "init early, opt in later" setup would still leak the
+// visitor's IP to PostHog on every visit; deferring init() is the only
+// approach that gives zero PostHog network activity pre-consent.
+//
+// opt_out_capturing_by_default is kept on top as a belt-and-braces guard:
+// even if init() ever ran too early again, nothing is captured until
+// setAnalyticsConsent(true) explicitly opts in. Starts with in-memory-only
+// persistence — the switch to durable storage also happens only in
+// setAnalyticsConsent(true). person_profiles: 'identified_only' means an
+// anonymous visitor's events never create a full Person profile — only
 // identify() (called after a real login/signup) does.
 export function initAnalyticsClient(): void {
   if (initialized || !KEY || typeof window === "undefined") return;
@@ -29,6 +43,7 @@ export function initAnalyticsClient(): void {
     api_host: HOST,
     person_profiles: "identified_only",
     persistence: "memory",
+    opt_out_capturing_by_default: true,
     session_recording: { maskAllInputs: true },
     capture_pageview: false, // this app tracks specific product events, not generic pageviews
   });
@@ -38,7 +53,9 @@ export function initAnalyticsClient(): void {
 // Flips persistence to durable storage once statistics consent is granted,
 // and back to in-memory (dropping anything already stored) if consent is
 // later withdrawn from the "Cookie preferences" panel — mirrors
-// components/google-analytics.tsx's mount/unmount gating for GA.
+// components/google-analytics.tsx's mount/unmount gating for GA. A no-op
+// before initAnalyticsClient() has run, which is the normal state for every
+// visitor who hasn't accepted statistics cookies (see above).
 export function setAnalyticsConsent(granted: boolean): void {
   if (!initialized) return;
   if (granted) {

@@ -6,21 +6,29 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { initAnalyticsClient, setAnalyticsConsent, identifyUser } from "@/lib/analytics-client";
 
 // Mounted once in app/layout.tsx, mirrors components/google-analytics.tsx's
-// consent gating. Unlike GA, PostHog always initializes (in-memory-only
-// persistence, no cookie/localStorage write) so events from the very first
-// pageview aren't lost — it only starts *persisting* once statistics
-// consent is granted, and reverts to in-memory (dropping what's stored) the
-// moment consent is withdrawn.
+// consent gating: PostHog is not initialized at all until the visitor has
+// accepted the "statistics" cookie category, so a visitor who never accepts
+// (or hasn't answered the banner yet) generates zero requests to the
+// PostHog host — no SDK init, no remote-config fetch, no events. See
+// lib/analytics-client.ts for why the init() call itself has to wait and
+// not just capture(). trackClient.* calls made before that point are
+// dropped by design, not queued.
+//
+// Once initialized, withdrawing consent from the "Cookie preferences" panel
+// opts the SDK back out and reverts to in-memory persistence (dropping
+// what's stored); re-granting opts back in without re-initializing.
 export default function PostHogProvider() {
   const { consent } = useConsent();
   const statisticsGranted = consent.statistics;
 
   useEffect(() => {
-    initAnalyticsClient();
-  }, []);
-
-  useEffect(() => {
-    setAnalyticsConsent(statisticsGranted);
+    if (statisticsGranted) {
+      initAnalyticsClient();
+      setAnalyticsConsent(true);
+    } else {
+      // No-op while never initialized; a real opt-out only after a grant.
+      setAnalyticsConsent(false);
+    }
   }, [statisticsGranted]);
 
   // Identifies the current session's logged-in user, if any — safe to call
