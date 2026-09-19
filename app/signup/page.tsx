@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import SignupPageBody from "@/components/signup-page-body";
 
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
 };
 
 // Same "already-authenticated visitors skip the form" guard as /login —
-// see there for why, including the claim-token exception.
+// see there for why, including the claim-token exception and the
+// isSupabaseConfigured() check.
 export default async function SignupPage({ searchParams }: Props) {
   const { next, claim } = await searchParams;
-  if (!claim) {
+  if (!claim && isSupabaseConfigured()) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) redirect(safeRedirectPath(next) ?? "/account");

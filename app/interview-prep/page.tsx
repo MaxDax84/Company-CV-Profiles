@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/service";
 
 // "Prepara il colloquio" is account-only — no anonymous preview, unlike
 // /generate's CV flow. A signed-in visitor lands straight on the real
@@ -17,9 +18,15 @@ export const metadata: Metadata = {
 };
 
 export default async function InterviewPrepPage() {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) redirect("/account?tab=interview");
+  // Same guard as /account and /tailor: without real Supabase credentials
+  // there's no session to check anyway, so fall straight through to the
+  // signed-out prompt below instead of crashing on an unhandled
+  // client-init error.
+  if (isSupabaseConfigured()) {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) redirect("/account?tab=interview");
+  }
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">

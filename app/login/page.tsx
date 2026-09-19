@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/service";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import LoginPageBody from "@/components/login-page-body";
 
@@ -26,7 +27,12 @@ export const metadata: Metadata = {
 
 export default async function LoginPage({ searchParams }: Props) {
   const { next, claim } = await searchParams;
-  if (!claim) {
+  // Same guard as /account and /tailor: without real Supabase credentials
+  // (local dev before the project exists, a misconfigured preview) the
+  // already-signed-in check below is meaningless anyway — skip straight to
+  // the form instead of crashing the whole page on an unhandled client-init
+  // error.
+  if (!claim && isSupabaseConfigured()) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) redirect(safeRedirectPath(next) ?? "/account");
