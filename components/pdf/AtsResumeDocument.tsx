@@ -144,8 +144,12 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, com
       ...(!cfg.headerBand && { borderBottomWidth: 1, borderBottomColor: RULE_GRAY }),
     },
     name: { fontSize: (generous ? 25 : 23) * fd, fontFamily: cfg.headerFontFamilyBold, letterSpacing: 0.3, marginBottom: 3 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    title: { fontSize: 12 * fd, fontFamily: cfg.headerFontFamily, color: "#4a4a4a", marginBottom: 9 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
-    contactLine: { fontSize: 9 * fd, color: "#5a5a5a", marginBottom: 2 * d, lineHeight: 1.5 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    // Margins below are tuned so the visible gaps between the header's lines
+    // (name / title / contact / links) come out equal — the larger the font,
+    // the more built-in slack its own line box already adds, so the margins
+    // themselves are deliberately not identical.
+    title: { fontSize: 12 * fd, fontFamily: cfg.headerFontFamily, color: "#4a4a4a", marginBottom: 5.5 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
+    contactLine: { fontSize: 9 * fd, color: "#5a5a5a", marginBottom: 3.5 * d, lineHeight: 1.5 * d, textAlign: cfg.headerAlign === "center" ? "center" : "left" },
     section: { marginTop: (generous ? 22 : 17) * d },
     // Each variant carries a distinct treatment — a plain thin rule
     // (ats-core), a soft double rule (executive), or a filled tag-like
@@ -188,10 +192,14 @@ function buildStyles(cfg: VariantConfig, accent: string, accentSoft: string, com
     // column of text, nothing sits beside it.
     entryBar: { position: "absolute", left: 0, top: 1, bottom: 1, width: 2, borderRadius: 1 },
     entryHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-    entryTitle: { fontSize: 10.5 * fd, fontFamily: cfg.fontFamilyBold, color: "#232323" },
-    entryDates: { fontSize: 8.5 * fd, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3 },
+    // Title and subtitle (company / institution) share the bullets' 1.45
+    // line height, so the subtitle sits one regular line below the title
+    // instead of tight against it. entryDates' taller line height keeps the
+    // smaller date text on the title's baseline.
+    entryTitle: { fontSize: 10.5 * fd, lineHeight: 1.45 * d, fontFamily: cfg.fontFamilyBold, color: "#232323" },
+    entryDates: { fontSize: 8.5 * fd, lineHeight: 1.79 * d, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3 },
     entryDatesChip: { fontSize: 8 * fd, fontFamily: cfg.fontFamilyBold, letterSpacing: 0.3, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
-    entrySubtitle: { fontSize: 9.5 * fd, color: "#555555", marginTop: 1 * d, marginBottom: 5 * d },
+    entrySubtitle: { fontSize: 9.5 * fd, lineHeight: 1.45 * d, color: "#555555", marginTop: 0, marginBottom: 3.5 * d },
     bullet: { fontSize: 9.5 * fd, lineHeight: 1.45 * d, marginBottom: 2.5 * d, color: "#333333" },
     // Marker and text as separate fixed-width/flex columns (not one inline
     // string) so a wrapped second line indents under the text, not back
